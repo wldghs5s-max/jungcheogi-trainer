@@ -58,7 +58,7 @@ export default function App() {
               style: "destructive",
               onPress: () => handleExitQuiz(),
             },
-          ]
+          ],
         );
         return true;
       }
@@ -88,7 +88,7 @@ export default function App() {
         if (Platform.OS === "android") {
           ToastAndroid.show(
             "뒤로가기 버튼을 한 번 더 누르면 종료됩니다.",
-            ToastAndroid.SHORT
+            ToastAndroid.SHORT,
           );
         }
         return true;
@@ -99,7 +99,7 @@ export default function App() {
 
     const backHandlerSubscription = BackHandler.addEventListener(
       "hardwareBackPress",
-      handleBackPress
+      handleBackPress,
     );
 
     return () => {

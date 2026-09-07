@@ -1,7 +1,7 @@
-import { LocalStorage } from '../storage/localStorage';
-import { Question } from '../types/question';
+import { LocalStorage } from "../storage/localStorage";
+import { Question } from "../types/question";
 
-export const GEMINI_KEY_STORAGE = '@gemini_api_key';
+export const GEMINI_KEY_STORAGE = "@gemini_api_key";
 
 export interface TutorContext {
   question: Question;
@@ -46,10 +46,10 @@ export class GeminiService {
 - 과목/단원: ${question.subject} > ${question.category}
 - 문제 유형: ${question.type} (난이도: ${question.difficulty})
 - 문제 지문: ${question.question}
-${question.code ? `- 코드:\n\`\`\`${question.language || 'text'}\n${question.code}\n\`\`\`` : ''}
-- 정답: ${Array.isArray(question.answer) ? question.answer.join(' 또는 ') : question.answer}
+${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
+- 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
 - 기본 해설: ${question.explanation}
-- 수험생이 작성한 답: ${userAnswer ? (Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer) : '(미작성)'}
+- 수험생이 작성한 답: ${userAnswer ? (Array.isArray(userAnswer) ? userAnswer.join(", ") : userAnswer) : "(미작성)"}
 
 [수험생의 질문]
 ${userPrompt}
@@ -57,11 +57,11 @@ ${userPrompt}
 
     // 2026 최신 Gemini 모델 우선순위 목록 (404/지원중단 대비 자동 Fallback)
     const CANDIDATE_MODELS = [
-      'gemini-2.5-flash',
-      'gemini-2.0-flash',
-      'gemini-1.5-flash',
-      'gemini-1.5-flash-latest',
-      'gemini-2.0-flash-exp',
+      "gemini-2.5-flash",
+      "gemini-2.0-flash",
+      "gemini-1.5-flash",
+      "gemini-1.5-flash-latest",
+      "gemini-2.0-flash-exp",
     ];
 
     let lastError: { status: number; message: string } | null = null;
@@ -71,10 +71,10 @@ ${userPrompt}
         const response = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(cleanKey)}`,
           {
-            method: 'POST',
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
-              'x-goog-api-key': cleanKey,
+              "Content-Type": "application/json",
+              "x-goog-api-key": cleanKey,
             },
             body: JSON.stringify({
               contents: [
@@ -87,7 +87,7 @@ ${userPrompt}
                 maxOutputTokens: 1000,
               },
             }),
-          }
+          },
         );
 
         if (response.ok) {
@@ -104,17 +104,23 @@ ${userPrompt}
 
         // 404(모델 미지원)인 경우 다음 후보 모델로 재시도
         if (response.status === 404) {
-          console.warn(`Gemini model ${model} returned 404, trying fallback...`);
+          console.warn(
+            `Gemini model ${model} returned 404, trying fallback...`,
+          );
           continue;
         }
 
         // 인증 또는 권한 오류 시 즉시 안내 반환
-        if (response.status === 400 || response.status === 401 || response.status === 403) {
+        if (
+          response.status === 400 ||
+          response.status === 401 ||
+          response.status === 403
+        ) {
           return `❌ Gemini API Key 인증 오류 (${response.status})\n\n사유: ${message}\n\n[설정] 탭에서 구글 AI Studio에서 발급받은 올바른 API Key인지 다시 확인해 주세요.`;
         }
       } catch (e: any) {
         console.error(`Gemini request failed for ${model}:`, e);
-        lastError = { status: 0, message: e.message || '네트워크 연결 오류' };
+        lastError = { status: 0, message: e.message || "네트워크 연결 오류" };
       }
     }
 
@@ -122,25 +128,25 @@ ${userPrompt}
       return `❌ AI 튜터 서버 응답 오류 (${lastError.status}): ${lastError.message}\n\nGoogle 서버에서 지원되는 모델을 찾지 못했거나 키 권한에 문제가 있습니다. [설정] 탭에서 키를 재등록해 주세요.`;
     }
 
-    return 'AI 튜터가 답변을 생성하지 못했습니다. 잠시 후 다시 질문해 주세요.';
+    return "AI 튜터가 답변을 생성하지 못했습니다. 잠시 후 다시 질문해 주세요.";
   }
 
   /**
    * Gemini API Key가 정상 작동하는지 핑 테스트를 수행합니다.
    */
   static async testConnection(
-    apiKey: string
+    apiKey: string,
   ): Promise<{ success: boolean; message: string; model?: string }> {
     const cleanKey = apiKey.trim();
     if (!cleanKey) {
-      return { success: false, message: 'API Key를 입력해 주세요.' };
+      return { success: false, message: "API Key를 입력해 주세요." };
     }
 
     const CANDIDATE_MODELS = [
-      'gemini-2.5-flash',
-      'gemini-2.0-flash',
-      'gemini-1.5-flash',
-      'gemini-1.5-flash-latest',
+      "gemini-2.5-flash",
+      "gemini-2.0-flash",
+      "gemini-1.5-flash",
+      "gemini-1.5-flash-latest",
     ];
 
     for (const model of CANDIDATE_MODELS) {
@@ -148,16 +154,16 @@ ${userPrompt}
         const response = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(cleanKey)}`,
           {
-            method: 'POST',
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
-              'x-goog-api-key': cleanKey,
+              "Content-Type": "application/json",
+              "x-goog-api-key": cleanKey,
             },
             body: JSON.stringify({
-              contents: [{ parts: [{ text: 'Hello' }] }],
+              contents: [{ parts: [{ text: "Hello" }] }],
               generationConfig: { maxOutputTokens: 5 },
             }),
-          }
+          },
         );
 
         if (response.ok) {
@@ -182,14 +188,15 @@ ${userPrompt}
       } catch (e: any) {
         return {
           success: false,
-          message: `네트워크 오류: ${e.message || '연결할 수 없습니다.'}`,
+          message: `네트워크 오류: ${e.message || "연결할 수 없습니다."}`,
         };
       }
     }
 
     return {
       success: false,
-      message: '지원되는 Gemini 모델을 찾을 수 없습니다. API Key를 확인해 주세요.',
+      message:
+        "지원되는 Gemini 모델을 찾을 수 없습니다. API Key를 확인해 주세요.",
     };
   }
 }
