@@ -1,18 +1,32 @@
-import React from 'react';
-import { View, Text, StyleSheet, Switch, TouchableOpacity, Alert } from 'react-native';
-import { Moon, Vibrate, Target, Trash2, Smartphone, ShieldCheck, Cloud } from 'lucide-react-native';
+﻿import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Switch, TouchableOpacity, Alert, TextInput, ScrollView } from 'react-native';
+import { Moon, Vibrate, Target, Trash2, Smartphone, ShieldCheck, Cloud, Sparkles, Key, Check } from 'lucide-react-native';
 import { useSettingsStore } from '../store/settingsStore';
 import { useUserStore } from '../store/userStore';
 import { AttemptRepository } from '../repositories/attemptRepository';
+import { GeminiService } from '../api/geminiService';
 import { triggerHaptic } from '../utils/haptics';
 import { COLORS } from '../utils/theme';
 import { Header } from '../components/common/Header';
 import { Card } from '../components/common/Card';
+import { Button } from '../components/common/Button';
 
 export const SettingsScreen: React.FC = () => {
   const { isDarkMode, isHapticEnabled, toggleDarkMode, toggleHaptic } = useSettingsStore();
   const { dailyTarget, setDailyTarget } = useUserStore();
   const theme = isDarkMode ? COLORS.dark : COLORS.light;
+
+  const [apiKeyInput, setApiKeyInput] = useState('');
+  const [hasSavedKey, setHasSavedKey] = useState(false);
+
+  useEffect(() => {
+    GeminiService.getApiKey().then((key) => {
+      if (key) {
+        setApiKeyInput(key);
+        setHasSavedKey(true);
+      }
+    });
+  }, []);
 
   const handleToggleDark = () => {
     triggerHaptic.selection();
@@ -27,6 +41,20 @@ export const SettingsScreen: React.FC = () => {
   const handleSetTarget = (target: number) => {
     triggerHaptic.selection();
     setDailyTarget(target);
+  };
+
+  const handleSaveApiKey = async () => {
+    triggerHaptic.selection();
+    if (!apiKeyInput.trim()) {
+      await GeminiService.saveApiKey('');
+      setHasSavedKey(false);
+      Alert.alert('알림', 'Gemini API Key가 삭제되었습니다.');
+      return;
+    }
+    await GeminiService.saveApiKey(apiKeyInput.trim());
+    setHasSavedKey(true);
+    triggerHaptic.success();
+    Alert.alert('등록 완료', '🎉 Gemini API Key가 안전하게 저장되었습니다!\n이제 퀴즈 화면에서 1:1 AI 튜터 질문을 이용하실 수 있습니다.');
   };
 
   const handleResetData = () => {
@@ -52,7 +80,52 @@ export const SettingsScreen: React.FC = () => {
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header title="설정" />
 
-      <View style={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Gemini AI 튜터 설정 카드 */}
+        <Card style={styles.card}>
+          <View style={styles.targetHeader}>
+            <Sparkles size={20} color={theme.accent} />
+            <Text style={[styles.sectionTitle, { color: theme.text, marginLeft: 8 }]}>
+              Gemini AI 튜터 설정
+            </Text>
+          </View>
+          <Text style={[styles.targetSub, { color: theme.subText }]}>
+            구글 Gemini API Key를 등록하시면 실기 문제 1:1 맞춤 과외를 스마트폰에서 바로 받으실 수 있습니다.
+          </Text>
+
+          <View style={styles.apiKeyRow}>
+            <View style={[styles.keyInputBox, { backgroundColor: theme.surfaceSecondary, borderColor: theme.border }]}>
+              <Key size={16} color={theme.mutedText} style={{ marginRight: 8 }} />
+              <TextInput
+                style={[styles.keyInput, { color: theme.text }]}
+                placeholder="AIzaSy... (API Key 입력)"
+                placeholderTextColor={theme.mutedText}
+                value={apiKeyInput}
+                onChangeText={setApiKeyInput}
+                secureTextEntry
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+            </View>
+            <Button
+              title={hasSavedKey ? '저장됨' : '등록'}
+              variant="primary"
+              onPress={handleSaveApiKey}
+              style={styles.keySaveBtn}
+              textStyle={{ fontSize: 13 }}
+            />
+          </View>
+
+          {hasSavedKey && (
+            <View style={styles.keyStatusRow}>
+              <Check size={14} color={theme.correct} />
+              <Text style={[styles.keyStatusText, { color: theme.correct }]}>
+                API Key가 정상 등록되어 1:1 튜터가 활성화되었습니다.
+              </Text>
+            </View>
+          )}
+        </Card>
+
         {/* 화면 및 사용자 설정 */}
         <Card style={styles.card}>
           <Text style={[styles.sectionTitle, { color: theme.text }]}>앱 환경 설정</Text>
@@ -159,7 +232,7 @@ export const SettingsScreen: React.FC = () => {
               <ShieldCheck size={18} color={theme.subText} />
               <Text style={[styles.infoLabel, { color: theme.subText }]}>앱 버전</Text>
             </View>
-            <Text style={[styles.infoValue, { color: theme.text }]}>1.0.0 (온라인 자동 동기화 에디션)</Text>
+            <Text style={[styles.infoValue, { color: theme.text }]}>1.2.0 (Gemini AI 튜터 탑재)</Text>
           </View>
         </Card>
 
@@ -168,7 +241,7 @@ export const SettingsScreen: React.FC = () => {
           <Trash2 size={16} color={theme.wrong} />
           <Text style={[styles.dangerText, { color: theme.wrong }]}>학습 기록 전체 초기화</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -179,6 +252,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
+    paddingBottom: 40,
   },
   card: {
     padding: 16,
@@ -188,6 +262,40 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     marginBottom: 10,
+  },
+  apiKeyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  keyInputBox: {
+    flex: 1,
+    height: 44,
+    borderWidth: 1.5,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    marginRight: 8,
+  },
+  keyInput: {
+    flex: 1,
+    fontSize: 13,
+  },
+  keySaveBtn: {
+    height: 44,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+  },
+  keyStatusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  keyStatusText: {
+    fontSize: 12,
+    fontWeight: '600',
+    marginLeft: 4,
   },
   settingRow: {
     flexDirection: 'row',
@@ -211,7 +319,7 @@ const styles = StyleSheet.create({
   targetSub: {
     fontSize: 13,
     marginTop: 2,
-    marginBottom: 14,
+    marginBottom: 12,
   },
   targetButtons: {
     flexDirection: 'row',

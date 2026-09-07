@@ -16,6 +16,7 @@ import {
   XCircle,
   ArrowRight,
   RotateCcw,
+  Sparkles,
 } from "lucide-react-native";
 import { useQuizStore } from "../store/quizStore";
 import { useSettingsStore } from "../store/settingsStore";
@@ -23,6 +24,7 @@ import { BookmarkRepository } from "../repositories/bookmarkRepository";
 import { CodeViewer } from "../components/code/CodeViewer";
 import { Badge } from "../components/common/Badge";
 import { Button } from "../components/common/Button";
+import { AITutorModal } from "../components/quiz/AITutorModal";
 import { ProgressBar } from "../components/common/ProgressBar";
 import { triggerHaptic } from "../utils/haptics";
 import { formatAnswerDisplay } from "../utils/quiz";
@@ -51,6 +53,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
 
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
+  const [isTutorOpen, setIsTutorOpen] = useState(false);
 
   const currentQuestion = questions[currentIndex];
 
@@ -118,16 +121,28 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
             <Text style={[styles.headerTitle, { color: theme.text }]}>
               {sessionTitle} ({currentIndex + 1}/{questions.length})
             </Text>
-            <TouchableOpacity
-              onPress={handleToggleBookmark}
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-            >
-              <BookmarkIcon
-                size={22}
-                color={isBookmarked ? theme.primary : theme.mutedText}
-                fill={isBookmarked ? theme.primary : "transparent"}
-              />
-            </TouchableOpacity>
+            <View style={styles.headerRightActions}>
+              <TouchableOpacity
+                onPress={() => {
+                  triggerHaptic.selection();
+                  setIsTutorOpen(true);
+                }}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                style={{ marginRight: 12 }}
+              >
+                <Sparkles size={22} color={theme.accent} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleToggleBookmark}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <BookmarkIcon
+                  size={22}
+                  color={isBookmarked ? theme.primary : theme.mutedText}
+                  fill={isBookmarked ? theme.primary : "transparent"}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
           <ProgressBar progress={progress} height={4} />
         </View>
@@ -351,6 +366,24 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                     ))}
                   </View>
                 )}
+
+              {/* Gemini AI 튜터 질문 버튼 */}
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                  triggerHaptic.selection();
+                  setIsTutorOpen(true);
+                }}
+                style={[
+                  styles.aiTutorButton,
+                  { backgroundColor: theme.accentLight, borderColor: theme.accent },
+                ]}
+              >
+                <Sparkles size={18} color={theme.accent} />
+                <Text style={[styles.aiTutorButtonText, { color: theme.accent }]}>
+                  ✨ Gemini AI 튜터에게 이 문제 과외받기
+                </Text>
+              </TouchableOpacity>
             </View>
           )}
         </ScrollView>
@@ -379,6 +412,16 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
             />
           )}
         </View>
+
+        {/* Gemini AI 튜터 모달 */}
+        {currentQuestion && (
+          <AITutorModal
+            visible={isTutorOpen}
+            question={currentQuestion}
+            userAnswer={selectedAnswer}
+            onClose={() => setIsTutorOpen(false)}
+          />
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -581,6 +624,25 @@ const styles = StyleSheet.create({
   keywordText: {
     fontSize: 12,
     fontWeight: "600",
+  },
+  headerRightActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  aiTutorButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    marginTop: 14,
+  },
+  aiTutorButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginLeft: 8,
   },
   bottomBar: {
     paddingHorizontal: 16,
