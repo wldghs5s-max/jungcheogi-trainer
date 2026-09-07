@@ -1,4 +1,4 @@
-﻿import { Question } from '../../types/question';
+import { Question } from '../../types/question';
 
 export const databaseQuestions: Question[] = [
   {
@@ -9,7 +9,9 @@ export const databaseQuestions: Question[] = [
     category: 'SQL',
     subCategory: '집계',
     type: 'SQL',
-    question: '다음 [학생] 테이블에서 학과별 학생 수가 3명 이상인 학과명과 학생 수를 조회하는 SQL 문이다. 빈칸 (1)과 (2)에 들어갈 키워드를 순서대로 쓰시오.\n\nSELECT 학과, COUNT(*) \nFROM 학생 \n(  1  ) BY 학과 \n(  2  ) COUNT(*) >= 3;',
+    question: '다음 [학생] 테이블에서 학과별 학생 수가 3명 이상인 학과명과 학생 수를 조회하는 SQL 문이다. 빈칸 (1)과 (2)에 들어갈 키워드를 순서대로 쓰시오.',
+    code: 'SELECT 학과, COUNT(*)\nFROM 학생\n(  1  ) BY 학과\n(  2  ) COUNT(*) >= 3;',
+    language: 'SQL',
     answer: ['GROUP, HAVING', 'GROUP BY, HAVING', 'GROUP,HAVING', 'GROUP BY,HAVING'],
     explanation: '특정 컬럼을 기준으로 그룹화할 때는 GROUP BY 절을 사용하며, 그룹에 대한 조건을 지정할 때는 WHERE 절이 아닌 HAVING 절을 사용합니다.',
     difficulty: 'EASY',
@@ -83,8 +85,10 @@ export const databaseQuestions: Question[] = [
     subject: '데이터베이스구축',
     category: 'SQL',
     subCategory: 'NULL',
-    type: 'CODE_TRACE',
-    question: '다음 [사원] 테이블에서 SELECT COUNT(보너스) FROM 사원; 쿼리를 실행했을 때의 결과 숫자를 쓰시오.\n\n[사원]\n- 이름: 김철수, 보너스: 500\n- 이름: 이영희, 보너스: NULL\n- 이름: 박민수, 보너스: 300\n- 이름: 최지우, 보너스: NULL',
+    type: 'SQL',
+    question: '다음 [사원] 테이블이 주어졌을 때, 아래 SQL 쿼리를 실행한 결과 숫자를 쓰시오.\n\n[사원 테이블]\n- (이름: 김철수, 보너스: 500)\n- (이름: 이영희, 보너스: NULL)\n- (이름: 박민수, 보너스: 300)\n- (이름: 최지우, 보너스: NULL)',
+    code: 'SELECT COUNT(보너스) FROM 사원;',
+    language: 'SQL',
     answer: '2',
     explanation: 'COUNT(*)는 NULL을 포함한 전체 튜플 수를 반환하지만, COUNT(컬럼명)은 지정된 컬럼의 값이 NULL인 튜플을 제외하고 카운트합니다. 보너스 값이 NULL이 아닌 행은 김철수(500), 박민수(300) 2건입니다.',
     difficulty: 'MEDIUM',
