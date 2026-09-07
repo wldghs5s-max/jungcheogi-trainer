@@ -79,8 +79,8 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: Platform.OS === "ios" ? 84 : 76,
-    paddingBottom: Platform.OS === "ios" ? 24 : 18,
+    height: Platform.OS === "ios" ? 84 : 102,
+    paddingBottom: Platform.OS === "ios" ? 24 : 44,
     paddingTop: 8,
     flexDirection: "row",
     alignItems: "center",
@@ -92,10 +92,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 4,
+    paddingVertical: 2,
   },
   tabLabel: {
     fontSize: 11,
-    marginTop: 4,
+    marginTop: 3,
   },
 });

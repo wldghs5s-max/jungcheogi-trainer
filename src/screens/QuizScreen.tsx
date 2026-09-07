@@ -376,11 +376,16 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                 }}
                 style={[
                   styles.aiTutorButton,
-                  { backgroundColor: theme.accentLight, borderColor: theme.accent },
+                  {
+                    backgroundColor: theme.accentLight,
+                    borderColor: theme.accent,
+                  },
                 ]}
               >
                 <Sparkles size={18} color={theme.accent} />
-                <Text style={[styles.aiTutorButtonText, { color: theme.accent }]}>
+                <Text
+                  style={[styles.aiTutorButtonText, { color: theme.accent }]}
+                >
                   ✨ Gemini AI 튜터에게 이 문제 과외받기
                 </Text>
               </TouchableOpacity>
@@ -626,13 +631,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   headerRightActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   aiTutorButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 12,
@@ -641,13 +646,13 @@ const styles = StyleSheet.create({
   },
   aiTutorButtonText: {
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
     marginLeft: 8,
   },
   bottomBar: {
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: Platform.OS === "android" ? 40 : 28,
+    paddingBottom: Platform.OS === "android" ? 56 : 28,
     borderTopWidth: 1,
   },
   summaryContainer: {

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity, Alert, TextInput, ScrollView } from 'react-native';
 import { Moon, Vibrate, Target, Trash2, Smartphone, ShieldCheck, Cloud, Sparkles, Key, Check } from 'lucide-react-native';
 import { useSettingsStore } from '../store/settingsStore';
@@ -18,6 +18,7 @@ export const SettingsScreen: React.FC = () => {
 
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [hasSavedKey, setHasSavedKey] = useState(false);
+  const [testingKey, setTestingKey] = useState(false);
 
   useEffect(() => {
     GeminiService.getApiKey().then((key) => {
@@ -45,16 +46,43 @@ export const SettingsScreen: React.FC = () => {
 
   const handleSaveApiKey = async () => {
     triggerHaptic.selection();
-    if (!apiKeyInput.trim()) {
+    const cleanKey = apiKeyInput.trim();
+    if (!cleanKey) {
       await GeminiService.saveApiKey('');
       setHasSavedKey(false);
       Alert.alert('알림', 'Gemini API Key가 삭제되었습니다.');
       return;
     }
-    await GeminiService.saveApiKey(apiKeyInput.trim());
-    setHasSavedKey(true);
-    triggerHaptic.success();
-    Alert.alert('등록 완료', '🎉 Gemini API Key가 안전하게 저장되었습니다!\n이제 퀴즈 화면에서 1:1 AI 튜터 질문을 이용하실 수 있습니다.');
+
+    setTestingKey(true);
+    const testResult = await GeminiService.testConnection(cleanKey);
+    setTestingKey(false);
+
+    if (testResult.success) {
+      await GeminiService.saveApiKey(cleanKey);
+      setHasSavedKey(true);
+      triggerHaptic.success();
+      Alert.alert(
+        '연결 성공 & 등록 완료! 🎉',
+        `Gemini API와 정상적으로 연동되었습니다! (${testResult.model})\n\n이제 문제 풀이 중 [Gemini 1:1 AI 튜터] 버튼을 눌러 실시간 맞춤 과외를 받으실 수 있습니다.`
+      );
+    } else {
+      Alert.alert(
+        'API Key 검증 실패 ⚠️',
+        `구글 서버에서 키를 인증하지 못했습니다.\n\n오류 내용:\n${testResult.message}\n\n그래도 저장하시겠습니까?`,
+        [
+          { text: '다시 확인', style: 'cancel' },
+          {
+            text: '강제 저장',
+            onPress: async () => {
+              await GeminiService.saveApiKey(cleanKey);
+              setHasSavedKey(true);
+              Alert.alert('저장 완료', 'API Key가 저장되었습니다.');
+            },
+          },
+        ]
+      );
+    }
   };
 
   const handleResetData = () => {
@@ -98,7 +126,7 @@ export const SettingsScreen: React.FC = () => {
               <Key size={16} color={theme.mutedText} style={{ marginRight: 8 }} />
               <TextInput
                 style={[styles.keyInput, { color: theme.text }]}
-                placeholder="AIzaSy... (API Key 입력)"
+                placeholder="AIza... 또는 AQ... (API Key)"
                 placeholderTextColor={theme.mutedText}
                 value={apiKeyInput}
                 onChangeText={setApiKeyInput}
@@ -108,8 +136,9 @@ export const SettingsScreen: React.FC = () => {
               />
             </View>
             <Button
-              title={hasSavedKey ? '저장됨' : '등록'}
+              title={testingKey ? '확인 중...' : hasSavedKey ? '검증/저장' : '등록'}
               variant="primary"
+              disabled={testingKey}
               onPress={handleSaveApiKey}
               style={styles.keySaveBtn}
               textStyle={{ fontSize: 13 }}

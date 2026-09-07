@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   footer: {
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: Platform.OS === "android" ? 40 : 24,
+    paddingBottom: Platform.OS === "android" ? 54 : 24,
     borderTopWidth: 1,
   },
   footerRow: {

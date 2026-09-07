@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   SafeAreaView,
   View,
   Platform,
   StatusBar as RNStatusBar,
+  BackHandler,
+  ToastAndroid,
+  Alert,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useSettingsStore } from "./src/store/settingsStore";
@@ -32,12 +35,77 @@ export default function App() {
 
   const [mode, setMode] = useState<AppMode>("TABS");
   const [currentTab, setCurrentTab] = useState<TabType>("home");
+  const lastBackPressRef = useRef<number>(0);
 
   useEffect(() => {
     loadSettings();
     loadUserSettings();
     QuestionRepository.loadCachedServerQuestions();
   }, [loadSettings, loadUserSettings]);
+
+  // 안드로이드 하드웨어 뒤로가기 버튼 처리
+  useEffect(() => {
+    const handleBackPress = () => {
+      // 1. 퀴즈 풀이 중 뒤로가기 -> 확인 후 홈으로 이동
+      if (mode === "QUIZ") {
+        Alert.alert(
+          "퀴즈 나가기",
+          "진행 중인 퀴즈를 중단하고 홈으로 돌아가시겠습니까?",
+          [
+            { text: "계속 풀기", style: "cancel" },
+            {
+              text: "홈으로 나가기",
+              style: "destructive",
+              onPress: () => handleExitQuiz(),
+            },
+          ]
+        );
+        return true;
+      }
+
+      // 2. 결과 화면에서 뒤로가기 -> 홈으로 이동
+      if (mode === "RESULT") {
+        handleGoHomeFromResult();
+        return true;
+      }
+
+      // 3. 탭 화면에서 뒤로가기
+      if (mode === "TABS") {
+        // 홈이 아닌 다른 탭(오답노트, 통계, 설정)인 경우 홈 탭으로 복귀
+        if (currentTab !== "home") {
+          setCurrentTab("home");
+          return true;
+        }
+
+        // 이미 홈 탭인 경우: 2초 내 연속 2회 누르면 앱 종료
+        const now = Date.now();
+        if (now - lastBackPressRef.current < 2000) {
+          BackHandler.exitApp();
+          return true;
+        }
+
+        lastBackPressRef.current = now;
+        if (Platform.OS === "android") {
+          ToastAndroid.show(
+            "뒤로가기 버튼을 한 번 더 누르면 종료됩니다.",
+            ToastAndroid.SHORT
+          );
+        }
+        return true;
+      }
+
+      return false;
+    };
+
+    const backHandlerSubscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBackPress
+    );
+
+    return () => {
+      backHandlerSubscription.remove();
+    };
+  }, [mode, currentTab]);
 
   const theme = isDarkMode ? COLORS.dark : COLORS.light;
 
