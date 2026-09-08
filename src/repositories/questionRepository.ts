@@ -1,6 +1,7 @@
 ﻿import { ALL_QUESTIONS } from '../data/questions';
 import { Question, Subject } from '../types/question';
 import { LocalStorage, STORAGE_KEYS } from '../storage/localStorage';
+import { shuffleArray } from '../utils/quiz';
 
 export class QuestionRepository {
   private static cachedServerQuestions: Question[] = [];
@@ -15,11 +16,38 @@ export class QuestionRepository {
     }
   }
 
+  static async appendCachedQuestions(questions: Question[]): Promise<number> {
+    await this.loadCachedServerQuestions();
+    const existingIds = new Set(this.getAll().map((q) => q.id));
+    const existingStems = new Set(
+      this.getAll().map((q) => q.question.replace(/\s+/g, "").toUpperCase()),
+    );
+    const toAdd = questions.filter((q) => {
+      const stem = q.question.replace(/\s+/g, "").toUpperCase();
+      return !existingIds.has(q.id) && !existingStems.has(stem);
+    });
+    if (toAdd.length === 0) return 0;
+
+    this.cachedServerQuestions = [...this.cachedServerQuestions, ...toAdd];
+    await LocalStorage.setItem(
+      STORAGE_KEYS.CACHED_SERVER_QUESTIONS,
+      this.cachedServerQuestions,
+    );
+    return toAdd.length;
+  }
+
   /**
    * 기본 정적 문제와 서버에서 다운로드된 신규 문제를 합친 전체 목록을 반환합니다.
    */
   static getAll(): Question[] {
-    return [...ALL_QUESTIONS, ...this.cachedServerQuestions];
+    const seen = new Set<string>();
+    const merged: Question[] = [];
+    for (const question of [...ALL_QUESTIONS, ...this.cachedServerQuestions]) {
+      if (seen.has(question.id)) continue;
+      seen.add(question.id);
+      merged.push(question);
+    }
+    return merged;
   }
 
   /**
@@ -47,8 +75,14 @@ export class QuestionRepository {
    * 여러 ID에 해당하는 문제를 순서대로 조회합니다. (오답노트, 북마크 등)
    */
   static getByIds(ids: string[]): Question[] {
-    const idSet = new Set(ids);
-    return this.getAll().filter((q) => idSet.has(q.id));
+    const map = new Map(this.getAll().map((q) => [q.id, q]));
+    return ids
+      .map((id) => map.get(id))
+      .filter((q): q is Question => q !== undefined);
+  }
+
+  static shuffle<T>(items: T[]): T[] {
+    return shuffleArray(items);
   }
 
   /**
@@ -64,7 +98,7 @@ export class QuestionRepository {
 
     // 1. 최근 오답에서 우선 선별 (최대 40%)
     const wrongQuestions = all.filter((q) => wrongQuestionIds.includes(q.id));
-    const shuffledWrong = [...wrongQuestions].sort(() => Math.random() - 0.5);
+    const shuffledWrong = this.shuffle(wrongQuestions);
     const wrongPickCount = Math.min(Math.floor(count * 0.4), shuffledWrong.length);
     for (let i = 0; i < wrongPickCount; i++) {
       selectedMap.set(shuffledWrong[i].id, shuffledWrong[i]);
@@ -75,7 +109,7 @@ export class QuestionRepository {
       const weakQuestions = all.filter(
         (q) => weakCategories.includes(q.category) && !selectedMap.has(q.id)
       );
-      const shuffledWeak = [...weakQuestions].sort(() => Math.random() - 0.5);
+      const shuffledWeak = this.shuffle(weakQuestions);
       const weakPickCount = Math.min(Math.floor(count * 0.3), shuffledWeak.length);
       for (let i = 0; i < weakPickCount; i++) {
         selectedMap.set(shuffledWeak[i].id, shuffledWeak[i]);
@@ -85,7 +119,7 @@ export class QuestionRepository {
     // 3. 나머지 개수만큼 전체 문제에서 랜덤 선별
     const remainingCount = count - selectedMap.size;
     const remainingQuestions = all.filter((q) => !selectedMap.has(q.id));
-    const shuffledRemaining = [...remainingQuestions].sort(() => Math.random() - 0.5);
+    const shuffledRemaining = this.shuffle(remainingQuestions);
     for (let i = 0; i < remainingCount && i < shuffledRemaining.length; i++) {
       selectedMap.set(shuffledRemaining[i].id, shuffledRemaining[i]);
     }

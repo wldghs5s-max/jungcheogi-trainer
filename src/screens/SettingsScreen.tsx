@@ -4,6 +4,8 @@ import { Moon, Vibrate, Target, Trash2, Smartphone, ShieldCheck, Cloud, Sparkles
 import { useSettingsStore } from '../store/settingsStore';
 import { useUserStore } from '../store/userStore';
 import { AttemptRepository } from '../repositories/attemptRepository';
+import { BookmarkRepository } from '../repositories/bookmarkRepository';
+import { SyncQueueService } from '../storage/syncQueue';
 import { GeminiService } from '../api/geminiService';
 import { triggerHaptic } from '../utils/haptics';
 import { COLORS } from '../utils/theme';
@@ -89,7 +91,7 @@ export const SettingsScreen: React.FC = () => {
     triggerHaptic.impact();
     Alert.alert(
       '학습 기록 초기화',
-      '모든 문제 풀이 이력과 통계가 삭제됩니다. 계속하시겠습니까?',
+      '모든 문제 풀이 이력, 북마크, 대기 중인 동기화 큐가 삭제됩니다. 계속하시겠습니까?',
       [
         { text: '취소', style: 'cancel' },
         {
@@ -97,6 +99,8 @@ export const SettingsScreen: React.FC = () => {
           style: 'destructive',
           onPress: async () => {
             await AttemptRepository.clearAll();
+            await BookmarkRepository.clearAll();
+            await SyncQueueService.clear();
             Alert.alert('완료', '학습 이력이 초기화되었습니다.');
           },
         },
@@ -118,7 +122,7 @@ export const SettingsScreen: React.FC = () => {
             </Text>
           </View>
           <Text style={[styles.targetSub, { color: theme.subText }]}>
-            구글 Gemini API Key를 등록하시면 실기 문제 1:1 맞춤 과외를 스마트폰에서 바로 받으실 수 있습니다.
+            구글 AI Studio에서 발급한 키를 등록하세요. AIza... 레거시 키와 AQ. 로 시작하는 최신 인증키 모두 지원합니다.
           </Text>
 
           <View style={styles.apiKeyRow}>
@@ -235,7 +239,7 @@ export const SettingsScreen: React.FC = () => {
               <Cloud size={18} color={theme.primary} />
               <Text style={[styles.infoLabel, { color: theme.subText }]}>서버 상태</Text>
             </View>
-            <Text style={[styles.infoValue, { color: theme.correct }]}>스마트 동기화 연결됨</Text>
+            <Text style={[styles.infoValue, { color: theme.subText }]}>로컬 오프라인 모드</Text>
           </View>
           <View style={styles.infoRow}>
             <View style={styles.infoLeft}>

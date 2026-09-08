@@ -16,9 +16,6 @@ import {
   Sparkles,
   X,
   Send,
-  Lightbulb,
-  AlertCircle,
-  BookMarked,
 } from "lucide-react-native";
 import { useSettingsStore } from "../../store/settingsStore";
 import { GeminiService } from "../../api/geminiService";
@@ -46,6 +43,14 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<string | null>(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    if (visible) {
+      setResponse(null);
+      setPromptInput("");
+      setLoading(false);
+    }
+  }, [visible, question.id]);
 
   useEffect(() => {
     const showSub = Keyboard.addListener(

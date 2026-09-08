@@ -2,7 +2,7 @@
 import { AttemptRepository } from '../repositories/attemptRepository';
 import { QuizAttempt } from '../types/attempt';
 import { Question } from '../types/question';
-import { checkAnswer } from '../utils/quiz';
+import { checkAnswer, shuffleArray } from '../utils/quiz';
 
 interface QuizState {
   questions: Question[];
@@ -32,7 +32,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
 
   startQuiz: (questions, title = '문제 풀이') => {
     set({
-      questions,
+      questions: shuffleArray(questions),
       currentIndex: 0,
       selectedAnswer: '',
       isSubmitted: false,

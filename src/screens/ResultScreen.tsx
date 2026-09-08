@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
   Platform,
 } from "react-native";
 import {
@@ -36,7 +35,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
   const isDarkMode = useSettingsStore((state) => state.isDarkMode);
   const theme = isDarkMode ? COLORS.dark : COLORS.light;
 
-  const { sessionAttempts, questions, sessionTitle } = useQuizStore();
+  const { sessionAttempts, sessionTitle } = useQuizStore();
 
   const total = sessionAttempts.length;
   const correctCount = sessionAttempts.filter((a) => a.isCorrect).length;
@@ -134,15 +133,13 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
         ]}
       >
         <View style={styles.footerRow}>
-          {wrongCount > 0 && (
-            <Button
-              title="오답노트 가기"
-              variant="outline"
-              onPress={onGoWrongNote}
-              style={{ flex: 1, marginRight: 8 }}
-              icon={<BookX size={18} color={theme.primary} />}
-            />
-          )}
+          <Button
+            title="다시 풀기"
+            variant="outline"
+            onPress={onRetry}
+            style={{ flex: 1, marginRight: 8 }}
+            icon={<RotateCcw size={18} color={theme.primary} />}
+          />
           <Button
             title="홈으로 가기"
             variant="primary"
@@ -151,6 +148,17 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
             icon={<Home size={18} color="#FFFFFF" />}
           />
         </View>
+        {wrongCount > 0 && (
+          <View style={[styles.footerRow, { marginTop: 8 }]}>
+            <Button
+              title="오답노트 가기"
+              variant="outline"
+              onPress={onGoWrongNote}
+              style={{ flex: 1 }}
+              icon={<BookX size={18} color={theme.primary} />}
+            />
+          </View>
+        )}
       </View>
     </View>
   );

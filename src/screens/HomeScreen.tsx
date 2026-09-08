@@ -16,13 +16,15 @@ import {
   BookOpen,
   Layers,
   CloudDownload,
+  Sparkles,
 } from "lucide-react-native";
 import { useSettingsStore } from "../store/settingsStore";
 import { useUserStore } from "../store/userStore";
-import { useQuizStore } from "../store/quizStore";
 import { AttemptRepository } from "../repositories/attemptRepository";
 import { QuestionRepository } from "../repositories/questionRepository";
 import { QuestionSyncService } from "../api/questionSyncService";
+import { generateMemorizationQuestions } from "../api/geminiQuestionGenerator";
+import { GeminiService } from "../api/geminiService";
 import { calculateUserStats } from "../utils/statistics";
 import { triggerHaptic } from "../utils/haptics";
 import { UserStats } from "../types/statistics";
@@ -53,6 +55,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [refreshing, setRefreshing] = useState(false);
   const [totalQuestionsCount, setTotalQuestionsCount] = useState(0);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isGeminiGenerating, setIsGeminiGenerating] = useState(false);
 
   const loadData = useCallback(async () => {
     await loadUserSettings();
@@ -80,21 +83,59 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     if (result.addedCount > 0) {
       triggerHaptic.success();
       Alert.alert(
-        "동기화 완료",
-        `🎉 새로운 기출 ${result.addedCount}문제를 서버에서 성공적으로 내려받았습니다! (총 ${QuestionRepository.getAll().length}문제 보유)`,
+        "C/Java 문제 생성 완료",
+        `코드 추적 연습 ${result.addedCount}문제를 추가했습니다.\n총 ${QuestionRepository.getAll().length}문제 보유`,
       );
     } else {
       triggerHaptic.selection();
       Alert.alert(
-        "동기화 완료",
-        `이미 최신 문제 상태입니다. (총 ${QuestionRepository.getAll().length}문제 보유)`,
+        "생성 실패",
+        `새 문제를 만들지 못했습니다. (총 ${QuestionRepository.getAll().length}문제 보유)`,
       );
+    }
+  };
+
+  const handleGeminiMemoGenerate = async () => {
+    if (isSyncing || isGeminiGenerating) return;
+    triggerHaptic.selection();
+
+    const apiKey = await GeminiService.getApiKey();
+    if (!apiKey) {
+      Alert.alert(
+        "API Key 필요",
+        "설정 탭에서 Gemini API Key를 등록하면 온라인으로 암기 문제를 생성할 수 있습니다.",
+      );
+      return;
+    }
+
+    setIsGeminiGenerating(true);
+    try {
+      const result = await generateMemorizationQuestions(QuestionRepository.getAll());
+      if (!result.ok) {
+        Alert.alert("AI 생성 실패", result.message);
+        return;
+      }
+
+      const added = await QuestionRepository.appendCachedQuestions(result.questions);
+      await loadData();
+      triggerHaptic.success();
+      const titles = result.questions
+        .map((q) => `· ${q.subject}: ${q.category}`)
+        .join("\n");
+      Alert.alert(
+        "AI 암기 문제 추가",
+        `${added}문제를 저장했습니다.\n${titles}\n\n총 ${QuestionRepository.getAll().length}문제 보유`,
+      );
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "네트워크 오류";
+      Alert.alert("AI 생성 실패", message);
+    } finally {
+      setIsGeminiGenerating(false);
     }
   };
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await QuestionSyncService.syncQuestions();
     await loadData();
     setRefreshing(false);
   };
@@ -113,7 +154,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   // 과목별 학습 시작
   const handleStartSubjectQuiz = (subject: Subject) => {
-    const questions = QuestionRepository.getBySubject(subject);
+    const questions = QuestionRepository.shuffle(
+      QuestionRepository.getBySubject(subject),
+    );
+    if (questions.length === 0) {
+      Alert.alert(
+        "문제 없음",
+        "이 과목 문제가 아직 없습니다.",
+      );
+      return;
+    }
     onStartQuiz(questions, subject);
   };
 
@@ -234,7 +284,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </Card>
         )}
 
-        {/* 클라우드 신규 문제 동기화 배너 */}
         <Card style={styles.syncCard}>
           <View style={styles.syncRow}>
             <View
@@ -247,21 +296,51 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </View>
             <View style={styles.syncInfo}>
               <Text style={[styles.syncTitle, { color: theme.text }]}>
-                클라우드 최신 문제 동기화
+                C/Java 코드 추적 생성
               </Text>
               <Text style={[styles.syncSub, { color: theme.subText }]}>
-                현재 보유:{" "}
-                <Text style={{ color: theme.primary, fontWeight: "700" }}>
-                  {totalQuestionsCount}문제
-                </Text>{" "}
-                (오프라인 보관 중)
+                오프라인 로직으로 변형 6문제 추가
               </Text>
             </View>
             <Button
-              title={isSyncing ? "동기화 중..." : "신규 확인"}
+              title={isSyncing ? "생성 중..." : "문제 생성"}
               variant="outline"
               loading={isSyncing}
+              disabled={isGeminiGenerating}
               onPress={handleSyncQuestions}
+              style={styles.syncBtn}
+              textStyle={{ fontSize: 12 }}
+            />
+          </View>
+        </Card>
+
+        <Card style={styles.syncCard}>
+          <View style={styles.syncRow}>
+            <View
+              style={[
+                styles.syncIconBox,
+                { backgroundColor: theme.accentLight },
+              ]}
+            >
+              <Sparkles size={20} color={theme.accent} />
+            </View>
+            <View style={styles.syncInfo}>
+              <Text style={[styles.syncTitle, { color: theme.text }]}>
+                Gemini 암기 문제 생성
+              </Text>
+              <Text style={[styles.syncSub, { color: theme.subText }]}>
+                과목별 1문제 · 온라인 · 보유{" "}
+                <Text style={{ color: theme.primary, fontWeight: "700" }}>
+                  {totalQuestionsCount}문제
+                </Text>
+              </Text>
+            </View>
+            <Button
+              title={isGeminiGenerating ? "생성 중..." : "AI 생성"}
+              variant="outline"
+              loading={isGeminiGenerating}
+              disabled={isSyncing}
+              onPress={handleGeminiMemoGenerate}
               style={styles.syncBtn}
               textStyle={{ fontSize: 12 }}
             />

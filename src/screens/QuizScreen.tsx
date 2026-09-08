@@ -9,13 +9,13 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import {
   Bookmark as BookmarkIcon,
   CheckCircle2,
   XCircle,
   ArrowRight,
-  RotateCcw,
   Sparkles,
 } from "lucide-react-native";
 import { useQuizStore } from "../store/quizStore";
@@ -52,7 +52,6 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
   } = useQuizStore();
 
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [isFinished, setIsFinished] = useState(false);
   const [isTutorOpen, setIsTutorOpen] = useState(false);
 
   const currentQuestion = questions[currentIndex];
@@ -63,15 +62,29 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
     }
   }, [currentQuestion]);
 
-  if (!currentQuestion || isFinished) {
-    // 퀴즈 결과 요약 뷰
-    return <QuizResultSummary onFinish={onFinish} />;
+  if (!currentQuestion) {
+    return null;
   }
 
   const handleToggleBookmark = async () => {
     triggerHaptic.selection();
     const state = await BookmarkRepository.toggle(currentQuestion.id);
     setIsBookmarked(state);
+  };
+
+  const handleExitPress = () => {
+    Alert.alert(
+      "퀴즈 나가기",
+      "진행 중인 퀴즈를 중단하고 홈으로 돌아가시겠습니까?",
+      [
+        { text: "계속 풀기", style: "cancel" },
+        {
+          text: "홈으로 나가기",
+          style: "destructive",
+          onPress: () => (onExit || onFinish)(),
+        },
+      ],
+    );
   };
 
   const handleSubmit = async () => {
@@ -88,7 +101,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
     triggerHaptic.selection();
     const hasNext = nextQuestion();
     if (!hasNext) {
-      setIsFinished(true);
+      onFinish();
     }
   };
 
@@ -100,7 +113,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
     >
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         {/* 상단 네비 바 & 프로그레스 */}
         <View
@@ -111,7 +124,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
         >
           <View style={styles.headerRow}>
             <TouchableOpacity
-              onPress={onExit || onFinish}
+              onPress={handleExitPress}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <Text style={[styles.exitText, { color: theme.subText }]}>
@@ -432,61 +445,6 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
   );
 };
 
-interface QuizResultSummaryProps {
-  onFinish: () => void;
-}
-
-const QuizResultSummary: React.FC<QuizResultSummaryProps> = ({ onFinish }) => {
-  const isDarkMode = useSettingsStore((state) => state.isDarkMode);
-  const theme = isDarkMode ? COLORS.dark : COLORS.light;
-  const { sessionAttempts, sessionTitle } = useQuizStore();
-
-  const total = sessionAttempts.length;
-  const correctCount = sessionAttempts.filter((a) => a.isCorrect).length;
-  const scorePercent = total > 0 ? Math.round((correctCount / total) * 100) : 0;
-
-  return (
-    <SafeAreaView
-      style={[styles.safeArea, { backgroundColor: theme.background }]}
-    >
-      <View style={styles.summaryContainer}>
-        <View
-          style={[
-            styles.summaryCard,
-            { backgroundColor: theme.surface, borderColor: theme.border },
-          ]}
-        >
-          <Text style={[styles.summaryTitle, { color: theme.text }]}>
-            {sessionTitle} 완료!
-          </Text>
-          <Text
-            style={[
-              styles.summaryScore,
-              { color: scorePercent >= 60 ? theme.primary : theme.wrong },
-            ]}
-          >
-            {scorePercent}점
-          </Text>
-          <Text style={[styles.summarySub, { color: theme.subText }]}>
-            총 {total}문제 중 {correctCount}문제 정답
-          </Text>
-          <Text style={[styles.summaryNotice, { color: theme.mutedText }]}>
-            {scorePercent >= 60
-              ? "합격 기준(60점)을 넘겼습니다! 이 페이스를 유지하세요."
-              : "틀린 문제는 오답노트에 자동 저장되었습니다. 복습해 보세요."}
-          </Text>
-        </View>
-
-        <Button
-          title="홈으로 돌아가기"
-          onPress={onFinish}
-          style={{ width: "100%", marginTop: 24 }}
-        />
-      </View>
-    </SafeAreaView>
-  );
-};
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -654,39 +612,5 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: Platform.OS === "android" ? 56 : 28,
     borderTopWidth: 1,
-  },
-  summaryContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-  },
-  summaryCard: {
-    width: "100%",
-    padding: 32,
-    borderRadius: 24,
-    borderWidth: 1,
-    alignItems: "center",
-  },
-  summaryTitle: {
-    fontSize: 22,
-    fontWeight: "800",
-    marginBottom: 16,
-  },
-  summaryScore: {
-    fontSize: 56,
-    fontWeight: "900",
-    marginVertical: 10,
-  },
-  summarySub: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 8,
-  },
-  summaryNotice: {
-    fontSize: 13,
-    textAlign: "center",
-    marginTop: 8,
-    lineHeight: 18,
   },
 });

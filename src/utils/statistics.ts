@@ -89,7 +89,7 @@ export function calculateUserStats(attempts: QuizAttempt[]): UserStats {
 
   // 취약 단원 (최소 2문제 이상 풀었고, 정답률이 70% 미만인 단원 오름차순 정렬)
   const weakCategories = Object.values(categoryStats)
-    .filter((c) => c.total >= 1 && c.rate < 70)
+    .filter((c) => c.total >= 2 && c.rate < 70)
     .sort((a, b) => a.rate - b.rate);
 
   return {

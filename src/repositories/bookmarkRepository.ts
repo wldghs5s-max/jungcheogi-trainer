@@ -48,4 +48,8 @@ export class BookmarkRepository {
     const bookmarks = await this.getAll();
     return bookmarks.map((b) => b.questionId);
   }
+
+  static async clearAll(): Promise<void> {
+    await LocalStorage.removeItem(STORAGE_KEYS.BOOKMARKS);
+  }
 }

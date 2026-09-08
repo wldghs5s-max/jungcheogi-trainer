@@ -2,8 +2,8 @@ import { getSupabaseClient } from "./supabaseClient";
 import { LocalStorage, STORAGE_KEYS } from "../storage/localStorage";
 import { SyncQueueService } from "../storage/syncQueue";
 import { AttemptRepository } from "../repositories/attemptRepository";
-import { ALL_QUESTIONS } from "../data/questions";
 import { Question } from "../types/question";
+import { generateProgrammingPracticeBundle } from "./programmingGenerator";
 
 // 클라우드 서버에서 제공되는 최신 회차 신규 기출 및 변형 문제 패키지
 export const CLOUD_NEW_QUESTIONS: Question[] = [
@@ -213,64 +213,34 @@ export class QuestionSyncService {
   }
 
   /**
-   * 서버로부터 신규 문제를 동기화하여 로컬에 캐싱합니다.
-   * 이미 준비된 최신 기출이 다 소진된 경우에도 동적 실기 변형 문제를 지속적으로 보충합니다.
+   * C/Java 코드 추적 연습 문제를 생성해 로컬 캐시에 추가합니다.
+   * 암기 은행은 앱 번들에 포함되어 있으므로 여기서는 넣지 않습니다.
    */
   static async syncQuestions(): Promise<{
     addedCount: number;
     totalServerCount: number;
+    source: "generated";
   }> {
     try {
-      const client = await getSupabaseClient();
-      let remoteQuestions: Question[] = [];
-
-      if (client) {
-        const { data, error } = await client.from("questions").select("*");
-        if (!error && data) {
-          remoteQuestions = data as Question[];
-        }
-      } else {
-        remoteQuestions = CLOUD_NEW_QUESTIONS;
-      }
-
       const cached = await this.getCachedServerQuestions();
-      const existingIds = new Set([
-        ...ALL_QUESTIONS.map((q) => q.id),
-        ...cached.map((q) => q.id),
-      ]);
+      const startIndex =
+        cached.filter((q) => q.id.startsWith("AUTO_GEN_")).length + 1;
+      const generated = generateProgrammingPracticeBundle(startIndex);
 
-      // 1. 아직 로컬에 내려받지 않은 정규 신규 문제 선별
-      let newQuestions = remoteQuestions.filter((q) => !existingIds.has(q.id));
-
-      // 2. 정규 신규 문제를 이미 다 받았을 때는 5문제 세트로 생성하여 보충
-      if (newQuestions.length === 0) {
-        const startIdx =
-          cached.filter((q) => q.id.startsWith("AUTO_GEN_")).length + 1;
-        const generatedBundle: Question[] = [];
-        for (let i = 0; i < 5; i++) {
-          const q = generateDynamicPracticeQuestion(startIdx + i);
-          if (!existingIds.has(q.id)) {
-            generatedBundle.push(q);
-          }
-        }
-        newQuestions = generatedBundle;
-      }
-
-      if (newQuestions.length > 0) {
-        const updatedCache = [...cached, ...newQuestions];
-        await LocalStorage.setItem(
-          STORAGE_KEYS.CACHED_SERVER_QUESTIONS,
-          updatedCache,
-        );
-      }
+      const updatedCache = [...cached, ...generated];
+      await LocalStorage.setItem(
+        STORAGE_KEYS.CACHED_SERVER_QUESTIONS,
+        updatedCache,
+      );
 
       return {
-        addedCount: newQuestions.length,
-        totalServerCount: cached.length + newQuestions.length,
+        addedCount: generated.length,
+        totalServerCount: updatedCache.length,
+        source: "generated",
       };
     } catch (e) {
       console.error("Question sync error:", e);
-      return { addedCount: 0, totalServerCount: 0 };
+      return { addedCount: 0, totalServerCount: 0, source: "generated" };
     }
   }
 
@@ -284,96 +254,24 @@ export class QuestionSyncService {
     const client = await getSupabaseClient();
     let syncedCount = 0;
 
+    if (!client) {
+      return 0;
+    }
+
     for (const item of queue) {
-      if (client) {
-        const attempts = await AttemptRepository.getAllAttempts();
-        const targetAttempt = attempts.find((a) => a.id === item.attemptId);
-        if (targetAttempt) {
-          const { error } = await client
-            .from("quiz_attempts")
-            .insert([targetAttempt]);
-          if (!error) {
-            await SyncQueueService.remove(item.id);
-            syncedCount++;
-          }
+      const attempts = await AttemptRepository.getAllAttempts();
+      const targetAttempt = attempts.find((a) => a.id === item.attemptId);
+      if (targetAttempt) {
+        const { error } = await client
+          .from("quiz_attempts")
+          .insert([targetAttempt]);
+        if (!error) {
+          await SyncQueueService.remove(item.id);
+          syncedCount++;
         }
-      } else {
-        await SyncQueueService.remove(item.id);
-        syncedCount++;
       }
     }
 
     return syncedCount;
   }
-}
-
-/**
- * 실기 시험 대비 무한 코드/알고리즘 변형 문제 생성기
- */
-function generateDynamicPracticeQuestion(index: number): Question {
-  const seeds = [
-    {
-      type: "C" as const,
-      q: `다음 C언어로 작성된 프로그램의 실행 결과를 쓰시오 (누적 회차 #${index}).`,
-      code: `#include <stdio.h>
-int main() {
-    int sum = 0;
-    for (int i = 1; i <= ${index + 3}; i++) {
-        if (i % 2 == 0) sum += i;
-    }
-    printf("%d", sum);
-    return 0;
-}`,
-      calcAns: () => {
-        let s = 0;
-        for (let i = 1; i <= index + 3; i++) {
-          if (i % 2 === 0) s += i;
-        }
-        return String(s);
-      },
-      exp: `1부터 ${index + 3}까지의 짝수만 누적합을 구하는 반복문입니다.`,
-      keywords: ["C언어", "반복문", "짝수합", "조건문"],
-    },
-    {
-      type: "JAVA" as const,
-      q: `다음 Java 프로그램의 실행 결과를 쓰시오 (누적 회차 #${index}).`,
-      code: `public class Main {
-    public static void main(String[] args) {
-        int[] arr = {${index * 2}, ${index * 3 + 1}, ${index + 5}};
-        int max = arr[0];
-        for (int v : arr) {
-            if (v > max) max = v;
-        }
-        System.out.print(max);
-    }
-}`,
-      calcAns: () => {
-        const arr = [index * 2, index * 3 + 1, index + 5];
-        return String(Math.max(...arr));
-      },
-      exp: `향상된 for문(for-each)을 사용하여 배열의 최댓값을 찾는 코드입니다.`,
-      keywords: ["Java", "배열", "for-each", "최댓값"],
-    },
-  ];
-
-  const pick = seeds[index % seeds.length];
-  const ans = pick.calcAns();
-
-  return {
-    id: `AUTO_GEN_${Date.now()}_${index}`,
-    examYear: 2024,
-    examRound: 3,
-    subject: "프로그래밍언어활용",
-    category: pick.type === "C" ? "C" : "Java",
-    subCategory: "알고리즘",
-    type: "CODE_TRACE",
-    question: pick.q,
-    code: pick.code,
-    language: pick.type,
-    answer: ans,
-    explanation: `${pick.exp} 실행 결과는 ${ans}입니다.`,
-    difficulty: "MEDIUM",
-    keywords: pick.keywords,
-    source: "클라우드 스마트 기출 변형 생성",
-  };
 }
