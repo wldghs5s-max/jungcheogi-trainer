@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Switch, TouchableOpacity, Alert, TextInput, ScrollView } from 'react-native';
-import { Moon, Vibrate, Target, Trash2, Smartphone, ShieldCheck, Cloud, Sparkles, Key, Check } from 'lucide-react-native';
+import { View, Text, StyleSheet, Switch, TouchableOpacity, Alert, TextInput, ScrollView, Linking } from 'react-native';
+import { Moon, Vibrate, Target, Trash2, Smartphone, ShieldCheck, Cloud, Sparkles, Key, Check, ExternalLink } from 'lucide-react-native';
 import { useSettingsStore } from '../store/settingsStore';
 import { useUserStore } from '../store/userStore';
 import { AttemptRepository } from '../repositories/attemptRepository';
@@ -12,6 +12,8 @@ import { COLORS } from '../utils/theme';
 import { Header } from '../components/common/Header';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
+
+const GEMINI_KEY_GUIDE_URL = 'https://aistudio.google.com/apikey';
 
 export const SettingsScreen: React.FC = () => {
   const { isDarkMode, isHapticEnabled, toggleDarkMode, toggleHaptic } = useSettingsStore();
@@ -44,6 +46,15 @@ export const SettingsScreen: React.FC = () => {
   const handleSetTarget = (target: number) => {
     triggerHaptic.selection();
     setDailyTarget(target);
+  };
+
+  const handleOpenApiKeyPage = async () => {
+    triggerHaptic.selection();
+    try {
+      await Linking.openURL(GEMINI_KEY_GUIDE_URL);
+    } catch {
+      Alert.alert('링크 열기 실패', GEMINI_KEY_GUIDE_URL);
+    }
   };
 
   const handleSaveApiKey = async () => {
@@ -122,8 +133,37 @@ export const SettingsScreen: React.FC = () => {
             </Text>
           </View>
           <Text style={[styles.targetSub, { color: theme.subText }]}>
-            구글 AI Studio에서 발급한 키를 등록하세요. AIza... 레거시 키와 AQ. 로 시작하는 최신 인증키 모두 지원합니다.
+            구글 AI Studio에서 받은 키를 이 기기에만 저장합니다. AIza... 와 AQ. 키 모두 사용할 수 있습니다.
           </Text>
+
+          <View style={[styles.guideBox, { backgroundColor: theme.surfaceSecondary, borderColor: theme.border }]}>
+            <Text style={[styles.guideTitle, { color: theme.text }]}>처음이라면, 키 받는 법</Text>
+            <Text style={[styles.guideStep, { color: theme.subText }]}>
+              1. 아래 버튼을 눌러 Google AI Studio에 들어갑니다.
+            </Text>
+            <Text style={[styles.guideStep, { color: theme.subText }]}>
+              2. Google 계정으로 로그인한 뒤 Create API key를 누릅니다.
+            </Text>
+            <Text style={[styles.guideStep, { color: theme.subText }]}>
+              3. 생성된 키(AQ. 또는 AIza로 시작)를 복사합니다.
+            </Text>
+            <Text style={[styles.guideStep, { color: theme.subText }]}>
+              4. 아래에 붙여넣고 [등록]을 누르면 튜터와 암기 생성이 켜집니다.
+            </Text>
+            <Text style={[styles.guideNote, { color: theme.mutedText }]}>
+              구글 계정만 있으면 되며, 키는 다른 사람에게 공유하지 마세요.
+            </Text>
+            <TouchableOpacity
+              activeOpacity={0.75}
+              onPress={handleOpenApiKeyPage}
+              style={[styles.guideLinkBtn, { borderColor: theme.accent }]}
+            >
+              <ExternalLink size={14} color={theme.accent} />
+              <Text style={[styles.guideLinkText, { color: theme.accent }]}>
+                API 키 발급 페이지 열기
+              </Text>
+            </TouchableOpacity>
+          </View>
 
           <View style={styles.apiKeyRow}>
             <View style={[styles.keyInputBox, { backgroundColor: theme.surfaceSecondary, borderColor: theme.border }]}>
@@ -295,6 +335,41 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     marginBottom: 10,
+  },
+  guideBox: {
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 14,
+  },
+  guideTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    marginBottom: 8,
+  },
+  guideStep: {
+    fontSize: 12.5,
+    lineHeight: 19,
+  },
+  guideNote: {
+    fontSize: 11.5,
+    lineHeight: 17,
+    marginTop: 8,
+  },
+  guideLinkBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    marginTop: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderWidth: 1.5,
+    borderRadius: 8,
+  },
+  guideLinkText: {
+    fontSize: 13,
+    fontWeight: '700',
+    marginLeft: 6,
   },
   apiKeyRow: {
     flexDirection: 'row',
