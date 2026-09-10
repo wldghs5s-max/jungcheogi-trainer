@@ -20,7 +20,7 @@ import { Card } from '../components/common/Card';
 import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
 
-type FilterType = 'ALL' | 'RECENT' | 'MOST_WRONG' | 'BOOKMARK';
+type FilterType = 'ALL' | 'RECENT' | 'MOST_WRONG' | 'UNKNOWN' | 'BOOKMARK';
 
 interface WrongNoteScreenProps {
   onStartQuiz: (questions: Question[], title: string) => void;
@@ -54,7 +54,12 @@ export const WrongNoteScreen: React.FC<WrongNoteScreenProps> = ({ onStartQuiz })
         .map((s) => s.questionId);
     } else if (activeFilter === 'MOST_WRONG') {
       targetIds = [...rawSummaries]
-        .sort((a, b) => b.wrongAttempts - a.wrongAttempts)
+        .sort((a, b) => b.wrongAttempts + b.unknownAttempts - (a.wrongAttempts + a.unknownAttempts))
+        .map((s) => s.questionId);
+    } else if (activeFilter === 'UNKNOWN') {
+      targetIds = rawSummaries
+        .filter((s) => s.unknownAttempts > 0)
+        .sort((a, b) => b.unknownAttempts - a.unknownAttempts)
         .map((s) => s.questionId);
     } else {
       // 'ALL'
@@ -91,6 +96,8 @@ export const WrongNoteScreen: React.FC<WrongNoteScreenProps> = ({ onStartQuiz })
         ? '최근 오답 복습'
         : activeFilter === 'MOST_WRONG'
         ? '고난도 오답 복습'
+        : activeFilter === 'UNKNOWN'
+        ? '모름 문제 복습'
         : '오답노트 복습';
     onStartQuiz(displayQuestions, filterTitle);
   };
@@ -101,9 +108,10 @@ export const WrongNoteScreen: React.FC<WrongNoteScreenProps> = ({ onStartQuiz })
   };
 
   const filterTabs: { id: FilterType; label: string }[] = [
-    { id: 'ALL', label: '전체 오답' },
-    { id: 'RECENT', label: '최근 오답' },
-    { id: 'MOST_WRONG', label: '많이 틀린 순' },
+    { id: 'ALL', label: '전체' },
+    { id: 'RECENT', label: '최근' },
+    { id: 'MOST_WRONG', label: '많이 틀림' },
+    { id: 'UNKNOWN', label: '모름' },
     { id: 'BOOKMARK', label: '북마크' },
   ];
 
@@ -174,7 +182,9 @@ export const WrongNoteScreen: React.FC<WrongNoteScreenProps> = ({ onStartQuiz })
             <Text style={[styles.emptySub, { color: theme.subText }]}>
               {activeFilter === 'BOOKMARK'
                 ? '문제 풀이 중 북마크 아이콘을 누르면 이곳에 모아집니다.'
-                : '문제를 풀고 오답이 발생하면 자동으로 기록됩니다.'}
+                : activeFilter === 'UNKNOWN'
+                ? '모른다를 누른 문제가 여기에 모입니다. 단원 개념부터 다시 보면 좋아요.'
+                : '헷갈려서 틀린 문제와 몰라서 넘긴 문제가 따로 기록됩니다.'}
             </Text>
           </View>
         }
@@ -189,6 +199,18 @@ export const WrongNoteScreen: React.FC<WrongNoteScreenProps> = ({ onStartQuiz })
                   <Badge label={item.subject} variant="primary" />
                   <View style={{ width: 6 }} />
                   <Badge label={item.category} variant="default" />
+                  {summary?.lastMissType === 'UNKNOWN' && (
+                    <>
+                      <View style={{ width: 6 }} />
+                      <Badge label="모름" variant="accent" />
+                    </>
+                  )}
+                  {summary?.lastMissType === 'WRONG' && (
+                    <>
+                      <View style={{ width: 6 }} />
+                      <Badge label="헷갈림" variant="danger" />
+                    </>
+                  )}
                 </View>
                 <TouchableOpacity
                   onPress={() => handleToggleBookmark(item.id)}
@@ -208,8 +230,11 @@ export const WrongNoteScreen: React.FC<WrongNoteScreenProps> = ({ onStartQuiz })
 
               <View style={styles.itemBottomRow}>
                 {summary && (
-                  <Text style={[styles.statText, { color: theme.wrong }]}>
-                    오답 {summary.wrongAttempts}회 / 총 {summary.totalAttempts}회 시도
+                  <Text style={[styles.statText, { color: theme.subText }]}>
+                    <Text style={{ color: theme.wrong }}>헷갈림 {summary.wrongAttempts}회</Text>
+                    {' · '}
+                    <Text style={{ color: theme.accent }}>모름 {summary.unknownAttempts}회</Text>
+                    {` / 총 ${summary.totalAttempts}회`}
                   </Text>
                 )}
                 <Button
@@ -244,7 +269,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   filterText: {
-    fontSize: 14,
+    fontSize: 12,
   },
   actionHeader: {
     flexDirection: 'row',
@@ -278,6 +303,9 @@ const styles = StyleSheet.create({
   tagWrap: {
     flexDirection: 'row',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    flex: 1,
+    marginRight: 8,
   },
   questionText: {
     fontSize: 15,

@@ -3,6 +3,11 @@ import { MEMORIZATION_BANK } from "../src/data/questions/memorizationBank";
 import { generateProgrammingPracticeBundle } from "../src/api/programmingGenerator";
 import { checkAnswer, shuffleArray } from "../src/utils/quiz";
 import { Question } from "../src/types/question";
+import {
+  isConfusedAttempt,
+  isUnknownAttempt,
+  QuizAttempt,
+} from "../src/types/attempt";
 
 const MEMO_SUBJECTS = [
   "소프트웨어설계",
@@ -50,6 +55,32 @@ assert((bySubject["소프트웨어설계"] || 0) >= 15, "설계 과목 문제 �
 assert((bySubject["데이터베이스구축"] || 0) >= 15, "DB 과목 문제 충분");
 assert((bySubject["정보시스템구축관리"] || 0) >= 10, "구축관리 과목 문제 충분");
 assert((bySubject["신기술/보안"] || 0) >= 15, "보안 과목 문제 충분");
+
+const unknownAttempt: QuizAttempt = {
+  id: "t1",
+  questionId: "q1",
+  selectedAnswer: "(모름)",
+  correctAnswer: "정답",
+  isCorrect: false,
+  missType: "UNKNOWN",
+  answeredAt: new Date().toISOString(),
+};
+const confusedAttempt: QuizAttempt = {
+  ...unknownAttempt,
+  id: "t2",
+  selectedAnswer: "오답",
+  missType: "WRONG",
+};
+const legacyWrong: QuizAttempt = {
+  ...unknownAttempt,
+  id: "t3",
+  selectedAnswer: "오답",
+};
+delete (legacyWrong as { missType?: string }).missType;
+assert(isUnknownAttempt(unknownAttempt), "모름 시도 판별");
+assert(isConfusedAttempt(confusedAttempt), "헷갈림 시도 판별");
+assert(isConfusedAttempt(legacyWrong), "구버전 오답은 헷갈림으로 본다");
+assert(!isUnknownAttempt(confusedAttempt), "헷갈림은 모름이 아님");
 
 assert(checkAnswer("group by", "GROUP BY"), "채점: 공백/대소문자");
 assert(checkAnswer("싱글톤패턴", ["싱글톤", "싱글톤 패턴", "Singleton"]), "채점: 동의어");

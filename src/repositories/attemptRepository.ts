@@ -1,12 +1,16 @@
 ﻿import { LocalStorage, STORAGE_KEYS } from '../storage/localStorage';
-import { QuizAttempt } from '../types/attempt';
+import { isUnknownAttempt, MissType, QuizAttempt } from '../types/attempt';
 
 export interface WrongQuestionSummary {
   questionId: string;
   totalAttempts: number;
+  /** 답을 썼지만 틀린 횟수 (헷갈림) */
   wrongAttempts: number;
+  /** 모른다를 누른 횟수 */
+  unknownAttempts: number;
   correctAttempts: number;
   lastAttemptIsWrong: boolean;
+  lastMissType?: MissType;
   lastAnsweredAt: string;
 }
 
@@ -58,23 +62,33 @@ export class AttemptRepository {
         map.set(att.questionId, {
           questionId: att.questionId,
           totalAttempts: 1,
-          wrongAttempts: att.isCorrect ? 0 : 1,
+          wrongAttempts: isUnknownAttempt(att) ? 0 : att.isCorrect ? 0 : 1,
+          unknownAttempts: isUnknownAttempt(att) ? 1 : 0,
           correctAttempts: att.isCorrect ? 1 : 0,
           lastAttemptIsWrong: !att.isCorrect,
+          lastMissType: att.isCorrect
+            ? undefined
+            : isUnknownAttempt(att)
+              ? "UNKNOWN"
+              : "WRONG",
           lastAnsweredAt: att.answeredAt,
         });
       } else {
         existing.totalAttempts += 1;
         if (att.isCorrect) {
           existing.correctAttempts += 1;
+        } else if (isUnknownAttempt(att)) {
+          existing.unknownAttempts += 1;
         } else {
           existing.wrongAttempts += 1;
         }
       }
     }
 
-    // 한 번이라도 틀린 적이 있는 문제들만 필터링
-    return Array.from(map.values()).filter((item) => item.wrongAttempts > 0);
+    // 한 번이라도 틀리거나 모른 적이 있는 문제들만 필터링
+    return Array.from(map.values()).filter(
+      (item) => item.wrongAttempts > 0 || item.unknownAttempts > 0,
+    );
   }
 
   /**

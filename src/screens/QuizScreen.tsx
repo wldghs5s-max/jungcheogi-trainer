@@ -15,6 +15,7 @@ import {
   Bookmark as BookmarkIcon,
   CheckCircle2,
   XCircle,
+  HelpCircle,
   ArrowRight,
   Sparkles,
 } from "lucide-react-native";
@@ -45,22 +46,47 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
     selectedAnswer,
     isSubmitted,
     isCorrect,
+    missType,
     sessionTitle,
     selectAnswer,
     submitAnswer,
+    submitUnknown,
     nextQuestion,
   } = useQuizStore();
 
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isTutorOpen, setIsTutorOpen] = useState(false);
+  const [autoAskChapter, setAutoAskChapter] = useState(false);
+  const [unknownUnlockIn, setUnknownUnlockIn] = useState(20);
 
   const currentQuestion = questions[currentIndex];
+  const isUnknown = missType === "UNKNOWN";
+  const UNKNOWN_LOCK_SECONDS = 20;
 
   useEffect(() => {
     if (currentQuestion) {
       BookmarkRepository.isBookmarked(currentQuestion.id).then(setIsBookmarked);
     }
   }, [currentQuestion]);
+
+  useEffect(() => {
+    if (!currentQuestion || isSubmitted) {
+      return;
+    }
+    const startedAt = Date.now();
+    setUnknownUnlockIn(UNKNOWN_LOCK_SECONDS);
+    const timer = setInterval(() => {
+      const remain = Math.max(
+        0,
+        UNKNOWN_LOCK_SECONDS - Math.floor((Date.now() - startedAt) / 1000),
+      );
+      setUnknownUnlockIn(remain);
+      if (remain <= 0) {
+        clearInterval(timer);
+      }
+    }, 200);
+    return () => clearInterval(timer);
+  }, [currentQuestion?.id, isSubmitted]);
 
   if (!currentQuestion) {
     return null;
@@ -97,8 +123,24 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
     }
   };
 
+  const handleUnknown = async () => {
+    if (unknownUnlockIn > 0 || isSubmitted) return;
+    await submitUnknown();
+    triggerHaptic.selection();
+    setAutoAskChapter(true);
+    setIsTutorOpen(true);
+  };
+
+  const openTutor = (chapterLesson = false) => {
+    triggerHaptic.selection();
+    setAutoAskChapter(chapterLesson);
+    setIsTutorOpen(true);
+  };
+
   const handleNext = () => {
     triggerHaptic.selection();
+    setIsTutorOpen(false);
+    setAutoAskChapter(false);
     const hasNext = nextQuestion();
     if (!hasNext) {
       onFinish();
@@ -136,10 +178,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
             </Text>
             <View style={styles.headerRightActions}>
               <TouchableOpacity
-                onPress={() => {
-                  triggerHaptic.selection();
-                  setIsTutorOpen(true);
-                }}
+                onPress={() => openTutor(isUnknown)}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 style={{ marginRight: 12 }}
               >
@@ -312,8 +351,14 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                 {
                   backgroundColor: isCorrect
                     ? theme.correctLight
-                    : theme.wrongLight,
-                  borderColor: isCorrect ? theme.correct : theme.wrong,
+                    : isUnknown
+                      ? theme.accentLight
+                      : theme.wrongLight,
+                  borderColor: isCorrect
+                    ? theme.correct
+                    : isUnknown
+                      ? theme.accent
+                      : theme.wrong,
                 },
               ]}
             >
@@ -327,6 +372,13 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                       정답입니다! 🎉
                     </Text>
                   </>
+                ) : isUnknown ? (
+                  <>
+                    <HelpCircle size={24} color={theme.accent} />
+                    <Text style={[styles.resultTitle, { color: theme.accent }]}>
+                      모르는 문제로 기록했습니다
+                    </Text>
+                  </>
                 ) : (
                   <>
                     <XCircle size={24} color={theme.wrong} />
@@ -337,6 +389,13 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                 )}
               </View>
 
+              {isUnknown && (
+                <Text style={[styles.unknownHint, { color: theme.subText }]}>
+                  헷갈려서 틀린 문제와 따로 모아 오답노트에서 구분해 복습할 수
+                  있습니다.
+                </Text>
+              )}
+
               <View style={styles.answerRow}>
                 <Text style={[styles.answerLabel, { color: theme.subText }]}>
                   정답 :
@@ -346,13 +405,24 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                 </Text>
               </View>
 
-              {!isCorrect && (
+              {!isCorrect && !isUnknown && (
                 <View style={styles.answerRow}>
                   <Text style={[styles.answerLabel, { color: theme.subText }]}>
                     내 답 :
                   </Text>
                   <Text style={[styles.myAnswerValue, { color: theme.wrong }]}>
                     {selectedAnswer || "(미입력)"}
+                  </Text>
+                </View>
+              )}
+
+              {isUnknown && (
+                <View style={styles.answerRow}>
+                  <Text style={[styles.answerLabel, { color: theme.subText }]}>
+                    기록 :
+                  </Text>
+                  <Text style={[styles.myAnswerValue, { color: theme.accent }]}>
+                    모름
                   </Text>
                 </View>
               )}
@@ -383,10 +453,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
               {/* Gemini AI 튜터 질문 버튼 */}
               <TouchableOpacity
                 activeOpacity={0.8}
-                onPress={() => {
-                  triggerHaptic.selection();
-                  setIsTutorOpen(true);
-                }}
+                onPress={() => openTutor(isUnknown)}
                 style={[
                   styles.aiTutorButton,
                   {
@@ -399,7 +466,9 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                 <Text
                   style={[styles.aiTutorButtonText, { color: theme.accent }]}
                 >
-                  ✨ Gemini AI 튜터에게 이 문제 과외받기
+                  {isUnknown
+                    ? "📘 이 단원(챕터) 개념부터 과외받기"
+                    : "✨ Gemini AI 튜터에게 이 문제 과외받기"}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -414,11 +483,26 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
           ]}
         >
           {!isSubmitted ? (
-            <Button
-              title="정답 확인하기"
-              disabled={!selectedAnswer.trim()}
-              onPress={handleSubmit}
-            />
+            <View style={styles.actionRow}>
+              <Button
+                title={
+                  unknownUnlockIn > 0
+                    ? `모른다 (${unknownUnlockIn}초)`
+                    : "모른다"
+                }
+                variant="outline"
+                disabled={unknownUnlockIn > 0}
+                onPress={handleUnknown}
+                style={styles.unknownButton}
+                textStyle={{ fontSize: 15 }}
+              />
+              <Button
+                title="정답 확인하기"
+                disabled={!selectedAnswer.trim()}
+                onPress={handleSubmit}
+                style={styles.submitButton}
+              />
+            </View>
           ) : (
             <Button
               title={
@@ -436,8 +520,13 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
           <AITutorModal
             visible={isTutorOpen}
             question={currentQuestion}
-            userAnswer={selectedAnswer}
-            onClose={() => setIsTutorOpen(false)}
+            userAnswer={isUnknown ? undefined : selectedAnswer}
+            missType={missType}
+            autoAskChapter={autoAskChapter}
+            onClose={() => {
+              setIsTutorOpen(false);
+              setAutoAskChapter(false);
+            }}
           />
         )}
       </KeyboardAvoidingView>
@@ -544,6 +633,24 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "800",
     marginLeft: 8,
+    flexShrink: 1,
+  },
+  unknownHint: {
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: 10,
+  },
+  actionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  unknownButton: {
+    flex: 1,
+    marginRight: 8,
+    paddingHorizontal: 10,
+  },
+  submitButton: {
+    flex: 1.35,
   },
   answerRow: {
     flexDirection: "row",

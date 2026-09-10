@@ -9,10 +9,12 @@ import {
 import {
   CheckCircle2,
   XCircle,
+  HelpCircle,
   RotateCcw,
   Home,
   BookX,
 } from "lucide-react-native";
+import { isUnknownAttempt } from "../types/attempt";
 import { useQuizStore } from "../store/quizStore";
 import { useSettingsStore } from "../store/settingsStore";
 import { QuestionRepository } from "../repositories/questionRepository";
@@ -39,7 +41,9 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
 
   const total = sessionAttempts.length;
   const correctCount = sessionAttempts.filter((a) => a.isCorrect).length;
-  const wrongCount = total - correctCount;
+  const unknownCount = sessionAttempts.filter((a) => isUnknownAttempt(a)).length;
+  const confusedCount = total - correctCount - unknownCount;
+  const missCount = confusedCount + unknownCount;
   const scoreRate = total > 0 ? Math.round((correctCount / total) * 100) : 0;
 
   const getScoreMessage = () => {
@@ -73,8 +77,10 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
             {total}문제 중{" "}
             <Text style={{ color: theme.correct, fontWeight: "800" }}>
               {correctCount}개 정답
-            </Text>{" "}
-            (오답 {wrongCount}개)
+            </Text>
+            {missCount > 0
+              ? ` (헷갈림 ${confusedCount}개 · 모름 ${unknownCount}개)`
+              : ""}
           </Text>
           <View
             style={[
@@ -105,6 +111,12 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
                     color={theme.correct}
                     style={styles.icon}
                   />
+                ) : isUnknownAttempt(attempt) ? (
+                  <HelpCircle
+                    size={20}
+                    color={theme.accent}
+                    style={styles.icon}
+                  />
                 ) : (
                   <XCircle size={20} color={theme.wrong} style={styles.icon} />
                 )}
@@ -117,6 +129,11 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
                   </Text>
                   <Text style={[styles.attemptSub, { color: theme.subText }]}>
                     {question.subject} · {question.category}
+                    {isUnknownAttempt(attempt)
+                      ? " · 모름"
+                      : attempt.isCorrect
+                        ? ""
+                        : " · 헷갈림"}
                   </Text>
                 </View>
               </View>
@@ -148,7 +165,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
             icon={<Home size={18} color="#FFFFFF" />}
           />
         </View>
-        {wrongCount > 0 && (
+        {missCount > 0 && (
           <View style={[styles.footerRow, { marginTop: 8 }]}>
             <Button
               title="오답노트 가기"

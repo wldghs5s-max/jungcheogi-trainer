@@ -21,6 +21,7 @@ export interface TutorContext {
   question: Question;
   userAnswer?: string | string[];
   userPrompt: string;
+  missType?: "WRONG" | "UNKNOWN";
 }
 
 interface GeminiRequestError {
@@ -162,14 +163,46 @@ export class GeminiService {
     }
 
     const cleanKey = apiKey.trim();
-    const { question, userAnswer, userPrompt } = context;
+    const { question, userAnswer, userPrompt, missType } = context;
+    const chapterPath = [question.subject, question.category, question.subCategory]
+      .filter(Boolean)
+      .join(" > ");
+    const isUnknown = missType === "UNKNOWN";
 
-    const systemPrompt = `당신은 대한민국 최고 수준의 정보처리기사 실기 전담 1:1 스타 강사이자 AI 수험 튜터입니다.
+    const systemPrompt = isUnknown
+      ? `당신은 대한민국 최고 수준의 정보처리기사 실기 전담 1:1 스타 강사이자 AI 수험 튜터입니다.
+수험생이 이 문제를 「모른다」고 표시했습니다. 오답 분석은 하지 마세요. 답을 억지로 쓴 것이 아닙니다.
+교재에서 이 내용이 등장하는 단원(챕터)을 펼쳐 보여 주듯이, 이 문제와 바로 옆 연관 개념까지 함께 가르쳐 주세요.
+반드시 한국어로 자연스럽고 가독성 좋게 불릿 포인트와 소제목을 활용해 구조화하세요.
+
+[이 문제가 속한 단원]
+- 위치: ${chapterPath}
+- 키워드: ${(question.keywords || []).join(", ") || "(없음)"}
+
+[문제 정보]
+- 문제 유형: ${question.type} (난이도: ${question.difficulty})
+- 문제 지문: ${question.question}
+${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
+- 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
+- 기본 해설: ${question.explanation}
+
+[반드시 아래 구성으로 답하세요]
+1) 교재 단원 위치: 이 문제가 어느 챕터에 나오는지
+2) 이 단원에서 반드시 알아야 하는 핵심 개념
+3) 이 문제 바로 앞뒤에 나오는 연관 개념·용어·공식
+4) 같은 단원에서 자주 나오는 출제 포인트
+5) 이번 문제를 단원 맥락에서 다시 풀어보는 해설
+6) 시험장에서 1초 만에 떠올릴 암기 포인트
+
+[수험생의 질문]
+${userPrompt}
+`
+      : `당신은 대한민국 최고 수준의 정보처리기사 실기 전담 1:1 스타 강사이자 AI 수험 튜터입니다.
 수험생의 눈높이에 맞춰 친절하고 논리정연하며, 실제 시험장에서 점수를 얻을 수 있는 명쾌한 답변을 제공하세요.
 반드시 한국어로 자연스럽고 가독성 좋게 불릿 포인트를 활용하여 구조화해 주세요.
 
 [문제 정보]
-- 과목/단원: ${question.subject} > ${question.category}
+- 과목/단원: ${chapterPath}
 - 문제 유형: ${question.type} (난이도: ${question.difficulty})
 - 문제 지문: ${question.question}
 ${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
@@ -199,7 +232,12 @@ ${userPrompt}
 
       for (const model of modelsToTry) {
         try {
-          const result = await generateContent(cleanKey, model, systemPrompt, 2048);
+          const result = await generateContent(
+            cleanKey,
+            model,
+            systemPrompt,
+            isUnknown ? 4096 : 2048,
+          );
           if (result.text) {
             return result.text;
           }
