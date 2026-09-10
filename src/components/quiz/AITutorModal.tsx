@@ -13,13 +13,9 @@ import {
   KeyboardEvent,
   Dimensions,
   useWindowDimensions,
+  StatusBar,
 } from "react-native";
-import {
-  Sparkles,
-  X,
-  Send,
-  ChevronUp,
-} from "lucide-react-native";
+import { Sparkles, X, Send, ChevronUp } from "lucide-react-native";
 import { useSettingsStore } from "../../store/settingsStore";
 import { GeminiService } from "../../api/geminiService";
 import { Question } from "../../types/question";
@@ -36,11 +32,6 @@ interface AITutorModalProps {
 }
 
 const CHAPTER_LESSON_PROMPT = `이 문제를 「모른다」고 표시했습니다. 오답 분석은 하지 말고, 교재에서 이 내용이 나오는 단원(챕터)을 펼쳐 보여 주듯이 핵심 개념과 바로 옆 연관 내용까지 설명해 주세요.`;
-
-/** 갤럭시 3버튼 내비. 퀴즈 하단바와 맞춤 */
-const ANDROID_NAV_INSET = 56;
-/** 삼성 키보드 상단 도구줄(이모지/설정). Keyboard 이벤트가 빠뜨리는 높이 */
-const ANDROID_IME_ACCESSORY = 56;
 
 export const AITutorModal: React.FC<AITutorModalProps> = ({
   visible,
@@ -72,6 +63,7 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
   useEffect(() => {
     didAutoAskRef.current = false;
     if (!visible) {
+      setKeyboardHeight(0);
       return;
     }
     setMessages([]);
@@ -105,10 +97,17 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
 
   useEffect(() => {
     const handleShow = (e: KeyboardEvent) => {
-      const screenH = Dimensions.get("screen").height;
-      const reported = e.endCoordinates.height;
-      const fromScreenY = Math.max(0, screenH - e.endCoordinates.screenY);
-      setKeyboardHeight(Math.max(reported, fromScreenY));
+      const reported = e.endCoordinates?.height ?? 0;
+      if (reported > 0) {
+        setKeyboardHeight(reported);
+      } else {
+        const windowH = Dimensions.get("window").height;
+        const fromScreenY = Math.max(
+          0,
+          windowH - (e.endCoordinates?.screenY ?? windowH),
+        );
+        setKeyboardHeight(fromScreenY);
+      }
     };
     const handleHide = () => {
       setKeyboardHeight(0);
@@ -133,18 +132,42 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
     };
   }, []);
 
+  // 상태바(헤더) 침범 방지를 위한 상단 안전 여백 (안드로이드 상태바 높이 + 여유 16dp)
+  const statusBarHeight =
+    Platform.OS === "android" ? (StatusBar.currentHeight ?? 24) : 44;
+  const TOP_SAFE_MARGIN = statusBarHeight + 16;
+
+  const isKeyboardOpen = keyboardHeight > 0;
   const windowShrunkForKeyboard =
-    keyboardHeight > 0 &&
-    windowHeight < fullWindowHeightRef.current - 50;
-  const imeAccessory =
-    keyboardHeight > 0 && Platform.OS === "android" ? ANDROID_IME_ACCESSORY : 0;
-  const navInset =
-    keyboardHeight === 0 && Platform.OS === "android" ? ANDROID_NAV_INSET : 10;
-  // 오버레이는 움직이지 않는다. 시트 하단만 키보드/내비만큼 띄운다.
-  const sheetBottomPad =
-    keyboardHeight > 0
-      ? (windowShrunkForKeyboard ? imeAccessory : keyboardHeight + imeAccessory)
-      : navInset;
+    isKeyboardOpen && windowHeight < fullWindowHeightRef.current - 50;
+
+  // 키보드 높이만큼 시트 하단을 자연스럽게 들어올림 (창 자체가 줄어든 경우엔 0)
+  const sheetBottomMargin = isKeyboardOpen
+    ? windowShrunkForKeyboard
+      ? 0
+      : keyboardHeight
+    : 0;
+
+  // 시트 높이:
+  // - 키보드 열림 시: 키보드 상단부터 TOP_SAFE_MARGIN 사이 가용 공간에 정확히 맞춤 (상단 헤더 침범 원천 차단)
+  // - 키보드 닫힘 시: 화면의 85% 또는 상단 마진을 확보한 최대 높이
+  const currentSheetHeight = isKeyboardOpen
+    ? Math.max(
+        (windowShrunkForKeyboard
+          ? windowHeight
+          : windowHeight - keyboardHeight) - TOP_SAFE_MARGIN,
+        220,
+      )
+    : Math.min(windowHeight * 0.85, windowHeight - TOP_SAFE_MARGIN);
+
+  // 입력창 하단 패딩:
+  // - 키보드 열림 시: 키보드 바로 위에 정갈하게 밀착 (10dp) -> 불필요한 과도한 공백 제거
+  // - 키보드 닫힘 시: 안드로이드 3버튼 내비게이션 바 등 간섭 방지 (28dp)
+  const inputBottomPad = isKeyboardOpen
+    ? 10
+    : Platform.OS === "android"
+      ? 28
+      : 14;
 
   const handleAsk = async (promptText: string, displayText?: string) => {
     if (!promptText.trim() || loading) return;
@@ -182,7 +205,10 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
     }
     didAutoAskRef.current = true;
     const timer = setTimeout(() => {
-      void handleAsk(CHAPTER_LESSON_PROMPT, "📘 이 단원(챕터) 개념부터 설명해줘");
+      void handleAsk(
+        CHAPTER_LESSON_PROMPT,
+        "📘 이 단원(챕터) 개념부터 설명해줘",
+      );
     }, 120);
     return () => clearTimeout(timer);
   }, [visible, question.id, autoAskChapter, isUnknown]);
@@ -252,7 +278,10 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
         <View
           style={[
             styles.sheetContainer,
-            keyboardHeight > 0 ? styles.sheetExpanded : styles.sheetCollapsed,
+            {
+              height: currentSheetHeight,
+              marginBottom: sheetBottomMargin,
+            },
           ]}
         >
           <View
@@ -260,7 +289,6 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
               styles.modalSheet,
               {
                 backgroundColor: theme.surface,
-                paddingBottom: sheetBottomPad,
               },
             ]}
           >
@@ -434,7 +462,7 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
                 {
                   backgroundColor: theme.surface,
                   borderTopColor: theme.border,
-                  paddingBottom: 10,
+                  paddingBottom: inputBottomPad,
                 },
               ]}
             >
@@ -495,12 +523,6 @@ const styles = StyleSheet.create({
   },
   sheetContainer: {
     width: "100%",
-  },
-  sheetCollapsed: {
-    height: "85%",
-  },
-  sheetExpanded: {
-    flex: 1,
   },
   modalSheet: {
     flex: 1,
