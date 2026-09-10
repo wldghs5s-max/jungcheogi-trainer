@@ -155,7 +155,13 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
     >
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={
+          isTutorOpen
+            ? undefined
+            : Platform.OS === "ios"
+              ? "padding"
+              : "height"
+        }
       >
         {/* 상단 네비 바 & 프로그레스 */}
         <View
@@ -516,20 +522,20 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
         </View>
 
         {/* Gemini AI 튜터 모달 */}
-        {currentQuestion && (
-          <AITutorModal
-            visible={isTutorOpen}
-            question={currentQuestion}
-            userAnswer={isUnknown ? undefined : selectedAnswer}
-            missType={missType}
-            autoAskChapter={autoAskChapter}
-            onClose={() => {
-              setIsTutorOpen(false);
-              setAutoAskChapter(false);
-            }}
-          />
-        )}
       </KeyboardAvoidingView>
+      {currentQuestion && (
+        <AITutorModal
+          visible={isTutorOpen}
+          question={currentQuestion}
+          userAnswer={isUnknown ? undefined : selectedAnswer}
+          missType={missType}
+          autoAskChapter={autoAskChapter}
+          onClose={() => {
+            setIsTutorOpen(false);
+            setAutoAskChapter(false);
+          }}
+        />
+      )}
     </SafeAreaView>
   );
 };

@@ -139,13 +139,12 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
   const imeAccessory =
     keyboardHeight > 0 && Platform.OS === "android" ? ANDROID_IME_ACCESSORY : 0;
   const navInset =
-    keyboardHeight === 0 && Platform.OS === "android" ? ANDROID_NAV_INSET : 0;
-  const bottomInset =
-    (windowShrunkForKeyboard ? 0 : keyboardHeight) + imeAccessory + navInset;
-  const sheetMaxHeight =
+    keyboardHeight === 0 && Platform.OS === "android" ? ANDROID_NAV_INSET : 10;
+  // 오버레이는 움직이지 않는다. 시트 하단만 키보드/내비만큼 띄운다.
+  const sheetBottomPad =
     keyboardHeight > 0
-      ? Math.max(windowHeight - bottomInset, 280)
-      : Math.min(windowHeight * 0.85, windowHeight - bottomInset);
+      ? (windowShrunkForKeyboard ? imeAccessory : keyboardHeight + imeAccessory)
+      : navInset;
 
   const handleAsk = async (promptText: string, displayText?: string) => {
     if (!promptText.trim() || loading) return;
@@ -234,9 +233,10 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
       visible={visible}
       animationType="slide"
       transparent
+      statusBarTranslucent
       onRequestClose={onClose}
     >
-      <View style={[styles.overlay, { paddingBottom: bottomInset }]}>
+      <View style={styles.overlay}>
         <TouchableOpacity
           style={styles.backdrop}
           activeOpacity={1}
@@ -252,12 +252,18 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
         <View
           style={[
             styles.sheetContainer,
-            {
-              height: sheetMaxHeight,
-            },
+            keyboardHeight > 0 ? styles.sheetExpanded : styles.sheetCollapsed,
           ]}
         >
-          <View style={[styles.modalSheet, { backgroundColor: theme.surface }]}>
+          <View
+            style={[
+              styles.modalSheet,
+              {
+                backgroundColor: theme.surface,
+                paddingBottom: sheetBottomPad,
+              },
+            ]}
+          >
             {/* 모달 헤더 */}
             <View style={[styles.header, { borderBottomColor: theme.border }]}>
               <View style={styles.headerLeft}>
@@ -489,6 +495,12 @@ const styles = StyleSheet.create({
   },
   sheetContainer: {
     width: "100%",
+  },
+  sheetCollapsed: {
+    height: "85%",
+  },
+  sheetExpanded: {
+    flex: 1,
   },
   modalSheet: {
     flex: 1,
