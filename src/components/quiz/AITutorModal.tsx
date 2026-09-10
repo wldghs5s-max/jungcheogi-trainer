@@ -97,17 +97,12 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
 
   useEffect(() => {
     const handleShow = (e: KeyboardEvent) => {
+      const screenH = Dimensions.get("screen").height;
+      const keyboardY = e.endCoordinates?.screenY ?? screenH;
+      // 화면 바닥에서부터 키보드 상단(툴바 포함)까지의 정확한 높이
+      const fromBottom = Math.max(0, screenH - keyboardY);
       const reported = e.endCoordinates?.height ?? 0;
-      if (reported > 0) {
-        setKeyboardHeight(reported);
-      } else {
-        const windowH = Dimensions.get("window").height;
-        const fromScreenY = Math.max(
-          0,
-          windowH - (e.endCoordinates?.screenY ?? windowH),
-        );
-        setKeyboardHeight(fromScreenY);
-      }
+      setKeyboardHeight(Math.max(reported, fromBottom));
     };
     const handleHide = () => {
       setKeyboardHeight(0);
@@ -132,42 +127,30 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
     };
   }, []);
 
-  // 상태바(헤더) 침범 방지를 위한 상단 안전 여백 (안드로이드 상태바 높이 + 여유 16dp)
+  // 상태바(헤더) 침범 방지를 위한 상단 안전 여백 (안드로이드 상태바 높이 + 여유 14dp)
   const statusBarHeight =
     Platform.OS === "android" ? (StatusBar.currentHeight ?? 24) : 44;
-  const TOP_SAFE_MARGIN = statusBarHeight + 16;
+  const TOP_SAFE_MARGIN = statusBarHeight + 14;
 
-  const isKeyboardOpen = keyboardHeight > 0;
-  const windowShrunkForKeyboard =
-    isKeyboardOpen && windowHeight < fullWindowHeightRef.current - 50;
+  // 갤럭시 3버튼 내비게이션 바 높이 (56dp)
+  const ANDROID_NAV_INSET = 56;
 
-  // 키보드 높이만큼 시트 하단을 자연스럽게 들어올림 (창 자체가 줄어든 경우엔 0)
-  const sheetBottomMargin = isKeyboardOpen
-    ? windowShrunkForKeyboard
-      ? 0
-      : keyboardHeight
-    : 0;
+  // 시트 하단 패딩:
+  // - 키보드 열림 시: 키보드 높이(툴바 포함)만큼 정확히 패딩을 주어 입력창을 키보드 바로 위에 안착
+  // - 키보드 닫힘 시: 갤럭시 3버튼 내비게이션 바에 가리지 않도록 56dp 안전 여백 확보
+  const sheetBottomPad =
+    keyboardHeight > 0
+      ? keyboardHeight
+      : Platform.OS === "android"
+        ? ANDROID_NAV_INSET
+        : 16;
 
-  // 시트 높이:
-  // - 키보드 열림 시: 키보드 상단부터 TOP_SAFE_MARGIN 사이 가용 공간에 정확히 맞춤 (상단 헤더 침범 원천 차단)
-  // - 키보드 닫힘 시: 화면의 85% 또는 상단 마진을 확보한 최대 높이
-  const currentSheetHeight = isKeyboardOpen
-    ? Math.max(
-        (windowShrunkForKeyboard
-          ? windowHeight
-          : windowHeight - keyboardHeight) - TOP_SAFE_MARGIN,
-        220,
-      )
-    : Math.min(windowHeight * 0.85, windowHeight - TOP_SAFE_MARGIN);
-
-  // 입력창 하단 패딩:
-  // - 키보드 열림 시: 키보드 바로 위에 정갈하게 밀착 (10dp) -> 불필요한 과도한 공백 제거
-  // - 키보드 닫힘 시: 안드로이드 3버튼 내비게이션 바 등 간섭 방지 (28dp)
-  const inputBottomPad = isKeyboardOpen
-    ? 10
-    : Platform.OS === "android"
-      ? 28
-      : 14;
+  // 시트 최대 높이 (상단 상태바를 절대 침범하지 않도록 제한)
+  const maxAllowedHeight = windowHeight - TOP_SAFE_MARGIN;
+  const currentSheetHeight =
+    keyboardHeight > 0
+      ? maxAllowedHeight
+      : Math.min(windowHeight * 0.85, maxAllowedHeight);
 
   const handleAsk = async (promptText: string, displayText?: string) => {
     if (!promptText.trim() || loading) return;
@@ -280,7 +263,7 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
             styles.sheetContainer,
             {
               height: currentSheetHeight,
-              marginBottom: sheetBottomMargin,
+              maxHeight: maxAllowedHeight,
             },
           ]}
         >
@@ -289,6 +272,7 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
               styles.modalSheet,
               {
                 backgroundColor: theme.surface,
+                paddingBottom: sheetBottomPad,
               },
             ]}
           >
@@ -462,7 +446,7 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
                 {
                   backgroundColor: theme.surface,
                   borderTopColor: theme.border,
-                  paddingBottom: inputBottomPad,
+                  paddingBottom: 10,
                 },
               ]}
             >
