@@ -11,6 +11,7 @@ import {
   Platform,
   Keyboard,
   KeyboardEvent,
+  Dimensions,
   useWindowDimensions,
 } from "react-native";
 import {
@@ -35,6 +36,11 @@ interface AITutorModalProps {
 }
 
 const CHAPTER_LESSON_PROMPT = `이 문제를 「모른다」고 표시했습니다. 오답 분석은 하지 말고, 교재에서 이 내용이 나오는 단원(챕터)을 펼쳐 보여 주듯이 핵심 개념과 바로 옆 연관 내용까지 설명해 주세요.`;
+
+/** 갤럭시 3버튼 내비. 퀴즈 하단바와 맞춤 */
+const ANDROID_NAV_INSET = 56;
+/** 삼성 키보드 상단 도구줄(이모지/설정). Keyboard 이벤트가 빠뜨리는 높이 */
+const ANDROID_IME_ACCESSORY = 56;
 
 export const AITutorModal: React.FC<AITutorModalProps> = ({
   visible,
@@ -99,7 +105,10 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
 
   useEffect(() => {
     const handleShow = (e: KeyboardEvent) => {
-      setKeyboardHeight(e.endCoordinates.height);
+      const screenH = Dimensions.get("screen").height;
+      const reported = e.endCoordinates.height;
+      const fromScreenY = Math.max(0, screenH - e.endCoordinates.screenY);
+      setKeyboardHeight(Math.max(reported, fromScreenY));
     };
     const handleHide = () => {
       setKeyboardHeight(0);
@@ -127,16 +136,16 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
   const windowShrunkForKeyboard =
     keyboardHeight > 0 &&
     windowHeight < fullWindowHeightRef.current - 50;
-  const bottomInset = windowShrunkForKeyboard ? 0 : keyboardHeight;
+  const imeAccessory =
+    keyboardHeight > 0 && Platform.OS === "android" ? ANDROID_IME_ACCESSORY : 0;
+  const navInset =
+    keyboardHeight === 0 && Platform.OS === "android" ? ANDROID_NAV_INSET : 0;
+  const bottomInset =
+    (windowShrunkForKeyboard ? 0 : keyboardHeight) + imeAccessory + navInset;
   const sheetMaxHeight =
     keyboardHeight > 0
-      ? Math.max(
-          windowShrunkForKeyboard
-            ? windowHeight
-            : windowHeight - keyboardHeight,
-          280,
-        )
-      : windowHeight * 0.85;
+      ? Math.max(windowHeight - bottomInset, 280)
+      : Math.min(windowHeight * 0.85, windowHeight - bottomInset);
 
   const handleAsk = async (promptText: string, displayText?: string) => {
     if (!promptText.trim() || loading) return;
@@ -419,12 +428,7 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
                 {
                   backgroundColor: theme.surface,
                   borderTopColor: theme.border,
-                  paddingBottom:
-                    keyboardHeight > 0
-                      ? 10
-                      : Platform.OS === "android"
-                        ? 36
-                        : 10,
+                  paddingBottom: 10,
                 },
               ]}
             >
