@@ -2,7 +2,7 @@
   "expo": {
     "name": "정처기 실기 트레이너",
     "slug": "jungcheogi-mobile-app",
-    "version": "1.2.4",
+    "version": "1.2.5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -12,7 +12,7 @@
     "android": {
       "softwareKeyboardLayoutMode": "resize",
       "package": "com.jungcheogi.trainer",
-      "versionCode": 6,
+      "versionCode": 7,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",

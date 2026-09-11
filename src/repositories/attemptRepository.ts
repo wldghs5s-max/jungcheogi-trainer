@@ -118,6 +118,14 @@ export class AttemptRepository {
       .map((s) => s.questionId);
   }
 
+  static async getUnknownQuestionIds(): Promise<string[]> {
+    const summaries = await this.getWrongQuestionSummaries();
+    return summaries
+      .filter((s) => s.lastMissType === "UNKNOWN")
+      .sort((a, b) => new Date(b.lastAnsweredAt).getTime() - new Date(a.lastAnsweredAt).getTime())
+      .map((s) => s.questionId);
+  }
+
   /**
    * 풀이 이력을 초기화합니다 (개발/테스트용).
    */

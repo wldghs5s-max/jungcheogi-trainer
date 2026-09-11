@@ -17,6 +17,8 @@ import {
   Layers,
   CloudDownload,
   Sparkles,
+  HelpCircle,
+  RotateCcw,
 } from "lucide-react-native";
 import { useSettingsStore } from "../store/settingsStore";
 import { useUserStore } from "../store/userStore";
@@ -26,6 +28,7 @@ import { QuestionSyncService } from "../api/questionSyncService";
 import { generateMemorizationQuestions } from "../api/geminiQuestionGenerator";
 import { GeminiService } from "../api/geminiService";
 import { calculateUserStats } from "../utils/statistics";
+import { getDueReviewQuestionIds } from "../utils/reviewQueue";
 import { triggerHaptic } from "../utils/haptics";
 import { UserStats } from "../types/statistics";
 import { Subject, Question } from "../types/question";
@@ -34,7 +37,6 @@ import { COLORS } from "../utils/theme";
 import { Card } from "../components/common/Card";
 import { Button } from "../components/common/Button";
 import { ProgressBar } from "../components/common/ProgressBar";
-import { Badge } from "../components/common/Badge";
 
 interface HomeScreenProps {
   onStartQuiz: (questions: Question[], title: string) => void;
@@ -56,6 +58,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [totalQuestionsCount, setTotalQuestionsCount] = useState(0);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isGeminiGenerating, setIsGeminiGenerating] = useState(false);
+  const [examYear, setExamYear] = useState<number | null>(null);
+  const [examRound, setExamRound] = useState<number | null>(null);
+  const [unknownQuestions, setUnknownQuestions] = useState<Question[]>([]);
+  const [reviewQuestions, setReviewQuestions] = useState<Question[]>([]);
+
+  const examYears = QuestionRepository.getExamYears();
+  const examRounds = QuestionRepository.getExamRounds(examYear ?? undefined);
 
   const loadData = useCallback(async () => {
     await loadUserSettings();
@@ -66,6 +75,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     const attempts = await AttemptRepository.getAllAttempts();
     const calculated = calculateUserStats(attempts);
     setStats(calculated);
+
+    const unknownIds = await AttemptRepository.getUnknownQuestionIds();
+    setUnknownQuestions(QuestionRepository.getByIds(unknownIds));
+
+    const dueIds = getDueReviewQuestionIds(attempts, 10);
+    setReviewQuestions(QuestionRepository.getByIds(dueIds));
   }, [loadUserSettings]);
 
   useEffect(() => {
@@ -152,19 +167,67 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     onStartQuiz(quickQuestions, "지하철 5분 퀵 퀴즈");
   };
 
-  // 과목별 학습 시작
-  const handleStartSubjectQuiz = (subject: Subject) => {
-    const questions = QuestionRepository.shuffle(
-      QuestionRepository.getBySubject(subject),
-    );
+  const startOrAlert = (questions: Question[], title: string, emptyMessage: string) => {
     if (questions.length === 0) {
-      Alert.alert(
-        "문제 없음",
-        "이 과목 문제가 아직 없습니다.",
-      );
+      Alert.alert("문제 없음", emptyMessage);
       return;
     }
-    onStartQuiz(questions, subject);
+    onStartQuiz(questions, title);
+  };
+
+  const handleStartSubjectQuiz = (subject: Subject) => {
+    const questions = QuestionRepository.shuffle(
+      QuestionRepository.filterByExam(
+        QuestionRepository.getBySubject(subject),
+        examYear,
+        examRound,
+      ),
+    );
+    const filterLabel = [
+      examYear ? `${examYear}년` : null,
+      examRound ? `${examRound}회` : null,
+    ]
+      .filter(Boolean)
+      .join(" ");
+    startOrAlert(
+      questions,
+      filterLabel ? `${subject} · ${filterLabel}` : subject,
+      examYear || examRound
+        ? "선택한 연도/회차에 해당하는 문제가 없습니다. 필터를 바꿔 보세요."
+        : "이 과목 문제가 아직 없습니다.",
+    );
+  };
+
+  const handleStartWeakCategory = (category: string) => {
+    const questions = QuestionRepository.shuffle(
+      QuestionRepository.getByCategory(category),
+    ).slice(0, 10);
+    startOrAlert(questions, `${category} 보완`, "이 단원 문제가 없습니다.");
+  };
+
+  const handleStartAllWeak = () => {
+    const categories = stats?.weakCategories.map((c) => c.category) || [];
+    const questions = QuestionRepository.getByCategories(categories, 10);
+    startOrAlert(questions, "취약 단원 보완", "취약 단원 문제가 없습니다.");
+  };
+
+  const handleStartUnknown = () => {
+    startOrAlert(unknownQuestions, "모름만 다시 풀기", "최근 모름으로 표시한 문제가 없습니다.");
+  };
+
+  const handleStartReview = () => {
+    startOrAlert(reviewQuestions, "오늘 복습", "오늘 복습할 문제가 없습니다.");
+  };
+
+  const handleSelectYear = (year: number | null) => {
+    triggerHaptic.selection();
+    setExamYear(year);
+    setExamRound(null);
+  };
+
+  const handleSelectRound = (round: number | null) => {
+    triggerHaptic.selection();
+    setExamRound(round);
   };
 
   const todayCount = stats?.todaySolvedCount || 0;
@@ -254,9 +317,56 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </Card>
         </TouchableOpacity>
 
-        {/* 취약 단원 분석 배너 (취약 단원이 있는 경우) */}
+        {reviewQuestions.length > 0 && (
+          <Card style={styles.actionCueCard} onPress={handleStartReview}>
+            <View style={styles.actionCueRow}>
+              <View
+                style={[
+                  styles.actionCueIcon,
+                  { backgroundColor: theme.primaryLight },
+                ]}
+              >
+                <RotateCcw size={18} color={theme.primary} />
+              </View>
+              <View style={styles.actionCueInfo}>
+                <Text style={[styles.actionCueTitle, { color: theme.text }]}>
+                  오늘 복습 {reviewQuestions.length}문제
+                </Text>
+                <Text style={[styles.actionCueDesc, { color: theme.subText }]}>
+                  모름은 당일, 헷갈림은 하루 뒤, 정답은 3일 뒤
+                </Text>
+              </View>
+              <ChevronRight size={18} color={theme.mutedText} />
+            </View>
+          </Card>
+        )}
+
+        {unknownQuestions.length > 0 && (
+          <Card style={styles.actionCueCard} onPress={handleStartUnknown}>
+            <View style={styles.actionCueRow}>
+              <View
+                style={[
+                  styles.actionCueIcon,
+                  { backgroundColor: theme.accentLight },
+                ]}
+              >
+                <HelpCircle size={18} color={theme.accent} />
+              </View>
+              <View style={styles.actionCueInfo}>
+                <Text style={[styles.actionCueTitle, { color: theme.text }]}>
+                  모름만 다시 풀기
+                </Text>
+                <Text style={[styles.actionCueDesc, { color: theme.subText }]}>
+                  최근 모른다고 표시한 {unknownQuestions.length}문제
+                </Text>
+              </View>
+              <ChevronRight size={18} color={theme.mutedText} />
+            </View>
+          </Card>
+        )}
+
         {stats && stats.weakCategories.length > 0 && (
-          <Card style={styles.weakCard} onPress={onGoStats}>
+          <Card style={styles.weakCard}>
             <View style={styles.weakHeader}>
               <View style={styles.weakTitleRow}>
                 <AlertTriangle size={18} color={theme.wrong} />
@@ -264,12 +374,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   집중 보완이 필요한 취약 단원
                 </Text>
               </View>
-              <ChevronRight size={18} color={theme.mutedText} />
+              <TouchableOpacity onPress={onGoStats} hitSlop={8}>
+                <Text style={[styles.weakStatsLink, { color: theme.primary }]}>
+                  통계
+                </Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.weakTags}>
-              {stats.weakCategories.slice(0, 3).map((w, idx) => (
-                <View
-                  key={idx}
+              {stats.weakCategories.slice(0, 3).map((w) => (
+                <TouchableOpacity
+                  key={w.category}
+                  activeOpacity={0.75}
+                  onPress={() => handleStartWeakCategory(w.category)}
                   style={[
                     styles.weakTagItem,
                     { backgroundColor: theme.wrongLight },
@@ -278,9 +394,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   <Text style={[styles.weakTagName, { color: theme.wrong }]}>
                     {w.category} ({w.rate}%)
                   </Text>
-                </View>
+                </TouchableOpacity>
               ))}
             </View>
+            <Button
+              title="취약 단원 모아 풀기"
+              variant="outline"
+              onPress={handleStartAllWeak}
+              style={styles.weakStartBtn}
+              textStyle={{ fontSize: 13 }}
+            />
           </Card>
         )}
 
@@ -353,12 +476,125 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             과목별 집중 학습
           </Text>
           <Text style={[styles.sectionSub, { color: theme.subText }]}>
-            단원별 완벽 대비
+            연도·회차를 고르면 해당 기출만 풉니다
           </Text>
         </View>
 
+        {examYears.length > 0 && (
+          <View style={styles.filterBlock}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.filterChips}
+            >
+              <TouchableOpacity
+                activeOpacity={0.75}
+                onPress={() => handleSelectYear(null)}
+                style={[
+                  styles.filterChip,
+                  {
+                    backgroundColor: examYear === null ? theme.primary : theme.surface,
+                    borderColor: examYear === null ? theme.primary : theme.border,
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.filterChipText,
+                    { color: examYear === null ? "#FFFFFF" : theme.text },
+                  ]}
+                >
+                  전체 연도
+                </Text>
+              </TouchableOpacity>
+              {examYears.map((year) => {
+                const selected = examYear === year;
+                return (
+                  <TouchableOpacity
+                    key={year}
+                    activeOpacity={0.75}
+                    onPress={() => handleSelectYear(year)}
+                    style={[
+                      styles.filterChip,
+                      {
+                        backgroundColor: selected ? theme.primary : theme.surface,
+                        borderColor: selected ? theme.primary : theme.border,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.filterChipText,
+                        { color: selected ? "#FFFFFF" : theme.text },
+                      ]}
+                    >
+                      {year}년
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.filterChips}
+            >
+              <TouchableOpacity
+                activeOpacity={0.75}
+                onPress={() => handleSelectRound(null)}
+                style={[
+                  styles.filterChip,
+                  {
+                    backgroundColor: examRound === null ? theme.accent : theme.surface,
+                    borderColor: examRound === null ? theme.accent : theme.border,
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.filterChipText,
+                    { color: examRound === null ? "#FFFFFF" : theme.text },
+                  ]}
+                >
+                  전체 회차
+                </Text>
+              </TouchableOpacity>
+              {examRounds.map((round) => {
+                const selected = examRound === round;
+                return (
+                  <TouchableOpacity
+                    key={round}
+                    activeOpacity={0.75}
+                    onPress={() => handleSelectRound(round)}
+                    style={[
+                      styles.filterChip,
+                      {
+                        backgroundColor: selected ? theme.accent : theme.surface,
+                        borderColor: selected ? theme.accent : theme.border,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.filterChipText,
+                        { color: selected ? "#FFFFFF" : theme.text },
+                      ]}
+                    >
+                      {round}회
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
+        )}
+
         {SUBJECTS.map((subject) => {
-          const count = QuestionRepository.getBySubject(subject).length;
+          const count = QuestionRepository.filterByExam(
+            QuestionRepository.getBySubject(subject),
+            examYear,
+            examRound,
+          ).length;
           const stat = stats?.subjectStats[subject];
           const rate = stat ? stat.rate : null;
 
@@ -528,6 +764,61 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "700",
     marginLeft: 6,
+    flexShrink: 1,
+  },
+  weakStatsLink: {
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  actionCueCard: {
+    padding: 16,
+    marginVertical: 6,
+  },
+  actionCueRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  actionCueIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  actionCueInfo: {
+    flex: 1,
+    marginHorizontal: 12,
+  },
+  actionCueTitle: {
+    fontSize: 15,
+    fontWeight: "800",
+  },
+  actionCueDesc: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  filterBlock: {
+    marginBottom: 8,
+  },
+  filterChips: {
+    paddingVertical: 4,
+    paddingRight: 8,
+  },
+  filterChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 16,
+    borderWidth: 1,
+    marginRight: 8,
+  },
+  filterChipText: {
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  weakStartBtn: {
+    height: 36,
+    marginTop: 12,
+    borderRadius: 8,
   },
   weakTags: {
     flexDirection: "row",

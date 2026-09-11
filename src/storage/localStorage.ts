@@ -7,6 +7,7 @@ export const STORAGE_KEYS = {
   DAILY_LEARNING: "@daily_learning",
   CACHED_SERVER_QUESTIONS: "@cached_server_questions",
   OFFLINE_SYNC_QUEUE: "@offline_sync_queue",
+  TUTOR_THREADS: "@tutor_threads",
 } as const;
 
 export class LocalStorage {

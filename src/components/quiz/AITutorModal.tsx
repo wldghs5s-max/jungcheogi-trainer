@@ -18,6 +18,10 @@ import {
 import { Sparkles, X, Send, ChevronUp } from "lucide-react-native";
 import { useSettingsStore } from "../../store/settingsStore";
 import { GeminiService } from "../../api/geminiService";
+import {
+  TutorChatMessage,
+  TutorRepository,
+} from "../../repositories/tutorRepository";
 import { Question } from "../../types/question";
 import { triggerHaptic } from "../../utils/haptics";
 import { COLORS } from "../../utils/theme";
@@ -54,24 +58,44 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
 
   const [promptInput, setPromptInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [messages, setMessages] = useState<
-    { id: string; role: "user" | "tutor"; text: string }[]
-  >([]);
+  const [messages, setMessages] = useState<TutorChatMessage[]>([]);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [hasTutorAnswer, setHasTutorAnswer] = useState(false);
+  const [historyReady, setHistoryReady] = useState(false);
 
   useEffect(() => {
     didAutoAskRef.current = false;
-    if (!visible) {
-      setKeyboardHeight(0);
-      return;
-    }
-    setMessages([]);
-    setPromptInput("");
-    setLoading(false);
-    setHasTutorAnswer(false);
     latestTutorOffsetRef.current = 0;
     pendingAnswerScrollIdRef.current = null;
+    setPromptInput("");
+    setLoading(false);
+    setHistoryReady(false);
+
+    if (!visible) {
+      setKeyboardHeight(0);
+      setMessages([]);
+      setHasTutorAnswer(false);
+      return;
+    }
+
+    let cancelled = false;
+    (async () => {
+      const thread = await TutorRepository.getThread(question.id);
+      if (cancelled) return;
+      if (thread && thread.messages.length > 0) {
+        setMessages(thread.messages);
+        setHasTutorAnswer(thread.messages.some((msg) => msg.role === "tutor"));
+        didAutoAskRef.current = true;
+      } else {
+        setMessages([]);
+        setHasTutorAnswer(false);
+      }
+      setHistoryReady(true);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [visible, question.id]);
 
   useEffect(() => {
@@ -157,10 +181,16 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
     triggerHaptic.selection();
 
     const userText = (displayText ?? promptText).trim();
-    setMessages((prev) => [
-      ...prev,
-      { id: `user-${Date.now()}`, role: "user", text: userText },
-    ]);
+    const userMessage: TutorChatMessage = {
+      id: `user-${Date.now()}`,
+      role: "user",
+      text: userText,
+    };
+    setMessages((prev) => {
+      const next = [...prev, userMessage];
+      void TutorRepository.saveThread(question.id, next);
+      return next;
+    });
     setLoading(true);
     scrollToLatest();
 
@@ -172,18 +202,30 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
     });
 
     const tutorId = `tutor-${Date.now()}`;
+    const tutorMessage: TutorChatMessage = {
+      id: tutorId,
+      role: "tutor",
+      text: result,
+    };
     pendingAnswerScrollIdRef.current = tutorId;
-    setMessages((prev) => [
-      ...prev,
-      { id: tutorId, role: "tutor", text: result },
-    ]);
+    setMessages((prev) => {
+      const next = [...prev, tutorMessage];
+      void TutorRepository.saveThread(question.id, next);
+      return next;
+    });
     setHasTutorAnswer(true);
     setLoading(false);
     triggerHaptic.success();
   };
 
   useEffect(() => {
-    if (!visible || !autoAskChapter || !isUnknown || didAutoAskRef.current) {
+    if (
+      !visible ||
+      !historyReady ||
+      !autoAskChapter ||
+      !isUnknown ||
+      didAutoAskRef.current
+    ) {
       return;
     }
     didAutoAskRef.current = true;
@@ -194,7 +236,7 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
       );
     }, 120);
     return () => clearTimeout(timer);
-  }, [visible, question.id, autoAskChapter, isUnknown]);
+  }, [visible, question.id, autoAskChapter, isUnknown, historyReady]);
 
   const quickQuestions = isUnknown
     ? [

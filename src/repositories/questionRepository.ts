@@ -71,6 +71,41 @@ export class QuestionRepository {
     return this.getAll().filter((q) => q.category === category);
   }
 
+  static getExamYears(): number[] {
+    const years = new Set<number>();
+    for (const question of this.getAll()) {
+      if (question.examYear) years.add(question.examYear);
+    }
+    return Array.from(years).sort((a, b) => b - a);
+  }
+
+  static getExamRounds(year?: number): number[] {
+    const rounds = new Set<number>();
+    for (const question of this.getAll()) {
+      if (year && question.examYear !== year) continue;
+      if (question.examRound) rounds.add(question.examRound);
+    }
+    return Array.from(rounds).sort((a, b) => a - b);
+  }
+
+  static filterByExam(
+    questions: Question[],
+    year?: number | null,
+    round?: number | null,
+  ): Question[] {
+    return questions.filter((question) => {
+      if (year && question.examYear !== year) return false;
+      if (round && question.examRound !== round) return false;
+      return true;
+    });
+  }
+
+  static getByCategories(categories: string[], limit = 10): Question[] {
+    const unique = new Set(categories);
+    const matched = this.getAll().filter((q) => unique.has(q.category));
+    return this.shuffle(matched).slice(0, limit);
+  }
+
   /**
    * 여러 ID에 해당하는 문제를 순서대로 조회합니다. (오답노트, 북마크 등)
    */

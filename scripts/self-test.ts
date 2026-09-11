@@ -2,6 +2,7 @@ import { ALL_QUESTIONS, SUBJECTS } from "../src/data/questions";
 import { MEMORIZATION_BANK } from "../src/data/questions/memorizationBank";
 import { generateProgrammingPracticeBundle } from "../src/api/programmingGenerator";
 import { checkAnswer, shuffleArray } from "../src/utils/quiz";
+import { getDueReviewQuestionIds } from "../src/utils/reviewQueue";
 import { Question } from "../src/types/question";
 import {
   isConfusedAttempt,
@@ -84,7 +85,38 @@ assert(!isUnknownAttempt(confusedAttempt), "헷갈림은 모름이 아님");
 
 assert(checkAnswer("group by", "GROUP BY"), "채점: 공백/대소문자");
 assert(checkAnswer("싱글톤패턴", ["싱글톤", "싱글톤 패턴", "Singleton"]), "채점: 동의어");
+assert(checkAnswer("그룹바이", "GROUP BY"), "채점: 한글/영문 동의어");
+assert(checkAnswer("싱글톤패틴", "싱글톤패턴"), "채점: 1글자 오탈자");
 assert(!checkAnswer("틀린답", "정답"), "채점: 오답 거부");
+assert(!checkAnswer("3", "2"), "채점: 짧은 답은 유사 허용 안 함");
+
+const today = new Date().toISOString();
+const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+const fourDaysAgo = new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString();
+assert(
+  getDueReviewQuestionIds([{ ...unknownAttempt, answeredAt: today }]).includes("q1"),
+  "복습: 모름은 당일 큐에 포함",
+);
+assert(
+  getDueReviewQuestionIds([{ ...confusedAttempt, answeredAt: yesterday }]).includes("q1"),
+  "복습: 헷갈림은 하루 뒤 포함",
+);
+assert(
+  getDueReviewQuestionIds([
+    { ...confusedAttempt, isCorrect: true, missType: undefined, answeredAt: fourDaysAgo },
+  ]).includes("q1"),
+  "복습: 정답은 3일 뒤 포함",
+);
+assert(
+  !getDueReviewQuestionIds([{ ...confusedAttempt, answeredAt: today }]).includes("q1"),
+  "복습: 헷갈림은 당일 제외",
+);
+assert(
+  !getDueReviewQuestionIds([
+    { ...confusedAttempt, isCorrect: true, missType: undefined, answeredAt: yesterday },
+  ]).includes("q1"),
+  "복습: 정답은 하루 뒤 제외",
+);
 
 const shuffled = shuffleArray([1, 2, 3, 4, 5, 6, 7, 8]);
 assert(shuffled.length === 8, "셔플 길이 유지");

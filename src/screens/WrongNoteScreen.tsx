@@ -7,11 +7,12 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
-import { Bookmark as BookmarkIcon, Play, RefreshCw, Layers } from 'lucide-react-native';
+import { Bookmark as BookmarkIcon, Play, RefreshCw, Layers, Sparkles } from 'lucide-react-native';
 import { useSettingsStore } from '../store/settingsStore';
 import { AttemptRepository, WrongQuestionSummary } from '../repositories/attemptRepository';
 import { BookmarkRepository } from '../repositories/bookmarkRepository';
 import { QuestionRepository } from '../repositories/questionRepository';
+import { TutorRepository } from '../repositories/tutorRepository';
 import { Question } from '../types/question';
 import { triggerHaptic } from '../utils/haptics';
 import { COLORS } from '../utils/theme';
@@ -19,6 +20,7 @@ import { Header } from '../components/common/Header';
 import { Card } from '../components/common/Card';
 import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
+import { AITutorModal } from '../components/quiz/AITutorModal';
 
 type FilterType = 'ALL' | 'RECENT' | 'MOST_WRONG' | 'UNKNOWN' | 'BOOKMARK';
 
@@ -35,12 +37,16 @@ export const WrongNoteScreen: React.FC<WrongNoteScreenProps> = ({ onStartQuiz })
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
   const [displayQuestions, setDisplayQuestions] = useState<Question[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [tutorHistoryIds, setTutorHistoryIds] = useState<string[]>([]);
+  const [tutorQuestion, setTutorQuestion] = useState<Question | null>(null);
 
   const loadData = useCallback(async () => {
     const rawSummaries = await AttemptRepository.getWrongQuestionSummaries();
     const bIds = await BookmarkRepository.getBookmarkedQuestionIds();
+    const historyIds = await TutorRepository.getQuestionIdsWithHistory();
     setSummaries(rawSummaries);
     setBookmarkedIds(bIds);
+    setTutorHistoryIds(historyIds);
 
     // 필터별 문제 목록 정렬 및 추출
     let targetIds: string[] = [];
@@ -191,6 +197,7 @@ export const WrongNoteScreen: React.FC<WrongNoteScreenProps> = ({ onStartQuiz })
         renderItem={({ item }) => {
           const summary = summaries.find((s) => s.questionId === item.id);
           const isBm = bookmarkedIds.includes(item.id);
+          const hasTutorHistory = tutorHistoryIds.includes(item.id);
 
           return (
             <Card style={styles.itemCard}>
@@ -209,6 +216,12 @@ export const WrongNoteScreen: React.FC<WrongNoteScreenProps> = ({ onStartQuiz })
                     <>
                       <View style={{ width: 6 }} />
                       <Badge label="헷갈림" variant="danger" />
+                    </>
+                  )}
+                  {hasTutorHistory && (
+                    <>
+                      <View style={{ width: 6 }} />
+                      <Badge label="저장 해설" variant="primary" />
                     </>
                   )}
                 </View>
@@ -237,19 +250,45 @@ export const WrongNoteScreen: React.FC<WrongNoteScreenProps> = ({ onStartQuiz })
                     {` / 총 ${summary.totalAttempts}회`}
                   </Text>
                 )}
-                <Button
-                  title="풀어보기"
-                  variant="secondary"
-                  onPress={() => handleSolveSingle(item)}
-                  style={styles.solveButton}
-                  textStyle={{ fontSize: 13 }}
-                  icon={<Play size={13} color={theme.text} />}
-                />
+                <View style={styles.itemActions}>
+                  {hasTutorHistory && (
+                    <Button
+                      title="해설"
+                      variant="outline"
+                      onPress={() => {
+                        triggerHaptic.selection();
+                        setTutorQuestion(item);
+                      }}
+                      style={styles.solveButton}
+                      textStyle={{ fontSize: 13 }}
+                      icon={<Sparkles size={13} color={theme.primary} />}
+                    />
+                  )}
+                  <Button
+                    title="풀어보기"
+                    variant="secondary"
+                    onPress={() => handleSolveSingle(item)}
+                    style={styles.solveButton}
+                    textStyle={{ fontSize: 13 }}
+                    icon={<Play size={13} color={theme.text} />}
+                  />
+                </View>
               </View>
             </Card>
           );
         }}
       />
+
+      {tutorQuestion && (
+        <AITutorModal
+          visible
+          question={tutorQuestion}
+          onClose={() => {
+            setTutorQuestion(null);
+            void loadData();
+          }}
+        />
+      )}
     </View>
   );
 };
@@ -320,10 +359,18 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: 'rgba(0, 0, 0, 0.05)',
     paddingTop: 10,
+    gap: 8,
+  },
+  itemActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   statText: {
     fontSize: 12,
     fontWeight: '600',
+    flex: 1,
+    marginRight: 8,
   },
   solveButton: {
     height: 32,

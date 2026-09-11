@@ -305,7 +305,7 @@ export const SettingsScreen: React.FC = () => {
               <ShieldCheck size={18} color={theme.subText} />
               <Text style={[styles.infoLabel, { color: theme.subText }]}>앱 버전</Text>
             </View>
-            <Text style={[styles.infoValue, { color: theme.text }]}>1.2.4 (Gemini AI 튜터 탑재)</Text>
+            <Text style={[styles.infoValue, { color: theme.text }]}>1.2.5 (Gemini AI 튜터 탑재)</Text>
           </View>
         </Card>
 
