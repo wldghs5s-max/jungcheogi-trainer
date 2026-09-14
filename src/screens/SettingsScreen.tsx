@@ -6,7 +6,7 @@ import { useUserStore } from '../store/userStore';
 import { AttemptRepository } from '../repositories/attemptRepository';
 import { BookmarkRepository } from '../repositories/bookmarkRepository';
 import { SyncQueueService } from '../storage/syncQueue';
-import { GeminiService } from '../api/geminiService';
+import { GeminiService, cleanApiKey } from '../api/geminiService';
 import { triggerHaptic } from '../utils/haptics';
 import { COLORS } from '../utils/theme';
 import { Header } from '../components/common/Header';
@@ -61,13 +61,15 @@ export const SettingsScreen: React.FC = () => {
 
   const handleSaveApiKey = async () => {
     triggerHaptic.selection();
-    const cleanKey = apiKeyInput.trim();
+    const cleanKey = cleanApiKey(apiKeyInput);
     if (!cleanKey) {
       await GeminiService.saveApiKey('');
       setHasSavedKey(false);
+      setApiKeyInput('');
       Alert.alert('알림', 'Gemini API Key가 삭제되었습니다.');
       return;
     }
+    setApiKeyInput(cleanKey);
 
     setTestingKey(true);
     const testResult = await GeminiService.testConnection(cleanKey);

@@ -5,17 +5,99 @@ export const GEMINI_KEY_STORAGE = "@gemini_api_key";
 
 const GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta";
 
-/** 신규 프로젝트에서 사용 가능한 최신 Flash 모델을 우선 시도합니다. */
-const PREFERRED_MODELS = [
+/**
+ * 408, 429, 500, 502, 503, 504는 일시적 오류로 분류하여 재시도합니다.
+ */
+export const TRANSIENT_STATUSES = [408, 429, 500, 502, 503, 504] as const;
+export const MAX_RETRIES_PER_MODEL = 3;
+
+export const DISCONTINUED_MODEL_REGEX = /gemini-(?:1\.5|2\.0)/i;
+
+/**
+ * 종료된 gemini-1.5 및 gemini-2.0 계열을 완전히 제거한 안정 모델 우선순위 목록입니다.
+ */
+export const PREFERRED_MODELS = [
+  "gemini-2.5-flash",
+  "gemini-2.5-pro",
   "gemini-3.8-flash",
   "gemini-3.7-flash",
-  "gemini-3.6-flash",
   "gemini-3.5-flash",
   "gemini-3.5-flash-lite",
   "gemini-3.1-flash-lite",
-  "gemini-2.5-flash",
-  "gemini-2.0-flash",
 ];
+
+export function cleanApiKey(rawKey: string): string {
+  if (!rawKey) return "";
+  return rawKey
+    .replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "") // 앞뒤 공백 및 보이지 않는 유니코드 문자 제거
+    .replace(/^["']|["']$/g, "") // 앞뒤 따옴표 제거
+    .replace(/^(?:api[_-]?key\s*[:=]\s*)+/i, "") // 복사 시 포함된 접두사 제거
+    .trim();
+}
+
+export function isTransientStatus(status: number): boolean {
+  return TRANSIENT_STATUSES.includes(status as any);
+}
+
+export function isTerminalAuthStatus(status: number, message?: string): boolean {
+  if (status === 400 || status === 401 || status === 403) return true;
+  if (
+    message &&
+    /api key|invalid argument|unregistered caller|api_key_invalid/i.test(message)
+  ) {
+    return true;
+  }
+  return false;
+}
+
+export function calculateBackoffDelay(attempt: number): number {
+  // attempt 1 -> 약 1초, attempt 2 -> 약 2초, attempt 3 -> 약 4초 + 0~300ms jitter
+  const base = 1000 * Math.pow(2, attempt - 1);
+  const jitter = Math.random() * 300;
+  return base + jitter;
+}
+
+export function sanitizeLogMessage(message: string, apiKey?: string): string {
+  let sanitized = message || "";
+  if (apiKey && apiKey.length > 3) {
+    const escaped = apiKey.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    sanitized = sanitized.replace(new RegExp(escaped, "g"), "[REDACTED_API_KEY]");
+  }
+  sanitized = sanitized.replace(/AQ\.[A-Za-z0-9_-]+/g, "[REDACTED_AQ_KEY]");
+  sanitized = sanitized.replace(/AIzaSy[A-Za-z0-9_-]+/g, "[REDACTED_AIZA_KEY]");
+  return sanitized;
+}
+
+export function logGeminiError(
+  status: number,
+  model: string,
+  attempt: number,
+  rawMessage: string,
+  apiKey?: string,
+): void {
+  const cleanMsg = sanitizeLogMessage(rawMessage, apiKey);
+  console.warn(
+    `[GeminiService] status=${status}, model=${model}, attempt=${attempt}, error=${cleanMsg}`,
+  );
+}
+
+export function formatGeminiErrorMessage(error: {
+  status: number;
+  message: string;
+  model?: string;
+}): string {
+  // 503 및 일시적 오류는 API 키/권한 문제가 아니므로 일시적 혼잡 안내문으로 표시
+  if (isTransientStatus(error.status) || error.status === 503) {
+    return "Gemini 서버가 일시적으로 혼잡합니다. 잠시 후 다시 시도해 주세요.";
+  }
+  if (isTerminalAuthStatus(error.status, error.message)) {
+    return `Gemini API Key 인증 오류 (${error.status})\n\n사유: ${error.message}\n\n구글 AI Studio에서 발급한 올바른 API Key인지 확인해 주세요. (발급 직후라면 구글 서버 동기화에 1~2분 소요될 수 있습니다.)`;
+  }
+  if (error.status === 404) {
+    return "지원되는 Gemini 모델을 찾을 수 없습니다. 프로젝트 설정과 사용 가능한 모델을 확인해 주세요.";
+  }
+  return `서버 응답 오류 (${error.status}): ${error.message}`;
+}
 
 export interface TutorContext {
   question: Question;
@@ -24,16 +106,17 @@ export interface TutorContext {
   missType?: "WRONG" | "UNKNOWN";
 }
 
-interface GeminiRequestError {
+export interface GeminiRequestError {
   status: number;
   message: string;
+  model?: string;
 }
 
 function authHeaders(apiKey: string): Record<string, string> {
-  // AQ. 인증키는 ?key= 쿼리로는 401이 납니다. 헤더만 사용합니다.
+  // AQ. 인증키는 x-goog-api-key 헤더로 전송해야 정상 인증됩니다.
   return {
     "Content-Type": "application/json",
-    "x-goog-api-key": apiKey,
+    "x-goog-api-key": cleanApiKey(apiKey),
   };
 }
 
@@ -58,14 +141,19 @@ function parseErrorMessage(data: unknown, status: number): string {
   return message || `HTTP ${status}`;
 }
 
-function isAuthStatus(status: number): boolean {
-  return status === 401 || status === 403;
-}
+export async function listAvailableModels(
+  apiKey: string,
+  fetchFn: typeof fetch = fetch,
+): Promise<string[]> {
+  const cleanKey = cleanApiKey(apiKey);
+  const isLegacyKey = cleanKey.startsWith("AIza");
+  const url = isLegacyKey
+    ? `${GEMINI_BASE}/models?key=${encodeURIComponent(cleanKey)}`
+    : `${GEMINI_BASE}/models`;
 
-async function listAvailableModels(apiKey: string): Promise<string[]> {
-  const response = await fetch(`${GEMINI_BASE}/models`, {
+  const response = await fetchFn(url, {
     method: "GET",
-    headers: authHeaders(apiKey),
+    headers: authHeaders(cleanKey),
   });
 
   const errorData = response.ok ? null : await response.json().catch(() => ({}));
@@ -86,22 +174,31 @@ async function listAvailableModels(apiKey: string): Promise<string[]> {
       (model.supportedGenerationMethods || []).includes("generateContent"),
     )
     .map((model) => String(model.name || "").replace(/^models\//, ""))
-    .filter(Boolean);
+    .filter((name) => Boolean(name) && !DISCONTINUED_MODEL_REGEX.test(name));
 }
 
-function pickModelsToTry(available: string[]): string[] {
-  const availableSet = new Set(available);
-  const preferred = PREFERRED_MODELS.filter((name) => availableSet.has(name));
-  if (preferred.length > 0) return preferred;
+export function pickModelsToTry(available: string[]): string[] {
+  // 실제 반환된 모델 중 종료된 모델 제외
+  const activeAvailable = available.filter(
+    (name) => Boolean(name) && !DISCONTINUED_MODEL_REGEX.test(name),
+  );
+  const availableSet = new Set(activeAvailable);
 
-  const flashModels = available.filter(
+  // 1. PREFERRED_MODELS 중 실제 반환된 목록에 포함된 것 우선 선택
+  const preferredInAvailable = PREFERRED_MODELS.filter((name) => availableSet.has(name));
+
+  // 2. 그 외 실제 반환된 generateContent 지원 모델 (image/tts/live 제외)
+  const othersInAvailable = activeAvailable.filter(
     (name) =>
-      name.includes("flash") &&
+      !preferredInAvailable.includes(name) &&
       !name.includes("image") &&
       !name.includes("tts") &&
       !name.includes("live"),
   );
-  return flashModels.length > 0 ? flashModels : PREFERRED_MODELS;
+
+  const combined = [...preferredInAvailable, ...othersInAvailable];
+  // 실제 반환된 모델만 사용 (Requirement 9)
+  return combined.length > 0 ? combined : activeAvailable;
 }
 
 async function generateContent(
@@ -110,22 +207,26 @@ async function generateContent(
   prompt: string,
   maxOutputTokens: number,
   extraConfig: Record<string, unknown> = {},
+  fetchFn: typeof fetch = fetch,
 ): Promise<{ text: string | null; error?: GeminiRequestError }> {
-  const response = await fetch(
-    `${GEMINI_BASE}/models/${encodeURIComponent(model)}:generateContent`,
-    {
-      method: "POST",
-      headers: authHeaders(apiKey),
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.4,
-          maxOutputTokens,
-          ...extraConfig,
-        },
-      }),
-    },
-  );
+  const cleanKey = cleanApiKey(apiKey);
+  const isLegacyKey = cleanKey.startsWith("AIza");
+  const url = isLegacyKey
+    ? `${GEMINI_BASE}/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(cleanKey)}`
+    : `${GEMINI_BASE}/models/${encodeURIComponent(model)}:generateContent`;
+
+  const response = await fetchFn(url, {
+    method: "POST",
+    headers: authHeaders(cleanKey),
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.4,
+        maxOutputTokens,
+        ...extraConfig,
+      },
+    }),
+  });
 
   const data = await response.json().catch(() => ({}));
   if (response.ok) {
@@ -137,32 +238,222 @@ async function generateContent(
     error: {
       status: response.status,
       message: parseErrorMessage(data, response.status),
+      model,
     },
   };
 }
 
+export interface RetryExecutionOptions {
+  maxOutputTokens?: number;
+  temperature?: number;
+  extraConfig?: Record<string, unknown>;
+  fetchFn?: typeof fetch;
+  sleepFn?: (ms: number) => Promise<void>;
+  models?: string[];
+  maxRetries?: number;
+  onAttempt?: (attemptInfo: {
+    model: string;
+    attempt: number;
+    status?: number;
+    delay?: number;
+  }) => void;
+}
+
+export type ExecutionResult =
+  | { ok: true; text: string; model: string }
+  | {
+      ok: false;
+      error: {
+        status: number;
+        message: string;
+        model?: string;
+      };
+    };
+
 export class GeminiService {
   static async getApiKey(): Promise<string | null> {
-    return await LocalStorage.getItem<string>(GEMINI_KEY_STORAGE);
+    const raw = await LocalStorage.getItem<string>(GEMINI_KEY_STORAGE);
+    if (!raw) return null;
+    const cleaned = cleanApiKey(raw);
+    return cleaned || null;
   }
 
   static async saveApiKey(key: string): Promise<void> {
-    const trimmed = key.trim();
-    if (!trimmed) {
+    const cleaned = cleanApiKey(key);
+    if (!cleaned) {
       await LocalStorage.removeItem(GEMINI_KEY_STORAGE);
       return;
     }
-    await LocalStorage.setItem(GEMINI_KEY_STORAGE, trimmed);
+    await LocalStorage.setItem(GEMINI_KEY_STORAGE, cleaned);
   }
 
-  static async askTutor(context: TutorContext): Promise<string> {
+  /**
+   * testConnection, askTutor, generateText가 공통으로 사용하는 단일 재시도 및 모델 폴백 실행기입니다.
+   */
+  static async executeWithRetry(
+    apiKey: string,
+    prompt: string,
+    options?: RetryExecutionOptions,
+  ): Promise<ExecutionResult> {
+    const cleanKey = cleanApiKey(apiKey);
+    if (!cleanKey) {
+      return {
+        ok: false,
+        error: { status: 400, message: "API Key를 입력해 주세요." },
+      };
+    }
+
+    const fetchFn = options?.fetchFn ?? fetch;
+    const sleepFn =
+      options?.sleepFn ??
+      ((ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)));
+
+    let modelsToTry: string[] = options?.models ? [...options.models] : [];
+
+    if (modelsToTry.length === 0) {
+      try {
+        const available = await listAvailableModels(cleanKey, fetchFn);
+        if (available.length > 0) {
+          // 9. listAvailableModels가 성공하면 실제 반환된 generateContent 지원 모델만 사용한다.
+          modelsToTry = pickModelsToTry(available);
+        }
+      } catch (listError) {
+        const err = listError as GeminiRequestError;
+        // 5. 400, 401, 403은 재시도하지 않고 즉시 오류를 반환한다.
+        if (isTerminalAuthStatus(err.status, err.message)) {
+          logGeminiError(err.status, "models.list", 1, err.message, cleanKey);
+          return {
+            ok: false,
+            error: { status: err.status, message: err.message },
+          };
+        }
+        // 10. 모델 목록 조회가 일시적으로 실패하면 안정 모델 목록으로 폴백하되, 종료된 모델은 사용하지 않는다.
+      }
+    }
+
+    if (modelsToTry.length === 0) {
+      modelsToTry = PREFERRED_MODELS.filter((m) => !DISCONTINUED_MODEL_REGEX.test(m));
+    }
+
+    let lastError: { status: number; message: string; model?: string } | null = null;
+    const maxRetries = options?.maxRetries ?? MAX_RETRIES_PER_MODEL; // 3회 재시도
+
+    for (const model of modelsToTry) {
+      // 8 & 10. 종료된 모델은 절대 사용하지 않는다.
+      if (DISCONTINUED_MODEL_REGEX.test(model)) {
+        continue;
+      }
+
+      // 2. 일시적 오류 발생 시 동일 모델을 최대 3회 재시도한다 (초회 1 + 재시도 3 = 총 4회 시도)
+      const totalAttempts = 1 + maxRetries;
+
+      for (let attempt = 1; attempt <= totalAttempts; attempt++) {
+        try {
+          const result = await generateContent(
+            cleanKey,
+            model,
+            prompt,
+            options?.maxOutputTokens ?? 2048,
+            options?.extraConfig,
+            fetchFn,
+          );
+
+          if (result.text) {
+            options?.onAttempt?.({ model, attempt, status: 200 });
+            return {
+              ok: true,
+              text: result.text,
+              model,
+            };
+          }
+
+          const err = result.error ?? { status: 0, message: "응답을 받지 못했습니다." };
+          lastError = { status: err.status, message: err.message, model };
+
+          // 12. 민감한 API 키를 제외하고 status, model, attempt, 서버 오류 메시지를 개발 로그로 남긴다.
+          // 13. API 키를 콘솔이나 오류문에 절대 출력하지 않는다.
+          logGeminiError(err.status, model, attempt, err.message, cleanKey);
+
+          // 5. 400, 401, 403은 재시도하지 않고 즉시 오류를 반환한다.
+          if (isTerminalAuthStatus(err.status, err.message)) {
+            options?.onAttempt?.({ model, attempt, status: err.status });
+            return {
+              ok: false,
+              error: {
+                status: err.status,
+                message: err.message,
+                model,
+              },
+            };
+          }
+
+          // 6. 404는 재시도하지 않고 다음 모델로 이동한다.
+          if (err.status === 404) {
+            options?.onAttempt?.({ model, attempt, status: 404 });
+            break; // 현재 모델의 재시도 루프 중단 -> 다음 모델로 이동
+          }
+
+          // 1. 408, 429, 500, 502, 503, 504는 일시적 오류로 분류한다.
+          if (isTransientStatus(err.status) || err.status === 0) {
+            if (attempt < totalAttempts) {
+              // 3. 재시도 간격은 약 1초, 2초, 4초의 지수 백오프와 0~300ms jitter를 사용한다.
+              const delay = calculateBackoffDelay(attempt);
+              options?.onAttempt?.({ model, attempt, status: err.status, delay });
+              await sleepFn(delay);
+              continue; // 동일 모델 재시도
+            } else {
+              // 4. 동일 모델 재시도가 모두 실패하면 다음 사용 가능 모델을 시도한다.
+              options?.onAttempt?.({ model, attempt, status: err.status });
+              break;
+            }
+          }
+
+          // 기타 상태코드도 다음 모델로 이동
+          options?.onAttempt?.({ model, attempt, status: err.status });
+          break;
+        } catch (networkErr: unknown) {
+          const message =
+            networkErr instanceof Error ? networkErr.message : "네트워크 연결 오류";
+          lastError = { status: 0, message, model };
+          logGeminiError(0, model, attempt, message, cleanKey);
+
+          if (attempt < totalAttempts) {
+            const delay = calculateBackoffDelay(attempt);
+            options?.onAttempt?.({ model, attempt, status: 0, delay });
+            await sleepFn(delay);
+            continue;
+          } else {
+            options?.onAttempt?.({ model, attempt, status: 0 });
+            break;
+          }
+        }
+      }
+    }
+
+    return {
+      ok: false,
+      error: lastError ?? {
+        status: 0,
+        message: "지원되는 Gemini 모델을 찾을 수 없습니다.",
+      },
+    };
+  }
+
+  static async askTutor(
+    context: TutorContext,
+    options?: {
+      fetchFn?: typeof fetch;
+      sleepFn?: (ms: number) => Promise<void>;
+      models?: string[];
+    },
+  ): Promise<string> {
     const apiKey = await this.getApiKey();
 
     if (!apiKey) {
       return `Gemini API Key가 아직 등록되지 않았습니다.\n\n하단 메뉴의 [설정] 탭에서 구글 Gemini API Key를 등록하시면 실시간 1:1 맞춤형 과외 해설을 받으실 수 있습니다.\n\n(구글 AI Studio에서 무료로 발급 가능, AQ. 로 시작하는 인증키도 지원)`;
     }
 
-    const cleanKey = apiKey.trim();
+    const cleanKey = cleanApiKey(apiKey);
     const { question, userAnswer, userPrompt, missType } = context;
     const chapterPath = [question.subject, question.category, question.subCategory]
       .filter(Boolean)
@@ -214,57 +505,18 @@ ${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.c
 ${userPrompt}
 `;
 
-    try {
-      let modelsToTry = PREFERRED_MODELS;
-      try {
-        const available = await listAvailableModels(cleanKey);
-        if (available.length > 0) {
-          modelsToTry = pickModelsToTry(available);
-        }
-      } catch (listError) {
-        const err = listError as GeminiRequestError;
-        if (err?.status && isAuthStatus(err.status)) {
-          return `Gemini API Key 인증 오류 (${err.status})\n\n사유: ${err.message}\n\nAQ. 로 시작하는 인증키는 AI Studio에서 발급한 최신 키입니다. [설정]에서 키를 다시 붙여넣고 검증해 주세요.`;
-        }
-      }
+    const result = await this.executeWithRetry(cleanKey, systemPrompt, {
+      maxOutputTokens: isUnknown ? 4096 : 2048,
+      fetchFn: options?.fetchFn,
+      sleepFn: options?.sleepFn,
+      models: options?.models,
+    });
 
-      let lastError: GeminiRequestError | null = null;
-
-      for (const model of modelsToTry) {
-        try {
-          const result = await generateContent(
-            cleanKey,
-            model,
-            systemPrompt,
-            isUnknown ? 4096 : 2048,
-          );
-          if (result.text) {
-            return result.text;
-          }
-          if (result.error) {
-            lastError = result.error;
-            if (isAuthStatus(result.error.status)) {
-              return `Gemini API Key 인증 오류 (${result.error.status})\n\n사유: ${result.error.message}\n\n[설정] 탭에서 구글 AI Studio에서 발급받은 올바른 API Key인지 다시 확인해 주세요.`;
-            }
-            if (result.error.status === 404) {
-              continue;
-            }
-          }
-        } catch (e: unknown) {
-          const message = e instanceof Error ? e.message : "네트워크 연결 오류";
-          lastError = { status: 0, message };
-        }
-      }
-
-      if (lastError) {
-        return `AI 튜터 서버 응답 오류 (${lastError.status}): ${lastError.message}\n\n사용 가능한 Gemini 모델을 찾지 못했거나 키 권한에 문제가 있습니다. [설정]에서 키를 다시 검증해 주세요.`;
-      }
-
-      return "AI 튜터가 답변을 생성하지 못했습니다. 잠시 후 다시 질문해 주세요.";
-    } catch (e: unknown) {
-      const message = e instanceof Error ? e.message : "알 수 없는 오류";
-      return `네트워크 오류: ${message}`;
+    if (result.ok) {
+      return result.text;
     }
+
+    return formatGeminiErrorMessage(result.error);
   }
 
   static async generateText(
@@ -273,6 +525,9 @@ ${userPrompt}
       maxOutputTokens?: number;
       temperature?: number;
       json?: boolean;
+      fetchFn?: typeof fetch;
+      sleepFn?: (ms: number) => Promise<void>;
+      models?: string[];
     },
   ): Promise<{ ok: true; text: string } | { ok: false; message: string }> {
     const apiKey = await this.getApiKey();
@@ -284,20 +539,7 @@ ${userPrompt}
       };
     }
 
-    const cleanKey = apiKey.trim();
-    let modelsToTry = PREFERRED_MODELS;
-    try {
-      const available = await listAvailableModels(cleanKey);
-      if (available.length > 0) {
-        modelsToTry = pickModelsToTry(available);
-      }
-    } catch (listError) {
-      const err = listError as GeminiRequestError;
-      if (err?.status && isAuthStatus(err.status)) {
-        return { ok: false, message: `인증 오류 (${err.status}): ${err.message}` };
-      }
-    }
-
+    const cleanKey = cleanApiKey(apiKey);
     const extraConfig: Record<string, unknown> = {};
     if (options?.temperature !== undefined) {
       extraConfig.temperature = options.temperature;
@@ -306,99 +548,55 @@ ${userPrompt}
       extraConfig.responseMimeType = "application/json";
     }
 
-    let lastError: GeminiRequestError | null = null;
-    for (const model of modelsToTry) {
-      const result = await generateContent(
-        cleanKey,
-        model,
-        prompt,
-        options?.maxOutputTokens ?? 2048,
-        extraConfig,
-      );
-      if (result.text) {
-        return { ok: true, text: result.text };
-      }
-      if (result.error) {
-        lastError = result.error;
-        if (isAuthStatus(result.error.status)) {
-          return {
-            ok: false,
-            message: `인증 오류 (${result.error.status}): ${result.error.message}`,
-          };
-        }
-        if (result.error.status === 404) {
-          continue;
-        }
-      }
+    const result = await this.executeWithRetry(cleanKey, prompt, {
+      maxOutputTokens: options?.maxOutputTokens ?? 2048,
+      extraConfig,
+      fetchFn: options?.fetchFn,
+      sleepFn: options?.sleepFn,
+      models: options?.models,
+    });
+
+    if (result.ok) {
+      return { ok: true, text: result.text };
     }
 
     return {
       ok: false,
-      message: lastError
-        ? `생성 실패 (${lastError.status}): ${lastError.message}`
-        : "Gemini가 응답을 만들지 못했습니다.",
+      message: formatGeminiErrorMessage(result.error),
     };
   }
 
   static async testConnection(
     apiKey: string,
+    options?: {
+      fetchFn?: typeof fetch;
+      sleepFn?: (ms: number) => Promise<void>;
+      models?: string[];
+    },
   ): Promise<{ success: boolean; message: string; model?: string }> {
-    const cleanKey = apiKey.trim();
+    const cleanKey = cleanApiKey(apiKey);
     if (!cleanKey) {
       return { success: false, message: "API Key를 입력해 주세요." };
     }
 
-    try {
-      let modelsToTry = PREFERRED_MODELS;
-      try {
-        const available = await listAvailableModels(cleanKey);
-        if (available.length > 0) {
-          modelsToTry = pickModelsToTry(available);
-        }
-      } catch (listError) {
-        const err = listError as GeminiRequestError;
-        if (err?.status && isAuthStatus(err.status)) {
-          return {
-            success: false,
-            message: `인증 오류 (${err.status}): ${err.message}\nAQ. 인증키는 URL이 아니라 헤더로만 전송해야 합니다.`,
-          };
-        }
-      }
+    const result = await this.executeWithRetry(cleanKey, "Hello", {
+      maxOutputTokens: 32,
+      fetchFn: options?.fetchFn,
+      sleepFn: options?.sleepFn,
+      models: options?.models,
+    });
 
-      for (const model of modelsToTry) {
-        const result = await generateContent(cleanKey, model, "Hello", 32);
-        if (result.text) {
-          return {
-            success: true,
-            message: `성공! 정상 연결되었습니다. (${model})`,
-            model,
-          };
-        }
-        if (result.error) {
-          if (isAuthStatus(result.error.status)) {
-            return {
-              success: false,
-              message: `인증 오류 (${result.error.status}): ${result.error.message}`,
-            };
-          }
-          if (result.error.status === 404) {
-            continue;
-          }
-          return {
-            success: false,
-            message: `요청 오류 (${result.error.status}): ${result.error.message}`,
-          };
-        }
-      }
-
+    if (result.ok) {
       return {
-        success: false,
-        message:
-          "지원되는 Gemini 모델을 찾을 수 없습니다. 키 권한과 프로젝트 설정을 확인해 주세요.",
+        success: true,
+        message: `성공! 정상 연결되었습니다. (${result.model})`,
+        model: result.model,
       };
-    } catch (e: unknown) {
-      const message = e instanceof Error ? e.message : "연결할 수 없습니다.";
-      return { success: false, message: `네트워크 오류: ${message}` };
     }
+
+    return {
+      success: false,
+      message: formatGeminiErrorMessage(result.error),
+    };
   }
 }

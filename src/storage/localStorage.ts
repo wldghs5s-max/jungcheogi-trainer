@@ -87,7 +87,8 @@ export class LocalStorage {
     try {
       return JSON.parse(raw);
     } catch {
-      return null;
+      // JSON 파싱 실패 시 원본 문자열 그대로 반환 (하위 호환 및 일반 문자열 키 보존)
+      return raw as unknown as T;
     }
   }
 
