@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity, Alert, TextInput, ScrollView, Linking } from 'react-native';
-import { Moon, Vibrate, Target, Trash2, Smartphone, ShieldCheck, Cloud, Sparkles, Key, Check, ExternalLink } from 'lucide-react-native';
+import { Moon, Vibrate, Target, Trash2, Smartphone, ShieldCheck, Cloud, Sparkles, Key, Check, ExternalLink, Cpu } from 'lucide-react-native';
 import { useSettingsStore } from '../store/settingsStore';
 import { useUserStore } from '../store/userStore';
 import { AttemptRepository } from '../repositories/attemptRepository';
@@ -12,6 +12,7 @@ import { COLORS } from '../utils/theme';
 import { Header } from '../components/common/Header';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
+import { ProgrammingAdminModal } from '../components/programming/ProgrammingAdminModal';
 
 const GEMINI_KEY_GUIDE_URL = 'https://aistudio.google.com/apikey';
 
@@ -23,6 +24,7 @@ export const SettingsScreen: React.FC = () => {
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [hasSavedKey, setHasSavedKey] = useState(false);
   const [testingKey, setTestingKey] = useState(false);
+  const [showAdminModal, setShowAdminModal] = useState(false);
 
   useEffect(() => {
     GeminiService.getApiKey().then((key) => {
@@ -290,6 +292,28 @@ export const SettingsScreen: React.FC = () => {
           </View>
         </Card>
 
+        {/* 프로그래밍 문제 엔진 진단 및 관리 */}
+        <Card style={styles.card}>
+          <View style={styles.targetHeader}>
+            <Cpu size={20} color={theme.primary} />
+            <Text style={[styles.sectionTitle, { color: theme.text, marginLeft: 8 }]}>
+              프로그래밍 문제 엔진 진단 & 관리
+            </Text>
+          </View>
+          <Text style={[styles.targetSub, { color: theme.subText, marginBottom: 12 }]}>
+            10종 독립 생성기 상태, 구조 지문 중복률, 다양성 벤치마크 및 Gemini 생성 후보를 검토합니다.
+          </Text>
+          <Button
+            title="엔진 진단 및 모니터링 열기"
+            variant="outline"
+            onPress={() => {
+              triggerHaptic.selection();
+              setShowAdminModal(true);
+            }}
+            style={{ borderColor: theme.primary }}
+          />
+        </Card>
+
         {/* 기기 및 앱 정보 */}
         <Card style={styles.card}>
           <Text style={[styles.sectionTitle, { color: theme.text }]}>앱 정보</Text>
@@ -315,6 +339,11 @@ export const SettingsScreen: React.FC = () => {
           <Text style={[styles.dangerText, { color: theme.wrong }]}>학습 기록 전체 초기화</Text>
         </TouchableOpacity>
       </ScrollView>
+
+      <ProgrammingAdminModal
+        visible={showAdminModal}
+        onClose={() => setShowAdminModal(false)}
+      />
     </View>
   );
 };

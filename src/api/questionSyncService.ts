@@ -3,7 +3,9 @@ import { LocalStorage, STORAGE_KEYS } from "../storage/localStorage";
 import { SyncQueueService } from "../storage/syncQueue";
 import { AttemptRepository } from "../repositories/attemptRepository";
 import { Question } from "../types/question";
-import { generateProgrammingPracticeBundle } from "./programmingGenerator";
+import { QuestionRepository } from "../repositories/questionRepository";
+import { generateProgrammingPracticeBundle, generateProgrammingPracticeBundleAsync } from "./programmingGenerator";
+
 
 // 클라우드 서버에서 제공되는 최신 회차 신규 기출 및 변형 문제 패키지
 export const CLOUD_NEW_QUESTIONS: Question[] = [
@@ -223,19 +225,15 @@ export class QuestionSyncService {
   }> {
     try {
       const cached = await this.getCachedServerQuestions();
-      const startIndex =
-        cached.filter((q) => q.id.startsWith("AUTO_GEN_")).length + 1;
-      const generated = generateProgrammingPracticeBundle(startIndex);
+      const startIndex = cached.length + 1;
+      const generated = await generateProgrammingPracticeBundleAsync(startIndex, 6);
 
-      const updatedCache = [...cached, ...generated];
-      await LocalStorage.setItem(
-        STORAGE_KEYS.CACHED_SERVER_QUESTIONS,
-        updatedCache,
-      );
+      const addedCount = await QuestionRepository.appendCachedQuestions(generated);
+      const totalServerCount = (await this.getCachedServerQuestions()).length;
 
       return {
-        addedCount: generated.length,
-        totalServerCount: updatedCache.length,
+        addedCount,
+        totalServerCount,
         source: "generated",
       };
     } catch (e) {

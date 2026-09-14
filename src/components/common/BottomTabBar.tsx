@@ -6,12 +6,12 @@ import {
   StyleSheet,
   Platform,
 } from "react-native";
-import { Home, BookX, BarChart3, Settings } from "lucide-react-native";
+import { Home, GraduationCap, BookX, BarChart3, Settings } from "lucide-react-native";
 import { useSettingsStore } from "../../store/settingsStore";
 import { triggerHaptic } from "../../utils/haptics";
 import { COLORS } from "../../utils/theme";
 
-export type TabType = "home" | "wrong_note" | "statistics" | "settings";
+export type TabType = "home" | "theory" | "wrong_note" | "statistics" | "settings";
 
 interface BottomTabBarProps {
   currentTab: TabType;
@@ -34,6 +34,7 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
 
   const tabs: { key: TabType; label: string; icon: any }[] = [
     { key: "home", label: "홈", icon: Home },
+    { key: "theory", label: "이론·두음", icon: GraduationCap },
     { key: "wrong_note", label: "오답노트", icon: BookX },
     { key: "statistics", label: "통계", icon: BarChart3 },
     { key: "settings", label: "설정", icon: Settings },

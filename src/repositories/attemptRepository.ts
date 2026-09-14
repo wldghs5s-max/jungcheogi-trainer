@@ -1,4 +1,4 @@
-﻿import { LocalStorage, STORAGE_KEYS } from '../storage/localStorage';
+import { LocalStorage, STORAGE_KEYS } from '../storage/localStorage';
 import { isUnknownAttempt, MissType, QuizAttempt } from '../types/attempt';
 
 export interface WrongQuestionSummary {
@@ -30,6 +30,14 @@ export class AttemptRepository {
   static async getAllAttempts(): Promise<QuizAttempt[]> {
     const attempts = await LocalStorage.getItem<QuizAttempt[]>(STORAGE_KEYS.QUIZ_ATTEMPTS);
     return attempts || [];
+  }
+
+  /**
+   * 한 번이라도 시도(풀이)한 문제 ID 집합을 반환합니다.
+   */
+  static async getAttemptedQuestionIds(): Promise<Set<string>> {
+    const attempts = await this.getAllAttempts();
+    return new Set(attempts.map((a) => a.questionId));
   }
 
   /**

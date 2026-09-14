@@ -1,4 +1,4 @@
-﻿import { ALL_QUESTIONS } from '../data/questions';
+import { ALL_QUESTIONS } from '../data/questions';
 import { Question, Subject } from '../types/question';
 import { LocalStorage, STORAGE_KEYS } from '../storage/localStorage';
 import { shuffleArray } from '../utils/quiz';
@@ -18,14 +18,76 @@ export class QuestionRepository {
 
   static async appendCachedQuestions(questions: Question[]): Promise<number> {
     await this.loadCachedServerQuestions();
-    const existingIds = new Set(this.getAll().map((q) => q.id));
-    const existingStems = new Set(
-      this.getAll().map((q) => q.question.replace(/\s+/g, "").toUpperCase()),
+    const allExisting = this.getAll();
+    const existingIds = new Set(allExisting.map((q) => q.id));
+
+    // 일반 문제 중복 기준: subject + 정규화된 question
+    const existingGeneralStems = new Set(
+      allExisting
+        .filter((q) => q.subject !== '프로그래밍언어활용' && !q.code)
+        .map((q) => `${q.subject}:${q.question.replace(/\s+/g, '').toUpperCase()}`),
     );
-    const toAdd = questions.filter((q) => {
-      const stem = q.question.replace(/\s+/g, "").toUpperCase();
-      return !existingIds.has(q.id) && !existingStems.has(stem);
-    });
+
+    // 프로그래밍 문제 중복 기준: structuralFingerprint 및 정규화된 소스 코드
+    const existingFingerprints = new Set(
+      allExisting
+        .filter((q) => q.structuralFingerprint)
+        .map((q) => q.structuralFingerprint as string),
+    );
+    const existingCodeKeys = new Set(
+      allExisting
+        .filter((q) => q.code)
+        .map((q) => `${q.language || q.category}:${q.type || ''}:${(q.code || '').replace(/\s+/g, '')}`),
+    );
+
+    const batchSeenIds = new Set<string>();
+    const batchSeenGeneralStems = new Set<string>();
+    const batchSeenProgKeys = new Set<string>();
+
+    const toAdd: Question[] = [];
+
+    for (const q of questions) {
+      // 1. 검증 미통과(rejected) 또는 미승인 수동검토(manualReviewRequired) 차단
+      if (q.validationStatus === 'rejected' || q.validationStatus === 'manualReviewRequired') {
+        continue;
+      }
+
+      // 2. ID 중복 검사
+      if (existingIds.has(q.id) || batchSeenIds.has(q.id)) {
+        continue;
+      }
+
+      const isProgramming = q.subject === '프로그래밍언어활용' || !!q.code;
+
+      if (isProgramming) {
+        const fp = q.structuralFingerprint;
+        const codeKey = `${q.language || q.category}:${q.type || ''}:${(q.code || '').replace(/\s+/g, '')}`;
+
+        // 구조 지문 중복 검사
+        if (fp && (existingFingerprints.has(fp) || batchSeenProgKeys.has(fp))) {
+          continue;
+        }
+        // 동일 코드 본문 중복 검사
+        if (codeKey.length > 5 && (existingCodeKeys.has(codeKey) || batchSeenProgKeys.has(codeKey))) {
+          continue;
+        }
+
+        batchSeenIds.add(q.id);
+        if (fp) batchSeenProgKeys.add(fp);
+        if (codeKey.length > 5) batchSeenProgKeys.add(codeKey);
+        toAdd.push(q);
+      } else {
+        const stem = `${q.subject}:${q.question.replace(/\s+/g, '').toUpperCase()}`;
+        if (existingGeneralStems.has(stem) || batchSeenGeneralStems.has(stem)) {
+          continue;
+        }
+
+        batchSeenIds.add(q.id);
+        batchSeenGeneralStems.add(stem);
+        toAdd.push(q);
+      }
+    }
+
     if (toAdd.length === 0) return 0;
 
     this.cachedServerQuestions = [...this.cachedServerQuestions, ...toAdd];
@@ -35,6 +97,7 @@ export class QuestionRepository {
     );
     return toAdd.length;
   }
+
 
   /**
    * 기본 정적 문제와 서버에서 다운로드된 신규 문제를 합친 전체 목록을 반환합니다.
@@ -161,4 +224,56 @@ export class QuestionRepository {
 
     return Array.from(selectedMap.values());
   }
+
+  /**
+   * 안 푼 문제만 필터링하여 반환합니다.
+   */
+  static getUnsolvedQuestions(
+    attemptedIds: Set<string>,
+    subject?: Subject,
+    year?: number | null,
+    round?: number | null,
+  ): Question[] {
+    let questions = this.getAll().filter((q) => !attemptedIds.has(q.id));
+    if (subject) {
+      questions = questions.filter((q) => q.subject === subject);
+    }
+    return this.filterByExam(questions, year, round);
+  }
+
+  /**
+   * 이론 항목의 키워드 및 과목에 매칭되는 문제들을 조회합니다.
+   */
+  static getTheoryRelatedQuestions(
+    subject: Subject,
+    keywords: string[],
+    limit = 10,
+  ): Question[] {
+    const allSubjectQuestions = this.getBySubject(subject);
+    if (keywords.length === 0) {
+      return this.shuffle(allSubjectQuestions).slice(0, limit);
+    }
+
+    const lowerKeywords = keywords.map((k) => k.toLowerCase());
+    const matched = allSubjectQuestions.filter((q) => {
+      const targetText = `${q.question} ${q.category} ${q.keywords.join(" ")} ${q.explanation}`.toLowerCase();
+      return lowerKeywords.some((kw) => targetText.includes(kw));
+    });
+
+    const shuffledMatched = this.shuffle(matched);
+    if (shuffledMatched.length >= limit) {
+      return shuffledMatched.slice(0, limit);
+    }
+
+    // 매칭 결과가 limit보다 적으면(0개 포함), 매칭된 문제를 우선 두고 같은 과목 비매칭 문제로 중복 없이 보충
+    const matchedIds = new Set(shuffledMatched.map((q) => q.id));
+    const nonMatched = allSubjectQuestions.filter((q) => !matchedIds.has(q.id));
+    const shuffledNonMatched = this.shuffle(nonMatched);
+    const needed = limit - shuffledMatched.length;
+    const supplemented = shuffledNonMatched.slice(0, needed);
+
+    return [...shuffledMatched, ...supplemented];
+  }
 }
+
+

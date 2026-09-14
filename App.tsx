@@ -23,6 +23,7 @@ import { HomeScreen } from "./src/screens/HomeScreen";
 import { QuizScreen } from "./src/screens/QuizScreen";
 import { ResultScreen } from "./src/screens/ResultScreen";
 import { WrongNoteScreen } from "./src/screens/WrongNoteScreen";
+import { TheoryStudyScreen } from "./src/screens/TheoryStudyScreen";
 import { StatisticsScreen } from "./src/screens/StatisticsScreen";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
 
@@ -169,7 +170,11 @@ export default function App() {
                 onStartQuiz={handleStartQuiz}
                 onGoWrongNote={() => setCurrentTab("wrong_note")}
                 onGoStats={() => setCurrentTab("statistics")}
+                onGoTheory={() => setCurrentTab("theory")}
               />
+            )}
+            {currentTab === "theory" && (
+              <TheoryStudyScreen onStartQuiz={handleStartQuiz} />
             )}
             {currentTab === "wrong_note" && (
               <WrongNoteScreen onStartQuiz={handleStartQuiz} />

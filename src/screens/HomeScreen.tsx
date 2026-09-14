@@ -19,6 +19,9 @@ import {
   Sparkles,
   HelpCircle,
   RotateCcw,
+  GraduationCap,
+  CheckCircle2,
+  Filter,
 } from "lucide-react-native";
 import { useSettingsStore } from "../store/settingsStore";
 import { useUserStore } from "../store/userStore";
@@ -42,12 +45,14 @@ interface HomeScreenProps {
   onStartQuiz: (questions: Question[], title: string) => void;
   onGoWrongNote: () => void;
   onGoStats: () => void;
+  onGoTheory?: () => void;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   onStartQuiz,
   onGoWrongNote,
   onGoStats,
+  onGoTheory,
 }) => {
   const isDarkMode = useSettingsStore((state) => state.isDarkMode);
   const theme = isDarkMode ? COLORS.dark : COLORS.light;
@@ -62,6 +67,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [examRound, setExamRound] = useState<number | null>(null);
   const [unknownQuestions, setUnknownQuestions] = useState<Question[]>([]);
   const [reviewQuestions, setReviewQuestions] = useState<Question[]>([]);
+  // 안 푼 문제 필터링 상태
+  const [onlyUnsolved, setOnlyUnsolved] = useState(false);
+  const [attemptedQuestionIds, setAttemptedQuestionIds] = useState<Set<string>>(new Set());
 
   const examYears = QuestionRepository.getExamYears();
   const examRounds = QuestionRepository.getExamRounds(examYear ?? undefined);
@@ -75,6 +83,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     const attempts = await AttemptRepository.getAllAttempts();
     const calculated = calculateUserStats(attempts);
     setStats(calculated);
+
+    const attemptedIds = await AttemptRepository.getAttemptedQuestionIds();
+    setAttemptedQuestionIds(attemptedIds);
 
     const unknownIds = await AttemptRepository.getUnknownQuestionIds();
     setUnknownQuestions(QuestionRepository.getByIds(unknownIds));
@@ -98,8 +109,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     if (result.addedCount > 0) {
       triggerHaptic.success();
       Alert.alert(
-        "C/Java 문제 생성 완료",
-        `코드 추적 연습 ${result.addedCount}문제를 추가했습니다.\n총 ${QuestionRepository.getAll().length}문제 보유`,
+        "프로그래밍 언어 문제 생성 완료",
+        `10종 독립 생성기에서 코드 추적/변형 ${result.addedCount}문제를 추가했습니다.\n총 ${QuestionRepository.getAll().length}문제 보유`,
       );
     } else {
       triggerHaptic.selection();
@@ -167,6 +178,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     onStartQuiz(quickQuestions, "지하철 5분 퀵 퀴즈");
   };
 
+  // 안 푼 문제만 모아서 10문제 퀵 퀴즈 시작
+  const handleStartUnsolvedQuickQuiz = () => {
+    triggerHaptic.selection();
+    const unsolved = QuestionRepository.getUnsolvedQuestions(attemptedQuestionIds);
+    if (unsolved.length === 0) {
+      Alert.alert(
+        "모든 문제 풀이 완료",
+        "보유 중인 모든 문제를 최소 1번 이상 풀었습니다! 🎉\n오답노트나 과목별 전체 문제로 복습해 보세요.",
+      );
+      return;
+    }
+    const selected = QuestionRepository.shuffle(unsolved).slice(0, 10);
+    onStartQuiz(selected, "안 푼 문제 10선 퀵 퀴즈");
+  };
+
   const startOrAlert = (questions: Question[], title: string, emptyMessage: string) => {
     if (questions.length === 0) {
       Alert.alert("문제 없음", emptyMessage);
@@ -176,6 +202,63 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   };
 
   const handleStartSubjectQuiz = (subject: Subject) => {
+    const filterLabel = [
+      examYear ? `${examYear}년` : null,
+      examRound ? `${examRound}회` : null,
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    // 안 푼 문제만 보기 모드일 때
+    if (onlyUnsolved) {
+      const unsolvedQuestions = QuestionRepository.getUnsolvedQuestions(
+        attemptedQuestionIds,
+        subject,
+        examYear,
+        examRound,
+      );
+
+      if (unsolvedQuestions.length === 0) {
+        Alert.alert(
+          "모든 문제 풀이 완료",
+          `'${subject}' 과목의 문제를 이미 모두 풀었습니다! 🎉\n전체 문제를 다시 복습하시겠습니까?`,
+          [
+            { text: "취소", style: "cancel" },
+            {
+              text: "전체 문제 복습",
+              onPress: () => {
+                const allQuestions = QuestionRepository.shuffle(
+                  QuestionRepository.filterByExam(
+                    QuestionRepository.getBySubject(subject),
+                    examYear,
+                    examRound,
+                  ),
+                );
+                startOrAlert(
+                  allQuestions,
+                  filterLabel
+                    ? `${subject} · ${filterLabel} (전체 복습)`
+                    : `${subject} (전체 복습)`,
+                  "이 과목 문제가 아직 없습니다.",
+                );
+              },
+            },
+          ],
+        );
+        return;
+      }
+
+      startOrAlert(
+        QuestionRepository.shuffle(unsolvedQuestions),
+        filterLabel
+          ? `${subject} · ${filterLabel} (안 푼 문제)`
+          : `${subject} (안 푼 문제)`,
+        "안 푼 문제가 없습니다.",
+      );
+      return;
+    }
+
+    // 일반 전체 문제 풀이
     const questions = QuestionRepository.shuffle(
       QuestionRepository.filterByExam(
         QuestionRepository.getBySubject(subject),
@@ -183,12 +266,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         examRound,
       ),
     );
-    const filterLabel = [
-      examYear ? `${examYear}년` : null,
-      examRound ? `${examRound}회` : null,
-    ]
-      .filter(Boolean)
-      .join(" ");
     startOrAlert(
       questions,
       filterLabel ? `${subject} · ${filterLabel}` : subject,
@@ -317,6 +394,103 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </Card>
         </TouchableOpacity>
 
+        {/* 안 푼 문제 10선 퀵 퀴즈 배너 */}
+        <TouchableOpacity activeOpacity={0.85} onPress={handleStartUnsolvedQuickQuiz}>
+          <Card
+            style={[
+              styles.quickCard,
+              {
+                backgroundColor: isDarkMode ? "#132E27" : "#ECFDF5",
+                borderColor: isDarkMode ? "#059669" : "#10B981",
+              },
+            ]}
+          >
+            <View style={styles.quickLeft}>
+              <View style={[styles.quickIconBox, { backgroundColor: "#10B981" }]}>
+                <CheckCircle2 size={24} color="#FFFFFF" />
+              </View>
+              <View>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    style={[
+                      styles.quickTitleColored,
+                      { color: isDarkMode ? "#E2E8F0" : "#065F46" },
+                    ]}
+                  >
+                    안 푼 문제 10선 퀵 퀴즈
+                  </Text>
+                  <View style={styles.unsolvedCountBadge}>
+                    <Text style={styles.unsolvedCountBadgeText}>
+                      남은 {Math.max(0, totalQuestionsCount - attemptedQuestionIds.size)}문제
+                    </Text>
+                  </View>
+                </View>
+                <Text
+                  style={[
+                    styles.quickDescColored,
+                    { color: isDarkMode ? "#94A3B8" : "#047857" },
+                  ]}
+                >
+                  풀어보지 않은 문제만 골라 무작위 10선 공략
+                </Text>
+              </View>
+            </View>
+            <ChevronRight size={22} color={isDarkMode ? "#94A3B8" : "#059669"} />
+          </Card>
+        </TouchableOpacity>
+
+        {/* 초보자 핵심 이론 & 고빈출 1초 두음 암기장 바로가기 배너 */}
+        {onGoTheory && (
+          <TouchableOpacity activeOpacity={0.85} onPress={onGoTheory}>
+            <Card
+              style={[
+                styles.quickCard,
+                {
+                  backgroundColor: isDarkMode ? "#241D3B" : "#F5F3FF",
+                  borderColor: isDarkMode ? "#7C3AED" : "#DDD6FE",
+                },
+              ]}
+            >
+              <View style={styles.quickLeft}>
+                <View style={[styles.quickIconBox, { backgroundColor: "#8B5CF6" }]}>
+                  <GraduationCap size={24} color="#FFFFFF" />
+                </View>
+                <View>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Text
+                      style={[
+                        styles.quickTitleColored,
+                        { color: isDarkMode ? "#EDE9FE" : "#4C1D95" },
+                      ]}
+                    >
+                      핵심 이론 & 1초 두음 암기장
+                    </Text>
+                    <View
+                      style={[
+                        styles.unsolvedCountBadge,
+                        { backgroundColor: "#8B5CF6" },
+                      ]}
+                    >
+                      <Text style={styles.unsolvedCountBadgeText}>
+                        5개 과목 완비
+                      </Text>
+                    </View>
+                  </View>
+                  <Text
+                    style={[
+                      styles.quickDescColored,
+                      { color: isDarkMode ? "#C4B5FD" : "#6D28D9" },
+                    ]}
+                  >
+                    초보자 맞춤 일상 비유 + 출퇴근 1초 고빈출 두음
+                  </Text>
+                </View>
+              </View>
+              <ChevronRight size={22} color={isDarkMode ? "#C4B5FD" : "#7C3AED"} />
+            </Card>
+          </TouchableOpacity>
+        )}
+
         {reviewQuestions.length > 0 && (
           <Card style={styles.actionCueCard} onPress={handleStartReview}>
             <View style={styles.actionCueRow}>
@@ -419,10 +593,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </View>
             <View style={styles.syncInfo}>
               <Text style={[styles.syncTitle, { color: theme.text }]}>
-                C/Java 코드 추적 생성
+                C/Java/Python 문제 생성
               </Text>
               <Text style={[styles.syncSub, { color: theme.subText }]}>
-                오프라인 로직으로 변형 6문제 추가
+                10종 독립 생성기로 변형 6문제 추가
               </Text>
             </View>
             <Button
@@ -470,14 +644,50 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </View>
         </Card>
 
-        {/* 과목별 문제 풀이 섹션 */}
-        <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: theme.text }]}>
-            과목별 집중 학습
-          </Text>
-          <Text style={[styles.sectionSub, { color: theme.subText }]}>
-            연도·회차를 고르면 해당 기출만 풉니다
-          </Text>
+        {/* 과목별 문제 풀이 섹션 헤더 & 안 푼 문제만 보기 토글 버튼 */}
+        <View style={styles.sectionHeaderRow}>
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.sectionTitle, { color: theme.text }]}>
+              과목별 집중 학습
+            </Text>
+            <Text style={[styles.sectionSub, { color: theme.subText }]}>
+              {onlyUnsolved
+                ? "풀어보지 않은 문제만 골라 출제합니다"
+                : "연도·회차를 고르면 해당 기출만 풉니다"}
+            </Text>
+          </View>
+
+          {/* 안 푼 문제만 보기 토글 버튼 */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              triggerHaptic.selection();
+              setOnlyUnsolved((prev) => !prev);
+            }}
+            style={[
+              styles.onlyUnsolvedFilterBtn,
+              {
+                backgroundColor: onlyUnsolved
+                  ? theme.accent
+                  : theme.surfaceSecondary,
+                borderColor: onlyUnsolved ? theme.accent : theme.border,
+              },
+            ]}
+          >
+            <Filter
+              size={13}
+              color={onlyUnsolved ? "#FFFFFF" : theme.mutedText}
+              style={{ marginRight: 4 }}
+            />
+            <Text
+              style={[
+                styles.onlyUnsolvedFilterText,
+                { color: onlyUnsolved ? "#FFFFFF" : theme.text },
+              ]}
+            >
+              안 푼 문제만
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {examYears.length > 0 && (
@@ -595,31 +805,91 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             examYear,
             examRound,
           ).length;
+          const unsolvedQuestions = QuestionRepository.getUnsolvedQuestions(
+            attemptedQuestionIds,
+            subject,
+            examYear,
+            examRound,
+          );
+          const unsolvedCount = unsolvedQuestions.length;
           const stat = stats?.subjectStats[subject];
           const rate = stat ? stat.rate : null;
 
           return (
             <Card
               key={subject}
-              style={styles.subjectCard}
+              style={[
+                styles.subjectCard,
+                onlyUnsolved && unsolvedCount === 0 && { opacity: 0.6 },
+              ]}
               onPress={() => handleStartSubjectQuiz(subject)}
             >
               <View style={styles.subjectRow}>
                 <View
                   style={[
                     styles.subjectIconBox,
-                    { backgroundColor: theme.primaryLight },
+                    {
+                      backgroundColor:
+                        onlyUnsolved && unsolvedCount === 0
+                          ? theme.surfaceSecondary
+                          : theme.primaryLight,
+                    },
                   ]}
                 >
-                  <BookOpen size={20} color={theme.primary} />
+                  <BookOpen
+                    size={20}
+                    color={
+                      onlyUnsolved && unsolvedCount === 0
+                        ? theme.mutedText
+                        : theme.primary
+                    }
+                  />
                 </View>
                 <View style={styles.subjectInfo}>
-                  <Text style={[styles.subjectName, { color: theme.text }]}>
-                    {subject}
-                  </Text>
+                  <View style={styles.subjectTitleRow}>
+                    <Text style={[styles.subjectName, { color: theme.text }]}>
+                      {subject}
+                    </Text>
+                    {onlyUnsolved ? (
+                      unsolvedCount === 0 ? (
+                        <View
+                          style={[
+                            styles.unsolvedBadge,
+                            { backgroundColor: theme.primaryLight },
+                          ]}
+                        >
+                          <Text
+                            style={[
+                              styles.unsolvedBadgeText,
+                              { color: theme.primary },
+                            ]}
+                          >
+                            ✓ 모두 완료
+                          </Text>
+                        </View>
+                      ) : (
+                        <View
+                          style={[
+                            styles.unsolvedBadge,
+                            { backgroundColor: theme.accentLight },
+                          ]}
+                        >
+                          <Text
+                            style={[
+                              styles.unsolvedBadgeText,
+                              { color: theme.accent },
+                            ]}
+                          >
+                            미풀이 {unsolvedCount}개
+                          </Text>
+                        </View>
+                      )
+                    ) : null}
+                  </View>
                   <Text style={[styles.subjectCount, { color: theme.subText }]}>
-                    총 {count}문제{" "}
-                    {rate !== null ? `· 정답률 ${rate}%` : "· 미풀이"}
+                    {onlyUnsolved
+                      ? `안 푼 ${unsolvedCount}문제 (전체 ${count}문제)`
+                      : `총 ${count}문제 ${rate !== null ? `· 정답률 ${rate}%` : "· 미풀이"}`}
                   </Text>
                 </View>
                 <ChevronRight size={20} color={theme.mutedText} />
@@ -836,7 +1106,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
   },
-  sectionHeader: {
+  sectionHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginTop: 18,
     marginBottom: 8,
     paddingHorizontal: 4,
@@ -848,6 +1121,53 @@ const styles = StyleSheet.create({
   sectionSub: {
     fontSize: 12,
     marginTop: 2,
+  },
+  onlyUnsolvedFilterBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 14,
+    borderWidth: 1,
+  },
+  onlyUnsolvedFilterText: {
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  quickTitleColored: {
+    fontSize: 16,
+    fontWeight: "800",
+  },
+  quickDescColored: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  unsolvedCountBadge: {
+    backgroundColor: "#10B981",
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 10,
+    marginLeft: 8,
+  },
+  unsolvedCountBadgeText: {
+    color: "#FFFFFF",
+    fontSize: 11,
+    fontWeight: "800",
+  },
+  subjectTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  unsolvedBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    marginRight: 4,
+  },
+  unsolvedBadgeText: {
+    fontSize: 11,
+    fontWeight: "700",
   },
   subjectCard: {
     marginVertical: 4,

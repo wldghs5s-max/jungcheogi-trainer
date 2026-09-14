@@ -1,4 +1,4 @@
-﻿export type Subject = 
+export type Subject =
   | '소프트웨어설계'
   | '데이터베이스구축'
   | '프로그래밍언어활용'
@@ -33,4 +33,12 @@ export interface Question {
   difficulty: Difficulty;
   keywords: string[];
   source?: string;
+  // 프로그래밍 문제 엔진 고도화 메타데이터
+  programmingTopic?: string;
+  programmingType?: string;
+  structuralFingerprint?: string;
+  generationSource?: 'local' | 'gemini';
+  validationStatus?: 'pending' | 'validated' | 'rejected' | 'manualReviewRequired';
+  validationMessage?: string;
+  generationParams?: Record<string, unknown>;
 }

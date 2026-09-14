@@ -137,8 +137,96 @@ for (const q of generated) {
   assert(!!q.code, `${q.id} 코드`);
 }
 
+// -----------------------------------------------------------------
+// 신규 기능 테스트: 이론, 두음 암기장, 안 푼 문제 필터링 검증
+// -----------------------------------------------------------------
+import { THEORY_DATA } from "../src/data/theory/theoryData";
+import { MNEMONIC_DATA } from "../src/data/theory/mnemonicData";
+import { QuestionRepository } from "../src/repositories/questionRepository";
+
+// 1. 이론 데이터 검증
+assert(THEORY_DATA.length >= 10, `이론 데이터 10개 이상 (실제 ${THEORY_DATA.length})`);
+for (const th of THEORY_DATA) {
+  assert(!!th.id && !!th.title && !!th.category, `이론 메타: ${th.id}`);
+  assert(!!th.analogy && th.analogy.length >= 10, `이론 비유 작성됨: ${th.title}`);
+  assert(th.coreConcepts.length >= 2, `이론 핵심개념 2개 이상: ${th.title}`);
+  assert(th.examPoints.length >= 1, `이론 출제포인트 1개 이상: ${th.title}`);
+}
+const theorySubjects = new Set(THEORY_DATA.map((t) => t.subject));
+assert(theorySubjects.size === 5, "5개 전 과목 이론 요약 포함");
+
+// 2. 고빈출 기출 두음 암기장 검증
+assert(MNEMONIC_DATA.length >= 15, `고빈출 두음 데이터 15개 이상 (실제 ${MNEMONIC_DATA.length})`);
+for (const mn of MNEMONIC_DATA) {
+  assert(!!mn.id && !!mn.title && !!mn.acronym, `두음 메타: ${mn.id}`);
+  assert(!!mn.catchphrase && mn.catchphrase.length >= 5, `두음 리듬 암기문구: ${mn.title}`);
+  assert(mn.items.length >= 2, `두음 세부 항목 2개 이상: ${mn.title}`);
+  assert(!!mn.trapPoint, `두음 시험 함정 주의: ${mn.title}`);
+}
+
+// 3. 안 푼 문제 필터링 검증
+const allQuestions = QuestionRepository.getAll();
+const mockAttempted = new Set([allQuestions[0].id, allQuestions[1].id, allQuestions[2].id]);
+const unsolved = QuestionRepository.getUnsolvedQuestions(mockAttempted);
+assert(
+  unsolved.every((q) => !mockAttempted.has(q.id)),
+  "안 푼 문제에는 이미 시도한 questionId가 포함되지 않음",
+);
+assert(
+  unsolved.length === allQuestions.length - mockAttempted.size,
+  "안 푼 문제 수는 전체 - 시도한 문제 수와 일치",
+);
+
+// 과목별 안 푼 문제 필터링
+const designUnsolved = QuestionRepository.getUnsolvedQuestions(
+  mockAttempted,
+  "소프트웨어설계",
+);
+assert(
+  designUnsolved.every((q) => q.subject === "소프트웨어설계" && !mockAttempted.has(q.id)),
+  "과목별 안 푼 문제 필터링 정확도",
+);
+
+// 4. 이론 연계 문제 검색 및 부족분 보충 검증
+// (1) limit 이상 매칭 케이스
+const theoryRelated = QuestionRepository.getTheoryRelatedQuestions(
+  "소프트웨어설계",
+  ["GoF", "디자인패턴", "생성"],
+  5,
+);
+assert(theoryRelated.length === 5, `이론 문제 검색 limit(5개) 도달 (실제: ${theoryRelated.length}개)`);
+assert(
+  theoryRelated.every((q) => q.subject === "소프트웨어설계"),
+  "이론 매칭 문제는 해당 과목에 속함",
+);
+const theoryIds = new Set(theoryRelated.map((q) => q.id));
+assert(theoryIds.size === theoryRelated.length, "이론 매칭 결과에 중복 ID 없음");
+
+// (2) 0개 매칭 시 일반 문제로 보충 케이스
+const zeroMatched = QuestionRepository.getTheoryRelatedQuestions(
+  "데이터베이스구축",
+  ["non_existent_keyword_db_xyz_9999"],
+  5,
+);
+assert(zeroMatched.length === 5, `0개 매칭 시 동일 과목 문제로 5개 보충 (실제: ${zeroMatched.length}개)`);
+assert(zeroMatched.every((q) => q.subject === "데이터베이스구축"), "보충 문제 과목 일치");
+assert(new Set(zeroMatched.map((q) => q.id)).size === 5, "0개 매칭 보충 결과 중복 ID 없음");
+
+// (3) 소수(1개) 매칭 시 부족분 비매칭 문제로 보충 케이스
+// 1개만 매칭될 가능성이 높은 고유 키워드 검색
+const fewMatched = QuestionRepository.getTheoryRelatedQuestions(
+  "데이터베이스구축",
+  ["이상 현상", "삽입 이상"],
+  5,
+);
+assert(fewMatched.length === 5, `소수 매칭 시 5개까지 정확히 보충 (실제: ${fewMatched.length}개)`);
+assert(fewMatched.every((q) => q.subject === "데이터베이스구축"), "소수 매칭 보충 문제 과목 일치");
+assert(new Set(fewMatched.map((q) => q.id)).size === 5, "소수 매칭 보충 결과 중복 ID 없음");
+
+
 if (failed > 0) {
   console.error(`\n${failed}개 실패`);
   process.exit(1);
 }
-console.log("\n자체 테스트 통과");
+console.log("\n모든 자체 테스트 통과 (이론/두음/안푼문제 포함)");
+
