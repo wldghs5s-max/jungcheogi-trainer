@@ -1,0 +1,131 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    name: Build Release APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 2. Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 3. Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 4. Setup Gradle Cache
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: 5. Accept Android SDK Licenses
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses 2>/dev/null || true
+
+      - name: 6. Install NPM Dependencies
+        run: npm ci
+
+      - name: 7. Run Typecheck & Test Suites
+        run: |
+          npm run typecheck
+          npm run test
+          npm run test:programming
+          npm run test:gemini
+
+      - name: 8. Expo Prebuild (Generate Android Native Project)
+        run: npx expo prebuild --platform android --clean --no-install
+
+      - name: 9. Generate Release Signing Keystore
+        run: |
+          keytool -genkeypair -v \
+            -keystore android/app/release.keystore \
+            -alias jungcheogi-alias \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass android \
+            -keypass android \
+            -dname "CN=Jungcheogi,OU=Mobile,O=App,C=KR"
+
+      - name: 10. Assemble Release APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon \
+            -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g" \
+            -PMYAPP_UPLOAD_STORE_FILE=release.keystore \
+            -PMYAPP_UPLOAD_KEY_ALIAS=jungcheogi-alias \
+            -PMYAPP_UPLOAD_STORE_PASSWORD=android \
+            -PMYAPP_UPLOAD_KEY_PASSWORD=android
+
+      - name: 11. Verify & Sign APK with apksigner
+        run: |
+          APK_DIR="android/app/build/outputs/apk/release"
+          echo "=== Generated Build Artifacts ==="
+          ls -lh "$APK_DIR"
+          
+          # If output is app-release-unsigned.apk and not app-release.apk, sign it explicitly
+          if [ -f "$APK_DIR/app-release-unsigned.apk" ] && [ ! -f "$APK_DIR/app-release.apk" ]; then
+            echo "Signing app-release-unsigned.apk with apksigner..."
+            BUILD_TOOLS=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -n 1)
+            $BUILD_TOOLS/apksigner sign \
+              --ks android/app/release.keystore \
+              --ks-pass pass:android \
+              --key-pass pass:android \
+              --out "$APK_DIR/app-release.apk" \
+              "$APK_DIR/app-release-unsigned.apk"
+          fi
+          
+          # Rename and copy to root directory
+          cp "$APK_DIR/app-release.apk" jungcheogi-trainer-v1.3.2.apk
+          echo "=== Final APK File Info ==="
+          ls -lh jungcheogi-trainer-v1.3.2.apk
+
+      - name: 12. Upload APK to GitHub Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: jungcheogi-trainer-v1.3.2-apk
+          path: jungcheogi-trainer-v1.3.2.apk
+          retention-days: 30
+
+      - name: 13. Create or Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
+        with:
+          tag_name: v1.3.2
+          name: "정처기 실기 트레이너 v1.3.2 APK"
+          body: |
+            ## 📱 정처기 실기 트레이너 v1.3.2 APK 다운로드
+
+            아래 **Assets** 항목에서 `jungcheogi-trainer-v1.3.2.apk`를 스마트폰으로 직접 다운로드하여 설치하실 수 있습니다!
+
+            ### 🚀 이번 버전 주요 업데이트
+            1. **AI 튜터 응답 속도 최적화 (1~2초대 응답)**:
+               - 초경량 `gemini-3.5-flash-lite` 모델 1순위 적용
+               - 응답 토큰(800/600) 및 프롬프트 경량화로 즉각 해설 제공
+            2. **AI 튜터 비동기 경쟁상태(Race Condition) 원천 차단**:
+               - 모달 닫기 및 문제 변경 시 `AbortController`를 통해 이전 네트워크 요청 즉각 취소
+               - 이전 문제의 늦은 응답이 다른 문제에 섞여 나오는 현상 박멸
+            3. **문제 생성 백그라운드 비차단(Non-blocking) 전환**:
+               - 화면 대기 없이 백그라운드에서 C/Java/Python 변형 문제 및 AI 암기 문제 생성
+               - 생성 도중에도 퀴즈 풀기, 이론 학습 등 다른 앱 기능을 자유롭게 사용 가능
+               - 완료 시 문제 보관함에 자동 저장
+          files: jungcheogi-trainer-v1.3.2.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

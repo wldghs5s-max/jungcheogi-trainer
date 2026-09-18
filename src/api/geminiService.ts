@@ -55,11 +55,16 @@ export function isTransientStatus(status: number): boolean {
   return TRANSIENT_STATUSES.includes(status as any);
 }
 
-export function isTerminalAuthStatus(status: number, message?: string): boolean {
+export function isTerminalAuthStatus(
+  status: number,
+  message?: string,
+): boolean {
   if (status === 400 || status === 401 || status === 403) return true;
   if (
     message &&
-    /api key|invalid argument|unregistered caller|api_key_invalid/i.test(message)
+    /api key|invalid argument|unregistered caller|api_key_invalid/i.test(
+      message,
+    )
   ) {
     return true;
   }
@@ -77,7 +82,10 @@ export function sanitizeLogMessage(message: string, apiKey?: string): string {
   let sanitized = message || "";
   if (apiKey && apiKey.length > 3) {
     const escaped = apiKey.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    sanitized = sanitized.replace(new RegExp(escaped, "g"), "[REDACTED_API_KEY]");
+    sanitized = sanitized.replace(
+      new RegExp(escaped, "g"),
+      "[REDACTED_API_KEY]",
+    );
   }
   sanitized = sanitized.replace(/AQ\.[A-Za-z0-9_-]+/g, "[REDACTED_AQ_KEY]");
   sanitized = sanitized.replace(/AIzaSy[A-Za-z0-9_-]+/g, "[REDACTED_AIZA_KEY]");
@@ -137,9 +145,13 @@ function authHeaders(apiKey: string): Record<string, string> {
 }
 
 function extractText(data: unknown): string | null {
-  const parts = (data as {
-    candidates?: Array<{ content?: { parts?: Array<{ text?: string; thought?: boolean }> } }>;
-  })?.candidates?.[0]?.content?.parts;
+  const parts = (
+    data as {
+      candidates?: Array<{
+        content?: { parts?: Array<{ text?: string; thought?: boolean }> };
+      }>;
+    }
+  )?.candidates?.[0]?.content?.parts;
 
   if (!Array.isArray(parts)) return null;
 
@@ -172,7 +184,9 @@ export async function listAvailableModels(
     headers: authHeaders(cleanKey),
   });
 
-  const errorData = response.ok ? null : await response.json().catch(() => ({}));
+  const errorData = response.ok
+    ? null
+    : await response.json().catch(() => ({}));
   if (!response.ok) {
     const error: GeminiRequestError = {
       status: response.status,
@@ -201,7 +215,9 @@ export function pickModelsToTry(available: string[]): string[] {
   const availableSet = new Set(activeAvailable);
 
   // 1. PREFERRED_MODELS 중 실제 반환된 목록에 포함된 것 우선 선택
-  const preferredInAvailable = PREFERRED_MODELS.filter((name) => availableSet.has(name));
+  const preferredInAvailable = PREFERRED_MODELS.filter((name) =>
+    availableSet.has(name),
+  );
 
   // 2. 그 외 실제 반환된 generateContent 지원 모델 (image/tts/live 제외)
   const othersInAvailable = activeAvailable.filter(
@@ -225,7 +241,11 @@ async function generateContent(
   extraConfig: Record<string, unknown> = {},
   fetchFn: typeof fetch = fetch,
   signal?: AbortSignal,
-): Promise<{ text: string | null; error?: GeminiRequestError; aborted?: boolean }> {
+): Promise<{
+  text: string | null;
+  error?: GeminiRequestError;
+  aborted?: boolean;
+}> {
   if (signal?.aborted) {
     return { text: null, aborted: true };
   }
@@ -264,7 +284,10 @@ async function generateContent(
       },
     };
   } catch (err: unknown) {
-    if (signal?.aborted || (err instanceof Error && err.name === "AbortError")) {
+    if (
+      signal?.aborted ||
+      (err instanceof Error && err.name === "AbortError")
+    ) {
       return { text: null, aborted: true };
     }
     throw err;
@@ -371,10 +394,13 @@ export class GeminiService {
     }
 
     if (modelsToTry.length === 0) {
-      modelsToTry = PREFERRED_MODELS.filter((m) => !DISCONTINUED_MODEL_REGEX.test(m));
+      modelsToTry = PREFERRED_MODELS.filter(
+        (m) => !DISCONTINUED_MODEL_REGEX.test(m),
+      );
     }
 
-    let lastError: { status: number; message: string; model?: string } | null = null;
+    let lastError: { status: number; message: string; model?: string } | null =
+      null;
     const maxRetries = options?.maxRetries ?? MAX_RETRIES_PER_MODEL; // 3회 재시도
 
     for (const model of modelsToTry) {
@@ -431,7 +457,10 @@ export class GeminiService {
             };
           }
 
-          const err = result.error ?? { status: 0, message: "응답을 받지 못했습니다." };
+          const err = result.error ?? {
+            status: 0,
+            message: "응답을 받지 못했습니다.",
+          };
           lastError = { status: err.status, message: err.message, model };
 
           // 12. 민감한 API 키를 제외하고 status, model, attempt, 서버 오류 메시지를 개발 로그로 남긴다.
@@ -462,7 +491,12 @@ export class GeminiService {
             if (attempt < totalAttempts) {
               // 3. 재시도 간격은 약 1초, 2초, 4초의 지수 백오프와 0~300ms jitter를 사용한다.
               const delay = calculateBackoffDelay(attempt);
-              options?.onAttempt?.({ model, attempt, status: err.status, delay });
+              options?.onAttempt?.({
+                model,
+                attempt,
+                status: err.status,
+                delay,
+              });
               if (signal?.aborted) {
                 return {
                   ok: false,
@@ -490,7 +524,10 @@ export class GeminiService {
           options?.onAttempt?.({ model, attempt, status: err.status });
           break;
         } catch (networkErr: unknown) {
-          if (signal?.aborted || (networkErr instanceof Error && networkErr.name === "AbortError")) {
+          if (
+            signal?.aborted ||
+            (networkErr instanceof Error && networkErr.name === "AbortError")
+          ) {
             return {
               ok: false,
               aborted: true,
@@ -499,7 +536,9 @@ export class GeminiService {
           }
 
           const message =
-            networkErr instanceof Error ? networkErr.message : "네트워크 연결 오류";
+            networkErr instanceof Error
+              ? networkErr.message
+              : "네트워크 연결 오류";
           lastError = { status: 0, message, model };
           logGeminiError(0, model, attempt, message, cleanKey);
 
@@ -556,7 +595,11 @@ export class GeminiService {
 
     const cleanKey = cleanApiKey(apiKey);
     const { question, userAnswer, userPrompt, missType } = context;
-    const chapterPath = [question.subject, question.category, question.subCategory]
+    const chapterPath = [
+      question.subject,
+      question.category,
+      question.subCategory,
+    ]
       .filter(Boolean)
       .join(" > ");
     const isUnknown = missType === "UNKNOWN";
@@ -637,7 +680,10 @@ ${userPrompt}
       signal?: AbortSignal;
       extraConfig?: Record<string, unknown>;
     },
-  ): Promise<{ ok: true; text: string } | { ok: false; message: string; aborted?: boolean }> {
+  ): Promise<
+    | { ok: true; text: string }
+    | { ok: false; message: string; aborted?: boolean }
+  > {
     const apiKey = await this.getApiKey();
     if (!apiKey) {
       return {

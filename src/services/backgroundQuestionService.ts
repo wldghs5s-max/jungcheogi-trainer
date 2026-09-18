@@ -39,7 +39,10 @@ class BackgroundQuestionService {
       try {
         listener(status);
       } catch (e) {
-        console.warn("[BackgroundQuestionService] Listener execution error:", e);
+        console.warn(
+          "[BackgroundQuestionService] Listener execution error:",
+          e,
+        );
       }
     });
   }
@@ -57,7 +60,8 @@ class BackgroundQuestionService {
     if (this.isGenerating) {
       return {
         started: false,
-        message: "이미 백그라운드에서 문제 생성이 진행 중입니다. 잠시 후 다시 시도해 주세요.",
+        message:
+          "이미 백그라운드에서 문제 생성이 진행 중입니다. 잠시 후 다시 시도해 주세요.",
       };
     }
 
@@ -73,12 +77,17 @@ class BackgroundQuestionService {
 
         if (result.addedCount > 0) {
           triggerHaptic.success();
-          this.showToast(`프로그래밍 문제 ${result.addedCount}개가 문제 보관함에 추가되었습니다.`);
+          this.showToast(
+            `프로그래밍 문제 ${result.addedCount}개가 문제 보관함에 추가되었습니다.`,
+          );
         } else {
           this.showToast("새 프로그래밍 문제를 추가하지 못했습니다.");
         }
       } catch (err: unknown) {
-        console.error("[BackgroundQuestionService] Programming generation error:", err);
+        console.error(
+          "[BackgroundQuestionService] Programming generation error:",
+          err,
+        );
         this.showToast("프로그래밍 문제 생성 중 오류가 발생했습니다.");
       } finally {
         // ALWAYS release lock regardless of success or error (Checkpoint 3)
@@ -106,7 +115,8 @@ class BackgroundQuestionService {
     if (this.isGenerating) {
       return {
         started: false,
-        message: "이미 백그라운드에서 문제 생성이 진행 중입니다. 잠시 후 다시 시도해 주세요.",
+        message:
+          "이미 백그라운드에서 문제 생성이 진행 중입니다. 잠시 후 다시 시도해 주세요.",
       };
     }
 
@@ -115,7 +125,8 @@ class BackgroundQuestionService {
       return {
         started: false,
         apiKeyRequired: true,
-        message: "설정 탭에서 Gemini API Key를 등록하면 온라인으로 암기 문제를 생성할 수 있습니다.",
+        message:
+          "설정 탭에서 Gemini API Key를 등록하면 온라인으로 암기 문제를 생성할 수 있습니다.",
       };
     }
 
@@ -134,15 +145,22 @@ class BackgroundQuestionService {
           return;
         }
 
-        const added = await QuestionRepository.appendCachedQuestions(result.questions);
+        const added = await QuestionRepository.appendCachedQuestions(
+          result.questions,
+        );
         if (added > 0) {
           triggerHaptic.success();
-          this.showToast(`AI 암기 문제 ${added}개가 문제 보관함에 추가되었습니다.`);
+          this.showToast(
+            `AI 암기 문제 ${added}개가 문제 보관함에 추가되었습니다.`,
+          );
         } else {
           this.showToast("새로 추가된 AI 암기 문제가 없습니다.");
         }
       } catch (err: unknown) {
-        console.error("[BackgroundQuestionService] Gemini memo generation error:", err);
+        console.error(
+          "[BackgroundQuestionService] Gemini memo generation error:",
+          err,
+        );
         const errMsg = err instanceof Error ? err.message : "네트워크 오류";
         this.showToast(`AI 암기 생성 오류: ${errMsg}`);
       } finally {

@@ -60,9 +60,18 @@ async function runGeminiServiceTests() {
   const d1 = calculateBackoffDelay(1);
   const d2 = calculateBackoffDelay(2);
   const d3 = calculateBackoffDelay(3);
-  assert(d1 >= 1000 && d1 <= 1300, `시도 1 지수 백오프 약 1초+jitter (실제: ${d1.toFixed(1)}ms)`);
-  assert(d2 >= 2000 && d2 <= 2300, `시도 2 지수 백오프 약 2초+jitter (실제: ${d2.toFixed(1)}ms)`);
-  assert(d3 >= 4000 && d3 <= 4300, `시도 3 지수 백오프 약 4초+jitter (실제: ${d3.toFixed(1)}ms)`);
+  assert(
+    d1 >= 1000 && d1 <= 1300,
+    `시도 1 지수 백오프 약 1초+jitter (실제: ${d1.toFixed(1)}ms)`,
+  );
+  assert(
+    d2 >= 2000 && d2 <= 2300,
+    `시도 2 지수 백오프 약 2초+jitter (실제: ${d2.toFixed(1)}ms)`,
+  );
+  assert(
+    d3 >= 4000 && d3 <= 4300,
+    `시도 3 지수 백오프 약 4초+jitter (실제: ${d3.toFixed(1)}ms)`,
+  );
 
   // 5. 503 오류 안내문 검증 (API 키 또는 권한 문제라고 표시하지 않음)
   const msg503 = formatGeminiErrorMessage({
@@ -70,16 +79,27 @@ async function runGeminiServiceTests() {
     message: "Service Unavailable",
   });
   assert(
-    msg503 === "Gemini 서버가 일시적으로 혼잡합니다. 잠시 후 다시 시도해 주세요.",
+    msg503 ===
+      "Gemini 서버가 일시적으로 혼잡합니다. 잠시 후 다시 시도해 주세요.",
     "503 오류 발생 시 서버 일시 혼잡 안내문 정확히 반환",
   );
-  assert(!msg503.includes("API Key") && !msg503.includes("권한"), "503 안내문에 API 키/권한 언급 없음");
+  assert(
+    !msg503.includes("API Key") && !msg503.includes("권한"),
+    "503 안내문에 API 키/권한 언급 없음",
+  );
 
   // 6. 민감한 API 키 마스킹 검증
   const sampleKey = "AQ.TestSecretKey123456789";
-  const masked = sanitizeLogMessage(`Error connecting with ${sampleKey}`, sampleKey);
+  const masked = sanitizeLogMessage(
+    `Error connecting with ${sampleKey}`,
+    sampleKey,
+  );
   assert(!masked.includes(sampleKey), "로그 메시지에서 API 키 마스킹됨");
-  assert(masked.includes("[REDACTED_API_KEY]") || masked.includes("[REDACTED_AQ_KEY]"), "마스킹 태그 치환됨");
+  assert(
+    masked.includes("[REDACTED_API_KEY]") ||
+      masked.includes("[REDACTED_AQ_KEY]"),
+    "마스킹 태그 치환됨",
+  );
 
   // === Mock 실행 시나리오 테스트 ===
   const noopSleep = async () => {};
@@ -91,10 +111,13 @@ async function runGeminiServiceTests() {
     const mockFetch = async () => {
       callCount++;
       if (callCount === 1) {
-        return new Response(JSON.stringify({ error: { message: "The model is overloaded" } }), {
-          status: 503,
-          headers: { "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({ error: { message: "The model is overloaded" } }),
+          {
+            status: 503,
+            headers: { "Content-Type": "application/json" },
+          },
+        );
       }
       return new Response(
         JSON.stringify({
@@ -104,13 +127,17 @@ async function runGeminiServiceTests() {
       );
     };
 
-    const result = await GeminiService.executeWithRetry("AQ.dummy_key", "테스트 질문", {
-      models: ["model-alpha"],
-      fetchFn: mockFetch as any,
-      sleepFn: async (delay) => {
-        delays.push(delay);
+    const result = await GeminiService.executeWithRetry(
+      "AQ.dummy_key",
+      "테스트 질문",
+      {
+        models: ["model-alpha"],
+        fetchFn: mockFetch as any,
+        sleepFn: async (delay) => {
+          delays.push(delay);
+        },
       },
-    });
+    );
 
     assert(result.ok, "시나리오 1: 503 후 재시도 성공 반환");
     if (result.ok) {
@@ -118,7 +145,10 @@ async function runGeminiServiceTests() {
       assert(result.model === "model-alpha", "시나리오 1: 동일 모델로 성공");
     }
     assert(callCount === 2, `시나리오 1: 총 2회 호출 (실제: ${callCount}회)`);
-    assert(delays.length === 1, `시나리오 1: 백오프 대기 1회 수행 (대기시간: ${delays[0]?.toFixed(1)}ms)`);
+    assert(
+      delays.length === 1,
+      `시나리오 1: 백오프 대기 1회 수행 (대기시간: ${delays[0]?.toFixed(1)}ms)`,
+    );
   }
 
   // 시나리오 2: 503 반복 → 다음 모델 전환 (Model 1에서 4회(초회+3재시도) 503 실패 후 Model 2로 전환해 성공)
@@ -131,10 +161,13 @@ async function runGeminiServiceTests() {
       calls.push({ model: currentModel });
 
       if (isModel1) {
-        return new Response(JSON.stringify({ error: { message: "503 Unavailable" } }), {
-          status: 503,
-          headers: { "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({ error: { message: "503 Unavailable" } }),
+          {
+            status: 503,
+            headers: { "Content-Type": "application/json" },
+          },
+        );
       }
       return new Response(
         JSON.stringify({
@@ -144,21 +177,34 @@ async function runGeminiServiceTests() {
       );
     };
 
-    const result = await GeminiService.executeWithRetry("AQ.dummy_key", "테스트", {
-      models: ["model-1", "model-2"],
-      fetchFn: mockFetch as any,
-      sleepFn: noopSleep,
-    });
+    const result = await GeminiService.executeWithRetry(
+      "AQ.dummy_key",
+      "테스트",
+      {
+        models: ["model-1", "model-2"],
+        fetchFn: mockFetch as any,
+        sleepFn: noopSleep,
+      },
+    );
 
     assert(result.ok, "시나리오 2: 다음 모델(model-2)에서 성공");
     if (result.ok) {
-      assert(result.model === "model-2", "시나리오 2: 최종 사용 모델은 model-2");
+      assert(
+        result.model === "model-2",
+        "시나리오 2: 최종 사용 모델은 model-2",
+      );
       assert(result.text === "Model 2 성공", "시나리오 2: model-2 응답 수신");
     }
     const model1Calls = calls.filter((c) => c.model === "model-1").length;
     const model2Calls = calls.filter((c) => c.model === "model-2").length;
-    assert(model1Calls === 4, `시나리오 2: model-1에 대해 초회+3회재시도 총 4회 시도 (실제: ${model1Calls}회)`);
-    assert(model2Calls === 1, `시나리오 2: model-2는 1회 시도 후 즉시 성공 (실제: ${model2Calls}회)`);
+    assert(
+      model1Calls === 4,
+      `시나리오 2: model-1에 대해 초회+3회재시도 총 4회 시도 (실제: ${model1Calls}회)`,
+    );
+    assert(
+      model2Calls === 1,
+      `시나리오 2: model-2는 1회 시도 후 즉시 성공 (실제: ${model2Calls}회)`,
+    );
   }
 
   // 시나리오 3: 401 즉시 종료 (재시도하지 않고, 다음 모델로도 이동하지 않고 즉시 종료)
@@ -166,23 +212,33 @@ async function runGeminiServiceTests() {
     let callCount = 0;
     const mockFetch = async () => {
       callCount++;
-      return new Response(JSON.stringify({ error: { message: "API key not valid" } }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ error: { message: "API key not valid" } }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
     };
 
-    const result = await GeminiService.executeWithRetry("AQ.invalid_key", "테스트", {
-      models: ["model-1", "model-2"],
-      fetchFn: mockFetch as any,
-      sleepFn: noopSleep,
-    });
+    const result = await GeminiService.executeWithRetry(
+      "AQ.invalid_key",
+      "테스트",
+      {
+        models: ["model-1", "model-2"],
+        fetchFn: mockFetch as any,
+        sleepFn: noopSleep,
+      },
+    );
 
     assert(!result.ok, "시나리오 3: 401 반환 시 실패 처리");
     if (!result.ok) {
       assert(result.error.status === 401, "시나리오 3: 오류 상태코드 401 일치");
     }
-    assert(callCount === 1, `시나리오 3: 401은 재시도 없이 1회만 호출 후 즉시 종료 (실제: ${callCount}회)`);
+    assert(
+      callCount === 1,
+      `시나리오 3: 401은 재시도 없이 1회만 호출 후 즉시 종료 (실제: ${callCount}회)`,
+    );
   }
 
   // 시나리오 4: 404 다음 모델 전환 (404는 재시도 없이 즉시 다음 모델로 이동)
@@ -192,10 +248,13 @@ async function runGeminiServiceTests() {
       const urlStr = String(url);
       if (urlStr.includes("model-not-found")) {
         calls.push("model-not-found");
-        return new Response(JSON.stringify({ error: { message: "Model not found" } }), {
-          status: 404,
-          headers: { "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({ error: { message: "Model not found" } }),
+          {
+            status: 404,
+            headers: { "Content-Type": "application/json" },
+          },
+        );
       }
       calls.push("model-valid");
       return new Response(
@@ -206,29 +265,45 @@ async function runGeminiServiceTests() {
       );
     };
 
-    const result = await GeminiService.executeWithRetry("AQ.dummy_key", "테스트", {
-      models: ["model-not-found", "model-valid"],
-      fetchFn: mockFetch as any,
-      sleepFn: noopSleep,
-    });
+    const result = await GeminiService.executeWithRetry(
+      "AQ.dummy_key",
+      "테스트",
+      {
+        models: ["model-not-found", "model-valid"],
+        fetchFn: mockFetch as any,
+        sleepFn: noopSleep,
+      },
+    );
 
     assert(result.ok, "시나리오 4: 404 이후 다음 모델에서 정상 성공");
     if (result.ok) {
-      assert(result.model === "model-valid", "시나리오 4: model-valid로 전환되어 성공");
+      assert(
+        result.model === "model-valid",
+        "시나리오 4: model-valid로 전환되어 성공",
+      );
     }
     const notFoundCalls = calls.filter((c) => c === "model-not-found").length;
     const validCalls = calls.filter((c) => c === "model-valid").length;
-    assert(notFoundCalls === 1, `시나리오 4: 404 모델은 재시도 없이 1회만 호출 (실제: ${notFoundCalls}회)`);
-    assert(validCalls === 1, `시나리오 4: 유효 모델 1회 호출로 성공 (실제: ${validCalls}회)`);
+    assert(
+      notFoundCalls === 1,
+      `시나리오 4: 404 모델은 재시도 없이 1회만 호출 (실제: ${notFoundCalls}회)`,
+    );
+    assert(
+      validCalls === 1,
+      `시나리오 4: 유효 모델 1회 호출로 성공 (실제: ${validCalls}회)`,
+    );
   }
 
   // 시나리오 5: testConnection이 공통 재시도 함수를 사용하여 503 시 일시적 혼잡 안내 반환 확인
   {
     const mockFetch = async () => {
-      return new Response(JSON.stringify({ error: { message: "Service Unavailable" } }), {
-        status: 503,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ error: { message: "Service Unavailable" } }),
+        {
+          status: 503,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
     };
 
     const testRes = await GeminiService.testConnection("AQ.dummy_key", {
@@ -239,7 +314,8 @@ async function runGeminiServiceTests() {
 
     assert(!testRes.success, "testConnection: 503 반복 시 실패 처리");
     assert(
-      testRes.message === "Gemini 서버가 일시적으로 혼잡합니다. 잠시 후 다시 시도해 주세요.",
+      testRes.message ===
+        "Gemini 서버가 일시적으로 혼잡합니다. 잠시 후 다시 시도해 주세요.",
       "testConnection: 503 발생 시 API 키/권한 오류가 아닌 일시 혼잡 안내문 반환",
     );
   }
@@ -260,18 +336,32 @@ async function runGeminiServiceTests() {
 
     const mockFetch = async () => {
       callCount++;
-      return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: "응답" }] } }] }));
+      return new Response(
+        JSON.stringify({
+          candidates: [{ content: { parts: [{ text: "응답" }] } }],
+        }),
+      );
     };
 
-    const abortRes = await GeminiService.executeWithRetry("AQ.dummy_key", "테스트", {
-      models: ["model-1"],
-      fetchFn: mockFetch as any,
-      sleepFn: noopSleep,
-      signal: controller.signal,
-    });
+    const abortRes = await GeminiService.executeWithRetry(
+      "AQ.dummy_key",
+      "테스트",
+      {
+        models: ["model-1"],
+        fetchFn: mockFetch as any,
+        sleepFn: noopSleep,
+        signal: controller.signal,
+      },
+    );
 
-    assert(!abortRes.ok && abortRes.aborted === true, "시나리오 6: AbortSignal 취소 시 aborted: true 반환");
-    assert(callCount === 0, "시나리오 6: 이미 취소된 요청은 fetch를 호출하지 않고 즉시 반환 (실제: 0회)");
+    assert(
+      !abortRes.ok && abortRes.aborted === true,
+      "시나리오 6: AbortSignal 취소 시 aborted: true 반환",
+    );
+    assert(
+      callCount === 0,
+      "시나리오 6: 이미 취소된 요청은 fetch를 호출하지 않고 즉시 반환 (실제: 0회)",
+    );
   }
 
   {
@@ -286,22 +376,34 @@ async function runGeminiServiceTests() {
       throw err;
     };
 
-    const abortRes = await GeminiService.executeWithRetry("AQ.dummy_key", "테스트", {
-      models: ["model-1", "model-2"],
-      fetchFn: mockFetch as any,
-      sleepFn: noopSleep,
-      signal: controller.signal,
-    });
+    const abortRes = await GeminiService.executeWithRetry(
+      "AQ.dummy_key",
+      "테스트",
+      {
+        models: ["model-1", "model-2"],
+        fetchFn: mockFetch as any,
+        sleepFn: noopSleep,
+        signal: controller.signal,
+      },
+    );
 
-    assert(!abortRes.ok && abortRes.aborted === true, "시나리오 6-2: 통신 중 AbortError 발생 시 즉시 aborted: true 반환");
-    assert(callCount === 1, `시나리오 6-2: 재시도 없이 1회 호출 후 즉시 탈출 (실제: ${callCount}회)`);
+    assert(
+      !abortRes.ok && abortRes.aborted === true,
+      "시나리오 6-2: 통신 중 AbortError 발생 시 즉시 aborted: true 반환",
+    );
+    assert(
+      callCount === 1,
+      `시나리오 6-2: 재시도 없이 1회 호출 후 즉시 탈출 (실제: ${callCount}회)`,
+    );
   }
 
   if (failed > 0) {
     console.error(`\n❌ 총 ${failed}개 테스트 실패`);
     process.exit(1);
   } else {
-    console.log("\n🎉 모든 GeminiService 재시도·모델폴백·오류분류 테스트 통과!");
+    console.log(
+      "\n🎉 모든 GeminiService 재시도·모델폴백·오류분류 테스트 통과!",
+    );
   }
 }
 

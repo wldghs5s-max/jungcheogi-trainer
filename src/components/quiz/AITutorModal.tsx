@@ -231,7 +231,10 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
       );
 
       // 모달이 닫혔거나, 요청이 취소되었거나, 다른 문제로 이동했으면 상태 갱신 무시
-      if (controller.signal.aborted || activeQuestionIdRef.current !== targetQuestionId) {
+      if (
+        controller.signal.aborted ||
+        activeQuestionIdRef.current !== targetQuestionId
+      ) {
         return;
       }
 
@@ -255,7 +258,10 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
       setHasTutorAnswer(true);
       triggerHaptic.success();
     } catch (err: unknown) {
-      if (controller.signal.aborted || (err instanceof Error && err.name === "AbortError")) {
+      if (
+        controller.signal.aborted ||
+        (err instanceof Error && err.name === "AbortError")
+      ) {
         return;
       }
       if (activeQuestionIdRef.current !== targetQuestionId) {

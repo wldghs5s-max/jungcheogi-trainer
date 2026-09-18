@@ -41,7 +41,8 @@ function sanitizeQuestion(
   const answer = asAnswer(raw.answer);
   if (!question || !explanation || !answer) return null;
 
-  const type = raw.type === "MULTIPLE_CHOICE" ? "MULTIPLE_CHOICE" : "SHORT_ANSWER";
+  const type =
+    raw.type === "MULTIPLE_CHOICE" ? "MULTIPLE_CHOICE" : "SHORT_ANSWER";
   const options = Array.isArray(raw.options)
     ? raw.options.map((item) => String(item).trim()).filter(Boolean)
     : undefined;
@@ -76,7 +77,9 @@ function sanitizeQuestion(
 
 export async function generateMemorizationQuestions(
   existingQuestions: Question[],
-): Promise<{ ok: true; questions: Question[] } | { ok: false; message: string }> {
+): Promise<
+  { ok: true; questions: Question[] } | { ok: false; message: string }
+> {
   const avoidList = MEMO_SUBJECTS.map((subject) => {
     const stems = existingQuestions
       .filter((item) => item.subject === subject)
@@ -137,7 +140,10 @@ ${avoidList}
   try {
     parsed = parseJsonPayload(result.text);
   } catch {
-    return { ok: false, message: "Gemini 응답을 JSON으로 읽지 못했습니다. 다시 시도해 주세요." };
+    return {
+      ok: false,
+      message: "Gemini 응답을 JSON으로 읽지 못했습니다. 다시 시도해 주세요.",
+    };
   }
 
   const rows = (parsed as { questions?: unknown[] })?.questions;
@@ -165,7 +171,10 @@ ${avoidList}
   });
 
   if (questions.length === 0) {
-    return { ok: false, message: "유효한 암기 문제를 만들지 못했습니다. 다시 시도해 주세요." };
+    return {
+      ok: false,
+      message: "유효한 암기 문제를 만들지 못했습니다. 다시 시도해 주세요.",
+    };
   }
 
   return { ok: true, questions };

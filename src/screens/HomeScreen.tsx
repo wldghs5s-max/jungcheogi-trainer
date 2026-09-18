@@ -70,7 +70,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [reviewQuestions, setReviewQuestions] = useState<Question[]>([]);
   // 안 푼 문제 필터링 상태
   const [onlyUnsolved, setOnlyUnsolved] = useState(false);
-  const [attemptedQuestionIds, setAttemptedQuestionIds] = useState<Set<string>>(new Set());
+  const [attemptedQuestionIds, setAttemptedQuestionIds] = useState<Set<string>>(
+    new Set(),
+  );
 
   const examYears = QuestionRepository.getExamYears();
   const examRounds = QuestionRepository.getExamRounds(examYear ?? undefined);
@@ -110,13 +112,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   // 백그라운드 문제 생성 상태 구독 및 자동 화면 갱신 (메모리 릭 방지)
   useEffect(() => {
     const initialStatus = backgroundQuestionService.getStatus();
-    setIsSyncing(initialStatus.isGenerating && initialStatus.taskType === "PROGRAMMING");
-    setIsGeminiGenerating(initialStatus.isGenerating && initialStatus.taskType === "GEMINI_MEMO");
+    setIsSyncing(
+      initialStatus.isGenerating && initialStatus.taskType === "PROGRAMMING",
+    );
+    setIsGeminiGenerating(
+      initialStatus.isGenerating && initialStatus.taskType === "GEMINI_MEMO",
+    );
 
     const unsubscribe = backgroundQuestionService.subscribe((status) => {
       if (isMountedRef.current) {
         setIsSyncing(status.isGenerating && status.taskType === "PROGRAMMING");
-        setIsGeminiGenerating(status.isGenerating && status.taskType === "GEMINI_MEMO");
+        setIsGeminiGenerating(
+          status.isGenerating && status.taskType === "GEMINI_MEMO",
+        );
         if (!status.isGenerating) {
           void loadData();
         }
@@ -140,7 +148,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const handleGeminiMemoGenerate = async () => {
     triggerHaptic.selection();
-    const res = await backgroundQuestionService.startGeminiMemorizationGeneration();
+    const res =
+      await backgroundQuestionService.startGeminiMemorizationGeneration();
     if (res.started) {
       Alert.alert("백그라운드 AI 암기 생성", res.message);
     } else if (res.apiKeyRequired) {
@@ -171,7 +180,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   // 안 푼 문제만 모아서 10문제 퀵 퀴즈 시작
   const handleStartUnsolvedQuickQuiz = () => {
     triggerHaptic.selection();
-    const unsolved = QuestionRepository.getUnsolvedQuestions(attemptedQuestionIds);
+    const unsolved =
+      QuestionRepository.getUnsolvedQuestions(attemptedQuestionIds);
     if (unsolved.length === 0) {
       Alert.alert(
         "모든 문제 풀이 완료",
@@ -183,7 +193,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     onStartQuiz(selected, "안 푼 문제 10선 퀵 퀴즈");
   };
 
-  const startOrAlert = (questions: Question[], title: string, emptyMessage: string) => {
+  const startOrAlert = (
+    questions: Question[],
+    title: string,
+    emptyMessage: string,
+  ) => {
     if (questions.length === 0) {
       Alert.alert("문제 없음", emptyMessage);
       return;
@@ -279,7 +293,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   };
 
   const handleStartUnknown = () => {
-    startOrAlert(unknownQuestions, "모름만 다시 풀기", "최근 모름으로 표시한 문제가 없습니다.");
+    startOrAlert(
+      unknownQuestions,
+      "모름만 다시 풀기",
+      "최근 모름으로 표시한 문제가 없습니다.",
+    );
   };
 
   const handleStartReview = () => {
@@ -385,7 +403,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </TouchableOpacity>
 
         {/* 안 푼 문제 10선 퀵 퀴즈 배너 */}
-        <TouchableOpacity activeOpacity={0.85} onPress={handleStartUnsolvedQuickQuiz}>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={handleStartUnsolvedQuickQuiz}
+        >
           <Card
             style={[
               styles.quickCard,
@@ -396,7 +417,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             ]}
           >
             <View style={styles.quickLeft}>
-              <View style={[styles.quickIconBox, { backgroundColor: "#10B981" }]}>
+              <View
+                style={[styles.quickIconBox, { backgroundColor: "#10B981" }]}
+              >
                 <CheckCircle2 size={24} color="#FFFFFF" />
               </View>
               <View>
@@ -411,7 +434,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   </Text>
                   <View style={styles.unsolvedCountBadge}>
                     <Text style={styles.unsolvedCountBadgeText}>
-                      남은 {Math.max(0, totalQuestionsCount - attemptedQuestionIds.size)}문제
+                      남은{" "}
+                      {Math.max(
+                        0,
+                        totalQuestionsCount - attemptedQuestionIds.size,
+                      )}
+                      문제
                     </Text>
                   </View>
                 </View>
@@ -425,7 +453,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 </Text>
               </View>
             </View>
-            <ChevronRight size={22} color={isDarkMode ? "#94A3B8" : "#059669"} />
+            <ChevronRight
+              size={22}
+              color={isDarkMode ? "#94A3B8" : "#059669"}
+            />
           </Card>
         </TouchableOpacity>
 
@@ -442,7 +473,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               ]}
             >
               <View style={styles.quickLeft}>
-                <View style={[styles.quickIconBox, { backgroundColor: "#8B5CF6" }]}>
+                <View
+                  style={[styles.quickIconBox, { backgroundColor: "#8B5CF6" }]}
+                >
                   <GraduationCap size={24} color="#FFFFFF" />
                 </View>
                 <View>
@@ -476,7 +509,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   </Text>
                 </View>
               </View>
-              <ChevronRight size={22} color={isDarkMode ? "#C4B5FD" : "#7C3AED"} />
+              <ChevronRight
+                size={22}
+                color={isDarkMode ? "#C4B5FD" : "#7C3AED"}
+              />
             </Card>
           </TouchableOpacity>
         )}
@@ -693,8 +729,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 style={[
                   styles.filterChip,
                   {
-                    backgroundColor: examYear === null ? theme.primary : theme.surface,
-                    borderColor: examYear === null ? theme.primary : theme.border,
+                    backgroundColor:
+                      examYear === null ? theme.primary : theme.surface,
+                    borderColor:
+                      examYear === null ? theme.primary : theme.border,
                   },
                 ]}
               >
@@ -717,7 +755,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     style={[
                       styles.filterChip,
                       {
-                        backgroundColor: selected ? theme.primary : theme.surface,
+                        backgroundColor: selected
+                          ? theme.primary
+                          : theme.surface,
                         borderColor: selected ? theme.primary : theme.border,
                       },
                     ]}
@@ -745,8 +785,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 style={[
                   styles.filterChip,
                   {
-                    backgroundColor: examRound === null ? theme.accent : theme.surface,
-                    borderColor: examRound === null ? theme.accent : theme.border,
+                    backgroundColor:
+                      examRound === null ? theme.accent : theme.surface,
+                    borderColor:
+                      examRound === null ? theme.accent : theme.border,
                   },
                 ]}
               >
@@ -769,7 +811,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     style={[
                       styles.filterChip,
                       {
-                        backgroundColor: selected ? theme.accent : theme.surface,
+                        backgroundColor: selected
+                          ? theme.accent
+                          : theme.surface,
                         borderColor: selected ? theme.accent : theme.border,
                       },
                     ]}
