@@ -93,37 +93,38 @@ jobs:
           fi
           
           # Rename and copy to root directory
-          cp "$APK_DIR/app-release.apk" jungcheogi-trainer-v1.3.3.apk
+          cp "$APK_DIR/app-release.apk" jungcheogi-trainer-v1.3.4.apk
           echo "=== Final APK File Info ==="
-          ls -lh jungcheogi-trainer-v1.3.3.apk
+          ls -lh jungcheogi-trainer-v1.3.4.apk
 
       - name: 12. Upload APK to GitHub Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: jungcheogi-trainer-v1.3.3-apk
-          path: jungcheogi-trainer-v1.3.3.apk
+          name: jungcheogi-trainer-v1.3.4-apk
+          path: jungcheogi-trainer-v1.3.4.apk
           retention-days: 30
 
       - name: 13. Create or Update GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
         with:
-          tag_name: v1.3.3
-          name: "정처기 실기 트레이너 v1.3.3 APK"
+          tag_name: v1.3.4
+          name: "정처기 실기 트레이너 v1.3.4 APK"
           body: |
-            ## 📱 정처기 실기 트레이너 v1.3.3 APK 다운로드
+            ## 📱 정처기 실기 트레이너 v1.3.4 APK 다운로드
 
-            아래 **Assets** 항목에서 `jungcheogi-trainer-v1.3.3.apk`를 스마트폰으로 직접 다운로드하여 설치하실 수 있습니다!
+            아래 **Assets** 항목에서 `jungcheogi-trainer-v1.3.4.apk`를 스마트폰으로 직접 다운로드하여 설치하실 수 있습니다!
 
             ### 🚀 이번 버전 주요 업데이트
-            1. **실시간 토큰 스트리밍(SSE) UI 도입**:
+            1. **답변 내 불필요한 별표(*, **) 기호 완전 정리 & 깔끔한 서식 렌더링**:
+               - 답변에 지저분하게 노출되던 마크다운 별표(*, **)를 제거하고 깔끔한 모바일 볼드체 및 '•' 불릿 기호로 자동 변환 렌더링
+               - AI 프롬프트에 별표 남발 억제 지침을 적용하여 가독성이 대폭 향상된 깔끔한 문장 제공
+            2. **실시간 토큰 스트리밍(SSE) UI 도입**:
                - 답변이 모두 완성될 때까지 기다릴 필요 없이 첫 글자부터 실시간 타자 연출로 즉시 표출 (체감 대기 시간 1초 미만)
-               - 답변 작성 중 진행 상태 시각적 피드백 제공
-            2. **1:1 맞춤형 심층 연속 과외 (멀티턴 대화 히스토리)**:
-               - 이전 질문과 튜터의 설명 맥락을 기억하여 "더 자세히 설명해줘", "이 공식은 왜 그래?" 등 연속 추가 질문 가능
-            3. **답변 출력 토큰 상한 2,048개로 대폭 확장**:
-               - 답변 중간 끊김 없이 복잡한 코드 실행 과정과 심층 이론까지 완벽하게 해설
-            4. **경쟁상태(Race Condition) 차단 및 비차단 백그라운드 문제 생성 안정화 유지**
-          files: jungcheogi-trainer-v1.3.3.apk
+            3. **1:1 맞춤형 심층 연속 과외 (멀티턴 대화 히스토리)**:
+               - 이전 질문과 튜터의 설명 맥락을 기억하여 연속적인 심층 질문-답변 가능
+            4. **답변 출력 토큰 상한 2,048개로 대폭 확장**:
+               - 복잡한 코드 실행 과정과 심층 이론 해설이 중간 끊김 없이 완벽하게 제공
+          files: jungcheogi-trainer-v1.3.4.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

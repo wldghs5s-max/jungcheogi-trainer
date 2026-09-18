@@ -14,6 +14,7 @@ import {
   extractTextFromSSELine,
   buildTutorPrompt,
 } from "../src/api/geminiService";
+import { parseTutorMarkdownLine } from "../src/utils/textFormatter";
 
 let failed = 0;
 
@@ -520,6 +521,63 @@ async function runGeminiServiceTests() {
     assert(
       streamedChunk === "원자성(Atomicity)에 대해 자세히 설명해 드리겠습니다.",
       "onChunk 콜백에 스트리밍 텍스트 정상 전달",
+    );
+  }
+
+  // 10. 마크다운 별표(*, **) 정리 및 불릿/볼드 서식 파싱 검증
+  {
+    // 10-1. 불릿 목록 + 볼드 헤더 복합 라인 파싱
+    const line1 = "* **1) 교재 단원 위치:** 2과목 애플리케이션 테스트 관리";
+    const res1 = parseTutorMarkdownLine(line1);
+    assert(res1.bulletPrefix === "• ", "마크다운 불릿 '*'가 깔끔한 '• '로 치환됨");
+    assert(res1.segments.length === 2, "세그먼트 2개로 분할");
+    assert(
+      res1.segments[0].isBold && res1.segments[0].text === "1) 교재 단원 위치:",
+      "볼드체 세그먼트에서 ** 기호 완전 제거 및 isBold: true 설정",
+    );
+    assert(
+      !res1.segments[1].isBold && res1.segments[1].text === " 2과목 애플리케이션 테스트 관리",
+      "일반 텍스트 세그먼트 정상 유지",
+    );
+
+    // 10-2. 단순 불릿 라인
+    const line2 = "  - 화이트박스 테스트 기법 설명";
+    const res2 = parseTutorMarkdownLine(line2);
+    assert(res2.bulletPrefix === "  • ", "들여쓰기 및 하이픈(-) 불릿 '  • ' 변환");
+    assert(res2.segments[0].text === "화이트박스 테스트 기법 설명", "본문 텍스트 일치");
+
+    // 10-3. 스트리밍 미완성 짝이 맞지 않는 ** 정리
+    const line3 = "* **핵심 개념";
+    const res3 = parseTutorMarkdownLine(line3);
+    assert(res3.bulletPrefix === "• ", "스트리밍 중 불릿 정상 치환");
+    assert(res3.segments[0].text === "핵심 개념", "미완성 ** 자동 정리되어 클린 텍스트 반환");
+
+    // 10-4. 단독 이탤릭 별표(*단어*) 정리
+    const line4 = "시험장에 가면 *이것만* 꼭 기억하세요.";
+    const res4 = parseTutorMarkdownLine(line4);
+    assert(
+      res4.segments[0].text === "시험장에 가면 이것만 꼭 기억하세요.",
+      "단독 별표(*단어*) 기호 깔끔히 제거",
+    );
+
+    // 10-5. 프롬프트 내 가독성 규칙 탑재 확인
+    const prompt = buildTutorPrompt({
+      question: {
+        id: "q-1",
+        subject: "소프트웨어",
+        question: "문제",
+        answer: "정답",
+        explanation: "해설",
+      } as any,
+      userPrompt: "질문",
+    });
+    assert(
+      prompt.includes("[가독성 규칙 - 필수 준수]"),
+      "프롬프트에 [가독성 규칙 - 필수 준수] 섹션 포함",
+    );
+    assert(
+      prompt.includes("불필요한 별표(*, **) 기호를 남발하지 마세요"),
+      "프롬프트에 별표 남발 금지 지침 포함",
     );
   }
 

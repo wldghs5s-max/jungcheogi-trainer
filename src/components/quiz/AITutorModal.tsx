@@ -28,6 +28,7 @@ import {
 import { Question } from "../../types/question";
 import { triggerHaptic } from "../../utils/haptics";
 import { COLORS } from "../../utils/theme";
+import { parseTutorMarkdownLine } from "../../utils/textFormatter";
 
 interface AITutorModalProps {
   visible: boolean;
@@ -39,6 +40,39 @@ interface AITutorModalProps {
 }
 
 const CHAPTER_LESSON_PROMPT = `이 문제를 「모른다」고 표시했습니다. 오답 분석은 하지 말고, 교재에서 이 내용이 나오는 단원(챕터)을 펼쳐 보여 주듯이 핵심 개념과 바로 옆 연관 내용까지 설명해 주세요.`;
+
+/**
+ * 마크다운 텍스트에서 불필요한 별표(*, **) 기호를 정리하고,
+ * 볼드체(**텍스트**)와 불릿 기호(* -> •)를 모바일 환경에 맞게 깔끔하게 렌더링합니다.
+ */
+export function renderFormattedTutorText(
+  rawText: string,
+  baseStyle: any,
+  boldStyle: any,
+) {
+  if (!rawText) return null;
+
+  const lines = rawText.split("\n");
+
+  return lines.map((line, lineIdx) => {
+    const { bulletPrefix, segments } = parseTutorMarkdownLine(line);
+
+    return (
+      <Text key={`line-${lineIdx}`} style={baseStyle}>
+        {bulletPrefix ? bulletPrefix : null}
+        {segments.map((seg, segIdx) => (
+          <Text
+            key={`seg-${segIdx}`}
+            style={seg.isBold ? boldStyle : baseStyle}
+          >
+            {seg.text}
+          </Text>
+        ))}
+        {lineIdx < lines.length - 1 ? "\n" : ""}
+      </Text>
+    );
+  });
+}
 
 export const AITutorModal: React.FC<AITutorModalProps> = ({
   visible,
@@ -529,9 +563,11 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
                         }
                       }}
                     >
-                      <Text style={[styles.answerText, { color: theme.text }]}>
-                        {msg.text}
-                      </Text>
+                      {renderFormattedTutorText(
+                        msg.text,
+                        [styles.answerText, { color: theme.text }],
+                        [styles.answerText, { color: theme.text, fontWeight: "700" }],
+                      )}
                     </View>
                   ) : null,
                 )
