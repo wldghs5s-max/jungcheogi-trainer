@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -27,6 +27,7 @@ import { useSettingsStore } from "../store/settingsStore";
 import { useUserStore } from "../store/userStore";
 import { AttemptRepository } from "../repositories/attemptRepository";
 import { QuestionRepository } from "../repositories/questionRepository";
+import { backgroundQuestionService } from "../services/backgroundQuestionService";
 import { QuestionSyncService } from "../api/questionSyncService";
 import { generateMemorizationQuestions } from "../api/geminiQuestionGenerator";
 import { GeminiService } from "../api/geminiService";
@@ -94,69 +95,58 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     setReviewQuestions(QuestionRepository.getByIds(dueIds));
   }, [loadUserSettings]);
 
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
   useEffect(() => {
     loadData();
   }, [loadData]);
 
-  const handleSyncQuestions = async () => {
-    setIsSyncing(true);
-    triggerHaptic.selection();
-    const result = await QuestionSyncService.syncQuestions();
-    await QuestionSyncService.syncPendingAttempts(); // 오프라인 큐도 전송
-    await loadData();
-    setIsSyncing(false);
+  // 백그라운드 문제 생성 상태 구독 및 자동 화면 갱신 (메모리 릭 방지)
+  useEffect(() => {
+    const initialStatus = backgroundQuestionService.getStatus();
+    setIsSyncing(initialStatus.isGenerating && initialStatus.taskType === "PROGRAMMING");
+    setIsGeminiGenerating(initialStatus.isGenerating && initialStatus.taskType === "GEMINI_MEMO");
 
-    if (result.addedCount > 0) {
-      triggerHaptic.success();
-      Alert.alert(
-        "프로그래밍 언어 문제 생성 완료",
-        `10종 독립 생성기에서 코드 추적/변형 ${result.addedCount}문제를 추가했습니다.\n총 ${QuestionRepository.getAll().length}문제 보유`,
-      );
+    const unsubscribe = backgroundQuestionService.subscribe((status) => {
+      if (isMountedRef.current) {
+        setIsSyncing(status.isGenerating && status.taskType === "PROGRAMMING");
+        setIsGeminiGenerating(status.isGenerating && status.taskType === "GEMINI_MEMO");
+        if (!status.isGenerating) {
+          void loadData();
+        }
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [loadData]);
+
+  const handleSyncQuestions = () => {
+    triggerHaptic.selection();
+    const res = backgroundQuestionService.startProgrammingGeneration();
+    if (res.started) {
+      Alert.alert("백그라운드 문제 생성", res.message);
     } else {
-      triggerHaptic.selection();
-      Alert.alert(
-        "생성 실패",
-        `새 문제를 만들지 못했습니다. (총 ${QuestionRepository.getAll().length}문제 보유)`,
-      );
+      Alert.alert("알림", res.message);
     }
   };
 
   const handleGeminiMemoGenerate = async () => {
-    if (isSyncing || isGeminiGenerating) return;
     triggerHaptic.selection();
-
-    const apiKey = await GeminiService.getApiKey();
-    if (!apiKey) {
-      Alert.alert(
-        "API Key 필요",
-        "설정 탭에서 Gemini API Key를 등록하면 온라인으로 암기 문제를 생성할 수 있습니다.",
-      );
-      return;
-    }
-
-    setIsGeminiGenerating(true);
-    try {
-      const result = await generateMemorizationQuestions(QuestionRepository.getAll());
-      if (!result.ok) {
-        Alert.alert("AI 생성 실패", result.message);
-        return;
-      }
-
-      const added = await QuestionRepository.appendCachedQuestions(result.questions);
-      await loadData();
-      triggerHaptic.success();
-      const titles = result.questions
-        .map((q) => `· ${q.subject}: ${q.category}`)
-        .join("\n");
-      Alert.alert(
-        "AI 암기 문제 추가",
-        `${added}문제를 저장했습니다.\n${titles}\n\n총 ${QuestionRepository.getAll().length}문제 보유`,
-      );
-    } catch (e: unknown) {
-      const message = e instanceof Error ? e.message : "네트워크 오류";
-      Alert.alert("AI 생성 실패", message);
-    } finally {
-      setIsGeminiGenerating(false);
+    const res = await backgroundQuestionService.startGeminiMemorizationGeneration();
+    if (res.started) {
+      Alert.alert("백그라운드 AI 암기 생성", res.message);
+    } else if (res.apiKeyRequired) {
+      Alert.alert("API Key 필요", res.message);
+    } else {
+      Alert.alert("알림", res.message);
     }
   };
 
@@ -600,10 +590,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </Text>
             </View>
             <Button
-              title={isSyncing ? "생성 중..." : "문제 생성"}
+              title={isSyncing ? "백그라운드 생성 중" : "문제 생성"}
               variant="outline"
-              loading={isSyncing}
-              disabled={isGeminiGenerating}
+              loading={false}
+              disabled={false}
               onPress={handleSyncQuestions}
               style={styles.syncBtn}
               textStyle={{ fontSize: 12 }}
@@ -633,10 +623,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </Text>
             </View>
             <Button
-              title={isGeminiGenerating ? "생성 중..." : "AI 생성"}
+              title={isGeminiGenerating ? "백그라운드 생성 중" : "AI 생성"}
               variant="outline"
-              loading={isGeminiGenerating}
-              disabled={isSyncing}
+              loading={false}
+              disabled={false}
               onPress={handleGeminiMemoGenerate}
               style={styles.syncBtn}
               textStyle={{ fontSize: 12 }}

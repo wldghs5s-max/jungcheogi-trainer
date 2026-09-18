@@ -1,4 +1,4 @@
-import { GeminiService } from "./geminiService";
+import { GeminiService, GENERATOR_MODELS } from "./geminiService";
 import { Question, Subject } from "../types/question";
 
 export const MEMO_SUBJECTS: Subject[] = [
@@ -126,6 +126,7 @@ ${avoidList}
     maxOutputTokens: 4096,
     temperature: 0.8,
     json: true,
+    models: GENERATOR_MODELS,
   });
 
   if (!result.ok) {

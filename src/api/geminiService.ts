@@ -14,17 +14,33 @@ export const MAX_RETRIES_PER_MODEL = 3;
 export const DISCONTINUED_MODEL_REGEX = /gemini-(?:1\.5|2\.0)/i;
 
 /**
- * 종료된 gemini-1.5 및 gemini-2.0 계열을 완전히 제거한 안정 모델 우선순위 목록입니다.
+ * AI 튜터용 모델 우선순위: 빠른 실시간 응답(1~2초대)을 최우선으로 하여 gemini-3.5-flash-lite 배치
  */
-export const PREFERRED_MODELS = [
+export const TUTOR_MODELS = [
+  "gemini-3.5-flash-lite",
   "gemini-2.5-flash",
+  "gemini-3.1-flash-lite",
+  "gemini-3.5-flash",
+  "gemini-3.7-flash",
+  "gemini-3.8-flash",
   "gemini-2.5-pro",
+];
+
+/**
+ * 실기 암기 문제 생성용 모델 우선순위: 정답/유사정답/약어 채점 범위와 지문 완성도를 최우선으로 하여 gemini-3.8-flash 배치
+ */
+export const GENERATOR_MODELS = [
   "gemini-3.8-flash",
   "gemini-3.7-flash",
   "gemini-3.5-flash",
-  "gemini-3.5-flash-lite",
-  "gemini-3.1-flash-lite",
+  "gemini-2.5-flash",
+  "gemini-2.5-pro",
 ];
+
+/**
+ * 종료된 gemini-1.5 및 gemini-2.0 계열을 완전히 제거한 안정 모델 우선순위 목록입니다.
+ */
+export const PREFERRED_MODELS = TUTOR_MODELS;
 
 export function cleanApiKey(rawKey: string): string {
   if (!rawKey) return "";
@@ -208,39 +224,51 @@ async function generateContent(
   maxOutputTokens: number,
   extraConfig: Record<string, unknown> = {},
   fetchFn: typeof fetch = fetch,
-): Promise<{ text: string | null; error?: GeminiRequestError }> {
+  signal?: AbortSignal,
+): Promise<{ text: string | null; error?: GeminiRequestError; aborted?: boolean }> {
+  if (signal?.aborted) {
+    return { text: null, aborted: true };
+  }
   const cleanKey = cleanApiKey(apiKey);
   const isLegacyKey = cleanKey.startsWith("AIza");
   const url = isLegacyKey
     ? `${GEMINI_BASE}/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(cleanKey)}`
     : `${GEMINI_BASE}/models/${encodeURIComponent(model)}:generateContent`;
 
-  const response = await fetchFn(url, {
-    method: "POST",
-    headers: authHeaders(cleanKey),
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0.4,
-        maxOutputTokens,
-        ...extraConfig,
+  try {
+    const response = await fetchFn(url, {
+      method: "POST",
+      headers: authHeaders(cleanKey),
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.4,
+          maxOutputTokens,
+          ...extraConfig,
+        },
+      }),
+      signal,
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (response.ok) {
+      return { text: extractText(data) };
+    }
+
+    return {
+      text: null,
+      error: {
+        status: response.status,
+        message: parseErrorMessage(data, response.status),
+        model,
       },
-    }),
-  });
-
-  const data = await response.json().catch(() => ({}));
-  if (response.ok) {
-    return { text: extractText(data) };
+    };
+  } catch (err: unknown) {
+    if (signal?.aborted || (err instanceof Error && err.name === "AbortError")) {
+      return { text: null, aborted: true };
+    }
+    throw err;
   }
-
-  return {
-    text: null,
-    error: {
-      status: response.status,
-      message: parseErrorMessage(data, response.status),
-      model,
-    },
-  };
 }
 
 export interface RetryExecutionOptions {
@@ -251,6 +279,7 @@ export interface RetryExecutionOptions {
   sleepFn?: (ms: number) => Promise<void>;
   models?: string[];
   maxRetries?: number;
+  signal?: AbortSignal;
   onAttempt?: (attemptInfo: {
     model: string;
     attempt: number;
@@ -263,6 +292,7 @@ export type ExecutionResult =
   | { ok: true; text: string; model: string }
   | {
       ok: false;
+      aborted?: boolean;
       error: {
         status: number;
         message: string;
@@ -303,6 +333,15 @@ export class GeminiService {
       };
     }
 
+    const signal = options?.signal;
+    if (signal?.aborted) {
+      return {
+        ok: false,
+        aborted: true,
+        error: { status: 0, message: "요청이 취소되었습니다." },
+      };
+    }
+
     const fetchFn = options?.fetchFn ?? fetch;
     const sleepFn =
       options?.sleepFn ??
@@ -339,6 +378,14 @@ export class GeminiService {
     const maxRetries = options?.maxRetries ?? MAX_RETRIES_PER_MODEL; // 3회 재시도
 
     for (const model of modelsToTry) {
+      if (signal?.aborted) {
+        return {
+          ok: false,
+          aborted: true,
+          error: { status: 0, message: "요청이 취소되었습니다." },
+        };
+      }
+
       // 8 & 10. 종료된 모델은 절대 사용하지 않는다.
       if (DISCONTINUED_MODEL_REGEX.test(model)) {
         continue;
@@ -348,6 +395,14 @@ export class GeminiService {
       const totalAttempts = 1 + maxRetries;
 
       for (let attempt = 1; attempt <= totalAttempts; attempt++) {
+        if (signal?.aborted) {
+          return {
+            ok: false,
+            aborted: true,
+            error: { status: 0, message: "요청이 취소되었습니다." },
+          };
+        }
+
         try {
           const result = await generateContent(
             cleanKey,
@@ -356,7 +411,16 @@ export class GeminiService {
             options?.maxOutputTokens ?? 2048,
             options?.extraConfig,
             fetchFn,
+            signal,
           );
+
+          if (result.aborted || signal?.aborted) {
+            return {
+              ok: false,
+              aborted: true,
+              error: { status: 0, message: "요청이 취소되었습니다." },
+            };
+          }
 
           if (result.text) {
             options?.onAttempt?.({ model, attempt, status: 200 });
@@ -399,7 +463,21 @@ export class GeminiService {
               // 3. 재시도 간격은 약 1초, 2초, 4초의 지수 백오프와 0~300ms jitter를 사용한다.
               const delay = calculateBackoffDelay(attempt);
               options?.onAttempt?.({ model, attempt, status: err.status, delay });
+              if (signal?.aborted) {
+                return {
+                  ok: false,
+                  aborted: true,
+                  error: { status: 0, message: "요청이 취소되었습니다." },
+                };
+              }
               await sleepFn(delay);
+              if (signal?.aborted) {
+                return {
+                  ok: false,
+                  aborted: true,
+                  error: { status: 0, message: "요청이 취소되었습니다." },
+                };
+              }
               continue; // 동일 모델 재시도
             } else {
               // 4. 동일 모델 재시도가 모두 실패하면 다음 사용 가능 모델을 시도한다.
@@ -412,6 +490,14 @@ export class GeminiService {
           options?.onAttempt?.({ model, attempt, status: err.status });
           break;
         } catch (networkErr: unknown) {
+          if (signal?.aborted || (networkErr instanceof Error && networkErr.name === "AbortError")) {
+            return {
+              ok: false,
+              aborted: true,
+              error: { status: 0, message: "요청이 취소되었습니다." },
+            };
+          }
+
           const message =
             networkErr instanceof Error ? networkErr.message : "네트워크 연결 오류";
           lastError = { status: 0, message, model };
@@ -420,7 +506,21 @@ export class GeminiService {
           if (attempt < totalAttempts) {
             const delay = calculateBackoffDelay(attempt);
             options?.onAttempt?.({ model, attempt, status: 0, delay });
+            if (signal?.aborted) {
+              return {
+                ok: false,
+                aborted: true,
+                error: { status: 0, message: "요청이 취소되었습니다." },
+              };
+            }
             await sleepFn(delay);
+            if (signal?.aborted) {
+              return {
+                ok: false,
+                aborted: true,
+                error: { status: 0, message: "요청이 취소되었습니다." },
+              };
+            }
             continue;
           } else {
             options?.onAttempt?.({ model, attempt, status: 0 });
@@ -445,6 +545,7 @@ export class GeminiService {
       fetchFn?: typeof fetch;
       sleepFn?: (ms: number) => Promise<void>;
       models?: string[];
+      signal?: AbortSignal;
     },
   ): Promise<string> {
     const apiKey = await this.getApiKey();
@@ -464,7 +565,7 @@ export class GeminiService {
       ? `당신은 대한민국 최고 수준의 정보처리기사 실기 전담 1:1 스타 강사이자 AI 수험 튜터입니다.
 수험생이 이 문제를 「모른다」고 표시했습니다. 오답 분석은 하지 마세요. 답을 억지로 쓴 것이 아닙니다.
 교재에서 이 내용이 등장하는 단원(챕터)을 펼쳐 보여 주듯이, 이 문제와 바로 옆 연관 개념까지 함께 가르쳐 주세요.
-반드시 한국어로 자연스럽고 가독성 좋게 불릿 포인트와 소제목을 활용해 구조화하세요.
+인사말이나 군더더기 서론은 일절 생략하고, 곧바로 본론으로 들어가 각 항목별 핵심만 명확하게 불릿 포인트로 작성하세요.
 
 [이 문제가 속한 단원]
 - 위치: ${chapterPath}
@@ -490,7 +591,7 @@ ${userPrompt}
 `
       : `당신은 대한민국 최고 수준의 정보처리기사 실기 전담 1:1 스타 강사이자 AI 수험 튜터입니다.
 수험생의 눈높이에 맞춰 친절하고 논리정연하며, 실제 시험장에서 점수를 얻을 수 있는 명쾌한 답변을 제공하세요.
-반드시 한국어로 자연스럽고 가독성 좋게 불릿 포인트를 활용하여 구조화해 주세요.
+인사말이나 군더더기 서론은 일절 생략하고, 곧바로 본론으로 들어가 각 항목별 핵심만 명확하게 불릿 포인트로 작성하세요.
 
 [문제 정보]
 - 과목/단원: ${chapterPath}
@@ -506,14 +607,19 @@ ${userPrompt}
 `;
 
     const result = await this.executeWithRetry(cleanKey, systemPrompt, {
-      maxOutputTokens: isUnknown ? 4096 : 2048,
+      maxOutputTokens: isUnknown ? 800 : 600,
       fetchFn: options?.fetchFn,
       sleepFn: options?.sleepFn,
-      models: options?.models,
+      models: options?.models ?? TUTOR_MODELS,
+      signal: options?.signal,
     });
 
     if (result.ok) {
       return result.text;
+    }
+
+    if (result.aborted) {
+      return "";
     }
 
     return formatGeminiErrorMessage(result.error);
@@ -528,8 +634,10 @@ ${userPrompt}
       fetchFn?: typeof fetch;
       sleepFn?: (ms: number) => Promise<void>;
       models?: string[];
+      signal?: AbortSignal;
+      extraConfig?: Record<string, unknown>;
     },
-  ): Promise<{ ok: true; text: string } | { ok: false; message: string }> {
+  ): Promise<{ ok: true; text: string } | { ok: false; message: string; aborted?: boolean }> {
     const apiKey = await this.getApiKey();
     if (!apiKey) {
       return {
@@ -540,7 +648,9 @@ ${userPrompt}
     }
 
     const cleanKey = cleanApiKey(apiKey);
-    const extraConfig: Record<string, unknown> = {};
+    const extraConfig: Record<string, unknown> = {
+      ...(options?.extraConfig ?? {}),
+    };
     if (options?.temperature !== undefined) {
       extraConfig.temperature = options.temperature;
     }
@@ -553,7 +663,8 @@ ${userPrompt}
       extraConfig,
       fetchFn: options?.fetchFn,
       sleepFn: options?.sleepFn,
-      models: options?.models,
+      models: options?.models ?? GENERATOR_MODELS,
+      signal: options?.signal,
     });
 
     if (result.ok) {
@@ -562,6 +673,7 @@ ${userPrompt}
 
     return {
       ok: false,
+      aborted: result.aborted,
       message: formatGeminiErrorMessage(result.error),
     };
   }

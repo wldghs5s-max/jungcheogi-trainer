@@ -4,6 +4,8 @@ import {
   isTerminalAuthStatus,
   calculateBackoffDelay,
   PREFERRED_MODELS,
+  TUTOR_MODELS,
+  GENERATOR_MODELS,
   TRANSIENT_STATUSES,
   DISCONTINUED_MODEL_REGEX,
   formatGeminiErrorMessage,
@@ -240,6 +242,59 @@ async function runGeminiServiceTests() {
       testRes.message === "Gemini 서버가 일시적으로 혼잡합니다. 잠시 후 다시 시도해 주세요.",
       "testConnection: 503 발생 시 API 키/권한 오류가 아닌 일시 혼잡 안내문 반환",
     );
+  }
+  assert(
+    TUTOR_MODELS[0] === "gemini-3.5-flash-lite",
+    "TUTOR_MODELS 1순위는 초고속 gemini-3.5-flash-lite",
+  );
+  assert(
+    GENERATOR_MODELS[0] === "gemini-3.8-flash",
+    "GENERATOR_MODELS 1순위는 고정밀 gemini-3.8-flash",
+  );
+
+  // 시나리오 6: AbortController에 의한 취소 시 재시도 없이 silent exit 및 aborted 반환
+  {
+    let callCount = 0;
+    const controller = new AbortController();
+    controller.abort(); // 즉시 취소 상태
+
+    const mockFetch = async () => {
+      callCount++;
+      return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: "응답" }] } }] }));
+    };
+
+    const abortRes = await GeminiService.executeWithRetry("AQ.dummy_key", "테스트", {
+      models: ["model-1"],
+      fetchFn: mockFetch as any,
+      sleepFn: noopSleep,
+      signal: controller.signal,
+    });
+
+    assert(!abortRes.ok && abortRes.aborted === true, "시나리오 6: AbortSignal 취소 시 aborted: true 반환");
+    assert(callCount === 0, "시나리오 6: 이미 취소된 요청은 fetch를 호출하지 않고 즉시 반환 (실제: 0회)");
+  }
+
+  {
+    let callCount = 0;
+    const controller = new AbortController();
+
+    const mockFetch = async () => {
+      callCount++;
+      controller.abort(); // 첫 호출 중 취소 발생
+      const err = new Error("The operation was aborted");
+      err.name = "AbortError";
+      throw err;
+    };
+
+    const abortRes = await GeminiService.executeWithRetry("AQ.dummy_key", "테스트", {
+      models: ["model-1", "model-2"],
+      fetchFn: mockFetch as any,
+      sleepFn: noopSleep,
+      signal: controller.signal,
+    });
+
+    assert(!abortRes.ok && abortRes.aborted === true, "시나리오 6-2: 통신 중 AbortError 발생 시 즉시 aborted: true 반환");
+    assert(callCount === 1, `시나리오 6-2: 재시도 없이 1회 호출 후 즉시 탈출 (실제: ${callCount}회)`);
   }
 
   if (failed > 0) {

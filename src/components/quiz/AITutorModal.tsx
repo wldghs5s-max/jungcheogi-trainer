@@ -54,6 +54,9 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
   const didAutoAskRef = useRef(false);
   const latestTutorOffsetRef = useRef(0);
   const pendingAnswerScrollIdRef = useRef<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const activeQuestionIdRef = useRef<string>(question.id);
+  activeQuestionIdRef.current = question.id;
   const isUnknown = missType === "UNKNOWN";
 
   const [promptInput, setPromptInput] = useState("");
@@ -64,6 +67,12 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
   const [historyReady, setHistoryReady] = useState(false);
 
   useEffect(() => {
+    // 이전 문제 또는 이전 모달의 진행 중인 요청 즉시 네트워크 취소
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+
     didAutoAskRef.current = false;
     latestTutorOffsetRef.current = 0;
     pendingAnswerScrollIdRef.current = null;
@@ -95,6 +104,10 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
 
     return () => {
       cancelled = true;
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
     };
   }, [visible, question.id]);
 
@@ -177,8 +190,18 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
       : Math.min(windowHeight * 0.85, maxAllowedHeight);
 
   const handleAsk = async (promptText: string, displayText?: string) => {
-    if (!promptText.trim() || loading) return;
+    if (!promptText.trim()) return;
     triggerHaptic.selection();
+
+    // 이전 진행 중이던 요청이 있으면 즉시 중단 (Race condition 차단)
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    const targetQuestionId = question.id;
 
     const userText = (displayText ?? promptText).trim();
     const userMessage: TutorChatMessage = {
@@ -188,34 +211,65 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
     };
     setMessages((prev) => {
       const next = [...prev, userMessage];
-      void TutorRepository.saveThread(question.id, next);
+      void TutorRepository.saveThread(targetQuestionId, next);
       return next;
     });
     setLoading(true);
     scrollToLatest();
 
-    const result = await GeminiService.askTutor({
-      question,
-      userAnswer: isUnknown ? undefined : userAnswer,
-      userPrompt: promptText,
-      missType: missType ?? undefined,
-    });
+    try {
+      const result = await GeminiService.askTutor(
+        {
+          question,
+          userAnswer: isUnknown ? undefined : userAnswer,
+          userPrompt: promptText,
+          missType: missType ?? undefined,
+        },
+        {
+          signal: controller.signal,
+        },
+      );
 
-    const tutorId = `tutor-${Date.now()}`;
-    const tutorMessage: TutorChatMessage = {
-      id: tutorId,
-      role: "tutor",
-      text: result,
-    };
-    pendingAnswerScrollIdRef.current = tutorId;
-    setMessages((prev) => {
-      const next = [...prev, tutorMessage];
-      void TutorRepository.saveThread(question.id, next);
-      return next;
-    });
-    setHasTutorAnswer(true);
-    setLoading(false);
-    triggerHaptic.success();
+      // 모달이 닫혔거나, 요청이 취소되었거나, 다른 문제로 이동했으면 상태 갱신 무시
+      if (controller.signal.aborted || activeQuestionIdRef.current !== targetQuestionId) {
+        return;
+      }
+
+      if (!result || !result.trim()) {
+        return;
+      }
+
+      const tutorId = `tutor-${Date.now()}`;
+      const tutorMessage: TutorChatMessage = {
+        id: tutorId,
+        role: "tutor",
+        text: result,
+      };
+      pendingAnswerScrollIdRef.current = tutorId;
+      setMessages((prev) => {
+        if (activeQuestionIdRef.current !== targetQuestionId) return prev;
+        const next = [...prev, tutorMessage];
+        void TutorRepository.saveThread(targetQuestionId, next);
+        return next;
+      });
+      setHasTutorAnswer(true);
+      triggerHaptic.success();
+    } catch (err: unknown) {
+      if (controller.signal.aborted || (err instanceof Error && err.name === "AbortError")) {
+        return;
+      }
+      if (activeQuestionIdRef.current !== targetQuestionId) {
+        return;
+      }
+      console.warn("[AITutorModal] askTutor error:", err);
+    } finally {
+      if (abortControllerRef.current === controller) {
+        abortControllerRef.current = null;
+        if (activeQuestionIdRef.current === targetQuestionId) {
+          setLoading(false);
+        }
+      }
+    }
   };
 
   useEffect(() => {
