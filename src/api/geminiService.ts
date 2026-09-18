@@ -123,11 +123,289 @@ export function formatGeminiErrorMessage(error: {
   return `서버 응답 오류 (${error.status}): ${error.message}`;
 }
 
+export interface TutorChatMessageItem {
+  role: "user" | "model";
+  text: string;
+}
+
 export interface TutorContext {
   question: Question;
   userAnswer?: string | string[];
   userPrompt: string;
   missType?: "WRONG" | "UNKNOWN";
+  history?: TutorChatMessageItem[];
+}
+
+export function buildTutorPrompt(context: TutorContext): string {
+  const { question, userAnswer, userPrompt, missType, history } = context;
+  const chapterPath = [
+    question.subject,
+    question.category,
+    question.subCategory,
+  ]
+    .filter(Boolean)
+    .join(" > ");
+  const isUnknown = missType === "UNKNOWN";
+
+  let historySection = "";
+  if (history && history.length > 0) {
+    const formattedHistory = history
+      .map((item) => {
+        const speaker = item.role === "user" ? "수험생" : "AI 튜터";
+        return `${speaker}: ${item.text}`;
+      })
+      .join("\n\n");
+    historySection = `\n[이전 튜터링 대화 내용]\n${formattedHistory}\n`;
+  }
+
+  if (isUnknown) {
+    if (history && history.length > 0) {
+      return `당신은 대한민국 최고 수준의 정보처리기사 실기 전담 1:1 스타 강사이자 AI 수험 튜터입니다.
+수험생과 앞선 대화를 바탕으로 1:1 맞춤형 과외를 이어가고 있습니다.
+이전 대화 맥락을 정확히 기억하고, 수험생의 추가 질문에 대해 군더더기 없이 명쾌하고 핵심을 짚어 친절하게 설명해 주세요.
+
+[이 문제가 속한 단원]
+- 위치: ${chapterPath}
+- 키워드: ${(question.keywords || []).join(", ") || "(없음)"}
+
+[문제 정보]
+- 문제 지문: ${question.question}
+${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
+- 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
+- 기본 해설: ${question.explanation}
+${historySection}
+[수험생의 추가 질문]
+${userPrompt}
+`;
+    }
+
+    return `당신은 대한민국 최고 수준의 정보처리기사 실기 전담 1:1 스타 강사이자 AI 수험 튜터입니다.
+수험생이 이 문제를 「모른다」고 표시했습니다. 오답 분석은 하지 마세요. 답을 억지로 쓴 것이 아닙니다.
+교재에서 이 내용이 등장하는 단원(챕터)을 펼쳐 보여 주듯이, 이 문제와 바로 옆 연관 개념까지 함께 가르쳐 주세요.
+인사말이나 군더더기 서론은 일절 생략하고, 곧바로 본론으로 들어가 각 항목별 핵심만 명확하게 불릿 포인트로 작성하세요.
+
+[이 문제가 속한 단원]
+- 위치: ${chapterPath}
+- 키워드: ${(question.keywords || []).join(", ") || "(없음)"}
+
+[문제 정보]
+- 문제 유형: ${question.type} (난이도: ${question.difficulty})
+- 문제 지문: ${question.question}
+${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
+- 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
+- 기본 해설: ${question.explanation}
+
+[반드시 아래 구성으로 답하세요]
+1) 교재 단원 위치: 이 문제가 어느 챕터에 나오는지
+2) 이 단원에서 반드시 알아야 하는 핵심 개념
+3) 이 문제 바로 앞뒤에 나오는 연관 개념·용어·공식
+4) 같은 단원에서 자주 나오는 출제 포인트
+5) 이번 문제를 단원 맥락에서 다시 풀어보는 해설
+6) 시험장에서 1초 만에 떠올릴 암기 포인트
+
+[수험생의 질문]
+${userPrompt}
+`;
+  }
+
+  // General or Wrong
+  if (history && history.length > 0) {
+    return `당신은 대한민국 최고 수준의 정보처리기사 실기 전담 1:1 스타 강사이자 AI 수험 튜터입니다.
+수험생과 앞선 대화를 바탕으로 1:1 맞춤형 과외를 이어가고 있습니다.
+이전 대화 맥락을 정확히 기억하고, 수험생의 추가 질문에 대해 군더더기 없이 명쾌하고 핵심을 짚어 친절하게 설명해 주세요.
+
+[문제 정보]
+- 과목/단원: ${chapterPath}
+- 문제 유형: ${question.type} (난이도: ${question.difficulty})
+- 문제 지문: ${question.question}
+${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
+- 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
+- 기본 해설: ${question.explanation}
+- 수험생이 작성한 답: ${userAnswer ? (Array.isArray(userAnswer) ? userAnswer.join(", ") : userAnswer) : "(미작성)"}
+${historySection}
+[수험생의 추가 질문]
+${userPrompt}
+`;
+  }
+
+  return `당신은 대한민국 최고 수준의 정보처리기사 실기 전담 1:1 스타 강사이자 AI 수험 튜터입니다.
+수험생의 눈높이에 맞춰 친절하고 논리정연하며, 실제 시험장에서 점수를 얻을 수 있는 명쾌한 답변을 제공하세요.
+인사말이나 군더더기 서론은 일절 생략하고, 곧바로 본론으로 들어가 각 항목별 핵심만 명확하게 불릿 포인트로 작성하세요.
+
+[문제 정보]
+- 과목/단원: ${chapterPath}
+- 문제 유형: ${question.type} (난이도: ${question.difficulty})
+- 문제 지문: ${question.question}
+${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
+- 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
+- 기본 해설: ${question.explanation}
+- 수험생이 작성한 답: ${userAnswer ? (Array.isArray(userAnswer) ? userAnswer.join(", ") : userAnswer) : "(미작성)"}
+
+[수험생의 질문]
+${userPrompt}
+`;
+}
+
+export function extractTextFromSSELine(line: string): string {
+  const trimmed = line.trim();
+  if (!trimmed.startsWith("data:") && !trimmed.startsWith("data :")) {
+    return "";
+  }
+  const jsonStr = trimmed.replace(/^data\s*:\s*/, "");
+  if (!jsonStr || jsonStr === "[DONE]") {
+    return "";
+  }
+  try {
+    const data = JSON.parse(jsonStr);
+    const parts = data?.candidates?.[0]?.content?.parts;
+    if (!Array.isArray(parts)) return "";
+    return parts
+      .filter((p: any) => p?.text && !p.thought)
+      .map((p: any) => p.text)
+      .join("");
+  } catch {
+    return "";
+  }
+}
+
+export function streamWithXHR(
+  url: string,
+  apiKey: string,
+  body: string,
+  onChunk: (accumulatedText: string) => void,
+  signal?: AbortSignal,
+): Promise<{ text: string; status: number; error?: string }> {
+  return new Promise((resolve) => {
+    if (signal?.aborted) {
+      resolve({ text: "", status: 0 });
+      return;
+    }
+
+    if (typeof XMLHttpRequest === "undefined") {
+      resolve({
+        text: "",
+        status: 0,
+        error: "XMLHttpRequest unavailable",
+      });
+      return;
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("x-goog-api-key", cleanApiKey(apiKey));
+
+    let accumulatedText = "";
+    let lastProcessedIndex = 0;
+    let lineBuffer = "";
+    let settled = false;
+
+    const cleanup = () => {
+      if (signal) {
+        signal.removeEventListener("abort", onAbort);
+      }
+    };
+
+    const finish = (result: { text: string; status: number; error?: string }) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      resolve(result);
+    };
+
+    const onAbort = () => {
+      try {
+        xhr.abort();
+      } catch {}
+      finish({ text: accumulatedText, status: 0 });
+    };
+
+    if (signal) {
+      signal.addEventListener("abort", onAbort);
+    }
+
+    xhr.onprogress = () => {
+      if (settled) return;
+      try {
+        const currentResponse = xhr.responseText;
+        if (!currentResponse) return;
+
+        const newChunk = currentResponse.slice(lastProcessedIndex);
+        lastProcessedIndex = currentResponse.length;
+
+        lineBuffer += newChunk;
+        const lines = lineBuffer.split("\n");
+        lineBuffer = lines.pop() ?? "";
+
+        let hasNewText = false;
+        for (const line of lines) {
+          const textChunk = extractTextFromSSELine(line);
+          if (textChunk) {
+            accumulatedText += textChunk;
+            hasNewText = true;
+          }
+        }
+
+        if (hasNewText) {
+          onChunk(accumulatedText);
+        }
+      } catch {
+        // SSE 청크 파싱 오류 안전 무시
+      }
+    };
+
+    xhr.onload = () => {
+      if (settled) return;
+      try {
+        if (lineBuffer.trim()) {
+          const textChunk = extractTextFromSSELine(lineBuffer);
+          if (textChunk) {
+            accumulatedText += textChunk;
+            onChunk(accumulatedText);
+          }
+        }
+      } catch {}
+
+      if (xhr.status >= 200 && xhr.status < 300) {
+        finish({ text: accumulatedText, status: xhr.status });
+      } else {
+        let errMsg = `HTTP ${xhr.status}`;
+        try {
+          const parsed = JSON.parse(xhr.responseText);
+          if (parsed?.error?.message) {
+            errMsg = parsed.error.message;
+          }
+        } catch {}
+        finish({ text: accumulatedText, status: xhr.status, error: errMsg });
+      }
+    };
+
+    xhr.onerror = () => {
+      finish({
+        text: accumulatedText,
+        status: 0,
+        error: "네트워크 연결 오류",
+      });
+    };
+
+    xhr.ontimeout = () => {
+      finish({
+        text: accumulatedText,
+        status: 408,
+        error: "요청 시간 초과",
+      });
+    };
+
+    try {
+      xhr.send(body);
+    } catch (sendErr) {
+      finish({
+        text: accumulatedText,
+        status: 0,
+        error: sendErr instanceof Error ? sendErr.message : "전송 오류",
+      });
+    }
+  });
 }
 
 export interface GeminiRequestError {
@@ -594,63 +872,10 @@ export class GeminiService {
     }
 
     const cleanKey = cleanApiKey(apiKey);
-    const { question, userAnswer, userPrompt, missType } = context;
-    const chapterPath = [
-      question.subject,
-      question.category,
-      question.subCategory,
-    ]
-      .filter(Boolean)
-      .join(" > ");
-    const isUnknown = missType === "UNKNOWN";
-
-    const systemPrompt = isUnknown
-      ? `당신은 대한민국 최고 수준의 정보처리기사 실기 전담 1:1 스타 강사이자 AI 수험 튜터입니다.
-수험생이 이 문제를 「모른다」고 표시했습니다. 오답 분석은 하지 마세요. 답을 억지로 쓴 것이 아닙니다.
-교재에서 이 내용이 등장하는 단원(챕터)을 펼쳐 보여 주듯이, 이 문제와 바로 옆 연관 개념까지 함께 가르쳐 주세요.
-인사말이나 군더더기 서론은 일절 생략하고, 곧바로 본론으로 들어가 각 항목별 핵심만 명확하게 불릿 포인트로 작성하세요.
-
-[이 문제가 속한 단원]
-- 위치: ${chapterPath}
-- 키워드: ${(question.keywords || []).join(", ") || "(없음)"}
-
-[문제 정보]
-- 문제 유형: ${question.type} (난이도: ${question.difficulty})
-- 문제 지문: ${question.question}
-${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
-- 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
-- 기본 해설: ${question.explanation}
-
-[반드시 아래 구성으로 답하세요]
-1) 교재 단원 위치: 이 문제가 어느 챕터에 나오는지
-2) 이 단원에서 반드시 알아야 하는 핵심 개념
-3) 이 문제 바로 앞뒤에 나오는 연관 개념·용어·공식
-4) 같은 단원에서 자주 나오는 출제 포인트
-5) 이번 문제를 단원 맥락에서 다시 풀어보는 해설
-6) 시험장에서 1초 만에 떠올릴 암기 포인트
-
-[수험생의 질문]
-${userPrompt}
-`
-      : `당신은 대한민국 최고 수준의 정보처리기사 실기 전담 1:1 스타 강사이자 AI 수험 튜터입니다.
-수험생의 눈높이에 맞춰 친절하고 논리정연하며, 실제 시험장에서 점수를 얻을 수 있는 명쾌한 답변을 제공하세요.
-인사말이나 군더더기 서론은 일절 생략하고, 곧바로 본론으로 들어가 각 항목별 핵심만 명확하게 불릿 포인트로 작성하세요.
-
-[문제 정보]
-- 과목/단원: ${chapterPath}
-- 문제 유형: ${question.type} (난이도: ${question.difficulty})
-- 문제 지문: ${question.question}
-${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
-- 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
-- 기본 해설: ${question.explanation}
-- 수험생이 작성한 답: ${userAnswer ? (Array.isArray(userAnswer) ? userAnswer.join(", ") : userAnswer) : "(미작성)"}
-
-[수험생의 질문]
-${userPrompt}
-`;
+    const systemPrompt = buildTutorPrompt(context);
 
     const result = await this.executeWithRetry(cleanKey, systemPrompt, {
-      maxOutputTokens: isUnknown ? 800 : 600,
+      maxOutputTokens: 2048,
       fetchFn: options?.fetchFn,
       sleepFn: options?.sleepFn,
       models: options?.models ?? TUTOR_MODELS,
@@ -666,6 +891,109 @@ ${userPrompt}
     }
 
     return formatGeminiErrorMessage(result.error);
+  }
+
+  /**
+   * 실시간 스트리밍(SSE) 방식으로 Gemini 튜터 답변을 수신합니다.
+   * 모바일(React Native) 환경에서 XMLHttpRequest onprogress를 통해 토큰 단위로 실시간 표시합니다.
+   * 환경이 지원하지 않거나 실패 시 표준 askTutor로 자동 안전 폴백합니다.
+   */
+  static async askTutorStream(
+    context: TutorContext,
+    onChunk: (accumulatedText: string) => void,
+    options?: {
+      fetchFn?: typeof fetch;
+      sleepFn?: (ms: number) => Promise<void>;
+      models?: string[];
+      signal?: AbortSignal;
+    },
+  ): Promise<string> {
+    const apiKey = await this.getApiKey();
+
+    if (!apiKey) {
+      const msg = `Gemini API Key가 아직 등록되지 않았습니다.\n\n하단 메뉴의 [설정] 탭에서 구글 Gemini API Key를 등록하시면 실시간 1:1 맞춤형 과외 해설을 받으실 수 있습니다.\n\n(구글 AI Studio에서 무료로 발급 가능, AQ. 로 시작하는 인증키도 지원)`;
+      onChunk(msg);
+      return msg;
+    }
+
+    if (options?.signal?.aborted) {
+      return "";
+    }
+
+    // Node.js 테스트 환경이거나 별도 fetchFn이 주입된 경우 askTutor로 안전 폴백
+    if (typeof XMLHttpRequest === "undefined" || options?.fetchFn) {
+      const fullText = await this.askTutor(context, options);
+      if (fullText && !options?.signal?.aborted) {
+        onChunk(fullText);
+      }
+      return fullText;
+    }
+
+    const cleanKey = cleanApiKey(apiKey);
+    const isLegacyKey = cleanKey.startsWith("AIza");
+    const systemPrompt = buildTutorPrompt(context);
+    const modelsToTry = options?.models ?? TUTOR_MODELS;
+
+    const body = JSON.stringify({
+      contents: [{ parts: [{ text: systemPrompt }] }],
+      generationConfig: {
+        temperature: 0.4,
+        maxOutputTokens: 2048,
+      },
+    });
+
+    for (const model of modelsToTry) {
+      if (options?.signal?.aborted) {
+        return "";
+      }
+
+      if (DISCONTINUED_MODEL_REGEX.test(model)) {
+        continue;
+      }
+
+      const url = isLegacyKey
+        ? `${GEMINI_BASE}/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse&key=${encodeURIComponent(cleanKey)}`
+        : `${GEMINI_BASE}/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse`;
+
+      const streamRes = await streamWithXHR(
+        url,
+        cleanKey,
+        body,
+        onChunk,
+        options?.signal,
+      );
+
+      if (options?.signal?.aborted) {
+        return "";
+      }
+
+      // 성공적으로 텍스트를 수신했거나 일부라도 누적된 경우 즉시 반환
+      if (streamRes.text && streamRes.text.trim().length > 0) {
+        return streamRes.text;
+      }
+
+      if (streamRes.error) {
+        logGeminiError(streamRes.status, model, 1, streamRes.error, cleanKey);
+
+        // 400, 401, 403 인증 오류는 다음 모델로 넘어가지 않고 즉시 종료
+        if (isTerminalAuthStatus(streamRes.status, streamRes.error)) {
+          const formatted = formatGeminiErrorMessage({
+            status: streamRes.status,
+            message: streamRes.error,
+            model,
+          });
+          onChunk(formatted);
+          return formatted;
+        }
+      }
+    }
+
+    // 스트리밍으로 텍스트 수신을 못했을 경우(서버 비호환 등), 지수 백오프 기반 정규 askTutor로 최종 폴백
+    const fallbackText = await this.askTutor(context, options);
+    if (fallbackText && !options?.signal?.aborted) {
+      onChunk(fallbackText);
+    }
+    return fallbackText;
   }
 
   static async generateText(

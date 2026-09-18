@@ -17,7 +17,10 @@ import {
 } from "react-native";
 import { Sparkles, X, Send, ChevronUp } from "lucide-react-native";
 import { useSettingsStore } from "../../store/settingsStore";
-import { GeminiService } from "../../api/geminiService";
+import {
+  GeminiService,
+  TutorChatMessageItem,
+} from "../../api/geminiService";
 import {
   TutorChatMessage,
   TutorRepository,
@@ -209,21 +212,50 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
       role: "user",
       text: userText,
     };
-    setMessages((prev) => {
-      const next = [...prev, userMessage];
-      void TutorRepository.saveThread(targetQuestionId, next);
-      return next;
-    });
+
+    // 이전 대화 히스토리 (현재 질문 이전까지의 히스토리)
+    const chatHistory: TutorChatMessageItem[] = messages
+      .filter((m) => m.text.trim().length > 0)
+      .map((m) => ({
+        role: m.role === "user" ? "user" : "model",
+        text: m.text,
+      }));
+
+    const tutorId = `tutor-${Date.now()}`;
+    const tutorPlaceholder: TutorChatMessage = {
+      id: tutorId,
+      role: "tutor",
+      text: "",
+    };
+
+    pendingAnswerScrollIdRef.current = tutorId;
+    setMessages((prev) => [...prev, userMessage, tutorPlaceholder]);
     setLoading(true);
     scrollToLatest();
 
     try {
-      const result = await GeminiService.askTutor(
+      const result = await GeminiService.askTutorStream(
         {
           question,
           userAnswer: isUnknown ? undefined : userAnswer,
           userPrompt: promptText,
           missType: missType ?? undefined,
+          history: chatHistory,
+        },
+        (accumulatedText) => {
+          if (
+            controller.signal.aborted ||
+            activeQuestionIdRef.current !== targetQuestionId
+          ) {
+            return;
+          }
+          setMessages((prev) => {
+            if (activeQuestionIdRef.current !== targetQuestionId) return prev;
+            return prev.map((msg) =>
+              msg.id === tutorId ? { ...msg, text: accumulatedText } : msg,
+            );
+          });
+          scrollToLatest();
         },
         {
           signal: controller.signal,
@@ -239,19 +271,16 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
       }
 
       if (!result || !result.trim()) {
+        // 결과가 비어있는 경우 플레이스홀더 정리
+        setMessages((prev) => prev.filter((msg) => msg.id !== tutorId));
         return;
       }
 
-      const tutorId = `tutor-${Date.now()}`;
-      const tutorMessage: TutorChatMessage = {
-        id: tutorId,
-        role: "tutor",
-        text: result,
-      };
-      pendingAnswerScrollIdRef.current = tutorId;
       setMessages((prev) => {
         if (activeQuestionIdRef.current !== targetQuestionId) return prev;
-        const next = [...prev, tutorMessage];
+        const next = prev.map((msg) =>
+          msg.id === tutorId ? { ...msg, text: result } : msg,
+        );
         void TutorRepository.saveThread(targetQuestionId, next);
         return next;
       });
@@ -267,7 +296,13 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
       if (activeQuestionIdRef.current !== targetQuestionId) {
         return;
       }
-      console.warn("[AITutorModal] askTutor error:", err);
+      console.warn("[AITutorModal] askTutorStream error:", err);
+      // 에러 발생 시 텍스트가 없는 플레이스홀더 정리
+      setMessages((prev) =>
+        prev.filter(
+          (msg) => msg.id !== tutorId || msg.text.trim().length > 0,
+        ),
+      );
     } finally {
       if (abortControllerRef.current === controller) {
         abortControllerRef.current = null;
@@ -475,7 +510,7 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
                         <Text style={styles.userBubbleText}>{msg.text}</Text>
                       </View>
                     </View>
-                  ) : (
+                  ) : msg.text.trim().length > 0 ? (
                     <View
                       key={msg.id}
                       style={[
@@ -498,7 +533,7 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
                         {msg.text}
                       </Text>
                     </View>
-                  ),
+                  ) : null,
                 )
               )}
 
@@ -511,7 +546,9 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
                 >
                   <ActivityIndicator size="small" color={theme.accent} />
                   <Text style={[styles.loadingText, { color: theme.subText }]}>
-                    Gemini AI 튜터가 문제와 코드를 분석하고 있습니다...
+                    {messages.some((m) => m.role === "tutor" && m.text.length > 0)
+                      ? "Gemini AI 튜터가 답변을 작성하고 있습니다..."
+                      : "Gemini AI 튜터가 문제와 코드를 분석하고 있습니다..."}
                   </Text>
                 </View>
               )}

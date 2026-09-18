@@ -11,6 +11,8 @@ import {
   formatGeminiErrorMessage,
   cleanApiKey,
   sanitizeLogMessage,
+  extractTextFromSSELine,
+  buildTutorPrompt,
 } from "../src/api/geminiService";
 
 let failed = 0;
@@ -394,6 +396,130 @@ async function runGeminiServiceTests() {
     assert(
       callCount === 1,
       `시나리오 6-2: 재시도 없이 1회 호출 후 즉시 탈출 (실제: ${callCount}회)`,
+    );
+  }
+
+  // 7. SSE 스트리밍 라인 파싱 검증
+  {
+    const line1 = 'data: {"candidates": [{"content": {"parts": [{"text": "정답은 4번입니다."}]}}]}';
+    const parsed1 = extractTextFromSSELine(line1);
+    assert(parsed1 === "정답은 4번입니다.", "SSE 텍스트 추출 정확도");
+
+    const lineWithThought = 'data: {"candidates": [{"content": {"parts": [{"text": "생각 중...", "thought": true}, {"text": "실제 해설"}]}}]}';
+    const parsedThought = extractTextFromSSELine(lineWithThought);
+    assert(parsedThought === "실제 해설", "SSE 사고과정(thought: true) 필터링 확인");
+
+    assert(extractTextFromSSELine("data: [DONE]") === "", "SSE [DONE] 처리");
+    assert(extractTextFromSSELine(": ping comment") === "", "SSE 주석 라인 처리");
+    assert(extractTextFromSSELine("") === "", "SSE 빈 라인 처리");
+  }
+
+  // 8. 1:1 과외 대화 히스토리 프롬프트 구축 검증
+  {
+    const dummyQuestion: any = {
+      id: "q-test-1",
+      subject: "소프트웨어 개발",
+      category: "애플리케이션 테스트 관리",
+      subCategory: "화이트박스 테스트",
+      type: "SHORT_ANSWER",
+      difficulty: "MEDIUM",
+      question: "기초 경로 검사의 복잡도를 계산하는 수식은?",
+      answer: "V(G) = E - N + 2",
+      explanation: "간선 수 E와 노드 수 N을 기반으로 순환 복잡도를 산출합니다.",
+    };
+
+    // 8-1. 이전 히스토리가 없는 최초 질문
+    const promptWithoutHistory = buildTutorPrompt({
+      question: dummyQuestion,
+      userPrompt: "이 수식 다시 설명해줘",
+      missType: "WRONG",
+    });
+    assert(
+      !promptWithoutHistory.includes("[이전 튜터링 대화 내용]"),
+      "최초 질문 시 히스토리 섹션 미포함",
+    );
+    assert(
+      promptWithoutHistory.includes("[수험생의 질문]"),
+      "최초 질문 시 [수험생의 질문] 섹션 포함",
+    );
+
+    // 8-2. 이전 대화 히스토리가 포함된 심층 추가 질문
+    const promptWithHistory = buildTutorPrompt({
+      question: dummyQuestion,
+      userPrompt: "노드 수가 5개이고 간선이 7개면 복잡도가 얼마야?",
+      missType: "WRONG",
+      history: [
+        { role: "user", text: "기초 경로 검사가 뭐야?" },
+        { role: "model", text: "제어 흐름 그래프의 모든 경로를 최소 한 번은 수행하는 기법입니다." },
+      ],
+    });
+    assert(
+      promptWithHistory.includes("[이전 튜터링 대화 내용]"),
+      "추가 질문 시 [이전 튜터링 대화 내용] 포함",
+    );
+    assert(
+      promptWithHistory.includes("수험생: 기초 경로 검사가 뭐야?"),
+      "수험생 이전 발화 포함 확인",
+    );
+    assert(
+      promptWithHistory.includes("AI 튜터: 제어 흐름 그래프"),
+      "AI 튜터 이전 설명 포함 확인",
+    );
+    assert(
+      promptWithHistory.includes("[수험생의 추가 질문]"),
+      "추가 질문 시 [수험생의 추가 질문] 헤더 적용 확인",
+    );
+  }
+
+  // 9. askTutorStream 폴백 및 onChunk 스트리밍 검증
+  {
+    const dummyQuestion: any = {
+      id: "q-test-2",
+      subject: "데이터베이스",
+      question: "트랜잭션 ACID 특성 중 A는?",
+      answer: "원자성(Atomicity)",
+      explanation: "모두 반영되거나 전혀 반영되지 않아야 합니다.",
+    };
+
+    await GeminiService.saveApiKey("AQ.dummy_api_key_for_test");
+
+    let streamedChunk = "";
+    const mockFetch = async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: "원자성(Atomicity)에 대해 자세히 설명해 드리겠습니다." }],
+            },
+          },
+        ],
+      }),
+    });
+
+    const streamResult = await GeminiService.askTutorStream(
+      {
+        question: dummyQuestion,
+        userPrompt: "원자성 설명해줘",
+      },
+      (chunk) => {
+        streamedChunk = chunk;
+      },
+      {
+        fetchFn: mockFetch as any,
+        sleepFn: noopSleep,
+        models: ["model-tutor"],
+      },
+    );
+
+    assert(
+      streamResult === "원자성(Atomicity)에 대해 자세히 설명해 드리겠습니다.",
+      "askTutorStream 결과값 정상 반환",
+    );
+    assert(
+      streamedChunk === "원자성(Atomicity)에 대해 자세히 설명해 드리겠습니다.",
+      "onChunk 콜백에 스트리밍 텍스트 정상 전달",
     );
   }
 
