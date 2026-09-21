@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   Alert,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Bookmark as BookmarkIcon,
   CheckCircle2,
@@ -39,6 +39,7 @@ interface QuizScreenProps {
 export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
   const isDarkMode = useSettingsStore((state) => state.isDarkMode);
   const theme = isDarkMode ? COLORS.dark : COLORS.light;
+  const insets = useSafeAreaInsets();
 
   const {
     questions,
@@ -150,7 +151,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
   const progress = (currentIndex + 1) / questions.length;
 
   return (
-    <SafeAreaView
+    <View
       style={[styles.safeArea, { backgroundColor: theme.background }]}
     >
       <KeyboardAvoidingView
@@ -485,7 +486,11 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
         <View
           style={[
             styles.bottomBar,
-            { backgroundColor: theme.surface, borderTopColor: theme.border },
+            {
+              backgroundColor: theme.surface,
+              borderTopColor: theme.border,
+              paddingBottom: Math.max(insets.bottom, 12),
+            },
           ]}
         >
           {!isSubmitted ? (
@@ -536,7 +541,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
           }}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -723,7 +728,6 @@ const styles = StyleSheet.create({
   bottomBar: {
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: Platform.OS === "android" ? 56 : 28,
     borderTopWidth: 1,
   },
 });

@@ -1,11 +1,6 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Platform,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   CheckCircle2,
   XCircle,
@@ -36,6 +31,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
 }) => {
   const isDarkMode = useSettingsStore((state) => state.isDarkMode);
   const theme = isDarkMode ? COLORS.dark : COLORS.light;
+  const insets = useSafeAreaInsets();
 
   const { sessionAttempts, sessionTitle } = useQuizStore();
 
@@ -146,7 +142,11 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
       <View
         style={[
           styles.footer,
-          { backgroundColor: theme.surface, borderTopColor: theme.border },
+          {
+            backgroundColor: theme.surface,
+            borderTopColor: theme.border,
+            paddingBottom: Math.max(insets.bottom, 12),
+          },
         ]}
       >
         <View style={styles.footerRow}>
@@ -258,7 +258,6 @@ const styles = StyleSheet.create({
   footer: {
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: Platform.OS === "android" ? 54 : 24,
     borderTopWidth: 1,
   },
   footerRow: {

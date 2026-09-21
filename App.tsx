@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
-  SafeAreaView,
   View,
   Platform,
-  StatusBar as RNStatusBar,
   BackHandler,
   ToastAndroid,
   Alert,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { useSettingsStore } from "./src/store/settingsStore";
 import { useUserStore } from "./src/store/userStore";
 import { useQuizStore } from "./src/store/quizStore";
@@ -30,6 +32,15 @@ import { SettingsScreen } from "./src/screens/SettingsScreen";
 type AppMode = "TABS" | "QUIZ" | "RESULT";
 
 export default function App() {
+  return (
+    <SafeAreaProvider>
+      <AppShell />
+    </SafeAreaProvider>
+  );
+}
+
+function AppShell() {
+  const insets = useSafeAreaInsets();
   const { isDarkMode, loadSettings } = useSettingsStore();
   const { loadUserSettings } = useUserStore();
   const { startQuiz, resetQuiz, questions, sessionTitle } = useQuizStore();
@@ -148,7 +159,12 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.surface }]}>
+    <View
+      style={[
+        styles.safeArea,
+        { backgroundColor: theme.surface, paddingTop: insets.top },
+      ]}
+    >
       <StatusBar style={isDarkMode ? "light" : "dark"} />
       <View style={[styles.container, { backgroundColor: theme.background }]}>
         {mode === "QUIZ" && (
@@ -187,14 +203,13 @@ export default function App() {
           </View>
         )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    paddingTop: Platform.OS === "android" ? RNStatusBar.currentHeight : 0,
   },
   container: {
     flex: 1,

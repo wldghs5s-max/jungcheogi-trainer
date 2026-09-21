@@ -11,11 +11,14 @@ import {
   Platform,
   Keyboard,
   KeyboardEvent,
-  Dimensions,
   useWindowDimensions,
-  StatusBar,
 } from "react-native";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { Sparkles, X, Send, ChevronUp } from "lucide-react-native";
+import { getKeyboardOverlapHeight } from "../../utils/keyboardLayout";
 import { useSettingsStore } from "../../store/settingsStore";
 import {
   GeminiService,
@@ -74,7 +77,23 @@ export function renderFormattedTutorText(
   });
 }
 
-export const AITutorModal: React.FC<AITutorModalProps> = ({
+export const AITutorModal: React.FC<AITutorModalProps> = (props) => {
+  return (
+    <Modal
+      visible={props.visible}
+      animationType="slide"
+      transparent
+      statusBarTranslucent
+      onRequestClose={props.onClose}
+    >
+      <SafeAreaProvider>
+        <AITutorModalBody {...props} />
+      </SafeAreaProvider>
+    </Modal>
+  );
+};
+
+const AITutorModalBody: React.FC<AITutorModalProps> = ({
   visible,
   question,
   userAnswer,
@@ -86,8 +105,8 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
   const theme = isDarkMode ? COLORS.dark : COLORS.light;
 
   const { height: windowHeight } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
-  const fullWindowHeightRef = useRef(windowHeight);
   const didAutoAskRef = useRef(false);
   const latestTutorOffsetRef = useRef(0);
   const pendingAnswerScrollIdRef = useRef<string | null>(null);
@@ -148,12 +167,6 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
     };
   }, [visible, question.id]);
 
-  useEffect(() => {
-    if (keyboardHeight === 0) {
-      fullWindowHeightRef.current = windowHeight;
-    }
-  }, [windowHeight, keyboardHeight]);
-
   const scrollToLatest = () => {
     requestAnimationFrame(() => {
       scrollRef.current?.scrollToEnd({ animated: true });
@@ -171,12 +184,7 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
 
   useEffect(() => {
     const handleShow = (e: KeyboardEvent) => {
-      const screenH = Dimensions.get("screen").height;
-      const keyboardY = e.endCoordinates?.screenY ?? screenH;
-      // 화면 바닥에서부터 키보드 상단(툴바 포함)까지의 정확한 높이
-      const fromBottom = Math.max(0, screenH - keyboardY);
-      const reported = e.endCoordinates?.height ?? 0;
-      setKeyboardHeight(Math.max(reported, fromBottom));
+      setKeyboardHeight(getKeyboardOverlapHeight(e, windowHeight));
     };
     const handleHide = () => {
       setKeyboardHeight(0);
@@ -199,28 +207,13 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
       showSubs.forEach((sub) => sub.remove());
       hideSubs.forEach((sub) => sub.remove());
     };
-  }, []);
+  }, [windowHeight]);
 
-  // 상태바(헤더) 침범 방지를 위한 상단 안전 여백 (안드로이드 상태바 높이 + 여유 14dp)
-  const statusBarHeight =
-    Platform.OS === "android" ? (StatusBar.currentHeight ?? 24) : 44;
-  const TOP_SAFE_MARGIN = statusBarHeight + 14;
-
-  // 갤럭시 3버튼 내비게이션 바 높이 (56dp)
-  const ANDROID_NAV_INSET = 56;
-
-  // 시트 하단 패딩:
-  // - 키보드 열림 시: 키보드 높이(툴바 포함)만큼 정확히 패딩을 주어 입력창을 키보드 바로 위에 안착
-  // - 키보드 닫힘 시: 갤럭시 3버튼 내비게이션 바에 가리지 않도록 56dp 안전 여백 확보
+  const topSafeMargin = insets.top + 12;
   const sheetBottomPad =
-    keyboardHeight > 0
-      ? keyboardHeight
-      : Platform.OS === "android"
-        ? ANDROID_NAV_INSET
-        : 16;
+    keyboardHeight > 0 ? keyboardHeight : Math.max(insets.bottom, 12);
 
-  // 시트 최대 높이 (상단 상태바를 절대 침범하지 않도록 제한)
-  const maxAllowedHeight = windowHeight - TOP_SAFE_MARGIN;
+  const maxAllowedHeight = windowHeight - topSafeMargin;
   const currentSheetHeight =
     keyboardHeight > 0
       ? maxAllowedHeight
@@ -409,13 +402,6 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
       ];
 
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent
-      statusBarTranslucent
-      onRequestClose={onClose}
-    >
       <View style={styles.overlay}>
         <TouchableOpacity
           style={styles.backdrop}
@@ -667,7 +653,6 @@ export const AITutorModal: React.FC<AITutorModalProps> = ({
           </View>
         </View>
       </View>
-    </Modal>
   );
 };
 

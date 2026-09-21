@@ -1,11 +1,6 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Platform,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Home, GraduationCap, BookX, BarChart3, Settings } from "lucide-react-native";
 import { useSettingsStore } from "../../store/settingsStore";
 import { triggerHaptic } from "../../utils/haptics";
@@ -24,6 +19,7 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
 }) => {
   const isDarkMode = useSettingsStore((state) => state.isDarkMode);
   const theme = isDarkMode ? COLORS.dark : COLORS.light;
+  const insets = useSafeAreaInsets();
 
   const handleTabPress = (tab: TabType) => {
     if (currentTab !== tab) {
@@ -44,7 +40,11 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
     <View
       style={[
         styles.container,
-        { backgroundColor: theme.surface, borderTopColor: theme.border },
+        {
+          backgroundColor: theme.surface,
+          borderTopColor: theme.border,
+          paddingBottom: Math.max(insets.bottom, 8),
+        },
       ]}
     >
       {tabs.map((tab) => {
@@ -80,8 +80,7 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: Platform.OS === "ios" ? 84 : 102,
-    paddingBottom: Platform.OS === "ios" ? 24 : 44,
+    minHeight: 58,
     paddingTop: 8,
     flexDirection: "row",
     alignItems: "center",

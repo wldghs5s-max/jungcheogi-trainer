@@ -42,6 +42,9 @@ export const GENERATOR_MODELS = [
  */
 export const PREFERRED_MODELS = TUTOR_MODELS;
 
+/** 튜터 해설 최대 출력. 스트리밍 첫 토큰 속도에는 영향이 없고, 단원 확장 해설이 잘리지 않게 여유를 둔다. */
+export const TUTOR_MAX_OUTPUT_TOKENS = 8192;
+
 export function cleanApiKey(rawKey: string): string {
   if (!rawKey) return "";
   return rawKey
@@ -885,7 +888,7 @@ export class GeminiService {
     const systemPrompt = buildTutorPrompt(context);
 
     const result = await this.executeWithRetry(cleanKey, systemPrompt, {
-      maxOutputTokens: 2048,
+      maxOutputTokens: TUTOR_MAX_OUTPUT_TOKENS,
       fetchFn: options?.fetchFn,
       sleepFn: options?.sleepFn,
       models: options?.models ?? TUTOR_MODELS,
@@ -948,7 +951,7 @@ export class GeminiService {
       contents: [{ parts: [{ text: systemPrompt }] }],
       generationConfig: {
         temperature: 0.4,
-        maxOutputTokens: 2048,
+        maxOutputTokens: TUTOR_MAX_OUTPUT_TOKENS,
       },
     });
 

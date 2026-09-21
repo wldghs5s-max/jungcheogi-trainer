@@ -3,6 +3,7 @@ import { MEMORIZATION_BANK } from "../src/data/questions/memorizationBank";
 import { generateProgrammingPracticeBundle } from "../src/api/programmingGenerator";
 import { checkAnswer, shuffleArray } from "../src/utils/quiz";
 import { getDueReviewQuestionIds } from "../src/utils/reviewQueue";
+import { measureKeyboardOverlap } from "../src/utils/keyboardOverlap";
 import { Question } from "../src/types/question";
 import {
   isConfusedAttempt,
@@ -116,6 +117,34 @@ assert(
     { ...confusedAttempt, isCorrect: true, missType: undefined, answeredAt: yesterday },
   ]).includes("q1"),
   "복습: 정답은 하루 뒤 제외",
+);
+
+assert(
+  measureKeyboardOverlap({
+    reportedHeight: 700,
+    keyboardScreenY: 1600,
+    screenHeight: 2400,
+    windowHeight: 2344,
+  }) === 744,
+  "키보드: 일반폰은 창 하단과 겹친 높이 사용",
+);
+assert(
+  measureKeyboardOverlap({
+    reportedHeight: 600,
+    keyboardScreenY: 1800,
+    screenHeight: 2400,
+    windowHeight: 1100,
+  }) === 0,
+  "키보드: 폴드 분할에서 창 밖 키보드는 무시",
+);
+assert(
+  measureKeyboardOverlap({
+    reportedHeight: 352,
+    keyboardScreenY: 500,
+    screenHeight: 852,
+    windowHeight: 852,
+  }) === 352,
+  "키보드: iPhone은 보고된 높이를 사용",
 );
 
 const shuffled = shuffleArray([1, 2, 3, 4, 5, 6, 7, 8]);
