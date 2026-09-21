@@ -8,7 +8,7 @@ import { ALL_QUESTIONS } from '../src/data/questions';
 import { GeminiProgrammingGenerator } from '../src/services/programming/geminiProgrammingGenerator';
 import { TOPIC_METADATA, QUESTION_TYPE_METADATA } from '../src/services/programming/taxonomy';
 import { ProgrammingHistoryTracker } from '../src/services/programming/historyTracker';
-import { QuestionRepository } from '../src/repositories/questionRepository';
+import { QuestionRepository, pickDuplicateCachedIds } from '../src/repositories/questionRepository';
 import { LocalStorage, MemoryStorageAdapter } from '../src/storage/localStorage';
 import { Question } from '../src/types/question';
 
@@ -298,6 +298,50 @@ async function runTests() {
   };
   const addedManual = await QuestionRepository.appendCachedQuestions([manualQ]);
   assert(addedManual === 0, '승인되지 않은 manualReviewRequired 문제 저장 거절 차단');
+
+  console.log('\n--- 11. 캐시 중복 문항 삭제 검증 ---');
+  const memoA: Question = {
+    id: 'MEMO_DUP_KEEP',
+    subject: '신기술/보안',
+    category: '보안',
+    type: 'SHORT_ANSWER',
+    question: '역할 기반 접근통제의 약어를 쓰시오.',
+    answer: 'RBAC',
+    explanation: '원본',
+    difficulty: 'EASY',
+    keywords: ['RBAC'],
+  };
+  const memoB: Question = {
+    ...memoA,
+    id: 'MEMO_DUP_DROP',
+    explanation: '복제',
+  };
+  const uniqueMemo: Question = {
+    id: 'MEMO_UNIQUE',
+    subject: '신기술/보안',
+    category: '보안',
+    type: 'SHORT_ANSWER',
+    question: '공개키 기반 구조의 약어를 쓰시오.',
+    answer: 'PKI',
+    explanation: '유일',
+    difficulty: 'EASY',
+    keywords: ['PKI'],
+  };
+
+  const dupIds = pickDuplicateCachedIds([], [memoA, memoB, uniqueMemo]);
+  assert(dupIds.length === 1 && dupIds[0] === 'MEMO_DUP_DROP', '같은 지문의 나중 항목만 삭제 대상으로 고름');
+
+  await QuestionRepository.replaceCachedServerQuestions([memoA, memoB, uniqueMemo]);
+  assert(QuestionRepository.countCachedDuplicates() === 1, '캐시 중복 1건 집계');
+  const removed = await QuestionRepository.removeDuplicateCachedQuestions();
+  assert(removed === 1, '중복 1건 삭제');
+  assert(QuestionRepository.countCachedDuplicates() === 0, '삭제 후 중복 0건');
+  assert(
+    !!QuestionRepository.getById('MEMO_DUP_KEEP') &&
+      !QuestionRepository.getById('MEMO_DUP_DROP') &&
+      !!QuestionRepository.getById('MEMO_UNIQUE'),
+    '원본과 유일 문항은 유지하고 복제만 삭제',
+  );
 
   console.log('\n====================================================');
   if (failedCount === 0) {

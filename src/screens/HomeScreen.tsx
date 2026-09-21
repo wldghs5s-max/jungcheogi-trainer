@@ -22,15 +22,13 @@ import {
   GraduationCap,
   CheckCircle2,
   Filter,
+  CopyMinus,
 } from "lucide-react-native";
 import { useSettingsStore } from "../store/settingsStore";
 import { useUserStore } from "../store/userStore";
 import { AttemptRepository } from "../repositories/attemptRepository";
 import { QuestionRepository } from "../repositories/questionRepository";
 import { backgroundQuestionService } from "../services/backgroundQuestionService";
-import { QuestionSyncService } from "../api/questionSyncService";
-import { generateMemorizationQuestions } from "../api/geminiQuestionGenerator";
-import { GeminiService } from "../api/geminiService";
 import { calculateUserStats } from "../utils/statistics";
 import { getDueReviewQuestionIds } from "../utils/reviewQueue";
 import { triggerHaptic } from "../utils/haptics";
@@ -62,6 +60,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [stats, setStats] = useState<UserStats | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [totalQuestionsCount, setTotalQuestionsCount] = useState(0);
+  const [duplicateCount, setDuplicateCount] = useState(0);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isGeminiGenerating, setIsGeminiGenerating] = useState(false);
   const [examYear, setExamYear] = useState<number | null>(null);
@@ -82,6 +81,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     await QuestionRepository.loadCachedServerQuestions();
     const all = QuestionRepository.getAll();
     setTotalQuestionsCount(all.length);
+    setDuplicateCount(QuestionRepository.countCachedDuplicates());
 
     const attempts = await AttemptRepository.getAllAttempts();
     const calculated = calculateUserStats(attempts);
@@ -157,6 +157,38 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     } else {
       Alert.alert("알림", res.message);
     }
+  };
+
+  const handleRemoveDuplicates = () => {
+    triggerHaptic.selection();
+    const pending = QuestionRepository.countCachedDuplicates();
+    if (pending === 0) {
+      Alert.alert("중복 문항 삭제", "지문이 같은 중복 문항이 없습니다.");
+      return;
+    }
+
+    Alert.alert(
+      "중복 문항 삭제",
+      `지문이 같은 문제 ${pending}개를 보관함에서 삭제합니다. 앱에 들어 있는 기본 기출은 그대로 둡니다.`,
+      [
+        { text: "취소", style: "cancel" },
+        {
+          text: "삭제",
+          style: "destructive",
+          onPress: async () => {
+            const removed =
+              await QuestionRepository.removeDuplicateCachedQuestions();
+            await loadData();
+            Alert.alert(
+              "중복 문항 삭제",
+              removed > 0
+                ? `중복 ${removed}개를 삭제했습니다.`
+                : "삭제할 중복 문항이 없습니다.",
+            );
+          },
+        },
+      ],
+    );
   };
 
   const onRefresh = async () => {
@@ -652,7 +684,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 Gemini 암기 문제 생성
               </Text>
               <Text style={[styles.syncSub, { color: theme.subText }]}>
-                과목별 1문제 · 온라인 · 보유{" "}
+                주제 시드 7문제×2묶음 · 보유{" "}
                 <Text style={{ color: theme.primary, fontWeight: "700" }}>
                   {totalQuestionsCount}문제
                 </Text>
@@ -664,6 +696,36 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               loading={false}
               disabled={false}
               onPress={handleGeminiMemoGenerate}
+              style={styles.syncBtn}
+              textStyle={{ fontSize: 12 }}
+            />
+          </View>
+        </Card>
+
+        <Card style={styles.syncCard}>
+          <View style={styles.syncRow}>
+            <View
+              style={[
+                styles.syncIconBox,
+                { backgroundColor: theme.surfaceSecondary },
+              ]}
+            >
+              <CopyMinus size={20} color={theme.mutedText} />
+            </View>
+            <View style={styles.syncInfo}>
+              <Text style={[styles.syncTitle, { color: theme.text }]}>
+                중복 문항 삭제
+              </Text>
+              <Text style={[styles.syncSub, { color: theme.subText }]}>
+                {duplicateCount > 0
+                  ? `지문이 같은 문제 ${duplicateCount}개`
+                  : "지문이 같은 항목만 보관함에서 정리"}
+              </Text>
+            </View>
+            <Button
+              title="중복 삭제"
+              variant="outline"
+              onPress={handleRemoveDuplicates}
               style={styles.syncBtn}
               textStyle={{ fontSize: 12 }}
             />

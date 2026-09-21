@@ -105,7 +105,7 @@ class BackgroundQuestionService {
   }
 
   /**
-   * Gemini AI 암기 문제 4개 백그라운드 비차단 생성
+   * Gemini AI 암기 문제를 주제 시드 묶음으로 생성한다. 3.8이 막히면 3.5-flash로 내린다.
    */
   public async startGeminiMemorizationGeneration(): Promise<{
     started: boolean;
@@ -174,7 +174,7 @@ class BackgroundQuestionService {
     return {
       started: true,
       message:
-        "백그라운드에서 4과목 AI 암기 문제를 생성하고 있습니다.\n\n앱을 완전히 닫지 마시고 다른 학습을 자유롭게 진행해 주세요. 완료되면 문제 보관함에 자동 반영됩니다.",
+        "지정 주제로 7문제씩 최대 2묶음을 만듭니다. 3.8이 막히면 3.5-flash로 바로 넘어갑니다.\n\n앱을 완전히 닫지 마시고 다른 학습을 자유롭게 진행해 주세요.",
     };
   }
 }

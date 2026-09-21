@@ -30,15 +30,26 @@ function assert(cond: boolean, message: string) {
 async function runGeminiServiceTests() {
   console.log("=== GeminiService 재시도·모델폴백·오류분류 검증 시작 ===\n");
 
-  // 1. 모델 목록 무결성: gemini-1.5 및 gemini-2.0 계열 제외 확인
+  // 1. 모델 목록 무결성: gemini-1.5 / 2.0 / 2.5 계열 제외 확인
   assert(
     PREFERRED_MODELS.every((m) => !DISCONTINUED_MODEL_REGEX.test(m)),
-    "PREFERRED_MODELS에 종료된 모델(1.5, 2.0 계열) 없음",
+    "PREFERRED_MODELS에 종료된 모델(1.5, 2.0, 2.5 계열) 없음",
   );
   assert(
     !PREFERRED_MODELS.includes("gemini-1.5-flash") &&
-      !PREFERRED_MODELS.includes("gemini-2.0-flash"),
-    "gemini-1.5-flash 및 gemini-2.0-flash 명시적 제거 확인",
+      !PREFERRED_MODELS.includes("gemini-2.0-flash") &&
+      !PREFERRED_MODELS.includes("gemini-2.5-flash") &&
+      !PREFERRED_MODELS.includes("gemini-2.5-pro"),
+    "gemini-1.5 / 2.0 / 2.5 명시적 제거 확인",
+  );
+  assert(
+    TUTOR_MODELS.every((m) => !m.includes("2.5")) &&
+      GENERATOR_MODELS.every((m) => !m.includes("2.5")),
+    "튜터·생성 목록에 gemini-2.5 요청 없음",
+  );
+  assert(
+    DISCONTINUED_MODEL_REGEX.test("gemini-2.5-flash"),
+    "gemini-2.5-flash는 종료·스킵 대상으로 분류",
   );
 
   // 2. 일시적 오류 상태코드 분류 확인 (408, 429, 500, 502, 503, 504)
@@ -329,6 +340,14 @@ async function runGeminiServiceTests() {
   assert(
     GENERATOR_MODELS[0] === "gemini-3.8-flash",
     "GENERATOR_MODELS 1순위는 고정밀 gemini-3.8-flash",
+  );
+  assert(
+    GENERATOR_MODELS[1] === "gemini-3.5-flash",
+    "GENERATOR_MODELS 폴백은 gemini-3.5-flash",
+  );
+  assert(
+    GENERATOR_MODELS.every((m) => !m.includes("lite")),
+    "문제 생성 목록에 lite 모델 없음",
   );
 
   // 시나리오 6: AbortController에 의한 취소 시 재시도 없이 silent exit 및 aborted 반환

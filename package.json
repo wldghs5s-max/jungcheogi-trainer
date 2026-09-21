@@ -1,6 +1,6 @@
 {
   "name": "jungcheogi-mobile-app",
-  "version": "1.3.4",
+  "version": "1.3.6",
   "main": "index.ts",
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
@@ -31,7 +31,7 @@
     "web": "expo start --web",
     "test": "tsx scripts/self-test.ts",
     "test:programming": "tsx scripts/programming-engine-test.ts",
-    "test:gemini": "tsx scripts/gemini-service-test.ts",
+    "test:gemini": "tsx scripts/gemini-service-test.ts && tsx scripts/gemini-question-generator-test.ts",
     "typecheck": "tsc --noEmit"
   },
   "private": true

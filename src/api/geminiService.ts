@@ -11,19 +11,18 @@ const GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta";
 export const TRANSIENT_STATUSES = [408, 429, 500, 502, 503, 504] as const;
 export const MAX_RETRIES_PER_MODEL = 3;
 
-export const DISCONTINUED_MODEL_REGEX = /gemini-(?:1\.5|2\.0)/i;
+export const DISCONTINUED_MODEL_REGEX = /gemini-(?:1\.5|2\.0|2\.5)/i;
 
 /**
  * AI 튜터용 모델 우선순위: 빠른 실시간 응답(1~2초대)을 최우선으로 하여 gemini-3.5-flash-lite 배치
  */
 export const TUTOR_MODELS = [
   "gemini-3.5-flash-lite",
-  "gemini-2.5-flash",
   "gemini-3.1-flash-lite",
   "gemini-3.5-flash",
+  "gemini-3.6-flash",
   "gemini-3.7-flash",
   "gemini-3.8-flash",
-  "gemini-2.5-pro",
 ];
 
 /**
@@ -31,14 +30,11 @@ export const TUTOR_MODELS = [
  */
 export const GENERATOR_MODELS = [
   "gemini-3.8-flash",
-  "gemini-3.7-flash",
   "gemini-3.5-flash",
-  "gemini-2.5-flash",
-  "gemini-2.5-pro",
 ];
 
 /**
- * 종료된 gemini-1.5 및 gemini-2.0 계열을 완전히 제거한 안정 모델 우선순위 목록입니다.
+ * 종료·신규키 차단된 1.5/2.0/2.5 계열을 제외한 안정 모델 우선순위 목록입니다.
  */
 export const PREFERRED_MODELS = TUTOR_MODELS;
 
@@ -593,6 +589,7 @@ export interface RetryExecutionOptions {
   sleepFn?: (ms: number) => Promise<void>;
   models?: string[];
   maxRetries?: number;
+  retryDelayMs?: number;
   signal?: AbortSignal;
   onAttempt?: (attemptInfo: {
     model: string;
@@ -781,7 +778,7 @@ export class GeminiService {
           if (isTransientStatus(err.status) || err.status === 0) {
             if (attempt < totalAttempts) {
               // 3. 재시도 간격은 약 1초, 2초, 4초의 지수 백오프와 0~300ms jitter를 사용한다.
-              const delay = calculateBackoffDelay(attempt);
+              const delay = options?.retryDelayMs ?? calculateBackoffDelay(attempt);
               options?.onAttempt?.({
                 model,
                 attempt,
@@ -834,7 +831,7 @@ export class GeminiService {
           logGeminiError(0, model, attempt, message, cleanKey);
 
           if (attempt < totalAttempts) {
-            const delay = calculateBackoffDelay(attempt);
+            const delay = options?.retryDelayMs ?? calculateBackoffDelay(attempt);
             options?.onAttempt?.({ model, attempt, status: 0, delay });
             if (signal?.aborted) {
               return {
@@ -1018,6 +1015,8 @@ export class GeminiService {
       fetchFn?: typeof fetch;
       sleepFn?: (ms: number) => Promise<void>;
       models?: string[];
+      maxRetries?: number;
+      retryDelayMs?: number;
       signal?: AbortSignal;
       extraConfig?: Record<string, unknown>;
     },
@@ -1051,6 +1050,8 @@ export class GeminiService {
       fetchFn: options?.fetchFn,
       sleepFn: options?.sleepFn,
       models: options?.models ?? GENERATOR_MODELS,
+      maxRetries: options?.maxRetries,
+      retryDelayMs: options?.retryDelayMs,
       signal: options?.signal,
     });
 
@@ -1078,11 +1079,13 @@ export class GeminiService {
       return { success: false, message: "API Key를 입력해 주세요." };
     }
 
-    const result = await this.executeWithRetry(cleanKey, "Hello", {
-      maxOutputTokens: 32,
+    // 키 유효성만 보면 되므로 전체 모델 목록 조회·다단 재시도는 하지 않는다.
+    const result = await this.executeWithRetry(cleanKey, "ok", {
+      maxOutputTokens: 8,
       fetchFn: options?.fetchFn,
       sleepFn: options?.sleepFn,
-      models: options?.models,
+      models: options?.models ?? TUTOR_MODELS.slice(0, 2),
+      maxRetries: 1,
     });
 
     if (result.ok) {

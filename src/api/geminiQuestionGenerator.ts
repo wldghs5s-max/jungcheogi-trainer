@@ -1,4 +1,5 @@
 import { GeminiService, GENERATOR_MODELS } from "./geminiService";
+import { MemoTopicSeed, pickTopicSeeds } from "../data/memoTopicSeeds";
 import { Question, Subject } from "../types/question";
 
 export const MEMO_SUBJECTS: Subject[] = [
@@ -8,7 +9,12 @@ export const MEMO_SUBJECTS: Subject[] = [
   "신기술/보안",
 ];
 
-function normalizeStem(text: string): string {
+export const MEMO_BATCH_SIZE = 7;
+export const MEMO_BATCH_COUNT = 2;
+export const MEMO_CONCURRENCY = 2;
+export const MEMO_RETRY_DELAY_MS = 300;
+
+export function normalizeStem(text: string): string {
   return text.replace(/\s+/g, "").toUpperCase();
 }
 
@@ -34,7 +40,7 @@ function asAnswer(value: unknown): string | string[] | null {
 function sanitizeQuestion(
   raw: Record<string, unknown>,
   subject: Subject,
-  index: number,
+  idSuffix: string,
 ): Question | null {
   const question = String(raw.question || "").trim();
   const explanation = String(raw.explanation || "").trim();
@@ -60,7 +66,7 @@ function sanitizeQuestion(
     : [];
 
   return {
-    id: `GEMINI_MEMO_${Date.now()}_${index}_${subject}`,
+    id: `GEMINI_MEMO_${idSuffix}_${subject}`,
     subject,
     category: String(raw.category || "실기 암기").trim() || "실기 암기",
     subCategory: String(raw.subCategory || "").trim() || undefined,
@@ -75,28 +81,84 @@ function sanitizeQuestion(
   };
 }
 
-export async function generateMemorizationQuestions(
+export function collectQuestionsFromText(
+  text: string,
+  existingStems: Set<string>,
+  idPrefix: string,
+  limit = MEMO_BATCH_SIZE,
+): Question[] {
+  const parsed = parseJsonPayload(text);
+  const rows = (parsed as { questions?: unknown[] })?.questions;
+  if (!Array.isArray(rows)) {
+    throw new Error("응답에 questions 배열이 없습니다.");
+  }
+
+  const questions: Question[] = [];
+
+  rows.forEach((row, index) => {
+    if (questions.length >= limit) return;
+    if (!row || typeof row !== "object") return;
+    const raw = row as Record<string, unknown>;
+    const subject = raw.subject as Subject;
+    if (!MEMO_SUBJECTS.includes(subject)) return;
+    const item = sanitizeQuestion(raw, subject, `${idPrefix}_${index}`);
+    if (!item) return;
+    const stem = normalizeStem(item.question);
+    if (existingStems.has(stem)) return;
+    existingStems.add(stem);
+    questions.push(item);
+  });
+
+  return questions;
+}
+
+const MEMO_RESPONSE_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    questions: {
+      type: "ARRAY",
+      items: {
+        type: "OBJECT",
+        properties: {
+          subject: { type: "STRING" },
+          category: { type: "STRING" },
+          subCategory: { type: "STRING" },
+          type: { type: "STRING" },
+          question: { type: "STRING" },
+          answer: { type: "ARRAY", items: { type: "STRING" } },
+          explanation: { type: "STRING" },
+          difficulty: { type: "STRING" },
+          keywords: { type: "ARRAY", items: { type: "STRING" } },
+        },
+        required: ["subject", "question", "answer", "explanation"],
+      },
+    },
+  },
+  required: ["questions"],
+};
+
+export function buildPrompt(
   existingQuestions: Question[],
-): Promise<
-  { ok: true; questions: Question[] } | { ok: false; message: string }
-> {
+  seeds: MemoTopicSeed[],
+): string {
+  const seedLines = seeds
+    .map((seed, index) => `${index + 1}. [${seed.subject}] ${seed.topic}`)
+    .join("\n");
+
   const avoidList = MEMO_SUBJECTS.map((subject) => {
     const stems = existingQuestions
       .filter((item) => item.subject === subject)
-      .slice(0, 12)
+      .slice(0, 8)
       .map((item) => `- ${item.question.slice(0, 80)}`);
     return `[${subject}]\n${stems.join("\n") || "(없음)"}`;
   }).join("\n\n");
 
-  const prompt = `당신은 정보처리기사 실기 출제위원입니다.
-아래 4개 암기 과목마다 단답형 기출 변형 문제를 정확히 1개씩 만드세요.
+  return `당신은 정보처리기사 실기 출제위원입니다.
+지정된 ${seeds.length}개 주제에 대해 단답형 기출 변형 문제를 각 1개씩, 총 ${seeds.length}개 만드세요.
 프로그래밍(C/Java/Python 코드 추적) 문제는 절대 만들지 마세요.
 
-과목:
-1. 소프트웨어설계
-2. 데이터베이스구축
-3. 정보시스템구축관리
-4. 신기술/보안
+지정 주제:
+${seedLines}
 
 이미 있는 문제와 주제가 겹치지 않게 하세요.
 ${avoidList}
@@ -120,60 +182,108 @@ ${avoidList}
 }
 
 규칙:
-- questions 길이는 4
-- subject는 위 4개 과목을 하나씩 빠짐없이
-- answer는 채점용 동의어를 2개 이상
+- questions 길이는 ${seeds.length}
+- 각 문제는 지정 주제 순서를 지키고 subject는 해당 과목과 일치
+- answer는 채점용 동의어를 2개 이상 (영문 풀네임, 한글 음차, 공식 약어)
 - 객관식(MULTIPLE_CHOICE)을 쓸 경우 options 4개를 넣고 answer는 보기 문구와 일치`;
+}
 
-  const result = await GeminiService.generateText(prompt, {
-    maxOutputTokens: 4096,
-    temperature: 0.8,
-    json: true,
-    models: GENERATOR_MODELS,
-  });
+async function mapConcurrent<T, R>(
+  items: T[],
+  limit: number,
+  worker: (item: T, index: number) => Promise<R>,
+): Promise<R[]> {
+  const results = new Array<R>(items.length);
+  let cursor = 0;
+
+  async function run() {
+    while (cursor < items.length) {
+      const index = cursor;
+      cursor += 1;
+      results[index] = await worker(items[index], index);
+    }
+  }
+
+  await Promise.all(
+    Array.from({ length: Math.min(limit, items.length) }, () => run()),
+  );
+  return results;
+}
+
+async function generateOneBatch(
+  existingQuestions: Question[],
+  existingStems: Set<string>,
+  seeds: MemoTopicSeed[],
+  batchId: string,
+): Promise<{ questions: Question[]; error?: string }> {
+  const result = await GeminiService.generateText(
+    buildPrompt(existingQuestions, seeds),
+    {
+      maxOutputTokens: 4096,
+      temperature: 0.8,
+      json: true,
+      models: GENERATOR_MODELS,
+      maxRetries: 1,
+      retryDelayMs: MEMO_RETRY_DELAY_MS,
+      extraConfig: {
+        responseMimeType: "application/json",
+        responseSchema: MEMO_RESPONSE_SCHEMA,
+      },
+    },
+  );
 
   if (!result.ok) {
-    return result;
+    return { questions: [], error: result.message };
   }
 
-  let parsed: unknown;
   try {
-    parsed = parseJsonPayload(result.text);
-  } catch {
     return {
-      ok: false,
-      message: "Gemini 응답을 JSON으로 읽지 못했습니다. 다시 시도해 주세요.",
+      questions: collectQuestionsFromText(result.text, existingStems, batchId),
     };
+  } catch {
+    return { questions: [], error: "JSON을 읽지 못했습니다." };
   }
+}
 
-  const rows = (parsed as { questions?: unknown[] })?.questions;
-  if (!Array.isArray(rows)) {
-    return { ok: false, message: "응답에 questions 배열이 없습니다." };
-  }
-
+export async function generateMemorizationQuestions(
+  existingQuestions: Question[],
+): Promise<
+  { ok: true; questions: Question[] } | { ok: false; message: string }
+> {
+  const batchId = Date.now();
   const existingStems = new Set(
     existingQuestions.map((item) => normalizeStem(item.question)),
   );
-  const usedSubjects = new Set<Subject>();
-  const questions: Question[] = [];
+  const allSeeds = pickTopicSeeds(
+    MEMO_BATCH_SIZE * MEMO_BATCH_COUNT,
+    existingQuestions,
+  );
+  const batches = Array.from({ length: MEMO_BATCH_COUNT }, (_, index) =>
+    allSeeds.slice(index * MEMO_BATCH_SIZE, (index + 1) * MEMO_BATCH_SIZE),
+  ).filter((seeds) => seeds.length > 0);
 
-  rows.forEach((row, index) => {
-    if (!row || typeof row !== "object") return;
-    const raw = row as Record<string, unknown>;
-    const subject = raw.subject as Subject;
-    if (!MEMO_SUBJECTS.includes(subject) || usedSubjects.has(subject)) return;
-    const item = sanitizeQuestion(raw, subject, index);
-    if (!item) return;
-    if (existingStems.has(normalizeStem(item.question))) return;
-    usedSubjects.add(subject);
-    existingStems.add(normalizeStem(item.question));
-    questions.push(item);
-  });
+  const settled = await mapConcurrent(batches, MEMO_CONCURRENCY, (seeds, index) =>
+    generateOneBatch(
+      existingQuestions,
+      existingStems,
+      seeds,
+      `${batchId}_${index}`,
+    ),
+  );
+
+  const questions: Question[] = [];
+  const errors: string[] = [];
+  for (const item of settled) {
+    questions.push(...item.questions);
+    if (item.error) errors.push(item.error);
+  }
 
   if (questions.length === 0) {
     return {
       ok: false,
-      message: "유효한 암기 문제를 만들지 못했습니다. 다시 시도해 주세요.",
+      message:
+        errors[0] ||
+        "유효한 암기 문제를 만들지 못했습니다. 다시 시도해 주세요.",
     };
   }
 

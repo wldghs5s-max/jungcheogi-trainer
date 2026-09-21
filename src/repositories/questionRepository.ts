@@ -3,6 +3,56 @@ import { Question, Subject } from '../types/question';
 import { LocalStorage, STORAGE_KEYS } from '../storage/localStorage';
 import { shuffleArray } from '../utils/quiz';
 
+export function generalQuestionStem(question: Question): string {
+  return `${question.subject}:${question.question.replace(/\s+/g, '').toUpperCase()}`;
+}
+
+export function programmingQuestionKey(question: Question): string | null {
+  if (question.structuralFingerprint) {
+    return `fp:${question.structuralFingerprint}`;
+  }
+  if (question.code) {
+    return `code:${question.language || question.category}:${question.type || ''}:${question.code.replace(/\s+/g, '')}`;
+  }
+  return null;
+}
+
+function isProgrammingQuestion(question: Question): boolean {
+  return question.subject === '프로그래밍언어활용' || !!question.code;
+}
+
+function questionDedupeKey(question: Question): string | null {
+  return isProgrammingQuestion(question)
+    ? programmingQuestionKey(question)
+    : generalQuestionStem(question);
+}
+
+/**
+ * 번들 기출은 유지하고, 캐시에서 지문/코드가 같은 나중 항목의 id만 고른다.
+ */
+export function pickDuplicateCachedIds(
+  bundled: Question[],
+  cached: Question[],
+): string[] {
+  const kept = new Set<string>();
+  for (const question of bundled) {
+    const key = questionDedupeKey(question);
+    if (key) kept.add(key);
+  }
+
+  const removeIds: string[] = [];
+  for (const question of cached) {
+    const key = questionDedupeKey(question);
+    if (!key) continue;
+    if (kept.has(key)) {
+      removeIds.push(question.id);
+    } else {
+      kept.add(key);
+    }
+  }
+  return removeIds;
+}
+
 export class QuestionRepository {
   private static cachedServerQuestions: Question[] = [];
 
@@ -98,6 +148,37 @@ export class QuestionRepository {
     return toAdd.length;
   }
 
+  static async replaceCachedServerQuestions(questions: Question[]): Promise<void> {
+    this.cachedServerQuestions = [...questions];
+    await LocalStorage.setItem(
+      STORAGE_KEYS.CACHED_SERVER_QUESTIONS,
+      this.cachedServerQuestions,
+    );
+  }
+
+  static countCachedDuplicates(): number {
+    return pickDuplicateCachedIds(ALL_QUESTIONS, this.cachedServerQuestions).length;
+  }
+
+  /**
+   * 캐시에만 있는 중복 문항을 삭제한다. 앱 번들 기출은 건드리지 않는다.
+   */
+  static async removeDuplicateCachedQuestions(): Promise<number> {
+    await this.loadCachedServerQuestions();
+    const removeIds = new Set(
+      pickDuplicateCachedIds(ALL_QUESTIONS, this.cachedServerQuestions),
+    );
+    if (removeIds.size === 0) return 0;
+
+    this.cachedServerQuestions = this.cachedServerQuestions.filter(
+      (question) => !removeIds.has(question.id),
+    );
+    await LocalStorage.setItem(
+      STORAGE_KEYS.CACHED_SERVER_QUESTIONS,
+      this.cachedServerQuestions,
+    );
+    return removeIds.size;
+  }
 
   /**
    * 기본 정적 문제와 서버에서 다운로드된 신규 문제를 합친 전체 목록을 반환합니다.
