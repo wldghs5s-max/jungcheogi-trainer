@@ -93,35 +93,33 @@ jobs:
           fi
           
           # Rename and copy to root directory
-          cp "$APK_DIR/app-release.apk" jungcheogi-trainer-v1.3.6.apk
+          cp "$APK_DIR/app-release.apk" jungcheogi-trainer-v1.3.7.apk
           echo "=== Final APK File Info ==="
-          ls -lh jungcheogi-trainer-v1.3.6.apk
+          ls -lh jungcheogi-trainer-v1.3.7.apk
 
       - name: 12. Upload APK to GitHub Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: jungcheogi-trainer-v1.3.6-apk
-          path: jungcheogi-trainer-v1.3.6.apk
+          name: jungcheogi-trainer-v1.3.7-apk
+          path: jungcheogi-trainer-v1.3.7.apk
           retention-days: 30
 
       - name: 13. Create or Update GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
         with:
-          tag_name: v1.3.6
-          name: "정처기 실기 트레이너 v1.3.6 APK"
+          tag_name: v1.3.7
+          name: "정처기 실기 트레이너 v1.3.7 APK"
           body: |
-            ## 📱 정처기 실기 트레이너 v1.3.6 APK 다운로드
+            ## 정처기 실기 트레이너 v1.3.7 APK
 
-            아래 **Assets** 항목에서 `jungcheogi-trainer-v1.3.6.apk`를 스마트폰으로 직접 다운로드하여 설치하실 수 있습니다!
+            Assets에서 `jungcheogi-trainer-v1.3.7.apk`를 받으면 됩니다.
 
             ### 이번 버전
-            - Gemini 암기 생성을 주제 시드 7문제×2묶음으로 전환
-            - 3.8-flash 혼잡 시 3.5-flash로 바로 폴백 (lite/2.5 미사용)
-            - 홈에 중복 문항 삭제 추가
-            - 기기 inset 기준 키보드·하단 여백 (1.3.5 내용 포함)
+            - 홈 중복 삭제 버튼을 제거하고, 보관함 저장·로드 시 같은 지문을 알림 없이 정리
+            - Gemini 암기 생성은 주제 시드 7문제×2묶음, 혼잡 시 3.5-flash
 
             기존 EAS APK와 서명이 다를 수 있으니, 설치 전 폰에서 예전 앱을 삭제한 뒤 설치하세요.
-          files: jungcheogi-trainer-v1.3.6.apk
+          files: jungcheogi-trainer-v1.3.7.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

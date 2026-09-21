@@ -343,6 +343,16 @@ async function runTests() {
     '원본과 유일 문항은 유지하고 복제만 삭제',
   );
 
+  await QuestionRepository.replaceCachedServerQuestions([memoA, memoB, uniqueMemo]);
+  await QuestionRepository.loadCachedServerQuestions();
+  assert(QuestionRepository.countCachedDuplicates() === 0, '보관함 로드 시 중복을 알림 없이 정리');
+  assert(
+    !!QuestionRepository.getById('MEMO_DUP_KEEP') &&
+      !QuestionRepository.getById('MEMO_DUP_DROP') &&
+      !!QuestionRepository.getById('MEMO_UNIQUE'),
+    '로드 정리 후에도 원본과 유일 문항은 유지',
+  );
+
   console.log('\n====================================================');
   if (failedCount === 0) {
     console.log('  🎉 모든 프로그래밍 엔진 및 저장소 안정화 테스트 통과!');

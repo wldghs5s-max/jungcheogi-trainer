@@ -56,13 +56,39 @@ export function pickDuplicateCachedIds(
 export class QuestionRepository {
   private static cachedServerQuestions: Question[] = [];
 
-  /**
-   * 로컬 스토리지에 캐시된 서버 신규 문제들을 메모리에 로드합니다.
-   */
-  static async loadCachedServerQuestions(): Promise<void> {
+  private static async readCachedServerQuestions(): Promise<void> {
     const cached = await LocalStorage.getItem<Question[]>(STORAGE_KEYS.CACHED_SERVER_QUESTIONS);
     if (cached && Array.isArray(cached)) {
       this.cachedServerQuestions = cached;
+    }
+  }
+
+  private static async persistCachedServerQuestions(): Promise<void> {
+    await LocalStorage.setItem(
+      STORAGE_KEYS.CACHED_SERVER_QUESTIONS,
+      this.cachedServerQuestions,
+    );
+  }
+
+  static sweepCachedDuplicates(): number {
+    const removeIds = new Set(
+      pickDuplicateCachedIds(ALL_QUESTIONS, this.cachedServerQuestions),
+    );
+    if (removeIds.size === 0) return 0;
+    this.cachedServerQuestions = this.cachedServerQuestions.filter(
+      (question) => !removeIds.has(question.id),
+    );
+    return removeIds.size;
+  }
+
+  /**
+   * 로컬 스토리지에 캐시된 서버 신규 문제들을 메모리에 로드합니다.
+   * 지문/코드가 같은 보관함 중복은 알림 없이 정리합니다.
+   */
+  static async loadCachedServerQuestions(): Promise<void> {
+    await this.readCachedServerQuestions();
+    if (this.sweepCachedDuplicates() > 0) {
+      await this.persistCachedServerQuestions();
     }
   }
 
@@ -141,10 +167,8 @@ export class QuestionRepository {
     if (toAdd.length === 0) return 0;
 
     this.cachedServerQuestions = [...this.cachedServerQuestions, ...toAdd];
-    await LocalStorage.setItem(
-      STORAGE_KEYS.CACHED_SERVER_QUESTIONS,
-      this.cachedServerQuestions,
-    );
+    this.sweepCachedDuplicates();
+    await this.persistCachedServerQuestions();
     return toAdd.length;
   }
 
@@ -164,20 +188,12 @@ export class QuestionRepository {
    * 캐시에만 있는 중복 문항을 삭제한다. 앱 번들 기출은 건드리지 않는다.
    */
   static async removeDuplicateCachedQuestions(): Promise<number> {
-    await this.loadCachedServerQuestions();
-    const removeIds = new Set(
-      pickDuplicateCachedIds(ALL_QUESTIONS, this.cachedServerQuestions),
-    );
-    if (removeIds.size === 0) return 0;
-
-    this.cachedServerQuestions = this.cachedServerQuestions.filter(
-      (question) => !removeIds.has(question.id),
-    );
-    await LocalStorage.setItem(
-      STORAGE_KEYS.CACHED_SERVER_QUESTIONS,
-      this.cachedServerQuestions,
-    );
-    return removeIds.size;
+    await this.readCachedServerQuestions();
+    const removed = this.sweepCachedDuplicates();
+    if (removed > 0) {
+      await this.persistCachedServerQuestions();
+    }
+    return removed;
   }
 
   /**

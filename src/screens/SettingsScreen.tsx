@@ -331,7 +331,7 @@ export const SettingsScreen: React.FC = () => {
               <ShieldCheck size={18} color={theme.subText} />
               <Text style={[styles.infoLabel, { color: theme.subText }]}>앱 버전</Text>
             </View>
-            <Text style={[styles.infoValue, { color: theme.text }]}>1.3.6 (주제 시드 묶음 생성 & 중복 문항 정리)</Text>
+            <Text style={[styles.infoValue, { color: theme.text }]}>1.3.7 (주제 시드 묶음 생성)</Text>
           </View>
         </Card>
 
