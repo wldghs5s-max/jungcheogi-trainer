@@ -13,16 +13,136 @@ export const MEMO_BATCH_SIZE = 7;
 export const MEMO_BATCH_COUNT = 2;
 export const MEMO_CONCURRENCY = 2;
 export const MEMO_RETRY_DELAY_MS = 300;
+export const MEMO_MIN_ACCEPTABLE_BATCH_QUESTIONS = 4;
 
 export function normalizeStem(text: string): string {
   return text.replace(/\s+/g, "").toUpperCase();
 }
 
-function parseJsonPayload(raw: string): unknown {
-  const trimmed = raw.trim();
-  const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  const body = fenced ? fenced[1].trim() : trimmed;
-  return JSON.parse(body);
+/**
+ * JSON 문자열 리터럴 내부의 이스케이프되지 않은 개행(\n), 캐리지 리턴(\r), 탭(\t)을 안전하게 치환합니다.
+ * 이스케이프 문자(\\) 상태를 추적하여 실제 따옴표 내부의 제어문자만 정규화합니다.
+ */
+export function sanitizeJsonStringLiterals(jsonStr: string): string {
+  let inString = false;
+  let escaped = false;
+  let result = "";
+
+  for (let i = 0; i < jsonStr.length; i++) {
+    const ch = jsonStr[i];
+    if (inString) {
+      if (escaped) {
+        result += ch;
+        escaped = false;
+      } else if (ch === "\\") {
+        result += ch;
+        escaped = true;
+      } else if (ch === '"') {
+        result += ch;
+        inString = false;
+      } else if (ch === "\n") {
+        result += "\\n";
+      } else if (ch === "\r") {
+        result += "\\r";
+      } else if (ch === "\t") {
+        result += "\\t";
+      } else {
+        result += ch;
+      }
+    } else {
+      if (ch === '"') {
+        inString = true;
+      }
+      result += ch;
+    }
+  }
+  return result;
+}
+
+/**
+ * 마크다운 코드블록(```json ... ```) 래핑을 제거합니다.
+ * 닫는 백틱(```)이 중간에 잘려 누락된 경우에도 앞쪽 코드블록 접두사를 안전하게 제거합니다.
+ */
+export function extractJsonCandidate(raw: string): string {
+  let text = raw.trim();
+  const match = text.match(/```(?:json)?\s*([\s\S]*?)(?:```|$)/i);
+  if (match && match[1]) {
+    text = match[1].trim();
+  } else {
+    text = text.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
+  }
+  return text;
+}
+
+/**
+ * 문자열 리터럴 내부를 침범하지 않고 구조적 닫는 중괄호('}') 위치들을 파악하여,
+ * 중간 절단(truncation)된 JSON 배열을 안전하게 닫아 복구를 시도합니다.
+ */
+function tryRepairTruncatedJson(sanitized: string): unknown | null {
+  // 문자열 외부의 구조적 중괄호 닫힘('}') 위치 목록 수집
+  const structuralCloseIndices: number[] = [];
+  let inString = false;
+  let escaped = false;
+
+  for (let i = 0; i < sanitized.length; i++) {
+    const ch = sanitized[i];
+    if (inString) {
+      if (escaped) {
+        escaped = false;
+      } else if (ch === "\\") {
+        escaped = true;
+      } else if (ch === '"') {
+        inString = false;
+      }
+      continue;
+    }
+
+    if (ch === '"') {
+      inString = true;
+    } else if (ch === "}") {
+      structuralCloseIndices.push(i);
+    }
+  }
+
+  // 뒤에서부터 구조적 '}' 지점을 탐색하여 닫는 괄호 복구 시도
+  for (let i = structuralCloseIndices.length - 1; i >= 0; i--) {
+    const closeIndex = structuralCloseIndices[i];
+    const candidateSlice = sanitized.substring(0, closeIndex + 1);
+
+    for (const closer of ["]}", "]", "}"]) {
+      try {
+        const attempt = candidateSlice + closer;
+        const parsed = JSON.parse(attempt);
+        if (parsed && typeof parsed === "object") {
+          return parsed;
+        }
+      } catch {
+        // 복구 실패 시 이전 구조적 중괄호 위치로 후퇴 시도
+      }
+    }
+  }
+
+  return null;
+}
+
+export function parseJsonPayload(raw: string): unknown {
+  const candidate = extractJsonCandidate(raw);
+  const sanitized = sanitizeJsonStringLiterals(candidate).replace(
+    /,\s*([\]}])/g,
+    "$1",
+  );
+
+  // 1단계: 표준 정규화 후 JSON.parse 시도
+  try {
+    return JSON.parse(sanitized);
+  } catch {
+    // 2단계: 안전한 구조 복구 시도 (문자열 내부 토큰을 건드리지 않음)
+    const repaired = tryRepairTruncatedJson(sanitized);
+    if (repaired) {
+      return repaired;
+    }
+    throw new Error("JSON 파싱 및 복구 실패");
+  }
 }
 
 function asAnswer(value: unknown): string | string[] | null {
@@ -37,7 +157,7 @@ function asAnswer(value: unknown): string | string[] | null {
   return null;
 }
 
-function sanitizeQuestion(
+export function sanitizeQuestion(
   raw: Record<string, unknown>,
   subject: Subject,
   idSuffix: string,
@@ -45,7 +165,11 @@ function sanitizeQuestion(
   const question = String(raw.question || "").trim();
   const explanation = String(raw.explanation || "").trim();
   const answer = asAnswer(raw.answer);
-  if (!question || !explanation || !answer) return null;
+
+  // 엄격한 스키마 검증: 지문 최소 5자, 해설 최소 5자, 유효 정답 필수
+  if (!question || question.length < 5 || !explanation || explanation.length < 5 || !answer) {
+    return null;
+  }
 
   const type =
     raw.type === "MULTIPLE_CHOICE" ? "MULTIPLE_CHOICE" : "SHORT_ANSWER";
@@ -88,9 +212,23 @@ export function collectQuestionsFromText(
   limit = MEMO_BATCH_SIZE,
 ): Question[] {
   const parsed = parseJsonPayload(text);
-  const rows = (parsed as { questions?: unknown[] })?.questions;
-  if (!Array.isArray(rows)) {
-    throw new Error("응답에 questions 배열이 없습니다.");
+
+  let rows: unknown[] | undefined;
+  if (Array.isArray(parsed)) {
+    rows = parsed;
+  } else if (parsed && typeof parsed === "object") {
+    const obj = parsed as Record<string, unknown>;
+    if (Array.isArray(obj.questions)) {
+      rows = obj.questions;
+    } else if (Array.isArray(obj.items)) {
+      rows = obj.items;
+    } else if (obj.question && obj.answer) {
+      rows = [obj];
+    }
+  }
+
+  if (!Array.isArray(rows) || rows.length === 0) {
+    throw new Error("응답에서 유효한 문제 목록을 찾을 수 없습니다.");
   }
 
   const questions: Question[] = [];
@@ -145,11 +283,12 @@ export function buildPrompt(
     .map((seed, index) => `${index + 1}. [${seed.subject}] ${seed.topic}`)
     .join("\n");
 
+  // 과목당 핵심 4문항(50자 이내)으로 압축하여 입력 토큰 절약 및 생성 속도 개선
   const avoidList = MEMO_SUBJECTS.map((subject) => {
     const stems = existingQuestions
       .filter((item) => item.subject === subject)
-      .slice(0, 8)
-      .map((item) => `- ${item.question.slice(0, 80)}`);
+      .slice(0, 4)
+      .map((item) => `- ${item.question.slice(0, 50)}`);
     return `[${subject}]\n${stems.join("\n") || "(없음)"}`;
   }).join("\n\n");
 
@@ -174,7 +313,7 @@ ${avoidList}
       "type": "SHORT_ANSWER",
       "question": "한글로 된 실기 단답 문제. ~쓰시오. 로 끝낼 것",
       "answer": ["대표정답", "동의어1", "영문약어"],
-      "explanation": "2~4문장 해설",
+      "explanation": "2문장 내외로 핵심 개념과 정답 이유를 명확하게 작성",
       "difficulty": "EASY" | "MEDIUM" | "HARD",
       "keywords": ["키워드1", "키워드2"]
     }
@@ -210,7 +349,7 @@ async function mapConcurrent<T, R>(
   return results;
 }
 
-async function generateOneBatch(
+export async function generateOneBatch(
   existingQuestions: Question[],
   existingStems: Set<string>,
   seeds: MemoTopicSeed[],
@@ -219,7 +358,7 @@ async function generateOneBatch(
   const result = await GeminiService.generateText(
     buildPrompt(existingQuestions, seeds),
     {
-      maxOutputTokens: 4096,
+      maxOutputTokens: 8192,
       temperature: 0.8,
       json: true,
       models: GENERATOR_MODELS,
@@ -237,11 +376,27 @@ async function generateOneBatch(
   }
 
   try {
-    return {
-      questions: collectQuestionsFromText(result.text, existingStems, batchId),
-    };
-  } catch {
-    return { questions: [], error: "JSON을 읽지 못했습니다." };
+    const questions = collectQuestionsFromText(
+      result.text,
+      existingStems,
+      batchId,
+    );
+
+    // 엄격한 품질 임계값 검증: 유효 문항이 최소 기준(4개) 미만이면 깨진 데이터를 저장하지 않고 재시도 유도
+    if (questions.length < MEMO_MIN_ACCEPTABLE_BATCH_QUESTIONS) {
+      return {
+        questions: [],
+        error: `유효한 문항 수가 기준(${MEMO_MIN_ACCEPTABLE_BATCH_QUESTIONS}개)에 미달하여 배치를 재생성합니다.`,
+      };
+    }
+
+    return { questions };
+  } catch (parseErr) {
+    const errorMsg =
+      parseErr instanceof Error
+        ? parseErr.message
+        : "응답 형식 변환 중 오류가 발생했습니다.";
+    return { questions: [], error: errorMsg };
   }
 }
 

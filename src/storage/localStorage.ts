@@ -10,6 +10,7 @@ export const STORAGE_KEYS = {
   TUTOR_THREADS: "@tutor_threads",
   PROGRAMMING_RECENT_FINGERPRINTS: "@programming_recent_fingerprints",
   PROGRAMMING_RECENT_TOPICS: "@programming_recent_topics",
+  MEMO_GENERATION_ACTIVE_JOB: "@memo_generation_active_job",
 } as const;
 
 export interface IStorageAdapter {

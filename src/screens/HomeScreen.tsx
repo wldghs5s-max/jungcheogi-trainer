@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   RefreshControl,
   Alert,
+  AppState,
+  AppStateStatus,
 } from "react-native";
 import {
   Flame,
@@ -133,11 +135,28 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     };
   }, [loadData]);
 
+  // 포그라운드 복귀(화면 켬/다른 앱에서 복귀) 시 최신 데이터 동기화 및 미완료 작업 재개
+  useEffect(() => {
+    const subscription = AppState.addEventListener(
+      "change",
+      (nextAppState: AppStateStatus) => {
+        if (nextAppState === "active") {
+          void loadData();
+          void backgroundQuestionService.resumePendingJob();
+        }
+      },
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, [loadData]);
+
   const handleSyncQuestions = () => {
     triggerHaptic.selection();
     const res = backgroundQuestionService.startProgrammingGeneration();
     if (res.started) {
-      Alert.alert("백그라운드 문제 생성", res.message);
+      Alert.alert("프로그래밍 문제 생성", res.message);
     } else {
       Alert.alert("알림", res.message);
     }
@@ -148,7 +167,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     const res =
       await backgroundQuestionService.startGeminiMemorizationGeneration();
     if (res.started) {
-      Alert.alert("백그라운드 AI 암기 생성", res.message);
+      Alert.alert("AI 암기 문제 생성", res.message);
     } else if (res.apiKeyRequired) {
       Alert.alert("API Key 필요", res.message);
     } else {
@@ -158,8 +177,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await loadData();
-    setRefreshing(false);
+    try {
+      await loadData();
+    } catch (err) {
+      console.warn("[HomeScreen] onRefresh error:", err);
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   // 5분 퀵 퀴즈 시작 (5문제 조합)
@@ -623,10 +647,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </Text>
             </View>
             <Button
-              title={isSyncing ? "백그라운드 생성 중" : "문제 생성"}
+              title={isSyncing ? "생성 중..." : "문제 생성"}
               variant="outline"
-              loading={false}
-              disabled={false}
+              loading={isSyncing}
+              disabled={isSyncing || isGeminiGenerating}
               onPress={handleSyncQuestions}
               style={styles.syncBtn}
               textStyle={{ fontSize: 12 }}
@@ -656,10 +680,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </Text>
             </View>
             <Button
-              title={isGeminiGenerating ? "백그라운드 생성 중" : "AI 생성"}
+              title={isGeminiGenerating ? "AI 생성 중..." : "AI 생성"}
               variant="outline"
-              loading={false}
-              disabled={false}
+              loading={isGeminiGenerating}
+              disabled={isGeminiGenerating || isSyncing}
               onPress={handleGeminiMemoGenerate}
               style={styles.syncBtn}
               textStyle={{ fontSize: 12 }}
