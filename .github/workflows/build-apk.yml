@@ -92,34 +92,41 @@ jobs:
               "$APK_DIR/app-release-unsigned.apk"
           fi
           
+          # Extract version from package.json
+          VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
           # Rename and copy to root directory
-          cp "$APK_DIR/app-release.apk" jungcheogi-trainer-v1.3.7.apk
+          cp "$APK_DIR/app-release.apk" "jungcheogi-trainer-v${VERSION}.apk"
           echo "=== Final APK File Info ==="
-          ls -lh jungcheogi-trainer-v1.3.7.apk
+          ls -lh "jungcheogi-trainer-v${VERSION}.apk"
 
       - name: 12. Upload APK to GitHub Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: jungcheogi-trainer-v1.3.7-apk
-          path: jungcheogi-trainer-v1.3.7.apk
+          name: jungcheogi-trainer-v${{ env.VERSION }}-apk
+          path: jungcheogi-trainer-v${{ env.VERSION }}.apk
           retention-days: 30
 
       - name: 13. Create or Update GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
         with:
-          tag_name: v1.3.7
-          name: "정처기 실기 트레이너 v1.3.7 APK"
+          tag_name: v${{ env.VERSION }}
+          name: "정처기 실기 트레이너 v${{ env.VERSION }} APK"
           body: |
-            ## 정처기 실기 트레이너 v1.3.7 APK
+            ## 정처기 실기 트레이너 v${{ env.VERSION }} APK
 
-            Assets에서 `jungcheogi-trainer-v1.3.7.apk`를 받으면 됩니다.
+            Assets에서 `jungcheogi-trainer-v${{ env.VERSION }}.apk`를 받으면 됩니다.
 
-            ### 이번 버전
-            - 홈 중복 삭제 버튼을 제거하고, 보관함 저장·로드 시 같은 지문을 알림 없이 정리
-            - Gemini 암기 생성은 주제 시드 7문제×2묶음, 혼잡 시 3.5-flash
+            ### 이번 버전 (v1.3.8)
+            - AI 암기 문제 생성 시 3단계 강건한 JSON 복구 및 정밀 스키마 검증 (손상 배치 자동 폐기 및 재시도)
+            - 생성 작업 영속화(MemoGenerationJob) 및 Ground-Truth 기반 중복 생성(Idempotency) 원천 방지
+            - 묶음별 즉시 커밋(Incremental Commit): 1차 7문제 완료 즉시 영구 저장되어 강제 종료 시에도 1차분 100% 보존
+            - 앱 라이프사이클(AppState) 연동: 백그라운드 전환/화면 복귀 시 미완료 작업 자동 이어받기
+            - 홈 화면 새로고침(Pull-to-Refresh) 충돌 방어 및 실시간 상태 피드백 강화
 
-            기존 EAS APK와 서명이 다를 수 있으니, 설치 전 폰에서 예전 앱을 삭제한 뒤 설치하세요.
-          files: jungcheogi-trainer-v1.3.7.apk
+            기존 앱과 서명이 다를 수 있으니, 설치 전 폰에서 예전 앱을 삭제한 뒤 설치하세요.
+          files: jungcheogi-trainer-v${{ env.VERSION }}.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
