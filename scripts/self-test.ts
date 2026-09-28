@@ -11,6 +11,9 @@ import {
   isUnknownAttempt,
   QuizAttempt,
 } from "../src/types/attempt";
+import { LocalStorage, MemoryStorageAdapter } from "../src/storage/localStorage";
+import { AttemptRepository } from "../src/repositories/attemptRepository";
+import { useQuizStore } from "../src/store/quizStore";
 
 const MEMO_SUBJECTS = [
   "소프트웨어설계",
@@ -96,6 +99,24 @@ assert(!checkAnswer("SDN", "SAN"), "채점: 약어는 한글자 차이 불허");
 assert(!checkAnswer("제2정규형", "제3정규형"), "채점: 숫자 다른 정규형 불허");
 assert(!checkAnswer("틀린답", "정답"), "채점: 오답 거부");
 assert(!checkAnswer("3", "2"), "채점: 짧은 답은 유사 허용 안 함");
+
+const codeOutput = {
+  type: "CODE_TRACE" as const,
+  subject: "프로그래밍언어활용" as const,
+  code: 'printf("%d", x);',
+};
+assert(!checkAnswer("5", "-5", codeOutput), "코드 채점: 부호 제거 오답");
+assert(!checkAnswer("15", "1.5", codeOutput), "코드 채점: 소수점 제거 오답");
+assert(!checkAnswer("1 23", "12 3", codeOutput), "코드 채점: 토큰 경계 붕괴 오답");
+assert(!checkAnswer("ABC", "abc", codeOutput), "코드 채점: 대소문자 무시 오답");
+assert(!checkAnswer("싱글톤", "싱글톤패턴", codeOutput), "코드 채점: 용어 유사 판정 없음");
+assert(checkAnswer("-5", "-5", codeOutput), "코드 채점: 부호 정답");
+assert(checkAnswer("1.5", "1.5", codeOutput), "코드 채점: 소수 정답");
+assert(checkAnswer("12 3", "12 3", codeOutput), "코드 채점: 토큰 정답");
+assert(checkAnswer("abc", "abc", codeOutput), "코드 채점: 소문자 정답");
+assert(checkAnswer("  -5\n", "-5", codeOutput), "코드 채점: 앞뒤 공백·줄바꿈 허용");
+assert(checkAnswer("-5\r\n", "-5", codeOutput), "코드 채점: CRLF 허용");
+assert(checkAnswer("그룹바이", "GROUP BY"), "이론 채점: 동의어 유지");
 assert(
   getQuestionOriginLabel({
     id: "GEMINI_MEMO_1",
@@ -336,10 +357,156 @@ assert(
   "생성 묶음에서 근사 중복만 걸러 냄",
 );
 
+class TestAttemptStorage extends MemoryStorageAdapter {
+  delayMs = 0;
+  failNext = false;
 
-if (failed > 0) {
-  console.error(`\n${failed}개 실패`);
-  process.exit(1);
+  async setItem(key: string, value: string): Promise<void> {
+    if (this.delayMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, this.delayMs));
+    }
+    if (this.failNext) {
+      this.failNext = false;
+      throw new Error("저장 실패 테스트");
+    }
+    await super.setItem(key, value);
+  }
 }
-console.log("\n모든 자체 테스트 통과 (이론/두음/안푼문제 포함)");
+
+const sampleQuestion: Question = {
+  id: "QUIZ_LOCK_1",
+  subject: "소프트웨어설계",
+  category: "테스트",
+  type: "SHORT_ANSWER",
+  question: "잠금 검증용 문제를 쓰시오.",
+  answer: "정답",
+  explanation: "설명",
+  difficulty: "EASY",
+  keywords: [],
+};
+
+const sampleCodeQuestion: Question = {
+  ...sampleQuestion,
+  id: "QUIZ_LOCK_2",
+  type: "CODE_TRACE",
+  subject: "프로그래밍언어활용",
+  code: "printf(\"%d\", -5);",
+  question: "실행 결과를 쓰시오.",
+  answer: "-5",
+};
+
+async function runAsyncSelfTests() {
+  console.log("\n=== 제출 잠금·기록 충돌 ===\n");
+  const storage = new TestAttemptStorage();
+  LocalStorage.setAdapter(storage);
+  await AttemptRepository.clearAll();
+
+  const a1: QuizAttempt = {
+    id: "att-1",
+    questionId: "q-lock",
+    selectedAnswer: "1",
+    correctAnswer: "1",
+    isCorrect: true,
+    answeredAt: new Date().toISOString(),
+  };
+  const a2: QuizAttempt = {
+    ...a1,
+    id: "att-2",
+    selectedAnswer: "2",
+  };
+  storage.delayMs = 20;
+  await Promise.all([
+    AttemptRepository.saveAttempt(a1),
+    AttemptRepository.saveAttempt(a2),
+  ]);
+  storage.delayMs = 0;
+  const savedAttempts = await AttemptRepository.getAllAttempts();
+  assert(
+    savedAttempts.some((item) => item.id === "att-1") &&
+      savedAttempts.some((item) => item.id === "att-2"),
+    "동시 저장도 풀이 기록이 유실되지 않음",
+  );
+
+  const store = useQuizStore.getState();
+  await AttemptRepository.clearAll();
+  store.startQuiz([sampleQuestion], "잠금 테스트");
+  store.selectAnswer("정답");
+  storage.delayMs = 30;
+  const [first, second] = await Promise.all([
+    useQuizStore.getState().submitAnswer(),
+    useQuizStore.getState().submitAnswer(),
+  ]);
+  storage.delayMs = 0;
+  const stored = await AttemptRepository.getAllAttempts();
+  assert(
+    [first, second].filter((item) => item.ok).length === 1,
+    "연속 제출은 한 번만 성공",
+  );
+  assert(stored.length === 1, `연속 제출 저장 1회 (실제 ${stored.length})`);
+  assert(
+    useQuizStore.getState().sessionAttempts.length === 1,
+    "화면 세션 기록도 1개",
+  );
+
+  await AttemptRepository.clearAll();
+  useQuizStore.getState().startQuiz([sampleQuestion], "모름 동시");
+  useQuizStore.getState().selectAnswer("오답");
+  storage.delayMs = 30;
+  const [answerRes, unknownRes] = await Promise.all([
+    useQuizStore.getState().submitAnswer(),
+    useQuizStore.getState().submitUnknown(),
+  ]);
+  storage.delayMs = 0;
+  const mixed = await AttemptRepository.getAllAttempts();
+  assert(
+    [answerRes, unknownRes].filter((item) => item.ok).length === 1,
+    "정답 제출과 모름은 같은 잠금을 공유",
+  );
+  assert(mixed.length === 1, `정답/모름 동시 저장 1회 (실제 ${mixed.length})`);
+
+  await AttemptRepository.clearAll();
+  useQuizStore.getState().startQuiz([sampleCodeQuestion], "저장 실패");
+  useQuizStore.getState().selectAnswer("-5");
+  storage.failNext = true;
+  const failedSave = await useQuizStore.getState().submitAnswer();
+  assert(failedSave.ok === false && failedSave.reason === "save_failed", "저장 실패를 안내");
+  assert(
+    useQuizStore.getState().isSubmitted === false &&
+      useQuizStore.getState().isSubmitting === false,
+    "저장 실패 후 잠금 해제",
+  );
+  const retry = await useQuizStore.getState().submitAnswer();
+  assert(retry.ok && retry.correct, "저장 실패 후 재시도 성공");
+  assert(useQuizStore.getState().isSubmitted, "재시도 후 제출 완료");
+
+  await AttemptRepository.clearAll();
+  useQuizStore.getState().startQuiz([sampleQuestion], "세션 변경");
+  useQuizStore.getState().selectAnswer("정답");
+  storage.delayMs = 40;
+  const pending = useQuizStore.getState().submitAnswer();
+  useQuizStore.getState().startQuiz([sampleCodeQuestion], "새 퀴즈");
+  const stale = await pending;
+  storage.delayMs = 0;
+  assert(stale.ok, "이전 요청 저장 자체는 완료될 수 있음");
+  assert(
+    useQuizStore.getState().sessionTitle === "새 퀴즈" &&
+      useQuizStore.getState().sessionAttempts.length === 0 &&
+      useQuizStore.getState().isSubmitted === false,
+    "저장 중 세션 변경 시 이전 완료가 새 세션을 덮어쓰지 않음",
+  );
+
+  LocalStorage.setAdapter(new MemoryStorageAdapter());
+  useQuizStore.getState().resetQuiz();
+
+  if (failed > 0) {
+    console.error(`\n${failed}개 실패`);
+    process.exit(1);
+  }
+  console.log("\n모든 자체 테스트 통과 (이론/두음/안푼문제 포함)");
+}
+
+void runAsyncSelfTests().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
 

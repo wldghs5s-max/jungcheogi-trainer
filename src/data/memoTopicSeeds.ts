@@ -220,5 +220,14 @@ export function pickTopicSeeds(
   take(CHAPTER_FILL_CAP - 1, "any");
   take(Number.POSITIVE_INFINITY, "any");
 
-  return picked;
+  let guard = 0;
+  while (picked.length < count && pool.length > 0 && guard < 12) {
+    usedIds.clear();
+    subjectsSeen.clear();
+    chaptersSeen.clear();
+    take(Number.POSITIVE_INFINITY, "any");
+    guard += 1;
+  }
+
+  return picked.slice(0, count);
 }

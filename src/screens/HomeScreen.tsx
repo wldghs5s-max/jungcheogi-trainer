@@ -29,7 +29,8 @@ import { useSettingsStore } from "../store/settingsStore";
 import { useUserStore } from "../store/userStore";
 import { AttemptRepository } from "../repositories/attemptRepository";
 import { QuestionRepository } from "../repositories/questionRepository";
-import { backgroundQuestionService } from "../services/backgroundQuestionService";
+import { backgroundQuestionService, MemoProgress } from "../services/backgroundQuestionService";
+import { MEMO_QUICK_TARGET } from "../api/geminiQuestionGenerator";
 import { calculateUserStats } from "../utils/statistics";
 import { getDueReviewQuestionIds } from "../utils/reviewQueue";
 import { triggerHaptic } from "../utils/haptics";
@@ -63,6 +64,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [totalQuestionsCount, setTotalQuestionsCount] = useState(0);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isGeminiGenerating, setIsGeminiGenerating] = useState(false);
+  const [memoProgress, setMemoProgress] = useState<MemoProgress | null>(null);
   const [examYear, setExamYear] = useState<number | null>(null);
   const [examRound, setExamRound] = useState<number | null>(null);
   const [unknownQuestions, setUnknownQuestions] = useState<Question[]>([]);
@@ -117,6 +119,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     setIsGeminiGenerating(
       initialStatus.isGenerating && initialStatus.taskType === "GEMINI_MEMO",
     );
+    setMemoProgress(initialStatus.memo);
+    void backgroundQuestionService.hydrateActiveJob().then(() => {
+      void backgroundQuestionService.resumePendingJob();
+    });
 
     const unsubscribe = backgroundQuestionService.subscribe((status) => {
       if (isMountedRef.current) {
@@ -124,8 +130,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         setIsGeminiGenerating(
           status.isGenerating && status.taskType === "GEMINI_MEMO",
         );
+        setMemoProgress(status.memo);
         if (!status.isGenerating) {
           void loadData();
+        } else if (status.taskType === "GEMINI_MEMO") {
+          void QuestionRepository.loadCachedServerQuestions().then(() => {
+            if (isMountedRef.current) {
+              setTotalQuestionsCount(QuestionRepository.getAll().length);
+            }
+          });
         }
       }
     });
@@ -165,7 +178,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const handleGeminiMemoGenerate = async () => {
     triggerHaptic.selection();
     const res =
-      await backgroundQuestionService.startGeminiMemorizationGeneration();
+      await backgroundQuestionService.startGeminiMemorizationGeneration(
+        MEMO_QUICK_TARGET,
+      );
     if (res.started) {
       Alert.alert("AI 암기 문제 생성", res.message);
     } else if (res.apiKeyRequired) {
@@ -173,6 +188,36 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     } else {
       Alert.alert("알림", res.message);
     }
+  };
+
+  const handlePauseMemo = () => {
+    const res = backgroundQuestionService.pauseMemoGeneration();
+    Alert.alert(res.ok ? "일시정지" : "알림", res.message);
+  };
+
+  const handleResumeMemo = () => {
+    triggerHaptic.selection();
+    void backgroundQuestionService.resumePendingJob(true);
+  };
+
+  const handleCancelMemo = () => {
+    Alert.alert(
+      "생성 중단",
+      "아직 안 만든 묶음은 그만두고, 이미 저장된 문제는 보관함에 남깁니다.",
+      [
+        { text: "계속 만들기", style: "cancel" },
+        {
+          text: "중단",
+          style: "destructive",
+          onPress: () => {
+            void backgroundQuestionService.cancelMemoGeneration().then((res) => {
+              Alert.alert(res.ok ? "중단" : "알림", res.message);
+              void loadData();
+            });
+          },
+        },
+      ],
+    );
   };
 
   const onRefresh = async () => {
@@ -679,22 +724,81 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 Gemini 암기 문제 생성
               </Text>
               <Text style={[styles.syncSub, { color: theme.subText }]}>
-                빈 챕터 우선 7×2 · 같은 정답·비슷한 지문 제외 · 보유{" "}
+                빈 챕터 우선 · 14개는 여기서 · 대량은 설정 · 보유{" "}
                 <Text style={{ color: theme.primary, fontWeight: "700" }}>
                   {totalQuestionsCount}문제
                 </Text>
               </Text>
             </View>
-            <Button
-              title={isGeminiGenerating ? "AI 생성 중..." : "AI 생성"}
-              variant="outline"
-              loading={isGeminiGenerating}
-              disabled={isGeminiGenerating || isSyncing}
-              onPress={handleGeminiMemoGenerate}
-              style={styles.syncBtn}
-              textStyle={{ fontSize: 12 }}
-            />
           </View>
+          {memoProgress &&
+          (memoProgress.running ||
+            memoProgress.paused ||
+            memoProgress.canResume) ? (
+            <View style={styles.memoProgressBox}>
+              <Text style={[styles.memoProgressLabel, { color: theme.text }]}>
+                {memoProgress.savedCount}/{memoProgress.targetCount}문제 ·{" "}
+                {memoProgress.completedBatches}/{memoProgress.totalBatches}묶음
+                {memoProgress.queuedCount > 0
+                  ? ` · 대기 ${memoProgress.queuedCount}`
+                  : ""}
+                {memoProgress.paused ? " · 일시정지" : ""}
+              </Text>
+              <ProgressBar
+                progress={
+                  memoProgress.targetCount > 0
+                    ? memoProgress.savedCount / memoProgress.targetCount
+                    : 0
+                }
+                height={6}
+                color={theme.accent}
+              />
+              <View style={styles.memoActionRow}>
+                {memoProgress.running ? (
+                  <Button
+                    title="일시정지"
+                    variant="outline"
+                    onPress={handlePauseMemo}
+                    style={styles.syncBtn}
+                    textStyle={{ fontSize: 12 }}
+                  />
+                ) : (
+                  <Button
+                    title="이어서"
+                    variant="outline"
+                    onPress={handleResumeMemo}
+                    disabled={isSyncing}
+                    style={styles.syncBtn}
+                    textStyle={{ fontSize: 12 }}
+                  />
+                )}
+                <Button
+                  title="중단"
+                  variant="danger"
+                  onPress={handleCancelMemo}
+                  style={styles.syncBtn}
+                  textStyle={{ fontSize: 12 }}
+                />
+              </View>
+            </View>
+          ) : (
+            <View>
+              <View style={styles.memoActionRow}>
+                <Button
+                  title={isGeminiGenerating ? "생성 중..." : "14개 만들기"}
+                  variant="outline"
+                  loading={isGeminiGenerating}
+                  disabled={isGeminiGenerating || isSyncing}
+                  onPress={() => void handleGeminiMemoGenerate()}
+                  style={styles.syncBtn}
+                  textStyle={{ fontSize: 12 }}
+                />
+              </View>
+              <Text style={[styles.memoBulkHint, { color: theme.mutedText }]}>
+                100~500개 대량 생성은 실수로 눌리지 않게 설정 탭에 두었습니다.
+              </Text>
+            </View>
+          )}
         </Card>
 
         {/* 과목별 문제 풀이 섹션 헤더 & 안 푼 문제만 보기 토글 버튼 */}
@@ -1312,5 +1416,24 @@ const styles = StyleSheet.create({
     height: 34,
     paddingHorizontal: 10,
     borderRadius: 8,
+  },
+  memoProgressBox: {
+    marginTop: 12,
+    gap: 8,
+  },
+  memoProgressLabel: {
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  memoActionRow: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 8,
+    marginTop: 10,
+  },
+  memoBulkHint: {
+    fontSize: 11,
+    lineHeight: 16,
+    marginTop: 8,
   },
 });

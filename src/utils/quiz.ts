@@ -51,6 +51,36 @@ export function normalizeAnswer(ans: string): string {
   return text.toUpperCase();
 }
 
+/**
+ * 코드 실행 결과 채점용입니다. 부호·소수점·대소문자·토큰 경계를 유지하고,
+ * 앞뒤 공백·줄 끝 공백·CRLF/LF·마지막 빈 줄만 무시합니다.
+ */
+export function normalizeCodeOutputAnswer(ans: string): string {
+  if (!ans) return "";
+  const lines = ans
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .split("\n")
+    .map((line) => line.replace(/[ \t]+$/, ""));
+  while (lines.length > 0 && lines[0] === "") lines.shift();
+  while (lines.length > 0 && lines[lines.length - 1] === "") lines.pop();
+  if (lines.length === 0) return "";
+  lines[0] = lines[0].replace(/^[ \t]+/, "");
+  const last = lines.length - 1;
+  lines[last] = lines[last].replace(/[ \t]+$/, "");
+  return lines.join("\n");
+}
+
+export function isCodeOutputQuestion(question?: {
+  type?: string;
+  subject?: string;
+  code?: string;
+} | null): boolean {
+  if (!question) return false;
+  if (question.type === "CODE_TRACE") return true;
+  return question.subject === "프로그래밍언어활용" && !!question.code;
+}
+
 export function isShortAcronym(word: string): boolean {
   if (!word) return false;
   return /^[A-Z0-9]{1,3}$/.test(word);
@@ -179,14 +209,44 @@ function isCloseMatch(user: string, correct: string): boolean {
   return correctForms.some((form) => isFuzzyMatch(typed, form));
 }
 
+function codeOutputMatches(
+  userAnswer: string,
+  correctAnswer: string | string[],
+): boolean {
+  const typed = normalizeCodeOutputAnswer(userAnswer);
+  if (!typed) return false;
+  const answers = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
+  return answers.some(
+    (item) => normalizeCodeOutputAnswer(String(item || "")) === typed,
+  );
+}
+
 /**
- * 답안 일치 여부를 판정합니다. 동의어는 허용하고,
- * 약어·숫자가 다른 답은 1글자 오탈자로 통과시키지 않습니다.
+ * 답안 일치 여부를 판정합니다.
+ * 이론 용어는 동의어·약어를 허용하고, 코드 출력은 값 의미를 그대로 비교합니다.
  */
 export function checkAnswer(
   userAnswer: string | string[],
   correctAnswer: string | string[],
+  question?: {
+    type?: string;
+    subject?: string;
+    code?: string;
+  } | null,
 ): boolean {
+  if (isCodeOutputQuestion(question)) {
+    if (Array.isArray(userAnswer)) {
+      if (!Array.isArray(correctAnswer)) return false;
+      if (userAnswer.length !== correctAnswer.length) return false;
+      return userAnswer.every(
+        (value, index) =>
+          normalizeCodeOutputAnswer(String(value || "")) ===
+          normalizeCodeOutputAnswer(String(correctAnswer[index] || "")),
+      );
+    }
+    return codeOutputMatches(userAnswer, correctAnswer);
+  }
+
   if (Array.isArray(userAnswer)) {
     if (!Array.isArray(correctAnswer)) return false;
     if (userAnswer.length !== correctAnswer.length) return false;

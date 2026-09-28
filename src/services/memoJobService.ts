@@ -1,7 +1,9 @@
 import { QuestionRepository } from "../repositories/questionRepository";
 import { LocalStorage, STORAGE_KEYS } from "../storage/localStorage";
-import { MemoGenerationJob } from "../types/generationJob";
-import { MEMO_MIN_ACCEPTABLE_BATCH_QUESTIONS } from "../api/geminiQuestionGenerator";
+import { MemoBatchState, MemoGenerationJob } from "../types/generationJob";
+
+export const MAX_MEMO_BATCH_ATTEMPTS = 3;
+export const MAX_MEMO_JOB_REFILLS = 2;
 
 export class MemoJobService {
   static async getActiveJob(): Promise<MemoGenerationJob | null> {
@@ -43,24 +45,108 @@ export class MemoJobService {
   ): Promise<MemoGenerationJob> {
     await QuestionRepository.loadCachedServerQuestions();
     const allQuestions = QuestionRepository.getAll();
-
-    let allCompleted = true;
-    for (const batch of job.batches) {
-      const prefix = `GEMINI_MEMO_${job.jobId}_b${batch.batchIndex}_`;
-      const existingInRepo = allQuestions.filter((q) => q.id.startsWith(prefix));
-
-      if (existingInRepo.length >= MEMO_MIN_ACCEPTABLE_BATCH_QUESTIONS) {
-        batch.status = "COMPLETED";
-        batch.savedQuestionIds = existingInRepo.map((q) => q.id);
-      } else if (batch.status !== "COMPLETED") {
-        allCompleted = false;
-      }
-    }
-
-    if (allCompleted) {
-      job.status = "COMPLETED";
-    }
-
+    reconcileMemoJobWithQuestions(job, allQuestions);
     return job;
   }
+}
+
+export function jobTargetCount(job: MemoGenerationJob): number {
+  return job.targetCount || job.totalBatches * job.batchSize;
+}
+
+export function existingSavedIdsForBatch(
+  job: MemoGenerationJob,
+  batch: MemoBatchState,
+  allQuestions: { id: string }[],
+): string[] {
+  const repoIds = new Set(allQuestions.map((item) => item.id));
+  const prefix = `GEMINI_MEMO_${job.jobId}_b${batch.batchIndex}_`;
+  const fromPrefix = allQuestions
+    .filter((item) => item.id.startsWith(prefix))
+    .map((item) => item.id);
+  const fromRecorded = (batch.savedQuestionIds || []).filter((id) =>
+    repoIds.has(id),
+  );
+  return [...new Set([...fromPrefix, ...fromRecorded])];
+}
+
+export function savedCountFromJob(job: MemoGenerationJob): number {
+  return job.batches.reduce(
+    (sum, batch) => sum + (batch.savedQuestionIds?.length || 0),
+    0,
+  );
+}
+
+export function queuedCountFromJob(job: MemoGenerationJob): number {
+  return (job.queuedCounts || []).reduce((sum, count) => sum + count, 0);
+}
+
+export function remainingFromJob(job: MemoGenerationJob): number {
+  return Math.max(0, jobTargetCount(job) - savedCountFromJob(job));
+}
+
+export function shouldSkipMemoBatch(batch: MemoBatchState): boolean {
+  if ((batch.savedQuestionIds?.length || 0) > 0 && batch.status === "COMPLETED") {
+    return true;
+  }
+  return (batch.attemptCount || 0) >= MAX_MEMO_BATCH_ATTEMPTS;
+}
+
+export function recordBatchSaveResult(
+  batch: MemoBatchState,
+  requestedIds: string[],
+  existingIds: Set<string>,
+): string[] {
+  const savedIds = requestedIds.filter((id) => existingIds.has(id));
+  batch.savedQuestionIds = savedIds;
+  batch.attemptCount = (batch.attemptCount || 0) + 1;
+  batch.completedAt = Date.now();
+  if (savedIds.length > 0) {
+    batch.status = "COMPLETED";
+    delete batch.error;
+  } else if (batch.attemptCount >= MAX_MEMO_BATCH_ATTEMPTS) {
+    batch.status = "FAILED";
+    batch.error = "저장되지 않음 (시도 한도)";
+  } else {
+    batch.status = "FAILED";
+    batch.error = "저장되지 않음";
+  }
+  return savedIds;
+}
+
+export function reconcileMemoJobWithQuestions(
+  job: MemoGenerationJob,
+  allQuestions: { id: string }[],
+): MemoGenerationJob {
+  for (const batch of job.batches) {
+    batch.savedQuestionIds = existingSavedIdsForBatch(job, batch, allQuestions);
+    if (batch.savedQuestionIds.length > 0) {
+      batch.status = "COMPLETED";
+      continue;
+    }
+    if (batch.status === "COMPLETED") {
+      batch.status =
+        (batch.attemptCount || 0) >= MAX_MEMO_BATCH_ATTEMPTS
+          ? "FAILED"
+          : "PENDING";
+    }
+  }
+
+  const saved = savedCountFromJob(job);
+  const target = jobTargetCount(job);
+  const retryable = job.batches.some((batch) => !shouldSkipMemoBatch(batch));
+
+  if (saved >= target && queuedCountFromJob(job) === 0) {
+    job.status = "COMPLETED";
+  } else if (saved >= target) {
+    job.status = "IN_PROGRESS";
+  } else if (retryable) {
+    if (job.status === "COMPLETED") job.status = "IN_PROGRESS";
+  } else if (saved > 0) {
+    job.status = "PARTIALLY_COMPLETED";
+  } else if (job.status === "COMPLETED") {
+    job.status = "FAILED";
+  }
+
+  return job;
 }

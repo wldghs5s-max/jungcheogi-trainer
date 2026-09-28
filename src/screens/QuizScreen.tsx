@@ -51,6 +51,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
     currentIndex,
     selectedAnswer,
     isSubmitted,
+    isSubmitting,
     isCorrect,
     missType,
     hintUsed,
@@ -122,9 +123,18 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
   };
 
   const handleSubmit = async () => {
-    if (!selectedAnswer.trim()) return;
-    const correct = await submitAnswer();
-    if (correct) {
+    if (isSubmitted || isSubmitting || !selectedAnswer.trim()) return;
+    const result = await submitAnswer();
+    if (!result.ok) {
+      if (result.reason === "save_failed") {
+        Alert.alert(
+          "저장 실패",
+          result.message || "풀이 기록을 저장하지 못했습니다. 다시 시도해 주세요.",
+        );
+      }
+      return;
+    }
+    if (result.correct) {
       triggerHaptic.success();
     } else {
       triggerHaptic.error();
@@ -132,8 +142,17 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
   };
 
   const handleUnknown = async () => {
-    if (unknownUnlockIn > 0 || isSubmitted) return;
-    await submitUnknown();
+    if (unknownUnlockIn > 0 || isSubmitted || isSubmitting) return;
+    const result = await submitUnknown();
+    if (!result.ok) {
+      if (result.reason === "save_failed") {
+        Alert.alert(
+          "저장 실패",
+          result.message || "풀이 기록을 저장하지 못했습니다. 다시 시도해 주세요.",
+        );
+      }
+      return;
+    }
     triggerHaptic.selection();
     setAutoAskChapter(true);
     setIsTutorOpen(true);
@@ -287,7 +306,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                   <TouchableOpacity
                     key={idx}
                     activeOpacity={0.7}
-                    disabled={isSubmitted}
+                    disabled={isSubmitted || isSubmitting}
                     onPress={() => {
                       triggerHaptic.selection();
                       selectAnswer(opt);
@@ -359,9 +378,14 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                 placeholderTextColor={theme.mutedText}
                 value={selectedAnswer}
                 onChangeText={selectAnswer}
-                editable={!isSubmitted}
+                editable={!isSubmitted && !isSubmitting}
                 autoCapitalize="none"
                 autoCorrect={false}
+                returnKeyType="done"
+                blurOnSubmit
+                onSubmitEditing={() => {
+                  void handleSubmit();
+                }}
               />
             </View>
           )}
@@ -534,17 +558,19 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                 title={
                   unknownUnlockIn > 0
                     ? `모른다 (${unknownUnlockIn}초)`
-                    : "모른다"
+                    : isSubmitting
+                      ? "저장 중..."
+                      : "모른다"
                 }
                 variant="outline"
-                disabled={unknownUnlockIn > 0}
+                disabled={unknownUnlockIn > 0 || isSubmitting}
                 onPress={handleUnknown}
                 style={styles.unknownButton}
                 textStyle={{ fontSize: 15 }}
               />
               <Button
-                title="정답 확인하기"
-                disabled={!selectedAnswer.trim()}
+                title={isSubmitting ? "저장 중..." : "정답 확인하기"}
+                disabled={!selectedAnswer.trim() || isSubmitting}
                 onPress={handleSubmit}
                 style={styles.submitButton}
               />

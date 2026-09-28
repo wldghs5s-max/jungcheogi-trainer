@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity, Alert, TextInput, ScrollView, Linking } from 'react-native';
-import { Moon, Vibrate, Target, Trash2, Smartphone, ShieldCheck, Cloud, Sparkles, Key, Check, ExternalLink, Cpu } from 'lucide-react-native';
+import { Moon, Vibrate, Target, Trash2, Smartphone, ShieldCheck, Cloud, Sparkles, Key, Check, ExternalLink, Cpu, Layers } from 'lucide-react-native';
 import { useSettingsStore } from '../store/settingsStore';
 import { useUserStore } from '../store/userStore';
 import { AttemptRepository } from '../repositories/attemptRepository';
 import { BookmarkRepository } from '../repositories/bookmarkRepository';
 import { SyncQueueService } from '../storage/syncQueue';
 import { GeminiService, cleanApiKey } from '../api/geminiService';
+import { MEMO_BULK_CHOICES, MEMO_BULK_MAX } from '../api/geminiQuestionGenerator';
+import { backgroundQuestionService, MemoProgress } from '../services/backgroundQuestionService';
 import { triggerHaptic } from '../utils/haptics';
 import { COLORS } from '../utils/theme';
 import { Header } from '../components/common/Header';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
+import { ProgressBar } from '../components/common/ProgressBar';
 import { ProgrammingAdminModal } from '../components/programming/ProgrammingAdminModal';
 
 const GEMINI_KEY_GUIDE_URL = 'https://aistudio.google.com/apikey';
@@ -25,6 +28,9 @@ export const SettingsScreen: React.FC = () => {
   const [hasSavedKey, setHasSavedKey] = useState(false);
   const [testingKey, setTestingKey] = useState(false);
   const [showAdminModal, setShowAdminModal] = useState(false);
+  const [bulkCount, setBulkCount] = useState<(typeof MEMO_BULK_CHOICES)[number]>(100);
+  const [memoProgress, setMemoProgress] = useState<MemoProgress | null>(null);
+  const isMountedRef = useRef(true);
 
   useEffect(() => {
     GeminiService.getApiKey().then((key) => {
@@ -33,6 +39,24 @@ export const SettingsScreen: React.FC = () => {
         setHasSavedKey(true);
       }
     });
+  }, []);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    const initial = backgroundQuestionService.getStatus();
+    setMemoProgress(initial.memo);
+    void backgroundQuestionService.hydrateActiveJob().then(() => {
+      void backgroundQuestionService.resumePendingJob();
+    });
+    const unsubscribe = backgroundQuestionService.subscribe((status) => {
+      if (isMountedRef.current) {
+        setMemoProgress(status.memo);
+      }
+    });
+    return () => {
+      isMountedRef.current = false;
+      unsubscribe();
+    };
   }, []);
 
   const handleToggleDark = () => {
@@ -100,6 +124,57 @@ export const SettingsScreen: React.FC = () => {
         ]
       );
     }
+  };
+
+  const handleBulkGenerate = () => {
+    triggerHaptic.selection();
+    const busy = Boolean(
+      memoProgress && (memoProgress.running || memoProgress.paused || memoProgress.canResume),
+    );
+    const title = busy ? '대기열에 넣기' : `암기 ${bulkCount}개 만들기`;
+    const body = busy
+      ? `지금 작업이 끝나면 이어서 ${bulkCount}문제를 만듭니다. 남은 문제와 대기를 합쳐 최대 ${MEMO_BULK_MAX}개까지입니다.`
+      : `알림이 켜진 채로 최대 ${bulkCount}문제를 만듭니다. 홈 버튼을 누르거나 화면을 꺼도 묶음마다 바로 저장됩니다.\n\n삼성폰은 설정 → 배터리에서 이 앱을 '제한 없음'으로 두면 자는 동안에도 잘 이어집니다.`;
+    Alert.alert(title, body, [
+      { text: '취소', style: 'cancel' },
+      {
+        text: busy ? '대기열에 넣기' : '시작',
+        onPress: () => {
+          void backgroundQuestionService.startOrEnqueueBulkGeneration(bulkCount).then((res) => {
+            if (res.apiKeyRequired) {
+              Alert.alert('API Key 필요', res.message);
+            } else {
+              Alert.alert(res.queued ? '대기열' : res.started ? '대량 암기 생성' : '알림', res.message);
+            }
+          });
+        },
+      },
+    ]);
+  };
+
+  const handlePauseMemo = () => {
+    const res = backgroundQuestionService.pauseMemoGeneration();
+    Alert.alert(res.ok ? '일시정지' : '알림', res.message);
+  };
+
+  const handleResumeMemo = () => {
+    triggerHaptic.selection();
+    void backgroundQuestionService.resumePendingJob(true);
+  };
+
+  const handleCancelMemo = () => {
+    Alert.alert('대량 생성 중단', '대기열까지 비웁니다. 이미 저장된 문제는 보관함에 남습니다.', [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '중단',
+        style: 'destructive',
+        onPress: () => {
+          void backgroundQuestionService.cancelMemoGeneration().then((res) => {
+            Alert.alert(res.ok ? '중단' : '알림', res.message);
+          });
+        },
+      },
+    ]);
   };
 
   const handleResetData = () => {
@@ -201,6 +276,106 @@ export const SettingsScreen: React.FC = () => {
               </Text>
             </View>
           )}
+        </Card>
+
+        <Card style={styles.card}>
+          <View style={styles.targetHeader}>
+            <Layers size={20} color={theme.accent} />
+            <Text style={[styles.sectionTitle, { color: theme.text, marginLeft: 8 }]}>
+              대량 암기 생성
+            </Text>
+          </View>
+          <Text style={[styles.targetSub, { color: theme.subText }]}>
+            홈의 14개와 따로 둔 메뉴입니다. 100~{MEMO_BULK_MAX}개를 고른 뒤 시작하면 알림이 켜진 채로 만듭니다. 이미 만드는 중이면 같은 버튼을 다시 눌러 대기열에 넣습니다.
+          </Text>
+
+          <View style={styles.bulkChips}>
+            {MEMO_BULK_CHOICES.map((count) => {
+              const selected = bulkCount === count;
+              return (
+                <TouchableOpacity
+                  key={count}
+                  onPress={() => {
+                    triggerHaptic.selection();
+                    setBulkCount(count);
+                  }}
+                  style={[
+                    styles.bulkChip,
+                    {
+                      backgroundColor: selected ? theme.primary : theme.surfaceSecondary,
+                      borderColor: selected ? theme.primary : theme.border,
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.bulkChipText,
+                      { color: selected ? '#FFFFFF' : theme.text },
+                    ]}
+                  >
+                    {count}개
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          {memoProgress &&
+          (memoProgress.running || memoProgress.paused || memoProgress.canResume) ? (
+            <View style={styles.memoProgressBox}>
+              <Text style={[styles.memoProgressLabel, { color: theme.text }]}>
+                {memoProgress.savedCount}/{memoProgress.targetCount}문제
+                {memoProgress.queuedCount > 0 ? ` · 대기 ${memoProgress.queuedCount}` : ''}
+                {memoProgress.paused ? ' · 일시정지' : ''}
+              </Text>
+              <ProgressBar
+                progress={
+                  memoProgress.targetCount > 0
+                    ? memoProgress.savedCount / memoProgress.targetCount
+                    : 0
+                }
+                height={6}
+                color={theme.accent}
+              />
+              <View style={styles.memoActionRow}>
+                {memoProgress.running ? (
+                  <Button
+                    title="일시정지"
+                    variant="outline"
+                    onPress={handlePauseMemo}
+                    style={styles.memoBtn}
+                    textStyle={{ fontSize: 12 }}
+                  />
+                ) : (
+                  <Button
+                    title="이어서"
+                    variant="outline"
+                    onPress={handleResumeMemo}
+                    style={styles.memoBtn}
+                    textStyle={{ fontSize: 12 }}
+                  />
+                )}
+                <Button
+                  title="중단"
+                  variant="danger"
+                  onPress={handleCancelMemo}
+                  style={styles.memoBtn}
+                  textStyle={{ fontSize: 12 }}
+                />
+              </View>
+            </View>
+          ) : null}
+
+          <Button
+            title={
+              memoProgress && (memoProgress.running || memoProgress.paused || memoProgress.canResume)
+                ? `${bulkCount}개 대기열에 넣기`
+                : `${bulkCount}개 만들기`
+            }
+            variant="primary"
+            onPress={handleBulkGenerate}
+            style={{ marginTop: 12 }}
+          />
         </Card>
 
         {/* 화면 및 사용자 설정 */}
@@ -331,7 +506,7 @@ export const SettingsScreen: React.FC = () => {
               <ShieldCheck size={18} color={theme.subText} />
               <Text style={[styles.infoLabel, { color: theme.subText }]}>앱 버전</Text>
             </View>
-            <Text style={[styles.infoValue, { color: theme.text }]}>1.3.9 (챕터 우선 암기 생성)</Text>
+            <Text style={[styles.infoValue, { color: theme.text }]}>1.5.0 (설정에서 대량 암기 생성)</Text>
           </View>
         </Card>
 
@@ -476,6 +651,45 @@ const styles = StyleSheet.create({
   targetBtnText: {
     fontSize: 14,
     fontWeight: '700',
+  },
+  bulkChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginHorizontal: -4,
+  },
+  bulkChip: {
+    minWidth: 58,
+    flexGrow: 1,
+    height: 40,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 4,
+    marginBottom: 8,
+    paddingHorizontal: 8,
+  },
+  bulkChipText: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  memoProgressBox: {
+    marginTop: 4,
+    gap: 8,
+  },
+  memoProgressLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  memoActionRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 8,
+  },
+  memoBtn: {
+    height: 34,
+    paddingHorizontal: 10,
+    borderRadius: 8,
   },
   infoRow: {
     flexDirection: 'row',

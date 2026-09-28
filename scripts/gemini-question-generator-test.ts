@@ -1,10 +1,15 @@
-import { GeminiService, GENERATOR_MODELS } from "../src/api/geminiService";
+import { GeminiService, GENERATOR_MODELS, BULK_GENERATOR_MODELS } from "../src/api/geminiService";
 import {
   MEMO_BATCH_COUNT,
   MEMO_BATCH_SIZE,
   MEMO_CONCURRENCY,
   MEMO_RETRY_DELAY_MS,
   MEMO_MIN_ACCEPTABLE_BATCH_QUESTIONS,
+  MEMO_BULK_TARGET,
+  MEMO_BULK_MAX,
+  MEMO_BULK_CHOICES,
+  clampBulkCount,
+  memoBatchCountForTarget,
   buildPrompt,
   collectQuestionsFromText,
   generateOneBatch,
@@ -15,7 +20,7 @@ import {
   parseJsonPayload,
 } from "../src/api/geminiQuestionGenerator";
 import { MEMO_TOPIC_SEEDS, pickTopicSeeds } from "../src/data/memoTopicSeeds";
-import { MemoJobService } from "../src/services/memoJobService";
+import { MemoJobService, queuedCountFromJob, remainingFromJob, recordBatchSaveResult, shouldSkipMemoBatch, MAX_MEMO_BATCH_ATTEMPTS, savedCountFromJob } from "../src/services/memoJobService";
 import { QuestionRepository } from "../src/repositories/questionRepository";
 import { MemoGenerationJob } from "../src/types/generationJob";
 import { Question } from "../src/types/question";
@@ -423,6 +428,7 @@ async function run() {
     updatedAt: Date.now(),
     totalBatches: 2,
     batchSize: 7,
+    targetCount: 14,
     status: "IN_PROGRESS",
     batches: [
       {
@@ -448,6 +454,219 @@ async function run() {
   // 7. 멱등성(Idempotency) 검증: 이미 저장된 1차 배치 문제들을 다시 appendCachedQuestions에 넣어도 중복 저장되지 않음 (0개 추가)
   const duplicateAppendCount = await QuestionRepository.appendCachedQuestions(mockBatch0Questions);
   assert(duplicateAppendCount === 0, `동일 문항 재시도 시 중복 추가 차단 (실제 추가: ${duplicateAppendCount}개)`);
+
+  assert(
+    memoBatchCountForTarget(MEMO_BULK_TARGET) === 15,
+    "100문제는 7개씩 15묶음",
+  );
+  assert(
+    MEMO_BULK_MAX === 500 && MEMO_BULK_CHOICES.join(",") === "100,200,300,400,500",
+    "대량 생성 상한은 500이고 100 단위로 고름",
+  );
+  assert(
+    memoBatchCountForTarget(MEMO_BULK_MAX) === 72,
+    "500문제는 7개씩 72묶음",
+  );
+  assert(
+    pickTopicSeeds(memoBatchCountForTarget(MEMO_BULK_TARGET) * MEMO_BATCH_SIZE)
+      .length === 105,
+    "100개 생성에 필요한 챕터 시드를 고를 수 있음",
+  );
+  assert(
+    pickTopicSeeds(360).length === 360,
+    "시드 풀이 모자라면 같은 챕터를 다시 써서 360개까지 고름",
+  );
+  assert(
+    clampBulkCount(80) === 100 &&
+      clampBulkCount(250) === 300 &&
+      clampBulkCount(999) === 500,
+    "대량 개수는 100~500 사이 100 단위로 맞춤",
+  );
+  assert(
+    queuedCountFromJob({
+      jobId: "q",
+      createdAt: 0,
+      updatedAt: 0,
+      totalBatches: 1,
+      batchSize: 7,
+      targetCount: 200,
+      queuedCounts: [100, 200],
+      status: "IN_PROGRESS",
+      batches: [
+        {
+          batchIndex: 0,
+          seeds: [],
+          status: "COMPLETED",
+          savedQuestionIds: Array.from({ length: 50 }, (_, i) => `s${i}`),
+        },
+      ],
+    }) === 300,
+    "대기열 합계는 queuedCounts를 더함",
+  );
+  assert(
+    remainingFromJob({
+      jobId: "r",
+      createdAt: 0,
+      updatedAt: 0,
+      totalBatches: 1,
+      batchSize: 7,
+      targetCount: 200,
+      queuedCounts: [100],
+      status: "IN_PROGRESS",
+      batches: [
+        {
+          batchIndex: 0,
+          seeds: [],
+          status: "COMPLETED",
+          savedQuestionIds: Array.from({ length: 50 }, (_, i) => `s${i}`),
+        },
+      ],
+    }) === 150,
+    "남은 개수는 목표에서 저장분을 뺀 값",
+  );
+  assert(
+    (
+      await MemoJobService.crossValidateJobWithRepository({
+        jobId: "keep-queue",
+        createdAt: 0,
+        updatedAt: 0,
+        totalBatches: 1,
+        batchSize: 7,
+        targetCount: 7,
+        queuedCounts: [200],
+        status: "IN_PROGRESS",
+        batches: [
+          {
+            batchIndex: 0,
+            seeds: [],
+            status: "COMPLETED",
+            savedQuestionIds: ["a", "b", "c", "d", "e", "f", "g"],
+          },
+        ],
+      })
+    ).status !== "COMPLETED",
+    "현재 목표가 끝나도 대기열이 있으면 작업을 지우지 않음",
+  );
+
+  console.log("\n=== 실제 저장 수·재개 대조 ===\n");
+
+  const saveJobId = `SAVE_${Date.now()}`;
+  const uniqueMemo = (index: number, stem: string): Question => ({
+    id: `GEMINI_MEMO_${saveJobId}_b0_${index}_소프트웨어설계`,
+    subject: "소프트웨어설계",
+    category: "실기 암기",
+    type: "SHORT_ANSWER",
+    question: `${stem} ${saveJobId} ${index}를 쓰시오.`,
+    answer: `저장검증답${index}${saveJobId}`,
+    explanation: "저장 수 검증용",
+    difficulty: "EASY",
+    keywords: [`저장검증${index}`],
+    source: "테스트",
+  });
+  const partialQuestions = [uniqueMemo(0, "부분저장알파"), uniqueMemo(1, "부분저장베타")];
+  const partialAdded = await QuestionRepository.appendCachedQuestions(partialQuestions);
+  assert(partialAdded === 2, `부분 저장 2개만 보관함에 추가 (실제 ${partialAdded})`);
+
+  const requestedIds = [
+    ...partialQuestions.map((item) => item.id),
+    `GEMINI_MEMO_${saveJobId}_b0_2_소프트웨어설계`,
+    `GEMINI_MEMO_${saveJobId}_b0_3_소프트웨어설계`,
+  ];
+  const partialBatch: MemoGenerationJob["batches"][number] = {
+    batchIndex: 0,
+    seeds: [],
+    status: "RUNNING",
+    savedQuestionIds: [],
+  };
+  const savedIds = recordBatchSaveResult(
+    partialBatch,
+    requestedIds,
+    new Set(QuestionRepository.existingIds(requestedIds)),
+  );
+  assert(savedIds.length === 2, `제외된 문항은 저장 성공으로 세지 않음 (실제 ${savedIds.length})`);
+  assert(partialBatch.status === "COMPLETED", "일부라도 실제 저장되면 해당 배치는 완료");
+  assert(savedIds.every((id) => QuestionRepository.getById(id)), "저장 ID는 보관함에 존재");
+
+  const duplicateAdded = await QuestionRepository.appendCachedQuestions(partialQuestions);
+  assert(duplicateAdded === 0, `재개 시 기존 문항 중복 저장 없음 (실제 ${duplicateAdded})`);
+  assert(
+    QuestionRepository.existingIds(requestedIds).length === 2,
+    "중복 제외 후에도 실제 문항은 2개",
+  );
+
+  const ghostJob: MemoGenerationJob = {
+    jobId: `GHOST_${Date.now()}`,
+    createdAt: 0,
+    updatedAt: 0,
+    totalBatches: 1,
+    batchSize: 7,
+    targetCount: 4,
+    status: "COMPLETED",
+    batches: [
+      {
+        batchIndex: 0,
+        seeds: [],
+        status: "COMPLETED",
+        savedQuestionIds: ["ghost-1", "ghost-2", "ghost-3", "ghost-4"],
+      },
+    ],
+  };
+  const ghostValidated = await MemoJobService.crossValidateJobWithRepository(ghostJob);
+  assert(
+    savedCountFromJob(ghostValidated) === 0,
+    "완료 기록만 있고 실제 문항이 없으면 저장 수는 0",
+  );
+  assert(
+    ghostValidated.batches[0].status === "PENDING",
+    "실제 문항이 없는 COMPLETED 배치는 재개 가능하게 되돌림",
+  );
+  assert(ghostValidated.status !== "COMPLETED", "목표 미달 작업을 성공으로 지우지 않음");
+
+  const failBatch: MemoGenerationJob["batches"][number] = {
+    batchIndex: 1,
+    seeds: [],
+    status: "RUNNING",
+    savedQuestionIds: [],
+  };
+  for (let i = 0; i < MAX_MEMO_BATCH_ATTEMPTS; i++) {
+    recordBatchSaveResult(failBatch, ["missing-id"], new Set());
+  }
+  assert(
+    failBatch.attemptCount === MAX_MEMO_BATCH_ATTEMPTS && shouldSkipMemoBatch(failBatch),
+    "저장 실패 반복은 시도 한도에서 멈춤",
+  );
+
+  assert(
+    BULK_GENERATOR_MODELS.join(",") === "gemini-3.8-flash",
+    "대량 생성은 3.8만 사용",
+  );
+
+  const originalGenerate = GeminiService.generateText.bind(GeminiService);
+  try {
+    let bulkCall: { models?: string[]; maxRetries?: number } | undefined;
+    GeminiService.generateText = (async (_prompt, options) => {
+      bulkCall = {
+        models: options?.models,
+        maxRetries: options?.maxRetries,
+      };
+      return {
+        ok: true as const,
+        text: JSON.stringify(memoPayload("bulk")),
+      };
+    }) as typeof GeminiService.generateText;
+
+    await generateOneBatch([], new Set(), seeds, "bulk", {
+      models: BULK_GENERATOR_MODELS,
+      maxRetries: 3,
+    });
+    assert(
+      bulkCall?.models?.join(",") === "gemini-3.8-flash" &&
+        bulkCall?.maxRetries === 3,
+      "대량 생성 묶음은 3.8만 쓰고 같은 모델에서 더 재시도",
+    );
+  } finally {
+    GeminiService.generateText = originalGenerate;
+  }
 
   if (failed > 0) {
     console.error(`\n⚠️ ${failed}개 실패`);

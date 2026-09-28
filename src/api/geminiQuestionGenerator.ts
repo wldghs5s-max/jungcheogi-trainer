@@ -15,6 +15,24 @@ export const MEMO_BATCH_COUNT = 2;
 export const MEMO_CONCURRENCY = 2;
 export const MEMO_RETRY_DELAY_MS = 300;
 export const MEMO_MIN_ACCEPTABLE_BATCH_QUESTIONS = 4;
+export const MEMO_QUICK_TARGET = MEMO_BATCH_SIZE * MEMO_BATCH_COUNT;
+export const MEMO_BULK_TARGET = 100;
+export const MEMO_BULK_MAX = 500;
+export const MEMO_BULK_CHOICES = [100, 200, 300, 400, 500] as const;
+
+export function clampBulkCount(count: number): number {
+  if (!Number.isFinite(count)) return MEMO_BULK_TARGET;
+  const stepped = Math.round(count / 100) * 100;
+  return Math.min(MEMO_BULK_MAX, Math.max(MEMO_BULK_TARGET, stepped));
+}
+
+export function memoBatchCountForTarget(
+  targetCount: number,
+  batchSize = MEMO_BATCH_SIZE,
+): number {
+  if (targetCount <= 0) return 0;
+  return Math.ceil(targetCount / batchSize);
+}
 
 export function normalizeStem(text: string): string {
   return text.replace(/\s+/g, "").toUpperCase();
@@ -409,6 +427,7 @@ export async function generateOneBatch(
   existingStems: Set<string>,
   seeds: MemoTopicSeed[],
   batchId: string,
+  options?: { models?: string[]; maxRetries?: number },
 ): Promise<{ questions: Question[]; error?: string }> {
   const result = await GeminiService.generateText(
     buildPrompt(existingQuestions, seeds),
@@ -416,8 +435,8 @@ export async function generateOneBatch(
       maxOutputTokens: 8192,
       temperature: 0.8,
       json: true,
-      models: GENERATOR_MODELS,
-      maxRetries: 1,
+      models: options?.models ?? GENERATOR_MODELS,
+      maxRetries: options?.maxRetries ?? 1,
       retryDelayMs: MEMO_RETRY_DELAY_MS,
       extraConfig: {
         responseMimeType: "application/json",

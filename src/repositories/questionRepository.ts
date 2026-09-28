@@ -177,7 +177,13 @@ export class QuestionRepository {
     this.cachedServerQuestions = [...this.cachedServerQuestions, ...toAdd];
     this.sweepCachedDuplicates();
     await this.persistCachedServerQuestions();
-    return toAdd.length;
+    const remainingIds = new Set(this.cachedServerQuestions.map((item) => item.id));
+    return toAdd.filter((item) => remainingIds.has(item.id)).length;
+  }
+
+  static existingIds(ids: string[]): string[] {
+    const have = new Set(this.getAll().map((item) => item.id));
+    return ids.filter((id) => have.has(id));
   }
 
   static async replaceCachedServerQuestions(questions: Question[]): Promise<void> {

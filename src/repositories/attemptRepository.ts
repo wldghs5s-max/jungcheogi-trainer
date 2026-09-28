@@ -15,13 +15,22 @@ export interface WrongQuestionSummary {
 }
 
 export class AttemptRepository {
+  private static writeQueue: Promise<void> = Promise.resolve();
+
   /**
    * 새로운 풀이 이력을 저장합니다.
    */
   static async saveAttempt(attempt: QuizAttempt): Promise<void> {
-    const attempts = await this.getAllAttempts();
-    attempts.unshift(attempt); // 최신 시도가 앞쪽에 위치하도록 추가
-    await LocalStorage.setItem(STORAGE_KEYS.QUIZ_ATTEMPTS, attempts);
+    const run = this.writeQueue.then(async () => {
+      const attempts = await this.getAllAttempts();
+      attempts.unshift(attempt);
+      await LocalStorage.setItem(STORAGE_KEYS.QUIZ_ATTEMPTS, attempts);
+    });
+    this.writeQueue = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    return run;
   }
 
   /**

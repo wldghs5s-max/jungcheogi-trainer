@@ -7,12 +7,14 @@ export interface MemoBatchState {
   seeds: MemoTopicSeed[];
   status: MemoBatchStatus;
   savedQuestionIds: string[];
+  attemptCount?: number;
   error?: string;
   completedAt?: number;
 }
 
 export type MemoJobStatus =
   | "IN_PROGRESS"
+  | "PAUSED"
   | "COMPLETED"
   | "PARTIALLY_COMPLETED"
   | "FAILED";
@@ -23,6 +25,9 @@ export interface MemoGenerationJob {
   updatedAt: number;
   totalBatches: number;
   batchSize: number;
+  targetCount: number;
+  queuedCounts?: number[];
+  refillAttempts?: number;
   status: MemoJobStatus;
   batches: MemoBatchState[];
 }

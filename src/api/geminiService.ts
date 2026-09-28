@@ -33,6 +33,9 @@ export const GENERATOR_MODELS = [
   "gemini-3.5-flash",
 ];
 
+/** 장시간 암기 대량 생성은 품질을 위해 3.8만 쓰고, 혼잡 시 같은 모델에서 더 기다린다. */
+export const BULK_GENERATOR_MODELS = ["gemini-3.8-flash"];
+
 /**
  * 종료·신규키 차단된 1.5/2.0/2.5 계열을 제외한 안정 모델 우선순위 목록입니다.
  */
