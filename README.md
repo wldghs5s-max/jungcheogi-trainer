@@ -2,7 +2,7 @@
 
 정보처리기사 실기 대비용 모바일 앱입니다. 오프라인에서도 퀴즈·이론·오답노트를 쓸 수 있고, 설정에 Gemini API Key를 넣으면 AI 튜터와 암기 문제 생성을 쓸 수 있습니다.
 
-- 버전: `1.3.8` (Android `versionCode` 16)
+- 버전: `1.3.9` (Android `versionCode` 17)
 - 스택: Expo SDK 57, React Native, TypeScript, Zustand
 
 ## 기능
@@ -32,7 +32,7 @@ npm run test:gemini
 
 ## Android APK
 
-`main` 푸시 시 GitHub Actions가 릴리스 APK를 만듭니다. 최신 파일은 [Releases](https://github.com/wldghs5s-max/jungcheogi-trainer/releases)의 `v1.3.8`에서 받으면 됩니다. 예전에 EAS로 설치한 앱과 서명이 다를 수 있어, 덮어씌우기 전에 기존 앱을 지운 뒤 설치하세요.
+`main` 푸시 시 GitHub Actions가 릴리스 APK를 만듭니다. 최신 파일은 [Releases](https://github.com/wldghs5s-max/jungcheogi-trainer/releases)의 `v1.3.9`에서 받으면 됩니다. 예전에 EAS로 설치한 앱과 서명이 다를 수 있어, 덮어씌우기 전에 기존 앱을 지운 뒤 설치하세요.
 
 ## 라이선스
 

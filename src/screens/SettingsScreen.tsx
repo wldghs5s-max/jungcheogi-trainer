@@ -331,7 +331,7 @@ export const SettingsScreen: React.FC = () => {
               <ShieldCheck size={18} color={theme.subText} />
               <Text style={[styles.infoLabel, { color: theme.subText }]}>앱 버전</Text>
             </View>
-            <Text style={[styles.infoValue, { color: theme.text }]}>1.3.8 (챕터 우선 암기 생성)</Text>
+            <Text style={[styles.infoValue, { color: theme.text }]}>1.3.9 (챕터 우선 암기 생성)</Text>
           </View>
         </Card>
 
