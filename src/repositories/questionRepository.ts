@@ -2,6 +2,7 @@ import { ALL_QUESTIONS } from '../data/questions';
 import { Question, Subject } from '../types/question';
 import { LocalStorage, STORAGE_KEYS } from '../storage/localStorage';
 import { shuffleArray } from '../utils/quiz';
+import { findNearDuplicateMemo } from '../utils/memoDedupe';
 
 export function generalQuestionStem(question: Question): string {
   return `${question.subject}:${question.question.replace(/\s+/g, '').toUpperCase()}`;
@@ -35,20 +36,24 @@ export function pickDuplicateCachedIds(
   cached: Question[],
 ): string[] {
   const kept = new Set<string>();
+  const keptQuestions: Question[] = [];
   for (const question of bundled) {
     const key = questionDedupeKey(question);
     if (key) kept.add(key);
+    keptQuestions.push(question);
   }
 
   const removeIds: string[] = [];
   for (const question of cached) {
     const key = questionDedupeKey(question);
-    if (!key) continue;
-    if (kept.has(key)) {
+    const exactDup = !!key && kept.has(key);
+    const nearDup = !!findNearDuplicateMemo(question, keptQuestions);
+    if (exactDup || nearDup) {
       removeIds.push(question.id);
-    } else {
-      kept.add(key);
+      continue;
     }
+    if (key) kept.add(key);
+    keptQuestions.push(question);
   }
   return removeIds;
 }
@@ -155,6 +160,9 @@ export class QuestionRepository {
       } else {
         const stem = `${q.subject}:${q.question.replace(/\s+/g, '').toUpperCase()}`;
         if (existingGeneralStems.has(stem) || batchSeenGeneralStems.has(stem)) {
+          continue;
+        }
+        if (findNearDuplicateMemo(q, [...allExisting, ...toAdd])) {
           continue;
         }
 
@@ -281,43 +289,42 @@ export class QuestionRepository {
   }
 
   /**
-   * 5분 퀵 퀴즈용 문제 추출 (오답 + 취약 단원 + 일반 문제 조합)
+   * 5분 퀵 퀴즈용 문제 추출 (기한 지난 복습 + 취약 단원 + 안 푼 문제)
    */
   static getQuickQuizQuestions(
     count = 5,
-    wrongQuestionIds: string[] = [],
-    weakCategories: string[] = []
+    dueQuestionIds: string[] = [],
+    weakCategories: string[] = [],
+    unsolvedQuestionIds: string[] = [],
   ): Question[] {
     const all = this.getAll();
     const selectedMap = new Map<string, Question>();
+    const dueTarget = Math.round(count * 0.5);
+    const weakTarget = Math.round(count * 0.3);
 
-    // 1. 최근 오답에서 우선 선별 (최대 40%)
-    const wrongQuestions = all.filter((q) => wrongQuestionIds.includes(q.id));
-    const shuffledWrong = this.shuffle(wrongQuestions);
-    const wrongPickCount = Math.min(Math.floor(count * 0.4), shuffledWrong.length);
-    for (let i = 0; i < wrongPickCount; i++) {
-      selectedMap.set(shuffledWrong[i].id, shuffledWrong[i]);
-    }
-
-    // 2. 취약 단원에서 선별 (최대 30%)
-    if (weakCategories.length > 0) {
-      const weakQuestions = all.filter(
-        (q) => weakCategories.includes(q.category) && !selectedMap.has(q.id)
-      );
-      const shuffledWeak = this.shuffle(weakQuestions);
-      const weakPickCount = Math.min(Math.floor(count * 0.3), shuffledWeak.length);
-      for (let i = 0; i < weakPickCount; i++) {
-        selectedMap.set(shuffledWeak[i].id, shuffledWeak[i]);
+    const take = (pool: Question[], limit: number) => {
+      const shuffled = this.shuffle(pool.filter((q) => !selectedMap.has(q.id)));
+      const pickCount = Math.min(limit, shuffled.length);
+      for (let i = 0; i < pickCount; i++) {
+        selectedMap.set(shuffled[i].id, shuffled[i]);
       }
-    }
+    };
 
-    // 3. 나머지 개수만큼 전체 문제에서 랜덤 선별
-    const remainingCount = count - selectedMap.size;
-    const remainingQuestions = all.filter((q) => !selectedMap.has(q.id));
-    const shuffledRemaining = this.shuffle(remainingQuestions);
-    for (let i = 0; i < remainingCount && i < shuffledRemaining.length; i++) {
-      selectedMap.set(shuffledRemaining[i].id, shuffledRemaining[i]);
-    }
+    take(
+      all.filter((q) => dueQuestionIds.includes(q.id)),
+      dueTarget,
+    );
+    take(
+      all.filter(
+        (q) => weakCategories.includes(q.category) && !selectedMap.has(q.id),
+      ),
+      weakTarget,
+    );
+    take(
+      all.filter((q) => unsolvedQuestionIds.includes(q.id)),
+      count - selectedMap.size,
+    );
+    take(all, count - selectedMap.size);
 
     return Array.from(selectedMap.values());
   }
@@ -345,6 +352,7 @@ export class QuestionRepository {
     subject: Subject,
     keywords: string[],
     limit = 10,
+    prioritizeIds: string[] = [],
   ): Question[] {
     const allSubjectQuestions = this.getBySubject(subject);
     if (keywords.length === 0) {
@@ -357,19 +365,21 @@ export class QuestionRepository {
       return lowerKeywords.some((kw) => targetText.includes(kw));
     });
 
-    const shuffledMatched = this.shuffle(matched);
-    if (shuffledMatched.length >= limit) {
-      return shuffledMatched.slice(0, limit);
+    const prioritySet = new Set(prioritizeIds);
+    const prioritized = this.shuffle(matched.filter((q) => prioritySet.has(q.id)));
+    const restMatched = this.shuffle(matched.filter((q) => !prioritySet.has(q.id)));
+    const orderedMatched = [...prioritized, ...restMatched];
+    if (orderedMatched.length >= limit) {
+      return orderedMatched.slice(0, limit);
     }
 
-    // 매칭 결과가 limit보다 적으면(0개 포함), 매칭된 문제를 우선 두고 같은 과목 비매칭 문제로 중복 없이 보충
-    const matchedIds = new Set(shuffledMatched.map((q) => q.id));
+    const matchedIds = new Set(orderedMatched.map((q) => q.id));
     const nonMatched = allSubjectQuestions.filter((q) => !matchedIds.has(q.id));
     const shuffledNonMatched = this.shuffle(nonMatched);
-    const needed = limit - shuffledMatched.length;
+    const needed = limit - orderedMatched.length;
     const supplemented = shuffledNonMatched.slice(0, needed);
 
-    return [...shuffledMatched, ...supplemented];
+    return [...orderedMatched, ...supplemented];
   }
 }
 

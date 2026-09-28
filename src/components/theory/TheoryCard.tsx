@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { ChevronDown, ChevronUp, Lightbulb, CheckCircle2, Target, Play } from "lucide-react-native";
 import { TheoryArticle } from "../../types/theory";
 import { Question } from "../../types/question";
+import { AttemptRepository } from "../../repositories/attemptRepository";
 import { QuestionRepository } from "../../repositories/questionRepository";
 import { useSettingsStore } from "../../store/settingsStore";
 import { COLORS } from "../../utils/theme";
@@ -26,12 +27,19 @@ export const TheoryCard: React.FC<TheoryCardProps> = ({ article, onStartQuiz }) 
     setExpanded((prev) => !prev);
   };
 
-  const handleLaunchQuiz = () => {
+  const handleLaunchQuiz = async () => {
     triggerHaptic.impact();
+    const attempts = await AttemptRepository.getAllAttempts();
+    const weakIds = [
+      ...new Set(
+        attempts.filter((item) => !item.isCorrect).map((item) => item.questionId),
+      ),
+    ];
     const relatedQuestions = QuestionRepository.getTheoryRelatedQuestions(
       article.subject,
       article.relatedKeywords,
-      10
+      10,
+      weakIds,
     );
     onStartQuiz(relatedQuestions, `${article.title} 개념 확인`);
   };

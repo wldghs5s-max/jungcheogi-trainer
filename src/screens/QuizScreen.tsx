@@ -18,6 +18,7 @@ import {
   HelpCircle,
   ArrowRight,
   Sparkles,
+  Lightbulb,
 } from "lucide-react-native";
 import { useQuizStore } from "../store/quizStore";
 import { useSettingsStore } from "../store/settingsStore";
@@ -29,6 +30,10 @@ import { AITutorModal } from "../components/quiz/AITutorModal";
 import { ProgressBar } from "../components/common/ProgressBar";
 import { triggerHaptic } from "../utils/haptics";
 import { formatAnswerDisplay } from "../utils/quiz";
+import {
+  getQuestionHint,
+  getQuestionOriginLabel,
+} from "../utils/questionOrigin";
 import { COLORS } from "../utils/theme";
 
 interface QuizScreenProps {
@@ -48,8 +53,10 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
     isSubmitted,
     isCorrect,
     missType,
+    hintUsed,
     sessionTitle,
     selectAnswer,
+    revealHint,
     submitAnswer,
     submitUnknown,
     nextQuestion,
@@ -245,6 +252,15 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                       : "객관식"
               }
               variant="default"
+            />
+            <View style={{ width: 6 }} />
+            <Badge
+              label={getQuestionOriginLabel(currentQuestion)}
+              variant={
+                getQuestionOriginLabel(currentQuestion) === "AI 생성"
+                  ? "accent"
+                  : "default"
+              }
             />
           </View>
 
@@ -494,7 +510,26 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
           ]}
         >
           {!isSubmitted ? (
-            <View style={styles.actionRow}>
+            <View>
+              {hintUsed ? (
+                <Text style={[styles.hintText, { color: theme.subText }]}>
+                  {getQuestionHint(currentQuestion)}
+                </Text>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => {
+                    triggerHaptic.selection();
+                    revealHint();
+                  }}
+                  style={styles.hintButton}
+                >
+                  <Lightbulb size={16} color={theme.mutedText} />
+                  <Text style={[styles.hintButtonLabel, { color: theme.mutedText }]}>
+                    힌트 보기 (키워드만)
+                  </Text>
+                </TouchableOpacity>
+              )}
+              <View style={styles.actionRow}>
               <Button
                 title={
                   unknownUnlockIn > 0
@@ -513,6 +548,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                 onPress={handleSubmit}
                 style={styles.submitButton}
               />
+            </View>
             </View>
           ) : (
             <Button
@@ -581,6 +617,7 @@ const styles = StyleSheet.create({
   tagRow: {
     flexDirection: "row",
     alignItems: "center",
+    flexWrap: "wrap",
     marginBottom: 12,
   },
   questionText: {
@@ -654,6 +691,22 @@ const styles = StyleSheet.create({
   actionRow: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  hintButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  hintButtonLabel: {
+    fontSize: 13,
+    fontWeight: "600",
+    marginLeft: 6,
+  },
+  hintText: {
+    fontSize: 13,
+    fontWeight: "600",
+    marginBottom: 10,
+    lineHeight: 18,
   },
   unknownButton: {
     flex: 1,

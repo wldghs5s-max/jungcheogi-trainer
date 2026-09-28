@@ -305,11 +305,11 @@ async function runTests() {
     subject: '신기술/보안',
     category: '보안',
     type: 'SHORT_ANSWER',
-    question: '역할 기반 접근통제의 약어를 쓰시오.',
-    answer: 'RBAC',
+    question: '테스트용 고유개념 ZXQV의 명칭을 쓰시오.',
+    answer: 'ZXQV-MEMO-UNIQUE',
     explanation: '원본',
     difficulty: 'EASY',
-    keywords: ['RBAC'],
+    keywords: ['ZXQV'],
   };
   const memoB: Question = {
     ...memoA,
@@ -321,11 +321,11 @@ async function runTests() {
     subject: '신기술/보안',
     category: '보안',
     type: 'SHORT_ANSWER',
-    question: '공개키 기반 구조의 약어를 쓰시오.',
-    answer: 'PKI',
+    question: '테스트용 고유개념 WWQQ의 명칭을 쓰시오.',
+    answer: 'WWQQ-MEMO-UNIQUE',
     explanation: '유일',
     difficulty: 'EASY',
-    keywords: ['PKI'],
+    keywords: ['WWQQ'],
   };
 
   const dupIds = pickDuplicateCachedIds([], [memoA, memoB, uniqueMemo]);
@@ -352,6 +352,19 @@ async function runTests() {
       !!QuestionRepository.getById('MEMO_UNIQUE'),
     '로드 정리 후에도 원본과 유일 문항은 유지',
   );
+
+  const memoParaphrase: Question = {
+    ...memoA,
+    id: 'MEMO_PARA',
+    question: 'ZXQV라고 부르는 테스트용 고유개념의 명칭을 쓰시오.',
+    answer: 'ZXQV-MEMO-UNIQUE',
+  };
+  const paraIds = pickDuplicateCachedIds([], [memoA, memoParaphrase]);
+  assert(paraIds.length === 1 && paraIds[0] === 'MEMO_PARA', '같은 정답의 바꿔 말하기는 캐시 중복으로 고름');
+
+  await QuestionRepository.replaceCachedServerQuestions([memoA]);
+  const addedPara = await QuestionRepository.appendCachedQuestions([memoParaphrase]);
+  assert(addedPara === 0, '저장 시 같은 정답 바꿔 말하기는 추가하지 않음');
 
   console.log('\n====================================================');
   if (failedCount === 0) {

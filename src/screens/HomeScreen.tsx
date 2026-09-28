@@ -188,12 +188,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   // 5분 퀵 퀴즈 시작 (5문제 조합)
   const handleStartQuickQuiz = async () => {
-    const wrongIds = await AttemptRepository.getWrongQuestionIds("recent");
+    const attempts = await AttemptRepository.getAllAttempts();
+    const dueIds = getDueReviewQuestionIds(attempts, 20);
+    const attemptedIds = await AttemptRepository.getAttemptedQuestionIds();
+    const unsolvedIds = QuestionRepository.getUnsolvedQuestions(attemptedIds).map(
+      (question) => question.id,
+    );
     const weakCats = stats?.weakCategories.map((c) => c.category) || [];
     const quickQuestions = QuestionRepository.getQuickQuizQuestions(
       5,
-      wrongIds,
+      dueIds,
       weakCats,
+      unsolvedIds,
     );
     onStartQuiz(quickQuestions, "지하철 5분 퀵 퀴즈");
   };
@@ -673,7 +679,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 Gemini 암기 문제 생성
               </Text>
               <Text style={[styles.syncSub, { color: theme.subText }]}>
-                주제 시드 7문제×2묶음 · 보유{" "}
+                빈 챕터 우선 7×2 · 같은 정답·비슷한 지문 제외 · 보유{" "}
                 <Text style={{ color: theme.primary, fontWeight: "700" }}>
                   {totalQuestionsCount}문제
                 </Text>

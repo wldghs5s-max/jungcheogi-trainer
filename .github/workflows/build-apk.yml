@@ -119,12 +119,10 @@ jobs:
 
             Assets에서 `jungcheogi-trainer-v${{ env.VERSION }}.apk`를 받으면 됩니다.
 
-            ### 이번 버전 (v1.3.8)
-            - AI 암기 문제 생성 시 3단계 강건한 JSON 복구 및 정밀 스키마 검증 (손상 배치 자동 폐기 및 재시도)
-            - 생성 작업 영속화(MemoGenerationJob) 및 Ground-Truth 기반 중복 생성(Idempotency) 원천 방지
-            - 묶음별 즉시 커밋(Incremental Commit): 1차 7문제 완료 즉시 영구 저장되어 강제 종료 시에도 1차분 100% 보존
-            - 앱 라이프사이클(AppState) 연동: 백그라운드 전환/화면 복귀 시 미완료 작업 자동 이어받기
-            - 홈 화면 새로고침(Pull-to-Refresh) 충돌 방어 및 실시간 상태 피드백 강화
+            ### 이번 버전
+            - 암기 생성은 빈 챕터를 먼저 고르고, 같은 정답·비슷한 지문은 넣지 않음
+            - 묶음별 즉시 저장, 화면을 나갔다 와도 미완료 묶음만 이어서 생성
+            - 채점·복습 큐·힌트 등 연습에 쓰는 기준을 맞춤
 
             기존 앱과 서명이 다를 수 있으니, 설치 전 폰에서 예전 앱을 삭제한 뒤 설치하세요.
           files: jungcheogi-trainer-v${{ env.VERSION }}.apk

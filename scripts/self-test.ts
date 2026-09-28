@@ -3,6 +3,7 @@ import { MEMORIZATION_BANK } from "../src/data/questions/memorizationBank";
 import { generateProgrammingPracticeBundle } from "../src/api/programmingGenerator";
 import { checkAnswer, shuffleArray } from "../src/utils/quiz";
 import { getDueReviewQuestionIds } from "../src/utils/reviewQueue";
+import { getQuestionOriginLabel } from "../src/utils/questionOrigin";
 import { measureKeyboardOverlap } from "../src/utils/keyboardOverlap";
 import { Question } from "../src/types/question";
 import {
@@ -88,8 +89,28 @@ assert(checkAnswer("group by", "GROUP BY"), "채점: 공백/대소문자");
 assert(checkAnswer("싱글톤패턴", ["싱글톤", "싱글톤 패턴", "Singleton"]), "채점: 동의어");
 assert(checkAnswer("그룹바이", "GROUP BY"), "채점: 한글/영문 동의어");
 assert(checkAnswer("싱글톤패틴", "싱글톤패턴"), "채점: 1글자 오탈자");
+assert(checkAnswer("1NF", "제1정규형"), "채점: 1NF 동의어");
+assert(checkAnswer("②", "2"), "채점: 원문자");
+assert(checkAnswer("원자성을", "원자성"), "채점: 조사 제거");
+assert(!checkAnswer("SDN", "SAN"), "채점: 약어는 한글자 차이 불허");
+assert(!checkAnswer("제2정규형", "제3정규형"), "채점: 숫자 다른 정규형 불허");
 assert(!checkAnswer("틀린답", "정답"), "채점: 오답 거부");
 assert(!checkAnswer("3", "2"), "채점: 짧은 답은 유사 허용 안 함");
+assert(
+  getQuestionOriginLabel({
+    id: "GEMINI_MEMO_1",
+    subject: "신기술/보안",
+    category: "보안",
+    type: "SHORT_ANSWER",
+    question: "x",
+    answer: "y",
+    explanation: "z",
+    difficulty: "EASY",
+    keywords: [],
+    source: "Gemini 암기 생성",
+  }) === "AI 생성",
+  "출처: Gemini 문항은 AI 생성",
+);
 
 const today = new Date().toISOString();
 const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -117,6 +138,18 @@ assert(
     { ...confusedAttempt, isCorrect: true, missType: undefined, answeredAt: yesterday },
   ]).includes("q1"),
   "복습: 정답은 하루 뒤 제외",
+);
+assert(
+  !getDueReviewQuestionIds([
+    {
+      ...confusedAttempt,
+      isCorrect: true,
+      missType: undefined,
+      hintUsed: true,
+      answeredAt: today,
+    },
+  ]).includes("q1"),
+  "복습: 힌트 보고 맞힌 문항은 당일 승급하지 않고 다음날",
 );
 
 assert(
@@ -172,6 +205,11 @@ for (const q of generated) {
 import { THEORY_DATA } from "../src/data/theory/theoryData";
 import { MNEMONIC_DATA } from "../src/data/theory/mnemonicData";
 import { QuestionRepository } from "../src/repositories/questionRepository";
+import { MEMO_TOPIC_SEEDS } from "../src/data/memoTopicSeeds";
+import {
+  filterNewMemoQuestions,
+  isNearDuplicateMemo,
+} from "../src/utils/memoDedupe";
 
 // 1. 이론 데이터 검증
 assert(THEORY_DATA.length >= 10, `이론 데이터 10개 이상 (실제 ${THEORY_DATA.length})`);
@@ -251,6 +289,52 @@ const fewMatched = QuestionRepository.getTheoryRelatedQuestions(
 assert(fewMatched.length === 5, `소수 매칭 시 5개까지 정확히 보충 (실제: ${fewMatched.length}개)`);
 assert(fewMatched.every((q) => q.subject === "데이터베이스구축"), "소수 매칭 보충 문제 과목 일치");
 assert(new Set(fewMatched.map((q) => q.id)).size === 5, "소수 매칭 보충 결과 중복 ID 없음");
+
+assert(MEMO_TOPIC_SEEDS.length >= 100, `암기 챕터 시드 100개 이상 (실제 ${MEMO_TOPIC_SEEDS.length})`);
+assert(
+  new Set(MEMO_TOPIC_SEEDS.map((item) => item.id)).size === MEMO_TOPIC_SEEDS.length,
+  "암기 챕터 시드 id 중복 없음",
+);
+assert(
+  new Set(MEMO_TOPIC_SEEDS.map((item) => item.chapter)).size >= 20,
+  "암기 챕터가 과목보다 세분화됨",
+);
+
+const memoOrig: Question = {
+  id: "MEMO_ORIG",
+  subject: "신기술/보안",
+  category: "접근통제",
+  chapterId: "sc-rbac",
+  chapter: "접근통제",
+  type: "SHORT_ANSWER",
+  question: "역할 기반 접근통제의 약어를 쓰시오.",
+  answer: ["RBAC", "역할기반접근통제"],
+  explanation: "원본",
+  difficulty: "EASY",
+  keywords: ["RBAC"],
+};
+const memoSameAnswer: Question = {
+  ...memoOrig,
+  id: "MEMO_SAME_ANS",
+  question: "역할을 기반으로 접근을 통제하는 모델의 영문 약어를 쓰시오.",
+  answer: "역할기반접근통제",
+};
+const memoOther: Question = {
+  ...memoOrig,
+  id: "MEMO_PKI",
+  chapterId: "sc-pki",
+  chapter: "PKI",
+  question: "공개키 기반 구조의 약어를 쓰시오.",
+  answer: "PKI",
+  keywords: ["PKI"],
+};
+assert(isNearDuplicateMemo(memoSameAnswer, memoOrig), "같은 정답 바꿔 말하기는 근사 중복");
+assert(!isNearDuplicateMemo(memoOther, memoOrig), "다른 정답은 중복이 아님");
+assert(
+  filterNewMemoQuestions([memoSameAnswer, memoOther], [memoOrig]).map((item) => item.id).join() ===
+    "MEMO_PKI",
+  "생성 묶음에서 근사 중복만 걸러 냄",
+);
 
 
 if (failed > 0) {

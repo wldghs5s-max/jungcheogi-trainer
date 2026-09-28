@@ -1,6 +1,7 @@
 import { GeminiService, GENERATOR_MODELS } from "./geminiService";
 import { MemoTopicSeed, pickTopicSeeds } from "../data/memoTopicSeeds";
 import { Question, Subject } from "../types/question";
+import { filterNewMemoQuestions } from "../utils/memoDedupe";
 
 export const MEMO_SUBJECTS: Subject[] = [
   "소프트웨어설계",
@@ -202,6 +203,7 @@ export function sanitizeQuestion(
     difficulty,
     keywords,
     source: "Gemini 암기 생성",
+    generationSource: "gemini",
   };
 }
 
@@ -210,6 +212,7 @@ export function collectQuestionsFromText(
   existingStems: Set<string>,
   idPrefix: string,
   limit = MEMO_BATCH_SIZE,
+  seeds: MemoTopicSeed[] = [],
 ): Question[] {
   const parsed = parseJsonPayload(text);
 
@@ -237,10 +240,22 @@ export function collectQuestionsFromText(
     if (questions.length >= limit) return;
     if (!row || typeof row !== "object") return;
     const raw = row as Record<string, unknown>;
-    const subject = raw.subject as Subject;
+    const chapterId = String(raw.chapterId || "").trim();
+    const seed =
+      seeds.find((item) => item.id === chapterId) || seeds[index];
+    const subject = (seed?.subject || raw.subject) as Subject;
     if (!MEMO_SUBJECTS.includes(subject)) return;
     const item = sanitizeQuestion(raw, subject, `${idPrefix}_${index}`);
     if (!item) return;
+    if (seed) {
+      item.chapterId = seed.id;
+      item.chapter = seed.chapter;
+      item.category = seed.chapter;
+      item.subCategory = seed.topic;
+      item.keywords = [
+        ...new Set([...item.keywords, seed.topic, seed.chapter]),
+      ];
+    }
     const stem = normalizeStem(item.question);
     if (existingStems.has(stem)) return;
     existingStems.add(stem);
@@ -259,6 +274,7 @@ const MEMO_RESPONSE_SCHEMA = {
         type: "OBJECT",
         properties: {
           subject: { type: "STRING" },
+          chapterId: { type: "STRING" },
           category: { type: "STRING" },
           subCategory: { type: "STRING" },
           type: { type: "STRING" },
@@ -268,38 +284,75 @@ const MEMO_RESPONSE_SCHEMA = {
           difficulty: { type: "STRING" },
           keywords: { type: "ARRAY", items: { type: "STRING" } },
         },
-        required: ["subject", "question", "answer", "explanation"],
+        required: ["subject", "chapterId", "question", "answer", "explanation"],
       },
     },
   },
   required: ["questions"],
 };
 
+function formatAvoidAnswer(answer: Question["answer"]): string {
+  return (Array.isArray(answer) ? answer : [answer]).join(" / ");
+}
+
+function relatedAvoidItems(
+  seed: MemoTopicSeed,
+  existingQuestions: Question[],
+): Question[] {
+  const sameSubject = existingQuestions.filter(
+    (item) => item.subject === seed.subject,
+  );
+  const chapterHits = sameSubject.filter(
+    (item) =>
+      item.chapterId === seed.id ||
+      item.chapter === seed.chapter ||
+      item.category === seed.chapter ||
+      item.subCategory === seed.topic,
+  );
+  if (chapterHits.length > 0) return chapterHits.slice(0, 12);
+
+  const topic = seed.topic.replace(/\s+/g, "");
+  return sameSubject
+    .filter((item) => {
+      const hay = `${item.question}${item.keywords.join("")}${item.category}${item.subCategory || ""}`;
+      return hay.includes(seed.topic) || hay.replace(/\s+/g, "").includes(topic);
+    })
+    .slice(0, 10);
+}
+
 export function buildPrompt(
   existingQuestions: Question[],
   seeds: MemoTopicSeed[],
 ): string {
   const seedLines = seeds
-    .map((seed, index) => `${index + 1}. [${seed.subject}] ${seed.topic}`)
+    .map(
+      (seed, index) =>
+        `${index + 1}. chapterId=${seed.id} [${seed.subject}] ${seed.chapter} · ${seed.topic}`,
+    )
     .join("\n");
 
-  // 과목당 핵심 4문항(50자 이내)으로 압축하여 입력 토큰 절약 및 생성 속도 개선
-  const avoidList = MEMO_SUBJECTS.map((subject) => {
-    const stems = existingQuestions
-      .filter((item) => item.subject === subject)
-      .slice(0, 4)
-      .map((item) => `- ${item.question.slice(0, 50)}`);
-    return `[${subject}]\n${stems.join("\n") || "(없음)"}`;
-  }).join("\n\n");
+  const avoidList = seeds
+    .map((seed) => {
+      const items = relatedAvoidItems(seed, existingQuestions);
+      const lines =
+        items
+          .map(
+            (item) =>
+              `- 지문: ${item.question.slice(0, 70)}\n  정답: ${formatAvoidAnswer(item.answer)}`,
+          )
+          .join("\n") || "(없음)";
+      return `[${seed.chapter} / ${seed.topic}]\n${lines}`;
+    })
+    .join("\n\n");
 
   return `당신은 정보처리기사 실기 출제위원입니다.
-지정된 ${seeds.length}개 주제에 대해 단답형 기출 변형 문제를 각 1개씩, 총 ${seeds.length}개 만드세요.
+지정된 ${seeds.length}개 챕터·주제에 대해 단답형 암기 문제를 각 1개씩, 총 ${seeds.length}개 만드세요.
 프로그래밍(C/Java/Python 코드 추적) 문제는 절대 만들지 마세요.
 
-지정 주제:
+지정 챕터:
 ${seedLines}
 
-이미 있는 문제와 주제가 겹치지 않게 하세요.
+이 챕터에 이미 있는 문제입니다. 지문을 바꿔 말하기만 하거나 같은 정답(동의어 포함)을 다시 묻지 마세요.
 ${avoidList}
 
 반드시 JSON만 출력하세요. 마크다운 설명 금지.
@@ -308,8 +361,9 @@ ${avoidList}
   "questions": [
     {
       "subject": "소프트웨어설계",
-      "category": "단원명",
-      "subCategory": "세부단원",
+      "chapterId": "위에 적힌 chapterId를 그대로 복사",
+      "category": "챕터명",
+      "subCategory": "세부주제",
       "type": "SHORT_ANSWER",
       "question": "한글로 된 실기 단답 문제. ~쓰시오. 로 끝낼 것",
       "answer": ["대표정답", "동의어1", "영문약어"],
@@ -322,7 +376,8 @@ ${avoidList}
 
 규칙:
 - questions 길이는 ${seeds.length}
-- 각 문제는 지정 주제 순서를 지키고 subject는 해당 과목과 일치
+- 각 문제는 지정 챕터 순서를 지키고 subject·chapterId는 해당 항목과 일치
+- 이미 있는 정답(한글/영문/약어 동의어 포함)을 다른 문장으로 다시 묻지 말 것
 - answer는 채점용 동의어를 2개 이상 (영문 풀네임, 한글 음차, 공식 약어)
 - 객관식(MULTIPLE_CHOICE)을 쓸 경우 options 4개를 넣고 answer는 보기 문구와 일치`;
 }
@@ -376,11 +431,14 @@ export async function generateOneBatch(
   }
 
   try {
-    const questions = collectQuestionsFromText(
+    const collected = collectQuestionsFromText(
       result.text,
       existingStems,
       batchId,
+      MEMO_BATCH_SIZE,
+      seeds,
     );
+    const questions = filterNewMemoQuestions(collected, existingQuestions);
 
     // 엄격한 품질 임계값 검증: 유효 문항이 최소 기준(4개) 미만이면 깨진 데이터를 저장하지 않고 재시도 유도
     if (questions.length < MEMO_MIN_ACCEPTABLE_BATCH_QUESTIONS) {
@@ -442,5 +500,14 @@ export async function generateMemorizationQuestions(
     };
   }
 
-  return { ok: true, questions };
+  const unique = filterNewMemoQuestions(questions, existingQuestions);
+  if (unique.length === 0) {
+    return {
+      ok: false,
+      message:
+        "이미 있는 챕터·정답과 겹쳐 새 문제를 남기지 못했습니다. 다시 시도하면 빈 챕터를 더 고릅니다.",
+    };
+  }
+
+  return { ok: true, questions: unique };
 }

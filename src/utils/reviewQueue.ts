@@ -1,8 +1,6 @@
 import { isUnknownAttempt, QuizAttempt } from "../types/attempt";
 
-const UNKNOWN_INTERVAL_DAYS = 0;
-const CONFUSED_INTERVAL_DAYS = 1;
-const CORRECT_INTERVAL_DAYS = 3;
+const LEITNER_INTERVALS = [0, 1, 3, 7, 14, 30];
 
 function startOfDay(date: Date): number {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
@@ -12,6 +10,14 @@ function addDays(iso: string, days: number): number {
   const date = new Date(iso);
   date.setDate(date.getDate() + days);
   return startOfDay(date);
+}
+
+export interface QuestionReviewState {
+  questionId: string;
+  boxLevel: number;
+  intervalDays: number;
+  nextReviewAt: number;
+  due: boolean;
 }
 
 export function getLatestAttempts(attempts: QuizAttempt[]): QuizAttempt[] {
@@ -24,27 +30,70 @@ export function getLatestAttempts(attempts: QuizAttempt[]): QuizAttempt[] {
   return Array.from(latest.values());
 }
 
+export function computeQuestionReviewState(
+  questionId: string,
+  attempts: QuizAttempt[],
+  now = new Date(),
+): QuestionReviewState | null {
+  const history = attempts
+    .filter((item) => item.questionId === questionId)
+    .sort((a, b) => a.answeredAt.localeCompare(b.answeredAt));
+  if (history.length === 0) return null;
+
+  let boxLevel = 1;
+  let intervalDays = 1;
+  let lastAt = history[0].answeredAt;
+
+  for (const attempt of history) {
+    lastAt = attempt.answeredAt;
+    const unknown = isUnknownAttempt(attempt);
+    if (!attempt.isCorrect || unknown || attempt.solutionRevealed) {
+      boxLevel = 1;
+      intervalDays = unknown ? 0 : 1;
+      continue;
+    }
+    if (attempt.hintUsed) {
+      intervalDays = Math.max(1, Math.round(intervalDays * 1.2));
+      continue;
+    }
+    boxLevel = Math.min(5, boxLevel + 1);
+    intervalDays = LEITNER_INTERVALS[boxLevel] ?? 3;
+  }
+
+  const nextReviewAt = addDays(lastAt, intervalDays);
+  return {
+    questionId,
+    boxLevel,
+    intervalDays,
+    nextReviewAt,
+    due: startOfDay(now) >= nextReviewAt,
+  };
+}
+
 export function isDueForReview(attempt: QuizAttempt, now = new Date()): boolean {
-  const interval = attempt.isCorrect
-    ? CORRECT_INTERVAL_DAYS
-    : isUnknownAttempt(attempt)
-      ? UNKNOWN_INTERVAL_DAYS
-      : CONFUSED_INTERVAL_DAYS;
-  return startOfDay(now) >= addDays(attempt.answeredAt, interval);
+  const state = computeQuestionReviewState(
+    attempt.questionId,
+    [attempt],
+    now,
+  );
+  return !!state?.due;
 }
 
 export function getDueReviewQuestionIds(
   attempts: QuizAttempt[],
   limit = 10,
+  now = new Date(),
 ): string[] {
-  const due = getLatestAttempts(attempts)
-    .filter((attempt) => isDueForReview(attempt))
-    .sort((a, b) => {
-      const rank = (item: QuizAttempt) =>
-        item.isCorrect ? 2 : isUnknownAttempt(item) ? 0 : 1;
-      return rank(a) - rank(b);
+  const ids = [...new Set(attempts.map((item) => item.questionId))];
+  return ids
+    .map((id) => computeQuestionReviewState(id, attempts, now))
+    .filter((state): state is QuestionReviewState => !!state && state.due)
+    .sort((left, right) => {
+      if (left.intervalDays !== right.intervalDays) {
+        return left.intervalDays - right.intervalDays;
+      }
+      return left.boxLevel - right.boxLevel;
     })
-    .map((attempt) => attempt.questionId);
-
-  return due.slice(0, limit);
+    .map((state) => state.questionId)
+    .slice(0, limit);
 }

@@ -33,6 +33,8 @@ export interface Question {
   difficulty: Difficulty;
   keywords: string[];
   source?: string;
+  chapterId?: string;
+  chapter?: string;
   // 프로그래밍 문제 엔진 고도화 메타데이터
   programmingTopic?: string;
   programmingType?: string;

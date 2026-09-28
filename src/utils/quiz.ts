@@ -1,15 +1,68 @@
 ﻿/**
  * 사용자 답안 문자열을 비교하기 좋은 형태로 정규화합니다.
+ * 원문자(①)와 전각 숫자는 ASCII로 바꾸고, 약어 오채점을 막기 위해
+ * 공백·기호를 제거한 뒤 대문자로 맞춥니다.
  */
+const CIRCLED_CHAR_MAP: Record<string, string> = {
+  "①": "1",
+  "②": "2",
+  "③": "3",
+  "④": "4",
+  "⑤": "5",
+  "⑥": "6",
+  "⑦": "7",
+  "⑧": "8",
+  "⑨": "9",
+  "⑩": "10",
+  "⑴": "1",
+  "⑵": "2",
+  "⑶": "3",
+  "⑷": "4",
+  "⑸": "5",
+  "１": "1",
+  "２": "2",
+  "３": "3",
+  "４": "4",
+  "５": "5",
+  "６": "6",
+  "７": "7",
+  "８": "8",
+  "９": "9",
+  "０": "0",
+  "㉠": "ㄱ",
+  "㉡": "ㄴ",
+  "㉢": "ㄷ",
+  "㉣": "ㄹ",
+  "㉤": "ㅁ",
+};
+
 export function normalizeAnswer(ans: string): string {
-  return ans
-    .trim()
-    .replace(/[()[\]{}.,·\-_/'":;]/g, "")
-    .replace(/\s+/g, "")
-    .toUpperCase();
+  if (!ans) return "";
+  let text = ans.trim();
+  text = text.replace(
+    /[①-⑩⑴-⑸１-９０㉠-㉤]/g,
+    (ch) => CIRCLED_CHAR_MAP[ch] || "",
+  );
+  text = text.replace(/[→⇒▶▷＞≫]/g, "");
+  text = text
+    .replace(/[()[\]{}.,·\-_/'":;?`~!@#$%^&*+=<>]/g, "")
+    .replace(/\s+/g, "");
+  text = text.replace(/(은|는|이|가|을|를)$/g, "");
+  return text.toUpperCase();
+}
+
+export function isShortAcronym(word: string): boolean {
+  if (!word) return false;
+  return /^[A-Z0-9]{1,3}$/.test(word);
 }
 
 const SYNONYM_GROUPS: string[][] = [
+  ["1정규형", "제1정규형", "1NF", "제일정규형"],
+  ["2정규형", "제2정규형", "2NF", "제이정규형"],
+  ["3정규형", "제3정규형", "3NF", "제삼정규형"],
+  ["보이스코드정규형", "BCNF", "BC정규형", "보이스코드"],
+  ["4정규형", "제4정규형", "4NF", "제사정규형"],
+  ["5정규형", "제5정규형", "5NF", "제오정규형"],
   ["GROUPBY", "그룹바이", "그룹별"],
   ["SELECT", "셀렉트", "셀렉"],
   ["INSERT", "인서트"],
@@ -20,11 +73,13 @@ const SYNONYM_GROUPS: string[][] = [
   ["PRIMARYKEY", "PK", "기본키", "프라이머리키"],
   ["FOREIGNKEY", "FK", "외래키"],
   ["CANDIDATEKEY", "후보키"],
+  ["BUILDER", "빌더", "빌더패턴"],
   ["SINGLETON", "싱글톤", "싱글톤패턴"],
   ["OBSERVER", "옵서버", "옵저버", "옵서버패턴"],
   ["STRATEGY", "전략", "전략패턴"],
   ["ADAPTER", "어댑터", "어댑터패턴"],
   ["FACTORYMETHOD", "팩토리메서드", "팩토리메소드"],
+  ["ABSTRACTFACTORY", "추상팩토리", "추상팩토리패턴"],
   ["SEQUENCE", "시퀀스", "시퀀스다이어그램", "순차다이어그램"],
   ["USECASE", "유스케이스", "유스케이스다이어그램"],
   ["DEADLOCK", "교착상태", "데드락"],
@@ -38,13 +93,25 @@ const SYNONYM_GROUPS: string[][] = [
   ["VIEW", "뷰"],
   ["TRANSACTION", "트랜잭션"],
   ["NORMALIZATION", "정규화"],
+  [
+    "SDN",
+    "SOFTWAREDEFINEDNETWORKING",
+    "소프트웨어정의네트워크",
+    "소프트웨어정의네트워킹",
+  ],
   ["XSS", "크로스사이트스크립팅"],
   ["CSRF", "XSRF"],
   ["SQLINJECTION", "SQL인젝션", "SQLI"],
+  ["RBAC", "역할기반접근통제", "역할기반접근제어"],
+  ["DAC", "임의접근통제", "임의적접근통제"],
+  ["MAC", "강제접근통제", "강제적접근통제"],
+  ["AES", "고급암호화표준"],
+  ["RSA", "라이베스트샤미어애들먼"],
 ];
 
 function expandForms(ans: string): string[] {
   const normalized = normalizeAnswer(ans);
+  if (!normalized) return [];
   for (const group of SYNONYM_GROUPS) {
     const canonGroup = group.map(normalizeAnswer);
     if (canonGroup.includes(normalized)) {
@@ -55,7 +122,19 @@ function expandForms(ans: string): string[] {
 }
 
 function canonicalForm(ans: string): string {
-  return expandForms(ans)[0];
+  const forms = expandForms(ans);
+  return forms.length > 0 ? forms[0] : normalizeAnswer(ans);
+}
+
+export function canonicalAnswerForm(ans: string): string {
+  return canonicalForm(ans);
+}
+
+export function memoAnswerKey(answer: string | string[]): string {
+  const parts = (Array.isArray(answer) ? answer : [answer])
+    .map((item) => canonicalForm(String(item || "")))
+    .filter((item) => item.length >= 2);
+  return [...new Set(parts)].sort().join("|");
 }
 
 export function levenshtein(a: string, b: string): number {
@@ -79,11 +158,15 @@ export function levenshtein(a: string, b: string): number {
   return dp[a.length][b.length];
 }
 
-function isFuzzyMatch(left: string, right: string): boolean {
+export function isFuzzyMatch(left: string, right: string): boolean {
   if (!left || !right) return false;
   if (left === right) return true;
+  if (isShortAcronym(left) || isShortAcronym(right)) return false;
+  const digitsLeft = left.replace(/\D/g, "");
+  const digitsRight = right.replace(/\D/g, "");
+  if (digitsLeft !== digitsRight) return false;
   const minLen = Math.min(left.length, right.length);
-  if (minLen < 3) return false;
+  if (minLen < 4) return false;
   if (Math.abs(left.length - right.length) > 1) return false;
   return levenshtein(left, right) <= 1;
 }
@@ -97,7 +180,8 @@ function isCloseMatch(user: string, correct: string): boolean {
 }
 
 /**
- * 답안 일치 여부를 판정합니다. 동의어·1글자 오탈자를 허용합니다.
+ * 답안 일치 여부를 판정합니다. 동의어는 허용하고,
+ * 약어·숫자가 다른 답은 1글자 오탈자로 통과시키지 않습니다.
  */
 export function checkAnswer(
   userAnswer: string | string[],
@@ -118,9 +202,6 @@ export function checkAnswer(
   return isCloseMatch(userAnswer, correctAnswer);
 }
 
-/**
- * 정답 문자열 표시용 변환
- */
 export function formatAnswerDisplay(answer: string | string[]): string {
   if (Array.isArray(answer)) {
     return answer.join(" 또는 ");

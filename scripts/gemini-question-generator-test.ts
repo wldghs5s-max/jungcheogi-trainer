@@ -19,6 +19,7 @@ import { MemoJobService } from "../src/services/memoJobService";
 import { QuestionRepository } from "../src/repositories/questionRepository";
 import { MemoGenerationJob } from "../src/types/generationJob";
 import { Question } from "../src/types/question";
+import { filterNewMemoQuestions } from "../src/utils/memoDedupe";
 
 let failed = 0;
 
@@ -44,8 +45,8 @@ function memoPayload(suffix: string, count = MEMO_BATCH_SIZE) {
   return {
     questions: Array.from({ length: count }, (_, index) => ({
       subject: subjects[index % subjects.length],
-      question: `주제 ${suffix} ${index}를 쓰시오.`,
-      answer: ["정답", "동의어"],
+      question: `주제 ${suffix}-${index} ${suffix}묶음 항목${index}를 쓰시오.`,
+      answer: [`정답${suffix}${index}`, `동의어${suffix}${index}`],
       explanation: "해설입니다.",
     })),
   };
@@ -69,10 +70,30 @@ async function run() {
     3,
     [{ subject: "소프트웨어설계", keywords: ["응집도"], question: "결합도를 쓰시오." }],
     [
-      { subject: "소프트웨어설계", topic: "응집도와 결합도" },
-      { subject: "데이터베이스구축", topic: "정규화 3NF/BCNF/이행종속" },
-      { subject: "정보시스템구축관리", topic: "WBS와 작업 패키지" },
-      { subject: "신기술/보안", topic: "접근통제 DAC/MAC/RBAC" },
+      {
+        id: "sd-mod-cohesion",
+        subject: "소프트웨어설계",
+        chapter: "모듈화",
+        topic: "응집도와 결합도",
+      },
+      {
+        id: "db-3nf",
+        subject: "데이터베이스구축",
+        chapter: "정규화",
+        topic: "정규화 3NF/BCNF/이행종속",
+      },
+      {
+        id: "im-wbs",
+        subject: "정보시스템구축관리",
+        chapter: "일정",
+        topic: "WBS와 작업 패키지",
+      },
+      {
+        id: "sc-rbac",
+        subject: "신기술/보안",
+        chapter: "접근통제",
+        topic: "접근통제 DAC/MAC/RBAC",
+      },
     ],
     () => 0.1,
   );
@@ -82,26 +103,71 @@ async function run() {
   );
 
   const prompt = buildPrompt([], seeds);
-  assert(prompt.includes("지정 주제"), "프롬프트에 시드 섹션 포함");
+  assert(prompt.includes("지정 챕터"), "프롬프트에 시드 섹션 포함");
   assert(
-    seeds.every((seed) => prompt.includes(seed.topic)),
+    seeds.every((seed) => prompt.includes(seed.topic) && prompt.includes(seed.id)),
     "선택한 시드가 프롬프트에 주입됨",
   );
   assert(prompt.includes(`총 ${seeds.length}개`), "묶음 크기가 프롬프트에 명시");
+  assert(
+    prompt.includes("같은 정답") && prompt.includes("바꿔 말하기"),
+    "프롬프트가 같은 정답·바꿔 말하기를 금지",
+  );
+
+  const existingForAvoid: Question = {
+    id: "OLD_RBAC",
+    subject: "신기술/보안",
+    category: "접근통제",
+    chapterId: "sc-rbac",
+    chapter: "접근통제",
+    subCategory: "RBAC",
+    type: "SHORT_ANSWER",
+    question: "역할 기반 접근통제의 약어를 쓰시오.",
+    answer: ["RBAC", "역할기반접근통제"],
+    explanation: "기존",
+    difficulty: "EASY",
+    keywords: ["RBAC"],
+  };
+  const rbacSeed = MEMO_TOPIC_SEEDS.find((item) => item.id === "sc-rbac");
+  assert(!!rbacSeed, "RBAC 챕터 시드 존재");
+  if (rbacSeed) {
+    const avoidPrompt = buildPrompt([existingForAvoid], [rbacSeed]);
+    assert(
+      avoidPrompt.includes("역할 기반 접근통제") && avoidPrompt.includes("RBAC"),
+      "해당 챕터 기존 지문·정답이 회피 목록에 들어감",
+    );
+  }
 
   const parsed = collectQuestionsFromText(
     JSON.stringify(memoPayload("A")),
     new Set(),
     "t",
+    MEMO_BATCH_SIZE,
+    seeds,
   );
   assert(parsed.length === MEMO_BATCH_SIZE, "한 묶음에서 과목 중복 허용해 7문제 수집");
   assert(
+    parsed.every((item, index) => item.chapterId === seeds[index].id),
+    "수집 문항에 챕터 id를 붙임",
+  );
+  assert(
     collectQuestionsFromText(
       JSON.stringify(memoPayload("A")),
-      new Set([normalizeStem("주제 A 0를 쓰시오.")]),
+      new Set([normalizeStem("주제 A-0 A묶음 항목0를 쓰시오.")]),
       "t",
     ).length === MEMO_BATCH_SIZE - 1,
     "기존 지문은 묶음에서 제외",
+  );
+
+  const paraphrase: Question = {
+    ...existingForAvoid,
+    id: "NEW_RBAC",
+    question: "역할을 기반으로 접근을 통제하는 모델의 영문 약어를 쓰시오.",
+    answer: "역할기반접근통제",
+  };
+  assert(
+    filterNewMemoQuestions([paraphrase], [existingForAvoid]).length === 0,
+    "같은 정답의 바꿔 말하기는 생성 결과에서 제외",
   );
 
   const original = GeminiService.generateText.bind(GeminiService);

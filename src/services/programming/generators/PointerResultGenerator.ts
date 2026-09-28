@@ -18,7 +18,7 @@ export class PointerResultGenerator extends BaseGenerator {
 
     // 모드: OFFSET (배열 오프셋 참조), STRUCT_PTR (구조체 포인터), PTR_INC (포인터 증감)
     const mode = difficulty === 'HARD'
-      ? 'STRUCT_PTR'
+      ? this.pickOne(['STRUCT_PTR', 'PAREN_INC'], rng)
       : this.pickOne(['OFFSET', 'PTR_INC'], rng);
 
     let code = '';
@@ -99,7 +99,7 @@ int main() {
 }`;
         explanation = `p는 a의 주소를 가리키므로 p->data는 ${valA}이고, p->next는 b를 가리키므로 p->next->data는 ${valB}입니다. 합은 ${finalAnswer}입니다.`;
       }
-    } else {
+    } else if (mode === 'PTR_INC') {
       // PTR_INC: *p++
       const arr = [this.pickInt(2, 6, rng), this.pickInt(7, 12, rng), this.pickInt(13, 20, rng)];
 
@@ -130,6 +130,39 @@ int main() {
     return 0;
 }`;
         explanation = `*p++는 먼저 현재 p가 가리키는 값(a[0]=${arr[0]})을 반환한 뒤 포인터 주소를 1 증가시킵니다. 이후 *p는 a[1]=${arr[1]}을 가리키므로 출력은 "${finalAnswer}"입니다.`;
+      }
+    } else {
+      // PAREN_INC: (*p)++ 는 값을 증가시키고 포인터는 그대로
+      const arr = [this.pickInt(2, 6, rng), this.pickInt(7, 12, rng), this.pickInt(13, 20, rng)];
+      const first = arr[0];
+      const second = arr[0] + 1;
+      if (qType === 'BLANK_COMPLETION') {
+        finalAnswer = '(*p)++';
+        code = `#include <stdio.h>
+
+int main() {
+    int a[3] = {${arr.join(', ')}};
+    int *p = a;
+    // 포인터가 가리키는 값을 후위 증가시키고, 주소는 그대로 둔다
+    int first = [ 빈칸 ];
+    int second = *p;
+    printf("%d,%d", first, second);
+    return 0;
+}`;
+        explanation = `(*p)++는 현재 값 ${first}를 반환한 뒤 그 자리의 값을 1 증가시킵니다. 포인터 주소는 그대로라서 다음 *p는 ${second}입니다.`;
+      } else {
+        finalAnswer = `${first},${second}`;
+        code = `#include <stdio.h>
+
+int main() {
+    int a[3] = {${arr.join(', ')}};
+    int *p = a;
+    int first = (*p)++;
+    int second = *p;
+    printf("%d,%d", first, second);
+    return 0;
+}`;
+        explanation = `(*p)++는 a[0]의 값 ${first}를 쓴 뒤 a[0]을 ${second}로 바꿉니다. p는 이동하지 않으므로 출력은 "${finalAnswer}"입니다. *p++와 구분하세요.`;
       }
     }
 

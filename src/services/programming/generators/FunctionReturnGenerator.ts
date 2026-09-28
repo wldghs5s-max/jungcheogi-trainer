@@ -21,7 +21,14 @@ export class FunctionReturnGenerator extends BaseGenerator {
         : 'CODE_OUTPUT';
 
     // CALL_BY_REF (배열 참조 수정) vs CHAIN (함수 합성/연쇄 호출)
-    const mode = difficulty === 'HARD' ? 'CALL_BY_REF' : 'CHAIN';
+    let mode: 'CALL_BY_REF' | 'CHAIN' | 'STATIC' | 'BITWISE' =
+      difficulty === 'HARD' ? 'CALL_BY_REF' : this.pickOne(['CHAIN', 'STATIC', 'BITWISE'], rng);
+    if ((mode === 'STATIC' || mode === 'BITWISE') && lang === 'PYTHON') {
+      mode = 'CHAIN';
+    }
+    if (mode === 'BITWISE' && lang !== 'C') {
+      mode = 'CHAIN';
+    }
 
     let code = '';
     let finalAnswer = '';
@@ -72,6 +79,52 @@ print(data[0])`;
       }
 
       explanation = `배열은 주소(참조)가 전달되므로 modify 함수 내에서 원본 배열의 첫 번째 원소가 (${initVal} + ${addVal}) * ${multVal} = ${expected}로 갱신됩니다. 정답은 ${finalAnswer}입니다.`;
+    } else if (mode === 'STATIC') {
+      const step = this.pickInt(2, 4, rng);
+      const expected = step + step * 2;
+      finalAnswer = String(expected);
+
+      if (lang === 'C') {
+        code = `#include <stdio.h>
+
+int tick(void) {
+    static int n = 0;
+    n += ${step};
+    return n;
+}
+
+int main() {
+    printf("%d", tick() + tick());
+    return 0;
+}`;
+      } else {
+        code = `public class Main {
+    static int n = 0;
+    static int tick() {
+        n += ${step};
+        return n;
+    }
+
+    public static void main(String[] args) {
+        System.out.print(tick() + tick());
+    }
+}`;
+      }
+
+      explanation = `static 변수는 함수가 다시 호출되어도 0으로 돌아가지 않습니다. 첫 tick은 ${step}, 둘째는 ${step * 2}이므로 합은 ${expected}입니다.`;
+    } else if (mode === 'BITWISE') {
+      const left = this.pickInt(8, 31, rng);
+      const right = this.pickInt(4, 15, rng);
+      const expected = (left & right) ^ (left >> 2);
+      finalAnswer = String(expected);
+      code = `#include <stdio.h>
+
+int main() {
+    int a = ${left}, b = ${right};
+    printf("%d", (a & b) ^ (a >> 2));
+    return 0;
+}`;
+      explanation = `${left} & ${right} 는 ${left & right}이고, ${left} >> 2 는 ${left >> 2}입니다. XOR 결과는 ${expected}입니다.`;
     } else {
       // CHAIN: funcB(funcA(x))
       const input = this.pickInt(2, 5, rng);
@@ -141,7 +194,7 @@ print(res)`;
         questionType: qType,
 
         controlStructure: 'SEQUENTIAL',
-        primaryOperation: 'ACCUMULATE_SUM',
+        primaryOperation: mode === 'BITWISE' ? 'BITWISE' : 'ACCUMULATE_SUM',
         dataStructure: mode === 'CALL_BY_REF' ? 'ARRAY_1D' : 'SCALAR',
         flowControl: 'EARLY_RETURN',
         difficulty,

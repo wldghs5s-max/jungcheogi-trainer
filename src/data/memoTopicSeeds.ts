@@ -1,145 +1,224 @@
 import { Subject } from "../types/question";
 
 export interface MemoTopicSeed {
+  id: string;
   subject: Subject;
+  chapter: string;
   topic: string;
 }
 
+function seed(
+  id: string,
+  subject: Subject,
+  chapter: string,
+  topic: string,
+): MemoTopicSeed {
+  return { id, subject, chapter, topic };
+}
+
 export const MEMO_TOPIC_SEEDS: MemoTopicSeed[] = [
-  // 소프트웨어설계
-  { subject: "소프트웨어설계", topic: "GoF 생성 패턴 (팩토리 메서드/추상 팩토리/싱글톤)" },
-  { subject: "소프트웨어설계", topic: "GoF 구조 패턴 (어댑터/데코레이터/퍼사드)" },
-  { subject: "소프트웨어설계", topic: "GoF 행위 패턴 (전략/옵저버/템플릿 메서드)" },
-  { subject: "소프트웨어설계", topic: "UML 유스케이스·액터·시스템 경계" },
-  { subject: "소프트웨어설계", topic: "UML 시퀀스/커뮤니케이션 다이어그램" },
-  { subject: "소프트웨어설계", topic: "UML 클래스 다이어그램 (연관/일반화/실현)" },
-  { subject: "소프트웨어설계", topic: "UML 상태/활동 다이어그램" },
-  { subject: "소프트웨어설계", topic: "아키텍처 패턴 (MVC/파이프필터/레이어드)" },
-  { subject: "소프트웨어설계", topic: "응집도와 결합도" },
-  { subject: "소프트웨어설계", topic: "정보은닉·캡슐화·모듈화" },
-  { subject: "소프트웨어설계", topic: "요구공학 (도출/분석/명세/검증)" },
-  { subject: "소프트웨어설계", topic: "블랙박스 테스트 (동치분할/경계값)" },
-  { subject: "소프트웨어설계", topic: "화이트박스 테스트 (구문/결정/조건 커버리지)" },
-  { subject: "소프트웨어설계", topic: "형상관리와 베이스라인" },
-  { subject: "소프트웨어설계", topic: "스크럼 역할과 산출물" },
-  { subject: "소프트웨어설계", topic: "XP 실천항목 (페어프로그래밍/TDD/리팩토링)" },
-  { subject: "소프트웨어설계", topic: "객체지향 원칙 (SOLID)" },
-  { subject: "소프트웨어설계", topic: "내외부 설계와 인터페이스 설계" },
+  seed("sd-gof-factory-method", "소프트웨어설계", "GoF 생성", "팩토리 메서드"),
+  seed("sd-gof-abstract-factory", "소프트웨어설계", "GoF 생성", "추상 팩토리"),
+  seed("sd-gof-singleton", "소프트웨어설계", "GoF 생성", "싱글톤"),
+  seed("sd-gof-builder", "소프트웨어설계", "GoF 생성", "빌더"),
+  seed("sd-gof-prototype", "소프트웨어설계", "GoF 생성", "프로토타입"),
+  seed("sd-gof-adapter", "소프트웨어설계", "GoF 구조", "어댑터"),
+  seed("sd-gof-decorator", "소프트웨어설계", "GoF 구조", "데코레이터"),
+  seed("sd-gof-facade", "소프트웨어설계", "GoF 구조", "퍼사드"),
+  seed("sd-gof-proxy", "소프트웨어설계", "GoF 구조", "프록시"),
+  seed("sd-gof-composite", "소프트웨어설계", "GoF 구조", "컴포지트"),
+  seed("sd-gof-strategy", "소프트웨어설계", "GoF 행위", "전략"),
+  seed("sd-gof-observer", "소프트웨어설계", "GoF 행위", "옵저버"),
+  seed("sd-gof-template", "소프트웨어설계", "GoF 행위", "템플릿 메서드"),
+  seed("sd-gof-command", "소프트웨어설계", "GoF 행위", "커맨드"),
+  seed("sd-uml-usecase", "소프트웨어설계", "UML", "유스케이스 액터 시스템 경계"),
+  seed("sd-uml-sequence", "소프트웨어설계", "UML", "시퀀스 다이어그램"),
+  seed("sd-uml-class", "소프트웨어설계", "UML", "클래스 다이어그램 관계"),
+  seed("sd-uml-state", "소프트웨어설계", "UML", "상태 다이어그램"),
+  seed("sd-uml-activity", "소프트웨어설계", "UML", "활동 다이어그램"),
+  seed("sd-arch-mvc", "소프트웨어설계", "아키텍처", "MVC"),
+  seed("sd-arch-layered", "소프트웨어설계", "아키텍처", "레이어드 아키텍처"),
+  seed("sd-arch-pipe", "소프트웨어설계", "아키텍처", "파이프 필터"),
+  seed("sd-mod-cohesion", "소프트웨어설계", "모듈화", "응집도"),
+  seed("sd-mod-coupling", "소프트웨어설계", "모듈화", "결합도"),
+  seed("sd-mod-infohide", "소프트웨어설계", "모듈화", "정보은닉 캡슐화"),
+  seed("sd-req-elicit", "소프트웨어설계", "요구공학", "요구사항 도출"),
+  seed("sd-req-spec", "소프트웨어설계", "요구공학", "요구사항 명세"),
+  seed("sd-test-equiv", "소프트웨어설계", "블랙박스", "동치분할"),
+  seed("sd-test-boundary", "소프트웨어설계", "블랙박스", "경계값 분석"),
+  seed("sd-test-stmt", "소프트웨어설계", "화이트박스", "구문 커버리지"),
+  seed("sd-test-branch", "소프트웨어설계", "화이트박스", "분기 커버리지"),
+  seed("sd-test-mcdc", "소프트웨어설계", "화이트박스", "MC/DC"),
+  seed("sd-scm-baseline", "소프트웨어설계", "형상관리", "베이스라인"),
+  seed("sd-agile-scrum", "소프트웨어설계", "애자일", "스크럼 역할 산출물"),
+  seed("sd-agile-xp", "소프트웨어설계", "애자일", "XP 페어프로그래밍 TDD"),
+  seed("sd-solid-srp", "소프트웨어설계", "SOLID", "단일 책임 원칙"),
+  seed("sd-solid-ocp", "소프트웨어설계", "SOLID", "개방 폐쇄 원칙"),
+  seed("sd-solid-lsp", "소프트웨어설계", "SOLID", "리스코프 치환 원칙"),
 
-  // 데이터베이스구축
-  { subject: "데이터베이스구축", topic: "정규화 1NF/2NF/부분함수종속" },
-  { subject: "데이터베이스구축", topic: "정규화 3NF/BCNF/이행종속" },
-  { subject: "데이터베이스구축", topic: "반정규화 목적과 기법" },
-  { subject: "데이터베이스구축", topic: "후보키·기본키·대체키" },
-  { subject: "데이터베이스구축", topic: "외래키와 참조무결성" },
-  { subject: "데이터베이스구축", topic: "삽입/삭제/갱신 이상" },
-  { subject: "데이터베이스구축", topic: "트랜잭션 ACID" },
-  { subject: "데이터베이스구축", topic: "격리수준 (Dirty/Non-repeatable/Phantom Read)" },
-  { subject: "데이터베이스구축", topic: "교착상태(Deadlock)와 락" },
-  { subject: "데이터베이스구축", topic: "인덱스와 B-Tree" },
-  { subject: "데이터베이스구축", topic: "SQL JOIN 종류" },
-  { subject: "데이터베이스구축", topic: "GROUP BY와 HAVING" },
-  { subject: "데이터베이스구축", topic: "서브쿼리와 집합연산(UNION)" },
-  { subject: "데이터베이스구축", topic: "뷰(View)와 가상 테이블" },
-  { subject: "데이터베이스구축", topic: "ERD 카디널리티와 관계" },
-  { subject: "데이터베이스구축", topic: "ANSI/SPARC 3층 스키마" },
-  { subject: "데이터베이스구축", topic: "DCL (GRANT/REVOKE)" },
-  { subject: "데이터베이스구축", topic: "트리거와 저장 프로시저" },
+  seed("db-1nf", "데이터베이스구축", "정규화", "1NF 원자값"),
+  seed("db-2nf", "데이터베이스구축", "정규화", "2NF 부분함수종속"),
+  seed("db-3nf", "데이터베이스구축", "정규화", "3NF 이행종속"),
+  seed("db-bcnf", "데이터베이스구축", "정규화", "BCNF"),
+  seed("db-denorm", "데이터베이스구축", "정규화", "반정규화"),
+  seed("db-key-candidate", "데이터베이스구축", "키", "후보키"),
+  seed("db-key-primary", "데이터베이스구축", "키", "기본키"),
+  seed("db-key-foreign", "데이터베이스구축", "키", "외래키 참조무결성"),
+  seed("db-anomaly-insert", "데이터베이스구축", "이상", "삽입 이상"),
+  seed("db-anomaly-delete", "데이터베이스구축", "이상", "삭제 이상"),
+  seed("db-anomaly-update", "데이터베이스구축", "이상", "갱신 이상"),
+  seed("db-acid-a", "데이터베이스구축", "트랜잭션", "원자성"),
+  seed("db-acid-c", "데이터베이스구축", "트랜잭션", "일관성"),
+  seed("db-acid-i", "데이터베이스구축", "트랜잭션", "격리성"),
+  seed("db-acid-d", "데이터베이스구축", "트랜잭션", "지속성"),
+  seed("db-iso-dirty", "데이터베이스구축", "격리수준", "Dirty Read"),
+  seed("db-iso-phantom", "데이터베이스구축", "격리수준", "Phantom Read"),
+  seed("db-lock-deadlock", "데이터베이스구축", "동시성", "교착상태"),
+  seed("db-index-btree", "데이터베이스구축", "인덱스", "B-Tree"),
+  seed("db-sql-inner", "데이터베이스구축", "SQL JOIN", "INNER JOIN"),
+  seed("db-sql-outer", "데이터베이스구축", "SQL JOIN", "OUTER JOIN"),
+  seed("db-sql-having", "데이터베이스구축", "SQL", "GROUP BY HAVING"),
+  seed("db-sql-union", "데이터베이스구축", "SQL", "UNION"),
+  seed("db-sql-subquery", "데이터베이스구축", "SQL", "서브쿼리"),
+  seed("db-view", "데이터베이스구축", "뷰", "View 가상테이블"),
+  seed("db-erd", "데이터베이스구축", "모델링", "ERD 카디널리티"),
+  seed("db-ansi", "데이터베이스구축", "아키텍처", "ANSI SPARC 3층 스키마"),
+  seed("db-dcl", "데이터베이스구축", "권한", "GRANT REVOKE"),
+  seed("db-trigger", "데이터베이스구축", "절차", "트리거"),
 
-  // 정보시스템구축관리
-  { subject: "정보시스템구축관리", topic: "WBS와 작업 패키지" },
-  { subject: "정보시스템구축관리", topic: "CPM 임계경로와 여유시간" },
-  { subject: "정보시스템구축관리", topic: "PERT 3점 산정" },
-  { subject: "정보시스템구축관리", topic: "폭포수 모델과 단계 산출물" },
-  { subject: "정보시스템구축관리", topic: "나선형 모델과 위험 분석" },
-  { subject: "정보시스템구축관리", topic: "프로토타입 모델" },
-  { subject: "정보시스템구축관리", topic: "EVMS (PV/EV/AC, CPI/SPI)" },
-  { subject: "정보시스템구축관리", topic: "ISO 21500 / PMBOK 지식영역" },
-  { subject: "정보시스템구축관리", topic: "위험 관리 (식별/분석/대응)" },
-  { subject: "정보시스템구축관리", topic: "형상/변경 통제 위원회(CCB)" },
-  { subject: "정보시스템구축관리", topic: "ITIL 서비스 운영 프로세스" },
-  { subject: "정보시스템구축관리", topic: "CMMI 성숙도 단계" },
-  { subject: "정보시스템구축관리", topic: "소프트웨어 생명주기 국제표준 (ISO/IEC 12207)" },
-  { subject: "정보시스템구축관리", topic: "테스트 단계 (단위/통합/시스템/인수)" },
-  { subject: "정보시스템구축관리", topic: "LOC·FP 규모 산정" },
-  { subject: "정보시스템구축관리", topic: "간트 차트와 마일스톤" },
+  seed("im-wbs", "정보시스템구축관리", "일정", "WBS 작업패키지"),
+  seed("im-cpm", "정보시스템구축관리", "일정", "CPM 임계경로"),
+  seed("im-pert", "정보시스템구축관리", "일정", "PERT 3점 산정"),
+  seed("im-gantt", "정보시스템구축관리", "일정", "간트 차트 마일스톤"),
+  seed("im-waterfall", "정보시스템구축관리", "생명주기", "폭포수 모델"),
+  seed("im-spiral", "정보시스템구축관리", "생명주기", "나선형 모델"),
+  seed("im-proto", "정보시스템구축관리", "생명주기", "프로토타입 모델"),
+  seed("im-evms", "정보시스템구축관리", "성과", "EVMS PV EV AC"),
+  seed("im-cpi", "정보시스템구축관리", "성과", "CPI SPI"),
+  seed("im-iso21500", "정보시스템구축관리", "표준", "ISO 21500 PMBOK"),
+  seed("im-risk", "정보시스템구축관리", "위험", "위험 식별 분석 대응"),
+  seed("im-ccb", "정보시스템구축관리", "변경", "CCB 형상통제"),
+  seed("im-itil", "정보시스템구축관리", "운영", "ITIL 서비스 운영"),
+  seed("im-cmmi", "정보시스템구축관리", "성숙도", "CMMI 단계"),
+  seed("im-12207", "정보시스템구축관리", "표준", "ISO IEC 12207"),
+  seed("im-test-unit", "정보시스템구축관리", "테스트", "단위 테스트"),
+  seed("im-test-integ", "정보시스템구축관리", "테스트", "통합 테스트 스텁 드라이버"),
+  seed("im-loc", "정보시스템구축관리", "규모", "LOC"),
+  seed("im-fp", "정보시스템구축관리", "규모", "기능점수 FP"),
 
-  // 신기술/보안
-  { subject: "신기술/보안", topic: "대칭키/비대칭키 암호화 (AES/RSA)" },
-  { subject: "신기술/보안", topic: "해시와 전자서명" },
-  { subject: "신기술/보안", topic: "PKI·CA·인증서 폐기(CRL/OCSP)" },
-  { subject: "신기술/보안", topic: "접근통제 DAC/MAC/RBAC" },
-  { subject: "신기술/보안", topic: "CIA 삼요소 (기밀성/무결성/가용성)" },
-  { subject: "신기술/보안", topic: "SQL Injection / XSS / CSRF" },
-  { subject: "신기술/보안", topic: "IDS와 IPS 차이" },
-  { subject: "신기술/보안", topic: "NAT와 NAPT" },
-  { subject: "신기술/보안", topic: "DNS와 DHCP" },
-  { subject: "신기술/보안", topic: "OSI 7계층과 PDU" },
-  { subject: "신기술/보안", topic: "TCP 3-way handshake" },
-  { subject: "신기술/보안", topic: "IaaS/PaaS/SaaS" },
-  { subject: "신기술/보안", topic: "컨테이너와 Kubernetes" },
-  { subject: "신기술/보안", topic: "블록체인과 합의 알고리즘" },
-  { subject: "신기술/보안", topic: "엣지/포그 컴퓨팅" },
-  { subject: "신기술/보안", topic: "라우팅 프로토콜 (OSPF/BGP)" },
-  { subject: "신기술/보안", topic: "침해사고 공격 기법 (DDoS/랜섬웨어/피싱)" },
-  { subject: "신기술/보안", topic: "디지털 포렌식 절차" },
+  seed("sc-aes", "신기술/보안", "암호", "AES 대칭키"),
+  seed("sc-rsa", "신기술/보안", "암호", "RSA 공개키"),
+  seed("sc-hash", "신기술/보안", "암호", "해시 함수"),
+  seed("sc-sign", "신기술/보안", "암호", "전자서명"),
+  seed("sc-pki", "신기술/보안", "PKI", "CA 인증서"),
+  seed("sc-crl", "신기술/보안", "PKI", "CRL OCSP"),
+  seed("sc-dac", "신기술/보안", "접근통제", "DAC"),
+  seed("sc-mac", "신기술/보안", "접근통제", "MAC"),
+  seed("sc-rbac", "신기술/보안", "접근통제", "RBAC"),
+  seed("sc-cia-c", "신기술/보안", "CIA", "기밀성"),
+  seed("sc-cia-i", "신기술/보안", "CIA", "무결성"),
+  seed("sc-cia-a", "신기술/보안", "CIA", "가용성"),
+  seed("sc-sqli", "신기술/보안", "웹공격", "SQL Injection"),
+  seed("sc-xss", "신기술/보안", "웹공격", "XSS"),
+  seed("sc-csrf", "신기술/보안", "웹공격", "CSRF"),
+  seed("sc-ids", "신기술/보안", "탐지", "IDS"),
+  seed("sc-ips", "신기술/보안", "탐지", "IPS"),
+  seed("sc-nat", "신기술/보안", "네트워크", "NAT NAPT"),
+  seed("sc-dns", "신기술/보안", "네트워크", "DNS"),
+  seed("sc-dhcp", "신기술/보안", "네트워크", "DHCP"),
+  seed("sc-osi", "신기술/보안", "네트워크", "OSI 7계층"),
+  seed("sc-tcp", "신기술/보안", "네트워크", "TCP 3-way handshake"),
+  seed("sc-iaas", "신기술/보안", "클라우드", "IaaS"),
+  seed("sc-paas", "신기술/보안", "클라우드", "PaaS"),
+  seed("sc-saas", "신기술/보안", "클라우드", "SaaS"),
+  seed("sc-k8s", "신기술/보안", "클라우드", "컨테이너 Kubernetes"),
+  seed("sc-ddos", "신기술/보안", "침해", "DDoS"),
+  seed("sc-ransom", "신기술/보안", "침해", "랜섬웨어"),
 ];
+
+export const CHAPTER_FILL_CAP = 2;
 
 function normalizeNeedle(value: string): string {
   return value.replace(/\s+/g, "").toUpperCase();
 }
 
-function seedAlreadyCovered(
-  seed: MemoTopicSeed,
-  existingQuestions: { subject?: string; category?: string; keywords?: string[]; question?: string }[],
-): boolean {
-  const topicNeedle = normalizeNeedle(seed.topic);
-  return existingQuestions.some((item) => {
-    if (item.subject && item.subject !== seed.subject) return false;
+export function countSeedCoverage(
+  seedItem: MemoTopicSeed,
+  existingQuestions: {
+    subject?: string;
+    category?: string;
+    subCategory?: string;
+    keywords?: string[];
+    question?: string;
+    chapterId?: string;
+  }[],
+): number {
+  return existingQuestions.filter((item) => {
+    if (item.subject && item.subject !== seedItem.subject) return false;
+    if (item.chapterId === seedItem.id) return true;
     const hay = normalizeNeedle(
-      `${item.category || ""} ${(item.keywords || []).join(" ")} ${item.question || ""}`,
+      `${item.category || ""} ${item.subCategory || ""} ${(item.keywords || []).join(" ")} ${item.question || ""}`,
     );
-    const tokens = seed.topic
-      .split(/[·/(),]/)
+    const topicNeedle = normalizeNeedle(seedItem.topic);
+    if (topicNeedle.length >= 2 && hay.includes(topicNeedle)) return true;
+    const tokens = seedItem.topic
+      .split(/[·/\s(),]/)
       .map((token) => normalizeNeedle(token))
       .filter((token) => token.length >= 3);
-    return tokens.some((token) => hay.includes(token)) || hay.includes(topicNeedle.slice(0, 8));
-  });
+    return tokens.some((token) => hay.includes(token));
+  }).length;
 }
 
 export function pickTopicSeeds(
   count: number,
-  existingQuestions: { subject?: string; category?: string; keywords?: string[]; question?: string }[] = [],
+  existingQuestions: {
+    subject?: string;
+    category?: string;
+    subCategory?: string;
+    keywords?: string[];
+    question?: string;
+    chapterId?: string;
+  }[] = [],
   pool: MemoTopicSeed[] = MEMO_TOPIC_SEEDS,
   random: () => number = Math.random,
 ): MemoTopicSeed[] {
-  const shuffled = [...pool].sort(() => random() - 0.5);
-  const unused = shuffled.filter(
-    (seed) => !seedAlreadyCovered(seed, existingQuestions),
-  );
-  const covered = shuffled.filter((seed) =>
-    seedAlreadyCovered(seed, existingQuestions),
-  );
+  const ranked = [...pool]
+    .map((item) => ({
+      seed: item,
+      n: countSeedCoverage(item, existingQuestions),
+    }))
+    .sort((left, right) => left.n - right.n || random() - 0.5);
 
   const picked: MemoTopicSeed[] = [];
-  const usedTopics = new Set<string>();
+  const usedIds = new Set<string>();
   const subjectsSeen = new Set<Subject>();
+  const chaptersSeen = new Set<string>();
 
-  const take = (source: MemoTopicSeed[], uniqueSubject: boolean) => {
-    for (const seed of source) {
+  const chapterKey = (seed: MemoTopicSeed) => `${seed.subject}::${seed.chapter}`;
+
+  const take = (maxN: number, unique: "subject" | "chapter" | "any") => {
+    for (const row of ranked) {
       if (picked.length >= count) return;
-      if (usedTopics.has(seed.topic)) continue;
-      if (uniqueSubject && subjectsSeen.has(seed.subject)) continue;
-      picked.push(seed);
-      usedTopics.add(seed.topic);
-      subjectsSeen.add(seed.subject);
+      if (row.n > maxN) continue;
+      if (usedIds.has(row.seed.id)) continue;
+      if (unique === "subject" && subjectsSeen.has(row.seed.subject)) continue;
+      if (unique === "chapter" && chaptersSeen.has(chapterKey(row.seed))) {
+        continue;
+      }
+      picked.push(row.seed);
+      usedIds.add(row.seed.id);
+      subjectsSeen.add(row.seed.subject);
+      chaptersSeen.add(chapterKey(row.seed));
     }
   };
 
-  take(unused, true);
-  take(unused, false);
-  take(covered, true);
-  take(covered, false);
+  take(0, "subject");
+  take(0, "chapter");
+  take(0, "any");
+  take(CHAPTER_FILL_CAP - 1, "subject");
+  take(CHAPTER_FILL_CAP - 1, "chapter");
+  take(CHAPTER_FILL_CAP - 1, "any");
+  take(Number.POSITIVE_INFINITY, "any");
 
   return picked;
 }

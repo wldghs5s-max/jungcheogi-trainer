@@ -11,12 +11,14 @@ interface QuizState {
   isSubmitted: boolean;
   isCorrect: boolean | null;
   missType: MissType | null;
+  hintUsed: boolean;
   sessionAttempts: QuizAttempt[];
   sessionTitle: string;
 
   // Actions
   startQuiz: (questions: Question[], title?: string) => void;
   selectAnswer: (ans: string) => void;
+  revealHint: () => void;
   submitAnswer: () => Promise<boolean>;
   submitUnknown: () => Promise<void>;
   nextQuestion: () => boolean; // 다음 문제가 있으면 true, 퀴즈 종료면 false
@@ -30,6 +32,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
   isSubmitted: false,
   isCorrect: null,
   missType: null,
+  hintUsed: false,
   sessionAttempts: [],
   sessionTitle: '문제 풀이',
 
@@ -41,6 +44,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
       isSubmitted: false,
       isCorrect: null,
       missType: null,
+      hintUsed: false,
       sessionAttempts: [],
       sessionTitle: title,
     });
@@ -51,8 +55,20 @@ export const useQuizStore = create<QuizState>((set, get) => ({
     set({ selectedAnswer: ans });
   },
 
+  revealHint: () => {
+    if (get().isSubmitted) return;
+    set({ hintUsed: true });
+  },
+
   submitAnswer: async () => {
-    const { questions, currentIndex, selectedAnswer, isSubmitted, sessionAttempts } = get();
+    const {
+      questions,
+      currentIndex,
+      selectedAnswer,
+      isSubmitted,
+      sessionAttempts,
+      hintUsed,
+    } = get();
     if (isSubmitted || questions.length === 0) return false;
 
     const currentQuestion = questions[currentIndex];
@@ -66,6 +82,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
       correctAnswer: currentQuestion.answer,
       isCorrect: isAnswerCorrect,
       missType: missType ?? undefined,
+      hintUsed: hintUsed || undefined,
       answeredAt: new Date().toISOString(),
       syncStatus: 'PENDING',
     };
@@ -119,6 +136,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
         isSubmitted: false,
         isCorrect: null,
         missType: null,
+        hintUsed: false,
       });
       return true;
     }
@@ -133,6 +151,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
       isSubmitted: false,
       isCorrect: null,
       missType: null,
+      hintUsed: false,
       sessionAttempts: [],
     });
   },

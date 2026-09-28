@@ -9,6 +9,10 @@ export interface QuizAttempt {
   isCorrect: boolean;
   /** 오답일 때만 기록. 구버전 데이터는 없으면 WRONG으로 본다. */
   missType?: MissType;
+  /** 제출 전에 힌트를 봤으면 숙련 승급을 하지 않는다. */
+  hintUsed?: boolean;
+  /** 답을 입력하기 전에 정답을 연 경우. */
+  solutionRevealed?: boolean;
   answeredAt: string; // ISO String
   syncStatus?: "PENDING" | "SYNCED" | "FAILED";
 }

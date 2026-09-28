@@ -138,9 +138,8 @@ class BackgroundQuestionService {
   }
 
   // ==========================================
-  // Gemini AI 암기 문제 생성 (영속 작업 + 배치별 즉시 커밋)
+  // Gemini AI 암기 문제 생성 (빈 챕터 우선, 영속 작업 + 배치별 즉시 커밋)
   // ==========================================
-
   public async startGeminiMemorizationGeneration(): Promise<{
     started: boolean;
     message: string;
@@ -302,7 +301,7 @@ class BackgroundQuestionService {
     return {
       started: true,
       message:
-        `주제 시드로 7문제씩 2묶음(총 14문제)을 순차 생성합니다.\n\n각 묶음 완료 즉시 보관함에 안전하게 저장되며, 화면 전환 시에도 이미 완료된 묶음은 안전하게 보존됩니다.`,
+        `빈 챕터를 먼저 골라 7문제씩 2묶음(총 14문제)을 순차 생성합니다.\n\n각 묶음 완료 즉시 보관함에 저장되며, 같은 정답·비슷한 지문은 넣지 않습니다.`,
     };
   }
 
