@@ -459,11 +459,13 @@ export async function generateOneBatch(
     );
     const questions = filterNewMemoQuestions(collected, existingQuestions);
 
-    // 엄격한 품질 임계값 검증: 유효 문항이 최소 기준(4개) 미만이면 깨진 데이터를 저장하지 않고 재시도 유도
-    if (questions.length < MEMO_MIN_ACCEPTABLE_BATCH_QUESTIONS) {
+    if (questions.length === 0) {
       return {
         questions: [],
-        error: `유효한 문항 수가 기준(${MEMO_MIN_ACCEPTABLE_BATCH_QUESTIONS}개)에 미달하여 배치를 재생성합니다.`,
+        error:
+          collected.length > 0
+            ? "비슷한 문제가 이미 있어 이번 묶음은 넣지 못했습니다."
+            : "이번 묶음에서 쓸 수 있는 문제를 만들지 못했습니다.",
       };
     }
 

@@ -92,6 +92,43 @@ export function shouldSkipMemoBatch(batch: MemoBatchState): boolean {
   return (batch.attemptCount || 0) >= MAX_MEMO_BATCH_ATTEMPTS;
 }
 
+export function isLeftoverMemoJob(
+  job: MemoGenerationJob | null,
+): job is MemoGenerationJob {
+  return !!job && job.status !== "COMPLETED";
+}
+
+export function prepareMemoJobForResume(job: MemoGenerationJob): MemoGenerationJob {
+  for (const batch of job.batches) {
+    if ((batch.savedQuestionIds?.length || 0) > 0) continue;
+    batch.attemptCount = 0;
+    if (batch.status === "FAILED" || batch.status === "RUNNING") {
+      batch.status = "PENDING";
+      delete batch.error;
+    }
+  }
+  if (
+    remainingFromJob(job) > 0 &&
+    !job.batches.some((batch) => !shouldSkipMemoBatch(batch))
+  ) {
+    job.refillAttempts = Math.max(0, (job.refillAttempts || 0) - 1);
+  }
+  return job;
+}
+
+export function leftoverProgressMessage(saved: number, target: number): string {
+  if (saved <= 0) {
+    return "지금은 새 문제를 만들지 못했습니다. 잠시 후 [이어서]를 눌러 주세요.";
+  }
+  return `지금은 ${saved}문제까지 넣어 두었습니다. [이어서]를 누르면 나머지를 계속 만듭니다.`;
+}
+
+export function cancelJobUserMessage(saved: number): string {
+  return saved > 0
+    ? `그만뒀습니다. 이미 만든 ${saved}문제는 그대로 둡니다.`
+    : "만들기를 그만뒀습니다.";
+}
+
 export function recordBatchSaveResult(
   batch: MemoBatchState,
   requestedIds: string[],

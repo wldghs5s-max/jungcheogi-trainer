@@ -20,7 +20,7 @@ import {
   parseJsonPayload,
 } from "../src/api/geminiQuestionGenerator";
 import { MEMO_TOPIC_SEEDS, pickTopicSeeds } from "../src/data/memoTopicSeeds";
-import { MemoJobService, queuedCountFromJob, remainingFromJob, recordBatchSaveResult, shouldSkipMemoBatch, MAX_MEMO_BATCH_ATTEMPTS, savedCountFromJob } from "../src/services/memoJobService";
+import { MemoJobService, queuedCountFromJob, remainingFromJob, recordBatchSaveResult, shouldSkipMemoBatch, prepareMemoJobForResume, leftoverProgressMessage, cancelJobUserMessage, isLeftoverMemoJob, MAX_MEMO_BATCH_ATTEMPTS, savedCountFromJob } from "../src/services/memoJobService";
 import { QuestionRepository } from "../src/repositories/questionRepository";
 import { MemoGenerationJob } from "../src/types/generationJob";
 import { Question } from "../src/types/question";
@@ -398,8 +398,8 @@ async function run() {
 
   const lowBatchResult = await generateOneBatch([], new Set(), seeds, "low");
   assert(
-    lowBatchResult.questions.length === 0 && !!lowBatchResult.error,
-    "최소 기준(4개) 미달 시 손상 배치로 판단하여 거부 및 재시도 유도",
+    lowBatchResult.questions.length === 2 && !lowBatchResult.error,
+    "잘린 응답이어도 온전한 문항 2개는 남긴다",
   );
 
   console.log("\n=== 영속 작업 관리자 및 Ground-Truth 교차 검증 테스트 ===\n");
@@ -634,6 +634,50 @@ async function run() {
   assert(
     failBatch.attemptCount === MAX_MEMO_BATCH_ATTEMPTS && shouldSkipMemoBatch(failBatch),
     "저장 실패 반복은 시도 한도에서 멈춤",
+  );
+
+  const stuckJob: MemoGenerationJob = {
+    jobId: "stuck-resume",
+    createdAt: 0,
+    updatedAt: 0,
+    totalBatches: 2,
+    batchSize: 7,
+    targetCount: 100,
+    refillAttempts: 2,
+    status: "PARTIALLY_COMPLETED",
+    batches: [
+      {
+        batchIndex: 0,
+        seeds: [],
+        status: "COMPLETED",
+        savedQuestionIds: ["real-1"],
+      },
+      {
+        batchIndex: 1,
+        seeds: [],
+        status: "FAILED",
+        savedQuestionIds: [],
+        attemptCount: MAX_MEMO_BATCH_ATTEMPTS,
+      },
+    ],
+  };
+  assert(isLeftoverMemoJob(stuckJob), "부분 완료 작업은 중단할 수 있음");
+  prepareMemoJobForResume(stuckJob);
+  assert(
+    stuckJob.batches[1].status === "PENDING" &&
+      stuckJob.batches[1].attemptCount === 0 &&
+      !shouldSkipMemoBatch(stuckJob.batches[1]),
+    "이어서 누르면 실패한 묶음을 다시 시도할 수 있음",
+  );
+  assert(
+    leftoverProgressMessage(7, 100).includes("7문제") &&
+      !leftoverProgressMessage(7, 100).includes("부족"),
+    "사용자 안내에 부족 개수를 쓰지 않음",
+  );
+  assert(
+    cancelJobUserMessage(7).includes("7문제") &&
+      !cancelJobUserMessage(7).includes("보관함"),
+    "중단 안내도 사용자 말로 씀",
   );
 
   assert(

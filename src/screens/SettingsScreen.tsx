@@ -131,20 +131,20 @@ export const SettingsScreen: React.FC = () => {
     const busy = Boolean(
       memoProgress && (memoProgress.running || memoProgress.paused || memoProgress.canResume),
     );
-    const title = busy ? '대기열에 넣기' : `암기 ${bulkCount}개 만들기`;
+    const title = busy ? '다음에 더 만들기' : `암기 ${bulkCount}개 만들기`;
     const body = busy
-      ? `지금 작업이 끝나면 이어서 ${bulkCount}문제를 만듭니다. 남은 문제와 대기를 합쳐 최대 ${MEMO_BULK_MAX}개까지입니다.`
-      : `알림이 켜진 채로 최대 ${bulkCount}문제를 만듭니다. 홈 버튼을 누르거나 화면을 꺼도 묶음마다 바로 저장됩니다.\n\n삼성폰은 설정 → 배터리에서 이 앱을 '제한 없음'으로 두면 자는 동안에도 잘 이어집니다.`;
+      ? `지금 만들기가 끝나면 ${bulkCount}개를 이어서 만듭니다. 남은 문제와 다음에 만들 개수를 합쳐 최대 ${MEMO_BULK_MAX}개까지입니다.`
+      : `알림이 켜진 채로 최대 ${bulkCount}문제를 만듭니다. 홈 버튼을 누르거나 화면을 꺼도 바로바로 저장됩니다.\n\n삼성폰은 설정 → 배터리에서 이 앱을 '제한 없음'으로 두면 자는 동안에도 잘 이어집니다.`;
     Alert.alert(title, body, [
       { text: '취소', style: 'cancel' },
       {
-        text: busy ? '대기열에 넣기' : '시작',
+        text: busy ? '넣어 두기' : '시작',
         onPress: () => {
           void backgroundQuestionService.startOrEnqueueBulkGeneration(bulkCount).then((res) => {
             if (res.apiKeyRequired) {
               Alert.alert('API Key 필요', res.message);
             } else {
-              Alert.alert(res.queued ? '대기열' : res.started ? '대량 암기 생성' : '알림', res.message);
+              Alert.alert(res.queued ? '다음에 만들기' : res.started ? '대량 암기 생성' : '알림', res.message);
             }
           });
         },
@@ -159,18 +159,22 @@ export const SettingsScreen: React.FC = () => {
 
   const handleResumeMemo = () => {
     triggerHaptic.selection();
-    void backgroundQuestionService.resumePendingJob(true);
+    void backgroundQuestionService.resumePendingJob(true).then((res) => {
+      if (!res.ok && res.message) {
+        Alert.alert('알림', res.message);
+      }
+    });
   };
 
   const handleCancelMemo = () => {
-    Alert.alert('대량 생성 중단', '대기열까지 비웁니다. 이미 저장된 문제는 보관함에 남습니다.', [
+    Alert.alert('만들기 그만두기', '아직 안 만든 문제와 다음에 만들 예정은 지웁니다. 이미 넣은 문제는 그대로 둡니다.', [
       { text: '취소', style: 'cancel' },
       {
         text: '중단',
         style: 'destructive',
         onPress: () => {
           void backgroundQuestionService.cancelMemoGeneration().then((res) => {
-            Alert.alert(res.ok ? '중단' : '알림', res.message);
+            Alert.alert(res.ok ? '그만둠' : '알림', res.message);
           });
         },
       },
@@ -286,7 +290,7 @@ export const SettingsScreen: React.FC = () => {
             </Text>
           </View>
           <Text style={[styles.targetSub, { color: theme.subText }]}>
-            홈의 14개와 따로 둔 메뉴입니다. 100~{MEMO_BULK_MAX}개를 고른 뒤 시작하면 알림이 켜진 채로 만듭니다. 이미 만드는 중이면 같은 버튼을 다시 눌러 대기열에 넣습니다.
+            홈의 14개와 별도로, 100~{MEMO_BULK_MAX}개를 고른 뒤 만듭니다. 화면을 꺼도 알림이 켜진 채로 바로바로 저장됩니다. 만드는 중에 다시 누르면 다음에 만들 개수로 넣어 둡니다.
           </Text>
 
           <View style={styles.bulkChips}>
@@ -325,7 +329,7 @@ export const SettingsScreen: React.FC = () => {
             <View style={styles.memoProgressBox}>
               <Text style={[styles.memoProgressLabel, { color: theme.text }]}>
                 {memoProgress.savedCount}/{memoProgress.targetCount}문제
-                {memoProgress.queuedCount > 0 ? ` · 대기 ${memoProgress.queuedCount}` : ''}
+                {memoProgress.queuedCount > 0 ? ` · 다음에 ${memoProgress.queuedCount}개` : ''}
                 {memoProgress.paused ? ' · 일시정지' : ''}
               </Text>
               <ProgressBar
@@ -356,7 +360,7 @@ export const SettingsScreen: React.FC = () => {
                   />
                 )}
                 <Button
-                  title="중단"
+                  title="그만두기"
                   variant="danger"
                   onPress={handleCancelMemo}
                   style={styles.memoBtn}
@@ -369,7 +373,7 @@ export const SettingsScreen: React.FC = () => {
           <Button
             title={
               memoProgress && (memoProgress.running || memoProgress.paused || memoProgress.canResume)
-                ? `${bulkCount}개 대기열에 넣기`
+                ? `${bulkCount}개 다음에 만들기`
                 : `${bulkCount}개 만들기`
             }
             variant="primary"
@@ -506,7 +510,7 @@ export const SettingsScreen: React.FC = () => {
               <ShieldCheck size={18} color={theme.subText} />
               <Text style={[styles.infoLabel, { color: theme.subText }]}>앱 버전</Text>
             </View>
-            <Text style={[styles.infoValue, { color: theme.text }]}>1.5.0 (설정에서 대량 암기 생성)</Text>
+            <Text style={[styles.infoValue, { color: theme.text }]}>1.5.1 (대량 생성 이어서·그만두기)</Text>
           </View>
         </Card>
 

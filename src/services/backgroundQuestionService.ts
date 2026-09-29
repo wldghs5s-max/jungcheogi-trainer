@@ -30,6 +30,10 @@ import {
   remainingFromJob,
   recordBatchSaveResult,
   shouldSkipMemoBatch,
+  prepareMemoJobForResume,
+  leftoverProgressMessage,
+  cancelJobUserMessage,
+  isLeftoverMemoJob,
   MAX_MEMO_BATCH_ATTEMPTS,
   MAX_MEMO_JOB_REFILLS,
 } from "./memoJobService";
@@ -237,11 +241,11 @@ class BackgroundQuestionService {
   // ==========================================
   public pauseMemoGeneration(): { ok: boolean; message: string } {
     if (!this.isGenerating || this.currentTask !== "GEMINI_MEMO") {
-      return { ok: false, message: "진행 중인 암기 생성이 없습니다." };
+      return { ok: false, message: "지금 만들고 있는 작업이 없습니다." };
     }
     this.pauseRequested = true;
-    this.showToast("이번 묶음까지 저장한 뒤 멈춥니다.");
-    return { ok: true, message: "이번 묶음까지 저장한 뒤 멈춥니다." };
+    this.showToast("지금 만드는 묶음까지 넣은 뒤 잠시 멈춥니다.");
+    return { ok: true, message: "지금 만드는 묶음까지 넣은 뒤 잠시 멈춥니다." };
   }
 
   public async cancelMemoGeneration(): Promise<{
@@ -252,23 +256,23 @@ class BackgroundQuestionService {
     if (this.isGenerating && this.currentTask === "GEMINI_MEMO") {
       this.cancelRequested = true;
       this.pauseRequested = false;
-      this.showToast("이번 묶음까지 넣은 뒤 중단합니다.");
-      return { ok: true, message: "이번 묶음까지 넣은 뒤 중단합니다." };
+      this.showToast("지금 만드는 묶음까지 넣은 뒤 그만둡니다.");
+      return {
+        ok: true,
+        message: "지금 만드는 묶음까지 넣은 뒤 그만둡니다.",
+      };
     }
-    if (job && (job.status === "PAUSED" || job.status === "IN_PROGRESS")) {
+    if (isLeftoverMemoJob(job)) {
       const saved = savedCountFromJob(job);
       await this.clearActiveJob();
       this.currentMemoJob = null;
+      this.isGenerating = false;
+      this.isResuming = false;
+      this.currentTask = null;
       this.notify();
-      return {
-        ok: true,
-        message:
-          saved > 0
-            ? `중단했습니다. 이미 저장된 ${saved}문제는 보관함에 남습니다.`
-            : "생성을 중단했습니다.",
-      };
+      return { ok: true, message: cancelJobUserMessage(saved) };
     }
-    return { ok: false, message: "중단할 암기 생성이 없습니다." };
+    return { ok: false, message: "그만둘 만들기가 없습니다." };
   }
 
   public async startOrEnqueueBulkGeneration(targetCount: number): Promise<{
@@ -321,7 +325,7 @@ class BackgroundQuestionService {
       this.notify();
       return {
         started: false,
-        message: `대기열 포함 최대 ${MEMO_BULK_MAX}개입니다. 지금은 남은 ${remaining}문제와 대기 ${queued}문제가 있습니다.`,
+        message: `한 번에 이어서 만들 수 있는 최대는 ${MEMO_BULK_MAX}개입니다. 지금은 ${remaining}개가 남아 있고, 다음에 만들 ${queued}개가 이미 들어가 있습니다.`,
       };
     }
     job.queuedCounts = [...(job.queuedCounts || []), count];
@@ -332,7 +336,7 @@ class BackgroundQuestionService {
     return {
       started: true,
       queued: true,
-      message: `${count}문제를 대기열에 넣었습니다. 지금 작업이 끝나면 이어서 만듭니다. (대기 ${queuedCountFromJob(job)}문제)`,
+      message: `지금 만들기가 끝나면 ${count}개를 더 만듭니다. 다음에 만들 문제는 ${queuedCountFromJob(job)}개입니다.`,
     };
   }
 
@@ -347,8 +351,7 @@ class BackgroundQuestionService {
     if (this.isGenerating || this.isResuming) {
       return {
         started: false,
-        message:
-          "이미 문제 생성이 진행 중입니다. 잠시 후 다시 시도해 주세요.",
+        message: "이미 문제를 만들고 있습니다. 잠시만 기다려 주세요.",
       };
     }
 
@@ -358,12 +361,16 @@ class BackgroundQuestionService {
         await this.crossValidateJobWithRepository(existingJob);
       this.currentMemoJob = validated;
 
-      if (validated.status === "PAUSED") {
+      if (
+        validated.status === "PAUSED" ||
+        validated.status === "PARTIALLY_COMPLETED" ||
+        validated.status === "FAILED"
+      ) {
         this.notify();
         return {
           started: false,
           message:
-            "멈춘 생성이 있습니다. 이어서 만들거나 중단한 뒤 새로 시작해 주세요.",
+            "아직 끝나지 않은 만들기가 있습니다. [이어서]로 계속하거나 [중단]한 뒤 새로 시작해 주세요.",
         };
       }
 
@@ -375,8 +382,7 @@ class BackgroundQuestionService {
           void this.resumePendingJob(true);
           return {
             started: true,
-            message:
-              "이전에 중단된 미완료 생성을 이어서 재개합니다. 완료 시 보관함에 자동 저장됩니다.",
+            message: "아까 만들다 만 문제를 이어서 만듭니다.",
           };
         }
       }
@@ -408,7 +414,7 @@ class BackgroundQuestionService {
         ? `알림이 켜진 채로 최대 ${targetCount}문제를 만듭니다. 홈 버튼을 누르거나 화면을 꺼도 계속 저장됩니다.`
         : targetCount >= MEMO_BULK_TARGET
           ? `최대 ${targetCount}문제를 만듭니다. 알림 권한이 없어 홈으로 나가면 멈출 수 있습니다.`
-          : `빈 챕터를 먼저 골라 7문제씩 ${job.totalBatches}묶음(최대 ${targetCount}문제)을 만듭니다. 같은 정답·비슷한 지문은 넣지 않습니다.`;
+          : `빈 챕터부터 골라 최대 ${targetCount}문제를 만듭니다.`;
 
     return { started: true, message: batchLabel };
   }
@@ -450,12 +456,28 @@ class BackgroundQuestionService {
    * 포그라운드 복귀나 앱 재실행 시 중단된 미완료 배치를 안전하게 이어받습니다.
    * 사용자가 멈춘(PAUSED) 작업은 강제 재개가 아니면 그대로 둡니다.
    */
-  public async resumePendingJob(force = false): Promise<void> {
-    if (this.isGenerating || this.isResuming) return;
+  public async resumePendingJob(
+    force = false,
+  ): Promise<{ ok: boolean; message: string }> {
+    if (this.isGenerating || this.isResuming) {
+      return {
+        ok: false,
+        message: "이미 만들고 있습니다. 잠시만 기다려 주세요.",
+      };
+    }
 
     const activeJob = this.currentMemoJob || (await this.getActiveJob());
-    if (!activeJob || activeJob.status === "COMPLETED") return;
-    if (activeJob.status === "PAUSED" && !force) return;
+    if (!activeJob || activeJob.status === "COMPLETED") {
+      return { ok: false, message: "이어서 만들 작업이 없습니다." };
+    }
+    if (
+      !force &&
+      (activeJob.status === "PAUSED" ||
+        activeJob.status === "PARTIALLY_COMPLETED" ||
+        activeJob.status === "FAILED")
+    ) {
+      return { ok: false, message: "" };
+    }
 
     this.pauseRequested = false;
     this.cancelRequested = false;
@@ -467,10 +489,19 @@ class BackgroundQuestionService {
 
     try {
       const job = await this.crossValidateJobWithRepository(activeJob);
+      if (force) {
+        prepareMemoJobForResume(job);
+      }
       this.currentMemoJob = job;
+      await this.saveActiveJob(job);
       await this.launchMemoJob(job, true);
+      return { ok: true, message: "나머지를 이어서 만듭니다." };
     } catch (err: unknown) {
       console.warn("[BackgroundQuestionService] resumePendingJob error:", err);
+      return {
+        ok: false,
+        message: "이어서 만들지 못했습니다. 잠시 후 다시 눌러 주세요.",
+      };
     } finally {
       this.isResuming = false;
       if (this.currentMemoJob?.status !== "IN_PROGRESS") {
@@ -520,7 +551,7 @@ class BackgroundQuestionService {
         this.currentMemoJob = nextJob;
         await this.saveActiveJob(nextJob);
         this.notify();
-        this.showToast(`대기열에서 ${nextTarget}문제를 이어서 만듭니다.`);
+        this.showToast(`이어서 ${nextTarget}개를 더 만듭니다.`);
         job = nextJob;
       }
     } catch (err: unknown) {
@@ -550,6 +581,7 @@ class BackgroundQuestionService {
       QuestionRepository.getAll().map((item) => normalizeStem(item.question)),
     );
     const target = jobTargetCount(job);
+    let consecutiveEmpty = 0;
 
     for (let round = 0; round < MAX_MEMO_BATCH_ATTEMPTS; round++) {
       let processed = false;
@@ -579,14 +611,13 @@ class BackgroundQuestionService {
         );
 
         if (this.cancelRequested && (!result.questions || result.questions.length === 0)) {
-          batch.status = "FAILED";
-          batch.error = "사용자 중단";
-          batch.attemptCount = (batch.attemptCount || 0) + 1;
+          batch.status = "PENDING";
           await this.saveActiveJob(job);
           break;
         }
 
         if (result.questions && result.questions.length > 0) {
+          consecutiveEmpty = 0;
           const questions = result.questions.slice(
             0,
             remaining || result.questions.length,
@@ -605,18 +636,25 @@ class BackgroundQuestionService {
 
           triggerHaptic.selection();
           this.showToast(
-            `AI 암기 ${savedCountFromJob(job)}/${target} 저장`,
+            `${savedCountFromJob(job)}/${target}문제까지 넣었습니다.`,
           );
         } else {
-          recordBatchSaveResult(batch, [], new Set());
-          batch.error = result.error || batch.error || "문항 생성 실패";
+          batch.status = "PENDING";
+          batch.attemptCount = (batch.attemptCount || 0) + 1;
+          batch.error = result.error || "이번 묶음은 넣지 못했습니다.";
+          consecutiveEmpty += 1;
+          if (consecutiveEmpty >= 2) {
+            break;
+          }
         }
 
         await this.saveActiveJob(job);
         this.notify();
       }
 
-      if (this.cancelRequested || this.pauseRequested) break;
+      if (this.cancelRequested || this.pauseRequested || consecutiveEmpty >= 2) {
+        break;
+      }
       if (savedCountFromJob(job) >= target) break;
       if (!processed) {
         if (this.appendRefillBatches(job)) {
@@ -627,16 +665,11 @@ class BackgroundQuestionService {
     }
 
     const saved = savedCountFromJob(job);
-    const shortage = Math.max(0, target - saved);
 
     if (this.cancelRequested) {
       await this.clearActiveJob();
       this.currentMemoJob = null;
-      this.showToast(
-        saved > 0
-          ? `중단했습니다. ${saved}문제는 보관함에 남습니다.`
-          : "생성을 중단했습니다.",
-      );
+      this.showToast(cancelJobUserMessage(saved));
       return "stopped";
     }
 
@@ -644,7 +677,7 @@ class BackgroundQuestionService {
       job.status = "PAUSED";
       await this.saveActiveJob(job);
       this.currentMemoJob = job;
-      this.showToast(`${saved}/${target}에서 멈췄습니다. 이어서 만들 수 있습니다.`);
+      this.showToast(leftoverProgressMessage(saved, target));
       return "stopped";
     }
 
@@ -652,18 +685,14 @@ class BackgroundQuestionService {
       job.status = "COMPLETED";
       this.currentMemoJob = job;
       triggerHaptic.success();
-      this.showToast(`총 ${saved}개의 AI 암기 문제가 보관함에 반영되었습니다.`);
+      this.showToast(`${saved}문제를 보관함에 넣어 두었습니다.`);
       return "completed";
     }
 
     job.status = saved > 0 ? "PARTIALLY_COMPLETED" : "FAILED";
     await this.saveActiveJob(job);
     this.currentMemoJob = job;
-    this.showToast(
-      saved > 0
-        ? `${saved}/${target}개 저장됨. ${shortage}개 부족합니다. 이어서 다시 시도할 수 있습니다.`
-        : "유효한 문제를 만들지 못했습니다. 잠시 후 다시 시도해 주세요.",
-    );
+    this.showToast(leftoverProgressMessage(saved, target));
     return "stopped";
   }
 

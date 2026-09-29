@@ -24,7 +24,7 @@ function notificationOptions(progress: ForegroundProgress | null) {
   const saved = progress?.savedCount ?? 0;
   const target = progress?.targetCount ?? 0;
   const queued = progress?.queuedCount ?? 0;
-  const queueLabel = queued > 0 ? ` · 대기 ${queued}` : "";
+  const queueLabel = queued > 0 ? ` · 다음에 ${queued}개` : "";
   return {
     taskName: TASK_NAME,
     taskTitle: "암기 문제 생성 중",

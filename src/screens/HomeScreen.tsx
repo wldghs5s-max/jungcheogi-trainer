@@ -197,13 +197,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const handleResumeMemo = () => {
     triggerHaptic.selection();
-    void backgroundQuestionService.resumePendingJob(true);
+    void backgroundQuestionService.resumePendingJob(true).then((res) => {
+      if (!res.ok && res.message) {
+        Alert.alert("알림", res.message);
+      }
+    });
   };
 
   const handleCancelMemo = () => {
     Alert.alert(
       "생성 중단",
-      "아직 안 만든 묶음은 그만두고, 이미 저장된 문제는 보관함에 남깁니다.",
+      "그만두면 아직 안 만든 문제는 만들지 않습니다. 이미 넣은 문제는 그대로 둡니다.",
       [
         { text: "계속 만들기", style: "cancel" },
         {
@@ -211,7 +215,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           style: "destructive",
           onPress: () => {
             void backgroundQuestionService.cancelMemoGeneration().then((res) => {
-              Alert.alert(res.ok ? "중단" : "알림", res.message);
+              Alert.alert(res.ok ? "그만둠" : "알림", res.message);
               void loadData();
             });
           },
@@ -737,12 +741,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             memoProgress.canResume) ? (
             <View style={styles.memoProgressBox}>
               <Text style={[styles.memoProgressLabel, { color: theme.text }]}>
-                {memoProgress.savedCount}/{memoProgress.targetCount}문제 ·{" "}
-                {memoProgress.completedBatches}/{memoProgress.totalBatches}묶음
+                {memoProgress.savedCount}/{memoProgress.targetCount}문제
                 {memoProgress.queuedCount > 0
-                  ? ` · 대기 ${memoProgress.queuedCount}`
+                  ? ` · 다음에 ${memoProgress.queuedCount}개`
                   : ""}
-                {memoProgress.paused ? " · 일시정지" : ""}
+                {memoProgress.paused ? " · 잠시 멈춤" : ""}
               </Text>
               <ProgressBar
                 progress={
@@ -773,7 +776,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   />
                 )}
                 <Button
-                  title="중단"
+                  title="그만두기"
                   variant="danger"
                   onPress={handleCancelMemo}
                   style={styles.syncBtn}
