@@ -1,0 +1,1851 @@
+{
+  "cleanupDate": "2026-09-29",
+  "totalTargetAudited": 88,
+  "activeBefore": 768,
+  "activeAfter": 750,
+  "archivedCount": 18,
+  "summary": {
+    "keep": 43,
+    "modify": 27,
+    "remove": 18
+  },
+  "reviewBreakdown": {
+    "total": 48,
+    "keep": 31,
+    "modify": 17,
+    "remove": 0
+  },
+  "rejectBreakdown": {
+    "total": 40,
+    "keep": 12,
+    "modify": 10,
+    "remove": 18
+  },
+  "records": [
+    {
+      "questionCode": "Q-026",
+      "id": "SEC_004",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "정보보안의 3대 목표(CIA) 중, 인가되지 않은 사용자에 의해 정보나 시스템이 변조, 삭제, 위조되지 않고 정확성과 완전성이 유지됨을 보장하는 특성을 쓰시오.",
+      "newStem": "정보보안의 3대 목표(CIA) 중, 인가되지 않은 사용자에 의해 정보나 시스템이 변조, 삭제, 위조되지 않고 데이터의 정확성과 신뢰성이 유지됨을 보장하는 특성을 쓰시오.",
+      "oldAnswer": [
+        "무결성",
+        "완전성",
+        "Integrity",
+        "integrity"
+      ],
+      "newAnswer": [
+        "무결성",
+        "완전성",
+        "Integrity",
+        "integrity"
+      ],
+      "oldExplanation": "정보보안의 3대 요소(CIA)는 기밀성(Confidentiality: 비인가자 열람 금지), 무결성(Integrity: 비인가된 변조 및 삭제 금지), 가용성(Availability: 인가자가 필요할 때 언제든 사용 가능)입니다.",
+      "newExplanation": "정보보안의 3대 요소(CIA)는 기밀성(Confidentiality: 비인가자 열람 금지), 무결성(Integrity: 비인가된 변조 및 삭제 금지), 가용성(Availability: 인가자가 필요할 때 언제든 사용 가능)입니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 단어(완전성) 누설 제거 및 정확성/신뢰성 보장 표현으로 정제"
+    },
+    {
+      "questionCode": "Q-038",
+      "id": "MEMO_SE_012",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "형상 항목이 공식 검토를 통과한 뒤 변경을 통제하기 위한 기준선으로 확정된 상태의 명칭을 영문 또는 한글로 쓰시오.",
+      "newStem": "소프트웨어 형상 관리에서 공식 검토와 승인을 거쳐 확정된 상태로, 이후 시스템 변경을 통제하고 비교하기 위한 기초가 되는 공식적인 상태의 명칭을 영문 또는 한글로 쓰시오.",
+      "oldAnswer": [
+        "베이스라인",
+        "Baseline",
+        "기준선"
+      ],
+      "newAnswer": [
+        "베이스라인",
+        "Baseline",
+        "기준선"
+      ],
+      "oldExplanation": "베이스라인은 합의된 형상의 스냅샷입니다. 이후 변경은 CCB(형상통제위원회) 등 공식 절차를 거칩니다.",
+      "newExplanation": "베이스라인은 합의된 형상의 스냅샷입니다. 이후 변경은 CCB(형상통제위원회) 등 공식 절차를 거칩니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 단어(기준선) 누설 제거"
+    },
+    {
+      "questionCode": "Q-091",
+      "id": "MEMO_SE_023",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "구현부에서 추상층을 분리하여 두 계층이 독립적으로 확장할 수 있도록 다리(Bridge) 역할을 수행하는 GoF 구조 패턴의 명칭을 쓰시오.",
+      "newStem": "GoF 디자인 패턴 중 기능의 클래스 계층과 구현의 클래스 계층을 분리하여 두 계층이 독립적으로 확장할 수 있도록 연결해 주는 구조 패턴의 명칭을 쓰시오.",
+      "oldAnswer": [
+        "브리지",
+        "브리지 패턴",
+        "Bridge",
+        "Bridge Pattern"
+      ],
+      "newAnswer": [
+        "브리지",
+        "브리지 패턴",
+        "Bridge",
+        "Bridge Pattern"
+      ],
+      "oldExplanation": "브리지 패턴은 기능의 계층과 구현의 계층을 연결하여 상속 계층의 폭발적 증가를 방지합니다.",
+      "newExplanation": "브리지 패턴은 기능의 계층과 구현의 계층을 연결하여 상속 계층의 폭발적 증가를 방지합니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 단어(Bridge) 누설 제거"
+    },
+    {
+      "questionCode": "Q-093",
+      "id": "MEMO_SE_025",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "어떤 객체의 상태가 변하면 그 객체에 의존하는 모든 객체에 자동으로 알림이 가고 내용이 갱신되는 일대다 의존 관계의 GoF 행위 패턴을 쓰시오.",
+      "newStem": null,
+      "oldAnswer": [
+        "옵서버",
+        "옵저버",
+        "옵서버 패턴",
+        "옵저버 패턴",
+        "Observer"
+      ],
+      "newAnswer": null,
+      "oldExplanation": "옵서버 패턴은 발행-구독(Publish-Subscribe) 모델로 통보 주체와 관찰자 객체 간의 결합도를 낮춥니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-018",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-018 SE_005와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-096",
+      "id": "MEMO_SE_028",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "객체들의 상호작용을 캡슐화하여 객체 간의 직접적인 참조를 줄이고, 복잡한 통신을 조율하는 중재자 객체를 두는 GoF 행위 패턴의 명칭을 쓰시오.",
+      "newStem": "객체 간의 복잡한 M:N 의존 관계를 줄이기 위해 객체들의 상호작용을 캡슐화하고 하나의 중앙 객체가 통신을 전담 제어하도록 하는 GoF 행위 패턴의 명칭을 쓰시오.",
+      "oldAnswer": [
+        "중재자",
+        "중재자 패턴",
+        "미디에이터",
+        "Mediator",
+        "Mediator Pattern"
+      ],
+      "newAnswer": [
+        "중재자",
+        "중재자 패턴",
+        "미디에이터",
+        "Mediator",
+        "Mediator Pattern"
+      ],
+      "oldExplanation": "중재자(Mediator) 패턴은 객체 간의 M:N 관계를 1:N 관계로 전환하여 상호 결합도를 현저히 낮춥니다.",
+      "newExplanation": "중재자(Mediator) 패턴은 객체 간의 M:N 관계를 1:N 관계로 전환하여 상호 결합도를 현저히 낮춥니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 단어(중재자) 누설 제거"
+    },
+    {
+      "questionCode": "Q-118",
+      "id": "MEMO_SE_050",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "모듈 내부의 모든 요소가 단 하나의 단일 목적(기능)만을 수행하기 위해 긴밀하게 구성된 가장 높고 이상적인 응집도의 명칭을 쓰시오.",
+      "newStem": null,
+      "oldAnswer": [
+        "기능적 응집도",
+        "Functional Cohesion"
+      ],
+      "newAnswer": null,
+      "oldExplanation": "기능적 응집도는 최고 수준의 응집도입니다. 응집도 순서: 우연적 < 논리적 < 시간적 < 절차적 < 통신적 < 순차적 < 기능적 (우논시절통순기).",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-016",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-016 SE_003와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-140",
+      "id": "MEMO_DB_022",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "릴레이션의 기본키를 구성하는 어떤 속성도 널(NULL) 값이나 중복값을 가질 수 없다는 제약조건의 명칭을 쓰시오.",
+      "newStem": null,
+      "oldAnswer": [
+        "개체 무결성",
+        "개체 무결성 제약조건",
+        "Entity Integrity"
+      ],
+      "newAnswer": null,
+      "oldExplanation": "개체 무결성은 기본키의 유일성과 Not Null을 보장하여 각 튜플을 고유하게 식별할 수 있도록 합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-010",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-010 DB_003와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-148",
+      "id": "MEMO_DB_030",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "하나의 대용량 테이블을 행(Row) 단위로 특정 기준(날짜, 지역 등)에 따라 여러 개의 작은 테이블로 쪼개는 수평 분할 기법의 일반적 명칭을 쓰시오.",
+      "newStem": "하나의 대용량 테이블을 레코드(Row) 단위로 특정 기준(날짜, 지역 등)에 맞추어 여러 물리적 테이블로 분산 저장하는 기법의 명칭을 영문 또는 한글로 쓰시오.",
+      "oldAnswer": [
+        "파티셔닝",
+        "수평 분할",
+        "Partitioning",
+        "샤딩"
+      ],
+      "newAnswer": [
+        "파티셔닝",
+        "수평 분할",
+        "Partitioning",
+        "샤딩"
+      ],
+      "oldExplanation": "수평 분할(Range, List, Hash Partitioning)은 행 단위로 데이터를 분할하여 I/O 분산 및 검색 속도를 개선합니다.",
+      "newExplanation": "수평 분할(Range, List, Hash Partitioning)은 행 단위로 데이터를 분할하여 I/O 분산 및 검색 속도를 개선합니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 단어(수평 분할) 누설 제거"
+    },
+    {
+      "questionCode": "Q-149",
+      "id": "MEMO_DB_031",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "트랜잭션이 성공적으로 완료되면 언제나 일관성 있는 데이터베이스 상태를 유지해야 하며, 무결성 제약조건을 위배하지 않아야 한다는 ACID 특성의 명칭을 쓰시오.",
+      "newStem": "트랜잭션이 성공적으로 수행된 후에도 시스템의 고정 요소나 무결성 제약조건을 위배하지 않고 모순 없는 데이터베이스 상태를 유지해야 한다는 ACID 특성의 명칭을 쓰시오.",
+      "oldAnswer": [
+        "일관성",
+        "Consistency"
+      ],
+      "newAnswer": [
+        "일관성",
+        "Consistency"
+      ],
+      "oldExplanation": "일관성(Consistency)은 트랜잭션 수행 전후에 데이터베이스가 제약조건과 무결성 규칙을 올바르게 만족해야 함을 뜻합니다.",
+      "newExplanation": "일관성(Consistency)은 트랜잭션 수행 전후에 데이터베이스가 제약조건과 무결성 규칙을 올바르게 만족해야 함을 뜻합니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 단어(일관성) 누설 제거"
+    },
+    {
+      "questionCode": "Q-177",
+      "id": "MEMO_DB_059",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "데이터베이스 사용자에게 특정 테이블의 SELECT, INSERT 등의 권한을 부여하는 DCL 명령어의 명칭을 쓰시오.",
+      "newStem": null,
+      "oldAnswer": [
+        "GRANT",
+        "grant",
+        "그랜트"
+      ],
+      "newAnswer": null,
+      "oldExplanation": "권한을 부여할 때는 GRANT 문을 사용하고, 부여했던 권한을 회수할 때는 REVOKE 문을 사용합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-179",
+      "id": "MEMO_DB_061",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "트랜잭션의 5가지 상태(활동, 부분 완료, 완료, 실패, 철회) 중 마지막 연산까지 정상 수행되었으나 커밋 연산 직전인 상태의 명칭을 쓰시오.",
+      "newStem": "트랜잭션의 생명주기 상태 중 트랜잭션의 마지막 연산까지 성공적으로 실행을 마쳤으나, 아직 최종 변경 내용을 디스크에 반영(Commit)하기 직전 단계의 상태 명칭을 쓰시오.",
+      "oldAnswer": [
+        "부분 완료",
+        "Partially Committed",
+        "부분완료"
+      ],
+      "newAnswer": [
+        "부분 완료",
+        "Partially Committed",
+        "부분완료"
+      ],
+      "oldExplanation": "부분 완료(Partially Committed)는 모든 명령문 실행이 끝났으나 디스크 로그 기록 및 Commit 반영이 아직 완료되지 않은 상태입니다.",
+      "newExplanation": "부분 완료(Partially Committed)는 모든 명령문 실행이 끝났으나 디스크 로그 기록 및 Commit 반영이 아직 완료되지 않은 상태입니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 단어(부분 완료)를 포함한 5대 상태 전체 나열 누설 제거"
+    },
+    {
+      "questionCode": "Q-210",
+      "id": "MEMO_SEC_042",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "특정 조직을 목표로 정하고 다양한 IT 공격 기술과 사회공학 기법을 결합하여 장기간에 걸쳐 지속적으로 잠복하면서 기밀을 탈취하는 지능형 지속 위협의 영문 약어를 쓰시오.",
+      "newStem": "특정 타깃을 정하고 다양한 보안 취약점과 사회공학적 기법을 복합 활용하여 장기간 은밀하게 침투·잠복하며 핵심 기밀을 탈취하는 위협 공격 형태의 영문 약어를 쓰시오.",
+      "oldAnswer": [
+        "APT",
+        "Advanced Persistent Threat",
+        "지능형 지속 위협"
+      ],
+      "newAnswer": [
+        "APT",
+        "Advanced Persistent Threat",
+        "지능형 지속 위협"
+      ],
+      "oldExplanation": "APT는 침투(Infiltration) → 거점 확보 → 내부 정찰 및 권한 상승 → 지속 유출의 라이프사이클을 가집니다.",
+      "newExplanation": "APT는 침투(Infiltration) → 거점 확보 → 내부 정찰 및 권한 상승 → 지속 유출의 라이프사이클을 가집니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 한글 명칭(지능형 지속 위협) 누설 제거"
+    },
+    {
+      "questionCode": "Q-221",
+      "id": "MEMO_SEC_053",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "사내 직원의 PC나 네트워크를 모니터링하여 기밀 문서, 개인정보 등 중요 데이터가 외부로 무단 유출되는 것을 감지하고 실시간 차단하는 데이터 유출 방지 솔루션의 영문 약어를 쓰시오.",
+      "newStem": "사내 엔드포인트나 네트워크 경로를 상시 감시하여 기업의 핵심 기밀 문서나 개인정보가 이메일, USB, 메신저 등을 통해 외부로 무단 반출되는 것을 방지하는 보안 솔루션의 영문 약어를 쓰시오.",
+      "oldAnswer": [
+        "DLP",
+        "Data Loss Prevention",
+        "데이터 유출 방지"
+      ],
+      "newAnswer": [
+        "DLP",
+        "Data Loss Prevention",
+        "데이터 유출 방지"
+      ],
+      "oldExplanation": "DLP는 USB 복사 차단, 이메일 첨부파일 검사, 화면 캡처 방지 등을 통해 내부 정보 유출을 막습니다.",
+      "newExplanation": "DLP는 USB 복사 차단, 이메일 첨부파일 검사, 화면 캡처 방지 등을 통해 내부 정보 유출을 막습니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 한글 명칭(데이터 유출 방지) 누설 제거"
+    },
+    {
+      "questionCode": "Q-223",
+      "id": "MEMO_SEC_055",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "아이디/비밀번호(지식 기반) 외에 스마트폰 OTP(소유 기반)나 지문(생체 기반) 등 서로 다른 두 가지 이상의 인증 요소를 결합하여 보안을 강화하는 다중 요소 인증의 영문 약어를 쓰시오.",
+      "newStem": "지식(패스워드), 소유(스마트폰/OTP), 생체(지문/홍채) 중 서로 다른 2개 이상의 독립된 범주의 인증 수단을 결합하여 보안성을 강화한 인증 기법의 영문 약어를 쓰시오.",
+      "oldAnswer": [
+        "MFA",
+        "Multi-Factor Authentication",
+        "다중 요소 인증",
+        "2FA"
+      ],
+      "newAnswer": [
+        "MFA",
+        "Multi-Factor Authentication",
+        "다중 요소 인증",
+        "2FA"
+      ],
+      "oldExplanation": "MFA는 단일 패스워드 유출로 인한 계정 탈취를 효과적으로 차단합니다.",
+      "newExplanation": "MFA는 단일 패스워드 유출로 인한 계정 탈취를 효과적으로 차단합니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 한글 명칭(다중 요소 인증) 누설 제거"
+    },
+    {
+      "questionCode": "Q-225",
+      "id": "MEMO_SEC_057",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "공중 인터넷망(Public Network)을 마치 전용 사설망(Private Network)처럼 안전하게 사용할 수 있도록 터널링과 암호화 기술을 적용한 가상 사설망의 영문 약어를 쓰시오.",
+      "newStem": "공용 인터넷 네트워크 상에서 터널링과 암호화 기술을 적용하여 마치 독립된 전용 사설망을 사용하는 것처럼 보안 통신을 제공하는 네트워크 기술의 영문 약어를 쓰시오.",
+      "oldAnswer": [
+        "VPN",
+        "Virtual Private Network",
+        "가상 사설망"
+      ],
+      "newAnswer": [
+        "VPN",
+        "Virtual Private Network",
+        "가상 사설망"
+      ],
+      "oldExplanation": "VPN은 원격 근무자나 지사 간 통신을 안전하게 보호하며 IPsec VPN, SSL VPN 등이 대표적입니다.",
+      "newExplanation": "VPN은 원격 근무자나 지사 간 통신을 안전하게 보호하며 IPsec VPN, SSL VPN 등이 대표적입니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 한글 명칭(가상 사설망) 누설 제거"
+    },
+    {
+      "questionCode": "Q-226",
+      "id": "MEMO_SEC_058",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "시스템 개발자나 침입자가 정상적인 인증 절차를 우회하여 시스템에 손쉽게 재접근할 수 있도록 만들어 둔 비밀 통로(트랩도어)의 명칭을 쓰시오.",
+      "newStem": "시스템 개발자나 공격자가 정상적인 보안 인증 절차를 거치지 않고 시스템에 직접 침투할 수 있도록 고의로 마련해 둔 비인가 비밀 통로의 명칭을 쓰시오.",
+      "oldAnswer": [
+        "백도어",
+        "트랩도어",
+        "Backdoor",
+        "Trapdoor"
+      ],
+      "newAnswer": [
+        "백도어",
+        "트랩도어",
+        "Backdoor",
+        "Trapdoor"
+      ],
+      "oldExplanation": "백도어(Backdoor)는 침입 후 지속적인 제어를 위해 심어두며 포트 스캔 및 무결성 검사로 탐지합니다.",
+      "newExplanation": "백도어(Backdoor)는 침입 후 지속적인 제어를 위해 심어두며 포트 스캔 및 무결성 검사로 탐지합니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 동의어(트랩도어) 누설 제거"
+    },
+    {
+      "questionCode": "Q-227",
+      "id": "MEMO_SEC_059",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "개발자가 서버 인프라를 직접 프로비저닝하거나 관리하지 않고, 이벤트가 발생할 때만 특정 함수 코드가 실행되고 사용된 리소스만큼만 비용을 지불하는 클라우드 실행 모델(FaaS)의 명칭을 쓰시오.",
+      "newStem": "개발자가 물리적 서버 관리나 인프라 프로비저닝 없이 비즈니스 로직(함수)만을 배포하고 이벤트 구동 방식으로 실행되는 클라우드 컴퓨팅 패러다임의 명칭을 쓰시오.",
+      "oldAnswer": [
+        "서버리스",
+        "Serverless",
+        "FaaS"
+      ],
+      "newAnswer": [
+        "서버리스",
+        "Serverless",
+        "FaaS"
+      ],
+      "oldExplanation": "서버리스(Serverless, Function as a Service)는 AWS Lambda, Google Cloud Functions 등이 대표적입니다.",
+      "newExplanation": "서버리스(Serverless, Function as a Service)는 AWS Lambda, Google Cloud Functions 등이 대표적입니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 약어(FaaS) 누설 제거"
+    },
+    {
+      "questionCode": "Q-268",
+      "id": "MEMO_IS_050",
+      "subject": "정보시스템구축관리",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "소프트웨어 개발 생명주기(SDLC) 전 과정에 걸쳐 보안 취약점을 예방하기 위해 마이크로소프트사가 개발한 보안 개발 생명주기 프레임워크의 영문 약어를 쓰시오.",
+      "newStem": "소프트웨어 기획, 설계, 구현, 테스팅 등 개발 전 단계에 걸쳐 보안을 체계적으로 내재화하기 위해 MS사가 제안한 보안 개발 방법론의 영문 약어를 쓰시오.",
+      "oldAnswer": [
+        "SDL",
+        "MS-SDL",
+        "Security Development Lifecycle"
+      ],
+      "newAnswer": [
+        "SDL",
+        "MS-SDL",
+        "Security Development Lifecycle"
+      ],
+      "oldExplanation": "MS-SDL은 위협 모델링(STRIDE) 등을 포함하여 계획 단계부터 유지보수까지 보안을 강제하는 표준 프레임워크입니다.",
+      "newExplanation": "MS-SDL은 위협 모델링(STRIDE) 등을 포함하여 계획 단계부터 유지보수까지 보안을 강제하는 표준 프레임워크입니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 명칭(보안 개발 생명주기) 누설 제거"
+    },
+    {
+      "questionCode": "Q-271",
+      "id": "MEMO_IS_053",
+      "subject": "정보시스템구축관리",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "원작성자가 아닌 다른 검토 전문가들이 체크리스트를 바탕으로 소스 코드나 명세서를 정밀하게 결함 식별하는 가장 공식적이고 체계적인 동료 검토 기법의 명칭을 쓰시오.",
+      "newStem": "저작자가 아닌 훈련된 검토팀이 사전에 정의된 체크리스트와 엄격한 규칙에 따라 소스 코드나 산출물의 결함을 찾아내는 가장 정형화된 정적 검토 기법의 명칭을 쓰시오.",
+      "oldAnswer": [
+        "인스펙션",
+        "Inspection",
+        "코드 인스펙션",
+        "동료 검토"
+      ],
+      "newAnswer": [
+        "인스펙션",
+        "Inspection",
+        "코드 인스펙션"
+      ],
+      "oldExplanation": "패이건(Fagan)이 제안한 인스펙션은 주재자(Moderator), 작성자, 낭독자, 기록자, 검토자 역할을 엄격히 나누어 결함을 색출합니다.",
+      "newExplanation": "패이건(Fagan)이 제안한 인스펙션은 주재자(Moderator), 작성자, 낭독자, 기록자, 검토자 역할을 엄격히 나누어 결함을 색출합니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 동료 검토 누설 제거 및 답안에서 동료 검토 제외 정제"
+    },
+    {
+      "questionCode": "Q-402",
+      "id": "EXP_SE1_020",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "럼바우(Rumbaugh) 객체지향 분석 기법의 3대 모델링 중 자료 흐름도(DFD)를 주 도구로 사용하여 입력에 따른 데이터 처리와 계산 과정을 표현하는 모델링은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "기능 모델링",
+      "newAnswer": null,
+      "oldExplanation": "기능 모델링(Functional Modeling)은 DFD를 사용합니다. 상태 다이어그램을 쓰는 것은 동적 모델링, ERD/객체도를 쓰는 것은 객체 모델링입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-074",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-074 MEMO_SE_060와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-410",
+      "id": "EXP_SE1_028",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "SOLID 원칙 중 객체는 자신이 사용하지 않는 메서드에 의존하지 않아야 하므로 거대한 인터페이스보다 명확한 다수의 작은 인터페이스로 분리하라는 원칙은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "인터페이스 분리 원칙",
+      "newAnswer": null,
+      "oldExplanation": "인터페이스 분리 원칙(ISP, Interface Segregation Principle)은 클라이언트에 특화된 세분화된 인터페이스를 지향합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-413",
+      "id": "EXP_SE1_031",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REJECT",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "SOLID 원칙 중 소프트웨어 개체(클래스, 모듈 등)는 기능 확장에 대해서는 열려 있어야(Open) 하고, 기존 코드 수정에 대해서는 닫혀 있어야(Closed) 한다는 원칙은 무엇인가?",
+      "newStem": "새로운 결제 수단이나 인증 방식을 추가할 때 기존 처리 엔진 코드를 직접 수정하지 않고 다형성을 통해 기능을 유연하게 확장할 수 있도록 하는 SOLID 객체지향 설계 원칙은 무엇인가?",
+      "oldAnswer": "개방 폐쇄 원칙",
+      "newAnswer": "개방 폐쇄 원칙",
+      "oldExplanation": "개방 폐쇄 원칙(OCP, Open-Closed Principle)은 기존 코드를 손대지 않고 새로운 기능을 추가할 수 있도록 인터페이스를 활용하는 원칙입니다.",
+      "newExplanation": "개방 폐쇄 원칙(OCP, Open-Closed Principle)은 기존 코드를 손대지 않고 새로운 기능을 추가할 수 있도록 인터페이스를 활용하는 원칙입니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "단순 정의형 중복에서 결제/인증 확장 실무 시나리오 기반 문항으로 각도 개편"
+    },
+    {
+      "questionCode": "Q-414",
+      "id": "EXP_SE1_032",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REJECT",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "SOLID 원칙 중 하나의 클래스는 단 하나의 책임만을 가져야 하며, 클래스가 변경되는 이유는 단 하나뿐이어야 한다는 원칙은 무엇인가?",
+      "newStem": "한 클래스가 사용자 인터페이스 출력과 데이터베이스 트랜잭션 저장을 동시에 처리하여 변경 요인이 다수 발생하는 결함을 막기 위해 적용하는 SOLID 설계 원칙은 무엇인가?",
+      "oldAnswer": "단일 책임 원칙",
+      "newAnswer": "단일 책임 원칙",
+      "oldExplanation": "단일 책임 원칙(SRP, Single Responsibility Principle)은 높은 응집도와 낮은 결합도를 유지하기 위한 객체지향의 기본 설계 원칙입니다.",
+      "newExplanation": "단일 책임 원칙(SRP, Single Responsibility Principle)은 높은 응집도와 낮은 결합도를 유지하기 위한 객체지향의 기본 설계 원칙입니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "단순 정의형 중복에서 다중 책임 결함 해결 실전 시나리오 문항으로 개편"
+    },
+    {
+      "questionCode": "Q-415",
+      "id": "EXP_SE1_033",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "모듈 내부의 모든 기능 요소들이 하나의 단일한 목적이나 기능을 수행하기 위해 밀접하게 뭉쳐있는 가장 이상적이고 응집도가 높은 단계는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "기능적 응집도",
+      "newAnswer": null,
+      "oldExplanation": "기능적 응집도(Functional Cohesion)는 모듈의 모든 구성요소가 오직 하나의 고유 기능만을 수행하는 가장 이상적인 응집도입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-016",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-016 SE_003와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-416",
+      "id": "EXP_SE1_034",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "모듈 내부의 요소들이 서로 아무런 관련성 없이 우연히 한 모듈 안에 모여 있는 응집도가 가장 낮고 나쁜 단계는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "우연적 응집도",
+      "newAnswer": null,
+      "oldExplanation": "우연적 응집도(Coincidental Cohesion)는 전혀 관련 없는 작업들이 단지 모듈 크기를 줄이기 위해 묶인 가장 나쁜 상태입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-067",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-067 MEMO_SE_053와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-417",
+      "id": "EXP_SE1_035",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REJECT",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "한 모듈의 출력 결과가 다음 모듈이나 요소의 입력 데이터로 순차적으로 전달되는 형태의 응집도 단계는 무엇인가?",
+      "newStem": "파일을 읽어 파싱한 결과 데이터셋이 다음 암호화 모듈의 입력 파라미터로 직접 연결되어 순차 처리되는 형태의 모듈 응집도 단계는 무엇인가?",
+      "oldAnswer": "순차적 응집도",
+      "newAnswer": "순차적 응집도",
+      "oldExplanation": "순차적 응집도(Sequential Cohesion)는 이전 활동의 출력이 다음 활동의 입력으로 파이프라인처럼 연결되는 응집도입니다.",
+      "newExplanation": "순차적 응집도(Sequential Cohesion)는 이전 활동의 출력이 다음 활동의 입력으로 파이프라인처럼 연결되는 응집도입니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "단순 정의형 중복에서 데이터 파이프라인 처리 구체 사례형 문항으로 개편"
+    },
+    {
+      "questionCode": "Q-418",
+      "id": "EXP_SE1_036",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "동일한 입력 데이터를 사용하여 서로 다른 여러 기능을 수행하거나, 동일한 출력 데이터를 산출해내는 모듈의 응집도 단계는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "통신적 응집도",
+      "newAnswer": null,
+      "oldExplanation": "통신적 응집도(Communicational Cohesion, 교환적 응집도)는 모듈 내 구성요소들이 동일한 입출력 데이터를 공유할 때 나타납니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-066",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-066 MEMO_SE_052와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-420",
+      "id": "EXP_SE1_038",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "한 모듈이 다른 모듈의 내부 코드, 지역 변수, 논리적 제어 흐름을 직접 참조하거나 수정하여 결합도가 가장 높고 가장 위험한 단계는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "내용 결합도",
+      "newAnswer": null,
+      "oldExplanation": "내용 결합도(Content Coupling)는 모듈 내부를 직접 침범하는 최악의 결합도입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-061",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-061 MEMO_SE_047와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-421",
+      "id": "EXP_SE1_039",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "여러 모듈이 동일한 전역 변수나 글로벌 데이터 영역을 함께 공유하여 참조하고 갱신하는 모듈 간 결합도 단계는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "공통 결합도",
+      "newAnswer": null,
+      "oldExplanation": "공통 결합도(Common Coupling)는 전역 변수 공유로 인해 한 모듈의 수정이 다른 모든 모듈에 파급될 위험이 큽니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-062",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-062 MEMO_SE_048와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-426",
+      "id": "EXP_SE1_044",
+      "subject": "소프트웨어설계",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "UML 다이어그램 중 시간 경과에 따른 객체 간의 메시지 송수신 순서를 생명선(Lifeline)과 활성 막대를 이용해 수직 시간축으로 표현하는 다이어그램은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "시퀀스 다이어그램",
+      "newAnswer": null,
+      "oldExplanation": "시퀀스 다이어그램(Sequence Diagram)은 동적 상호작용을 시간 순서에 따라 시각화합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-497",
+      "id": "EXP_DB1_015",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "SQL 윈도우 순위 함수 중 동일한 값에 대해 같은 순위를 매기되, 바로 다음 순위를 건너뛰지 않고 연속된 번호로 부여하는(예: 1등, 2등, 2등, 3등) 함수는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "DENSE_RANK",
+      "newAnswer": null,
+      "oldExplanation": "DENSE_RANK()는 빈틈없이(dense) 순위를 매겨 동점자 다음 순위를 연속된 숫자로 이어갑니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-508",
+      "id": "EXP_DB1_026",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REJECT",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "기존 테이블에 조건에 따라 행이 이미 존재하면 UPDATE를 수행하고, 존재하지 않으면 신규 행으로 INSERT를 한 번에 처리하는 SQL 문장은 무엇인가?",
+      "newStem": "SQL에서 대상 테이블(TARGET)과 원본 테이블(SOURCE)을 조인하여 ON 조건에 일치하는 행이 있으면 UPDATE, 없으면 INSERT를 단일 문장으로 처리하는 DML 명령어는 무엇인가?",
+      "oldAnswer": "MERGE",
+      "newAnswer": "MERGE",
+      "oldExplanation": "MERGE(Upsert) 문은 WHEN MATCHED THEN UPDATE와 WHEN NOT MATCHED THEN INSERT 절을 결합해 병합합니다.",
+      "newExplanation": "MERGE(Upsert) 문은 WHEN MATCHED THEN UPDATE와 WHEN NOT MATCHED THEN INSERT 절을 결합해 병합합니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "단순 기능 설명에서 TARGET/SOURCE 조인 및 ON 조건 매칭 실전 SQL 문법 문항으로 개편"
+    },
+    {
+      "questionCode": "Q-511",
+      "id": "EXP_DB1_030",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "데이터베이스 사용자에게 부여했던 특정 권한을 다시 회수(취소)할 때 사용하는 DCL 명령어는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "REVOKE",
+      "newAnswer": null,
+      "oldExplanation": "REVOKE는 권한을 회수하며 CASCADE 옵션을 주면 해당 사용자가 다른 사용자에게 연쇄 부여한 권한도 함께 회수됩니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-129",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-129 MEMO_DB_060와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-539",
+      "id": "EXP_DB2_009",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "인덱스의 리프 블록에 실제 데이터 행 대신 데이터의 물리적 위치 주소(RID/ROWID)를 저장하여 테이블당 여러 개를 자유롭게 생성할 수 있는 인덱스는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "넌클러스터드 인덱스",
+      "newAnswer": null,
+      "oldExplanation": "넌클러스터드 인덱스(Non-Clustered Index, 보조 인덱스)는 별도의 인덱스 페이지를 구성하여 실제 데이터 위치를 포인터로 가리킵니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-114",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-114 MEMO_DB_045와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-547",
+      "id": "EXP_DB2_017",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "제3정규형을 만족하는 릴레이션에서 모든 결정자(Determinant)가 반드시 후보키(Candidate Key)가 되도록 강제하는 정규형은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "BCNF",
+      "newAnswer": null,
+      "oldExplanation": "보이스-코드 정규형(BCNF, Boyce-Codd Normal Form)은 후보키가 아닌 결정자를 제거하는 강한 제3정규형입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-553",
+      "id": "EXP_DB2_023",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "릴레이션에서 튜플을 고유하게 식별할 수 있는 유일성(Uniqueness)은 만족하지만, 불필요한 속성이 포함되어 최소성(Minimality)은 만족하지 못하는 키는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "슈퍼키",
+      "newAnswer": null,
+      "oldExplanation": "슈퍼키(Super Key)는 유일성만 만족합니다. 유일성과 최소성을 모두 만족하는 키는 후보키(Candidate Key)입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-554",
+      "id": "EXP_DB2_024",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "여러 후보키(Candidate Key) 중에서 기본키(Primary Key)로 선택되지 못하고 남은 나머지 후보키들을 가리키는 용어는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "대체키",
+      "newAnswer": null,
+      "oldExplanation": "대체키(Alternate Key, 보조키)는 언제든 기본키가 될 수 있는 자격을 갖춘 예비 후보키입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-090",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-090 MEMO_DB_021와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-555",
+      "id": "EXP_DB2_025",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "부모 엔티티의 기본키가 자식 엔티티의 기본키(PK)의 일부(구성원)로 그대로 상속되어 상속받는 엔티티 관계를 무엇이라 하는가?",
+      "newStem": null,
+      "oldAnswer": "식별 관계",
+      "newAnswer": null,
+      "oldExplanation": "식별 관계(Identifying Relationship)는 부모 없이는 자식이 독립적으로 존재할 수 없는 강한 종속 관계이며 실선으로 표기합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-556",
+      "id": "EXP_DB2_026",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "부모 엔티티의 기본키가 자식 엔티티의 일반 속성(외래키 FK)으로만 상속되어 자식 엔티티가 부모 없이도 독립적으로 존재 가능한 관계를 무엇이라 하는가?",
+      "newStem": null,
+      "oldAnswer": "비식별 관계",
+      "newAnswer": null,
+      "oldExplanation": "비식별 관계(Non-identifying Relationship)는 약한 종속 관계이며 점선으로 표기합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-557",
+      "id": "EXP_DB2_027",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "데이터베이스의 기본키(Primary Key)는 어떠한 경우에도 NULL 값을 가질 수 없으며 릴레이션 내에서 중복될 수 없다는 무결성 규칙은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "개체 무결성",
+      "newAnswer": null,
+      "oldExplanation": "개체 무결성(Entity Integrity)은 테이블 내의 모든 튜플을 유일하게 식별할 수 있도록 기본키가 유효한 값을 가져야 함을 규정합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-010",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-010 DB_003와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-559",
+      "id": "EXP_DB2_029",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REJECT",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "테이블의 특정 속성에 입력되는 모든 값은 그 속성에 정의된 허용 데이터 타입, 길이, 허용 값 목록(도메인)에 속해야 한다는 무결성 규칙은 무엇인가?",
+      "newStem": "학생 테이블의 '학년' 속성에 1부터 4 사이의 정수만 입력되도록 허용 범위를 제한하는 것처럼 속성 값이 사전에 정해진 유효 범위를 준수해야 하는 무결성 제약조건은 무엇인가?",
+      "oldAnswer": "도메인 무결성",
+      "newAnswer": "도메인 무결성",
+      "oldExplanation": "도메인 무결성(Domain Integrity)은 속성 값의 타입, 형식, 범위(예: 나이는 양수)를 검증합니다.",
+      "newExplanation": "도메인 무결성(Domain Integrity)은 속성 값의 타입, 형식, 범위(예: 나이는 양수)를 검증합니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "단순 개념 정의에서 학년 범위 제약 조건 구체 사례형 문항으로 개편"
+    },
+    {
+      "questionCode": "Q-562",
+      "id": "EXP_DB2_032",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "회복 기법 중 트랜잭션 수행 도중에는 변경 내용을 로그 파일에만 기록해두고, 트랜잭션이 완전히 COMMIT된 이후에만 실제 데이터베이스 디스크에 반영하는 기법은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "지연 갱신 기법",
+      "newAnswer": null,
+      "oldExplanation": "지연 갱신(Deferred Update) 기법은 커밋 전까지 디스크를 수정하지 않으므로 장애 시 UNDO가 필요 없고 오직 REDO 연산만 수행합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-563",
+      "id": "EXP_DB2_033",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "회복 기법 중 트랜잭션 수행 도중 발생한 변경 결과를 디스크에 즉시 반영하되, 장애 발생 시 커밋되지 않은 트랜잭션은 로그를 통해 UNDO하는 기법은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "즉시 갱신 기법",
+      "newAnswer": null,
+      "oldExplanation": "즉시 갱신(Immediate Update) 기법은 디스크가 즉시 갱신되므로 미완료 트랜잭션에 대해서는 UNDO, 완료된 트랜잭션에 대해서는 REDO가 모두 필요합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-569",
+      "id": "EXP_DB2_039",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REJECT",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "분산 데이터베이스 투명성(Transparency) 중 사용자가 데이터베이스가 물리적으로 어느 지역의 어느 서버에 저장되어 있는지 알 필요 없이 논리적 이름만으로 접근할 수 있는 특성은 무엇인가?",
+      "newStem": "분산 데이터베이스에서 서울 본사 서버와 부산 지사 서버에 물리적으로 나뉜 테이블의 실제 IP나 저장 경로를 몰라도 논리 명칭만으로 조회 가능한 투명성은 무엇인가?",
+      "oldAnswer": "위치 투명성",
+      "newAnswer": "위치 투명성",
+      "oldExplanation": "위치 투명성(Location Transparency)은 사이트의 물리적 위치가 질의문에 영향을 주지 않는 특성입니다.",
+      "newExplanation": "위치 투명성(Location Transparency)은 사이트의 물리적 위치가 질의문에 영향을 주지 않는 특성입니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "단순 정의형에서 본사/지사 분산 노드 접속 시나리오 문항으로 개편"
+    },
+    {
+      "questionCode": "Q-570",
+      "id": "EXP_DB2_040",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "분산 데이터베이스 투명성 중 하나의 큰 테이블이 여러 세부 파티션 조각으로 나뉘어 여러 노드에 분산 저장되어 있더라도 사용자는 마치 단일 테이블인 것처럼 조회할 수 있는 특성은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "분할 투명성",
+      "newAnswer": null,
+      "oldExplanation": "분할 투명성(Fragmentation Transparency)은 단편화 구조를 사용자로부터 은닉합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-571",
+      "id": "EXP_DB2_041",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REJECT",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "분산 데이터베이스 투명성 중 데이터의 성능과 신뢰성을 위해 동일한 데이터가 여러 사이트에 복제되어 상주하더라도 사용자는 단 하나의 사본만 존재하는 것처럼 사용하는 특성은 무엇인가?",
+      "newStem": "분산 환경에서 데이터 가용성을 위해 동일 테이블을 서울과 도쿄 데이터센터에 실시간 복제해 두었으나 사용자에게는 1개의 단일 테이블로 투명하게 서비스되는 특성은 무엇인가?",
+      "oldAnswer": "복제 투명성",
+      "newAnswer": "복제 투명성",
+      "oldExplanation": "복제 투명성(Replication Transparency)은 여러 복제본 간의 일관성 동기화 작업을 시스템이 백그라운드에서 처리합니다.",
+      "newExplanation": "복제 투명성(Replication Transparency)은 여러 복제본 간의 일관성 동기화 작업을 시스템이 백그라운드에서 처리합니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "단순 정의형에서 다중 데이터센터 복제 환경 실무 시나리오 문항으로 개편"
+    },
+    {
+      "questionCode": "Q-572",
+      "id": "EXP_DB2_042",
+      "subject": "데이터베이스구축",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "분산 데이터베이스 투명성 중 특정 노드의 서버나 통신 네트워크에 장애가 발생하더라도 전체 데이터베이스 시스템의 트랜잭션 무결성이 유지되는 특성은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "장애 투명성",
+      "newAnswer": null,
+      "oldExplanation": "장애 투명성(Failure Transparency)은 국소적 하드웨어/통신 장애에도 불구하고 시스템이 올바르게 작업을 완수하도록 보장합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-581",
+      "id": "EXP_IS_001",
+      "subject": "정보시스템구축관리",
+      "auditDecision": "REJECT",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "ISO/IEC 9126 소프트웨어 품질 특성 중 명시된 조건에서 시스템이 오류 없이 지속적으로 정상 동작을 유지할 수 있는 정도를 나타내는 품질 특성은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "신뢰성",
+      "newAnswer": null,
+      "oldExplanation": "신뢰성(Reliability)은 성숙성, 고장 허용성, 회복성 등의 세부 부특성을 포함합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-582",
+      "id": "EXP_IS_002",
+      "subject": "정보시스템구축관리",
+      "auditDecision": "REJECT",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "ISO/IEC 9126 소프트웨어 품질 특성 중 소프트웨어를 다른 하드웨어나 운영체제 환경으로 쉽게 변환하거나 이전하여 실행할 수 있는 능력을 나타내는 특성은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "이식성",
+      "newAnswer": null,
+      "oldExplanation": "이식성(Portability)은 적용성, 설치성, 대체성, 공존성 등의 부특성을 가집니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-587",
+      "id": "EXP_IS_007",
+      "subject": "정보시스템구축관리",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "소프트웨어 프로세스 평가 및 개선을 위한 국제 표준 규격으로 ISO/IEC 15504라는 명칭으로도 불리는 표준의 이름은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "SPICE",
+      "newAnswer": null,
+      "oldExplanation": "SPICE(Software Process Improvement and Capability dEtermination)는 0~5단계의 6개 프로세스 수행 수준을 제시합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-599",
+      "id": "EXP_IS_019",
+      "subject": "정보시스템구축관리",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "재해 복구 센터 유형 중 주 센터와 동일한 하드웨어를 갖추고 대기(Active-Standby)하면서 수 시간 이내에 서비스를 복구 가능한 센터는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "핫 사이트",
+      "newAnswer": null,
+      "oldExplanation": "핫 사이트(Hot Site)는 상시 대기 상태로 수 시간 이내에 전환 가능합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-603",
+      "id": "EXP_IS_023",
+      "subject": "정보시스템구축관리",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "광채널(Fibre Channel) 스위치를 사용한 초고속 전용 네트워크망을 구성하여 서버들에 블록(Block) 단위 초고속 I/O를 제공하는 스토리지 영역 네트워크의 약칭은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "SAN",
+      "newAnswer": null,
+      "oldExplanation": "SAN(Storage Area Network)은 전용 광채널 망을 통해 블록 스토리지 공유를 지원합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-606",
+      "id": "EXP_IS_026",
+      "subject": "정보시스템구축관리",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "RAID 레벨 중 최소 3개 이상의 디스크가 필요하며, 패리티(Parity) 정보를 모든 디스크에 분산 저장하여 1개의 디스크 고장 시 복구 가능한 가장 널리 쓰이는 레벨은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "RAID 5",
+      "newAnswer": null,
+      "oldExplanation": "RAID 5는 분산 패리티를 사용하여 성능과 가용성을 균형 있게 충족합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-262",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-262 MEMO_IS_044와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-608",
+      "id": "EXP_IS_028",
+      "subject": "정보시스템구축관리",
+      "auditDecision": "REJECT",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "서비스 제공자와 고객 간에 제공될 서비스의 품질 수준(가동률, 응답 시간, 장애 복구 시간 등)을 정량적으로 명시하고 위반 시 보상 기준을 정의한 계약서는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "SLA",
+      "newAnswer": null,
+      "oldExplanation": "SLA(Service Level Agreement, 서비스 수준 협약서)는 IT 서비스 품질의 기준이 됩니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-611",
+      "id": "EXP_IS_032",
+      "subject": "정보시스템구축관리",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "재난이나 재해 발생 시 비즈니스의 핵심 핵심 기능을 신속히 복구하고 업무를 지속하기 위해 수립하는 종합적인 비즈니스 연속성 계획의 약칭은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "BCP",
+      "newAnswer": null,
+      "oldExplanation": "BCP(Business Continuity Planning)는 재해 발생 시 기업 비즈니스를 지속하기 위한 종합 계획입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-622",
+      "id": "EXP_IS_043",
+      "subject": "정보시스템구축관리",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "복합 조건식에서 각 개별 조건식이 전체 결정 결과에 독립적으로 영향을 미치는지를 검증하여 항공/철도 등 최고 안전성이 요구되는 시스템에 쓰이는 커버리지의 약칭은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "MC/DC",
+      "newAnswer": null,
+      "oldExplanation": "MC/DC(Modified Condition/Decision Coverage)는 조건/결정 커버리지를 보완하여 N+1개의 테스트 케이스로 높은 신뢰성을 달성합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-625",
+      "id": "EXP_IS_046",
+      "subject": "정보시스템구축관리",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "하향식 통합 테스트(Top-down Test) 수행 시 아직 개발되지 않은 하위 모듈의 역할을 흉내 내어 호출 결과를 반환해주는 가상 임시 모듈을 무엇이라 하는가?",
+      "newStem": null,
+      "oldAnswer": "스텁",
+      "newAnswer": null,
+      "oldExplanation": "스텁(Stub)은 하향식 테스트에서 하위 모듈의 대역으로 쓰입니다. 상향식 테스트에서 상위 모듈 역할을 하는 것은 드라이버(Driver)입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-239",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-239 MEMO_IS_021와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-626",
+      "id": "EXP_IS_047",
+      "subject": "정보시스템구축관리",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "상향식 통합 테스트(Bottom-up Test) 수행 시 이미 개발된 최하위 모듈들을 시험 구동하기 위해 상위 호출자 역할을 흉내 내는 가상 제어 소프트웨어를 무엇이라 하는가?",
+      "newStem": null,
+      "oldAnswer": "테스트 드라이버",
+      "newAnswer": null,
+      "oldExplanation": "테스트 드라이버(Test Driver)는 상향식 통합 시 데이터를 전달하고 하위 모듈의 출력을 수신하는 상위 제어 모듈입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-628",
+      "id": "EXP_IS_049",
+      "subject": "정보시스템구축관리",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "테스트의 기본 원칙 중 동일한 테스트 케이스로 반복 테스트를 수행하면 더 이상 새로운 결함을 찾아낼 수 없으므로 케이스를 지속적으로 갱신해야 한다는 원칙은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "살충제 패러독스",
+      "newAnswer": null,
+      "oldExplanation": "살충제 패러독스(Pesticide Paradox)는 테스트 케이스를 정기적으로 개선하고 리뷰해야 함을 강조합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-241",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-241 MEMO_IS_023와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-634",
+      "id": "EXP_NET_005",
+      "subject": "신기술/보안",
+      "auditDecision": "REJECT",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "네트워크 상의 클라이언트 PC들에게 IP 주소, 서브넷 마스크, 기본 게이트웨이, DNS 주소를 동적으로 자동 할당해주는 프로토콜의 약칭은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "DHCP",
+      "newAnswer": null,
+      "oldExplanation": "DHCP(Dynamic Host Configuration Protocol)는 DORA(Discover-Offer-Request-Ack) 과정을 거쳐 IP를 대여합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-646",
+      "id": "EXP_NET_019",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "어떤 서브넷의 네트워크 주소가 192.168.10.0/26 일 때, 이 서브넷 내부에서 사용 가능한 호스트 IP의 최대 개수는 몇 개인가?",
+      "newStem": null,
+      "oldAnswer": "62",
+      "newAnswer": null,
+      "oldExplanation": "호스트 비트는 32 - 26 = 6비트이므로 2^6 = 64개에서 네트워크(0)와 브로드캐스트(63) 2개를 빼면 62개입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-652",
+      "id": "EXP_NET_025",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "사람이 이해하기 쉬운 문자형 도메인 이름(예: www.naver.com)을 컴퓨터가 통신할 수 있는 숫자형 IP 주소로 변환해주는 시스템의 약칭은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "DNS",
+      "newAnswer": null,
+      "oldExplanation": "DNS(Domain Name System)는 전 세계 분산 계층 데이터베이스를 통해 도메인 질의를 IP 주소로 매핑합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-674",
+      "id": "EXP_NET_048",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "네트워크에 접속을 시도하는 모든 사용자 단말(PC, 모바일)의 백신 설치 여부, OS 패치 상태 등을 사전에 검증하여 정책 위반 기기의 내부망 접근을 차단하는 기술의 약칭은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "NAC",
+      "newAnswer": null,
+      "oldExplanation": "NAC(Network Access Control, 네트워크 접근 제어)는 내부망 보안 위협을 사전 차단합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-681",
+      "id": "EXP_SEC1_005",
+      "subject": "신기술/보안",
+      "auditDecision": "REJECT",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "미국 표준국(NIST)의 구 표준 블록 암호화 알고리즘으로 64비트 평문 블록을 56비트 유효 키를 사용해 16라운드 Feistel 구조로 암호화하는 알고리즘은 무엇인가?",
+      "newStem": "64비트 블록 암호 알고리즘 DES에서 8비트의 패리티 검사 비트를 제외하고 실제 암호화 연산에 사용되는 순수 유효 비밀키의 크기는 몇 비트인가? (숫자만 작성)",
+      "oldAnswer": "DES",
+      "newAnswer": [
+        "56",
+        "56비트"
+      ],
+      "oldExplanation": "DES(Data Encryption Standard)는 56비트의 짧은 키 길이로 인해 현재는 전수 조사(Brute Force) 공격에 취약하여 사용이 권장되지 않습니다.",
+      "newExplanation": "DES의 전체 키 길이는 64비트이지만 8비트 패리티 검사 비트를 제외한 56비트가 실제 암호화 연산에 사용되는 유효 키입니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "알고리즘 명칭 중복에서 기출 빈출 함정인 유효 키 길이(56비트) 정밀 수치 문항으로 개편"
+    },
+    {
+      "questionCode": "Q-683",
+      "id": "EXP_SEC1_008",
+      "subject": "신기술/보안",
+      "auditDecision": "REJECT",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "한국인터넷진흥원(KISA)이 전자상거래와 공공 보안을 위해 개발한 국내 표준 블록 암호 알고리즘으로, 128비트 블록 크기와 16라운드 Feistel 구조를 사용하는 것은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "SEED",
+      "newAnswer": null,
+      "oldExplanation": "SEED는 대한민국의 국가 표준 대칭키 블록 암호 알고리즘입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-684",
+      "id": "EXP_SEC1_009",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "국가정보원과 국가보안기술연구소(NSRI)가 주도하여 개발한 128비트 블록 크기의 국가 표준 암호로, AES와 동일한 SPN(치환-순열망) 구조를 채택한 국내 알고리즘은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "ARIA",
+      "newAnswer": null,
+      "oldExplanation": "ARIA(Academy Research Institute Agency)는 경량 하드웨어 및 범용 프로세서에서 고속 동작하는 대한민국 표준 암호입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-686",
+      "id": "EXP_SEC1_012",
+      "subject": "신기술/보안",
+      "auditDecision": "REJECT",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "타원곡선 상의 이산대수 문제에 기반하여 RSA보다 훨씬 짧은 키 길이(256비트가 RSA 3072비트 수준)로 동일한 보안 강도를 제공하여 모바일 기기에 최적화된 공개키 암호는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "ECC",
+      "newAnswer": null,
+      "oldExplanation": "ECC(Elliptic Curve Cryptography)는 적은 연산량과 짧은 키 길이로 스마트폰 및 IoT 암호화의 핵심 기술입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-689",
+      "id": "EXP_SEC1_016",
+      "subject": "신기술/보안",
+      "auditDecision": "REJECT",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "군사적 기밀성을 보장하기 위해 고안된 보안 모델로, 자신의 보안 등급보다 높은 문서는 읽을 수 없고(No Read Up) 낮은 문서에는 쓸 수 없는(No Write Down) 모델은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "벨 라파듈라",
+      "newAnswer": null,
+      "oldExplanation": "벨-라파듈라(BLP, Bell-LaPadula) 모델은 기밀성(Confidentiality) 유지가 최우선 목표입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-691",
+      "id": "EXP_SEC1_020",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "관리자나 시스템이 설정한 보안 등급(Secret, Top Secret 등)과 주체의 인가 등급을 중앙에서 비교하여 규칙 기반으로 접근을 강제 통제하는 방식의 약칭은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "MAC",
+      "newAnswer": null,
+      "oldExplanation": "MAC(Mandatory Access Control, 강제적 접근 통제)는 보안 관리자만 권한을 설정할 수 있어 군사/정부 시스템에 쓰입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-693",
+      "id": "EXP_SEC1_022",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "주체의 속성, 객체의 속성, 환경 조건(시간, 위치, 디바이스 상태 등)을 동적으로 결합하여 세분화된 보안 정책을 적용하는 속성 기반 접근 통제의 약칭은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "ABAC",
+      "newAnswer": null,
+      "oldExplanation": "ABAC(Attribute-Based Access Control)는 XACML 표준을 기반으로 상황 인지형 동적 접근 제어를 제공합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-695",
+      "id": "EXP_SEC1_025",
+      "subject": "신기술/보안",
+      "auditDecision": "REJECT",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "인가된 적법한 사용자가 필요한 시점에 방해받지 않고 언제든지 정보 시스템과 자원을 즉시 이용할 수 있도록 보장하는 보안 원칙은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "가용성",
+      "newAnswer": null,
+      "oldExplanation": "가용성(Availability)은 DoS/DDoS 방어, 이중화, 백업 등을 통해 시스템이 지속 가동되도록 보장합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-701",
+      "id": "EXP_SEC1_031",
+      "subject": "신기술/보안",
+      "auditDecision": "REJECT",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "한 번의 시스템 로그인 성공으로 연동된 다른 모든 웹 사이트와 애플리케이션 서비스들을 추가 인증 없이 자동으로 이용할 수 있게 해주는 통합 인증 기술의 약칭은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "SSO",
+      "newAnswer": null,
+      "oldExplanation": "SSO(Single Sign-On)는 중앙 인증 서버(CAS 등)를 두어 사용자의 편의성과 계정 관리 효율을 극대화합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-702",
+      "id": "EXP_SEC1_032",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "사용자가 자신의 비밀번호를 제3자 앱에 직접 노출하지 않고, 구글이나 카카오 등 인증 제공자로부터 인가 토큰(Access Token)을 발급받아 자원 접근 권한을 위임하는 개방형 인가 표준은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "OAuth",
+      "newAnswer": null,
+      "oldExplanation": "OAuth 2.0(Open Authorization)은 안전한 API 권한 위임을 위한 표준 프레임워크입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-704",
+      "id": "EXP_SEC1_034",
+      "subject": "신기술/보안",
+      "auditDecision": "REJECT",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "지식 기반(비밀번호), 소지 기반(스마트폰/OTP), 생체 기반(지문/홍채) 중 서로 다른 2가지 이상의 독립된 인증 요소를 결합하여 보안을 강화하는 인증 방식의 약칭은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "MFA",
+      "newAnswer": null,
+      "oldExplanation": "MFA(Multi-Factor Authentication, 다중 요소 인증)는 단일 인증 수단 침해로 인한 계정 탈취를 방지합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-720",
+      "id": "EXP_SEC1_050",
+      "subject": "신기술/보안",
+      "auditDecision": "REJECT",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "\"아무것도 신뢰하지 말고 항상 모든 접근을 검증하라(Never Trust, Always Verify)\"는 철학 아래 내부망 접근자라도 매번 엄격한 인증과 권한을 검증하는 차세대 보안 모델은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "제로 트러스트",
+      "newAnswer": null,
+      "oldExplanation": "제로 트러스트(Zero Trust)는 경계 기반 보안의 한계를 극복하고 최소 권한 원칙과 지속적 검증을 적용합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-736",
+      "id": "EXP_SEC2_017",
+      "subject": "신기술/보안",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "공격자가 패킷의 출발지 IP 주소를 피해자 서버의 IP로 위조한 후, 다이렉트 브로드캐스트 주소로 대량의 ICMP Echo Request를 전송하여 네트워크 내의 모든 호스트가 피해자에게 동시에 응답(Reply)을 쏟아붓게 만드는 DoS 공격은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "스머프",
+      "newAnswer": null,
+      "oldExplanation": "스머핑(Smurfing)은 ICMP 증폭 공격으로 라우터에서 다이렉트 브로드캐스트 차단을 통해 방어합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-200",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-200 MEMO_SEC_032와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-737",
+      "id": "EXP_SEC2_018",
+      "subject": "신기술/보안",
+      "auditDecision": "REJECT",
+      "finalDecision": "REMOVE",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "규격 허용 최대 크기(65,535 바이트)를 초과하는 거대한 ICMP 패킷을 수많은 작은 조각(Fragment)으로 분할 전송하여 수신 측이 이를 재조합하는 과정에서 버퍼 오버플로우와 다운을 유발하는 공격은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "Ping of Death",
+      "newAnswer": null,
+      "oldExplanation": "Ping of Death(죽음의 핑)는 거대 ICMP 패킷의 재조합 취약점을 악용합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "Q-201",
+      "comparisonSummary": "운영 문제은행 제외 및 archivedBank.ts 이관 (선행 Q-201 MEMO_SEC_033와 단순 중복)"
+    },
+    {
+      "questionCode": "Q-738",
+      "id": "EXP_SEC2_019",
+      "subject": "신기술/보안",
+      "auditDecision": "REJECT",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "IP 패킷 분할(Fragmentation) 시 오프셋(Fragment Offset) 값들을 의도적으로 서로 중복(Overlap)되거나 빈틈이 생기도록 조작하여 수신 시스템이 패킷 재조합 시 크래시(블루스크린)를 일으키게 하는 공격은 무엇인가?",
+      "newStem": "IP 헤더의 단편화 오프셋(Fragment Offset) 필드 값을 고의로 중첩되도록 조작하여 수신 호스트가 패킷을 재조합하는 메모리 버퍼 오류를 유도하는 DoS 공격은 무엇인가?",
+      "oldAnswer": "티어드롭",
+      "newAnswer": "티어드롭",
+      "oldExplanation": "티어드롭(Teardrop) 공격은 패킷 조각 오프셋 조작으로 인한 수신 측 OS 재조합 알고리즘의 결함을 노립니다.",
+      "newExplanation": "티어드롭(Teardrop) 공격은 패킷 조각 오프셋 조작으로 인한 수신 측 OS 재조합 알고리즘의 결함을 노립니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "단순 지문 중복에서 Fragment Offset 필드 조작 메커니즘 중심 문항으로 정밀화"
+    },
+    {
+      "questionCode": "Q-739",
+      "id": "EXP_SEC2_020",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "패킷의 출발지 IP 주소와 포트 번호를 피해자의 대상 서버 IP 주소 및 포트 번호와 완벽히 똑같이 조작하여, 수신 서버가 자기 자신에게 계속 무한 응답 루프를 돌게 만드는 DoS 공격은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "랜드 어택",
+      "newAnswer": null,
+      "oldExplanation": "랜드 어택(Land Attack)은 출발지와 목적지가 동일한 패킷을 드롭(차단)하도록 필터링하여 방어합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-740",
+      "id": "EXP_SEC2_021",
+      "subject": "신기술/보안",
+      "auditDecision": "REJECT",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "HTTP 헤더의 끝을 알리는 빈 줄(\\r\\n\\r\\n)을 고의로 전송하지 않고, 극소량의 가짜 헤더를 비정상적으로 느린 속도로 지속 전송하여 웹 서버의 동시 연결 커넥션을 모두 고갈시키는 공격은 무엇인가?",
+      "newStem": "HTTP 요청 시 헤더의 끝을 알리는 개행(\\r\\n\\r\\n)을 완성하지 않고 비정상적인 지연 헤더를 주기적으로 전송하여 웹 서버의 최대 동시 연결 풀(Pool)을 고갈시키는 공격은 무엇인가?",
+      "oldAnswer": "슬로로리스",
+      "newAnswer": "슬로로리스",
+      "oldExplanation": "슬로로리스(Slowloris)는 저대역폭 애플리케이션 계층 DoS 공격으로 웹 서버의 Keep-Alive 연결 제한으로 대응합니다.",
+      "newExplanation": "슬로로리스(Slowloris)는 저대역폭 애플리케이션 계층 DoS 공격으로 웹 서버의 Keep-Alive 연결 제한으로 대응합니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "단순 지문 중복에서 HTTP 개행 규격 미완성 및 연결 풀 고갈 메커니즘 정밀화"
+    },
+    {
+      "questionCode": "Q-741",
+      "id": "EXP_SEC2_022",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "동일 로컬 네트워크(LAN) 상에서 위조된 ARP 응답 패킷을 지속적으로 희생자에게 전송하여 희생자의 ARP 캐시 테이블의 게이트웨이 MAC 주소를 공격자의 MAC 주소로 변조하는 공격은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "ARP 스푸핑",
+      "newAnswer": null,
+      "oldExplanation": "ARP 스푸핑(ARP Spoofing)은 중간자(MITM) 공격의 기반이 되며 정적 ARP(Static ARP) 테이블 설정으로 방어합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-747",
+      "id": "EXP_SEC2_028",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "피해자 컴퓨터 시스템의 주요 파일들을 강력한 알고리즘으로 암호화하여 접근할 수 없게 인질로 잡은 뒤, 복호화 키를 제공하는 대가로 비트코인 등 금전을 요구하는 악성코드는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "랜섬웨어",
+      "newAnswer": null,
+      "oldExplanation": "랜섬웨어(Ransomware)는 몸값(Ransom)과 소프트웨어의 합성어로 중요 파일 암호화를 수행합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-750",
+      "id": "EXP_SEC2_031",
+      "subject": "신기술/보안",
+      "auditDecision": "REJECT",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "MEANING_DUPLICATE",
+        "LOW_VARIATION_VALUE"
+      ],
+      "oldStem": "사내 PC에서 기업의 핵심 기밀 문서나 고객 개인정보가 이메일, 메신저, USB 출력 등을 통해 외부로 무단 유출되는 것을 감시하고 원천 차단하는 데이터 유출 방지 솔루션의 약칭은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "DLP",
+      "newAnswer": null,
+      "oldExplanation": "DLP(Data Loss Prevention)는 내부자에 의한 정보 유출을 모니터링하고 통제합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-755",
+      "id": "EXP_SEC2_036",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "클라우드 서비스 모델 중 가상 서버, 스토리지, 가상 네트워크 등 순수 물리적 하드웨어 인프라 자원만을 사용자에게 대여해주는 서비스 모델의 약칭은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "IaaS",
+      "newAnswer": null,
+      "oldExplanation": "IaaS(Infrastructure as a Service, 예: AWS EC2)는 OS 설치부터 미들웨어 구성을 사용자가 직접 관리합니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-756",
+      "id": "EXP_SEC2_038",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "클라우드 서비스 모델 중 완성된 완성형 소프트웨어 애플리케이션을 인터넷 웹 브라우저를 통해 구독 방식으로 최종 사용자에게 완제품으로 제공하는 서비스 모델의 약칭은 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "SaaS",
+      "newAnswer": null,
+      "oldExplanation": "SaaS(Software as a Service, 예: 구글 독스, 노션)는 인스톨 없이 웹에서 즉시 사용하는 완성형 소프트웨어입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-761",
+      "id": "EXP_SEC2_043",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "KEEP",
+      "reasonCodes": [
+        "LOW_VARIATION_VALUE",
+        "NEEDS_HUMAN_REVIEW"
+      ],
+      "oldStem": "관리자나 개발자가 유지보수 및 디버깅 편의를 위해 시스템 인증 절차를 우회할 수 있도록 고의로 숨겨둔 비밀 통로 또는 침해 사고 후 재침투를 위해 남겨둔 통로는 무엇인가?",
+      "newStem": null,
+      "oldAnswer": "백도어",
+      "newAnswer": null,
+      "oldExplanation": "백도어(Backdoor, 트랩도어)는 정상 인증 없이 시스템 관리자 권한을 획득할 수 있는 치명적 보안 위협입니다.",
+      "newExplanation": null,
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "선행 문항 대비 독립적 학습 가치(구체적 키워드/사례/파라미터 차별화) 확인되어 정상 유지"
+    },
+    {
+      "questionCode": "Q-763",
+      "id": "EXP_SEC2_045",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "웹 브라우저의 주소창 URL이나 즐겨찾기를 정교하게 변조하거나 DNS 호스트 파일을 조작하여 피해자가 정상 주소를 입력하더라도 가짜 파밍 사이트로 강제 유인하는 금융 사기 수법은 무엇인가?",
+      "newStem": "피해자 PC의 호스트(hosts) 파일이나 DNS 주소를 변조하여 피해자가 정상적인 웹사이트 주소를 정확히 입력하더라도 가짜 위장 사이트로 강제 이동시켜 개인 금융정보를 가로채는 공격 기법은 무엇인가?",
+      "oldAnswer": "파밍",
+      "newAnswer": "파밍",
+      "oldExplanation": "파밍(Pharming)은 DNS 스푸핑이나 hosts 파일 변조를 이용해 정상 URL 입력 시에도 가짜 피싱 사이트로 납치합니다.",
+      "newExplanation": "파밍(Pharming)은 DNS 스푸핑이나 hosts 파일 변조를 이용해 정상 URL 입력 시에도 가짜 피싱 사이트로 납치합니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 단어(가짜 파밍 사이트) 누설 제거"
+    },
+    {
+      "questionCode": "Q-765",
+      "id": "EXP_SEC2_047",
+      "subject": "신기술/보안",
+      "auditDecision": "REVIEW",
+      "finalDecision": "MODIFY",
+      "reasonCodes": [
+        "ANSWER_AMBIGUOUS",
+        "INTERNAL_CONTRADICTION"
+      ],
+      "oldStem": "미국 MITRE 사가 관리하며 공개적으로 알려진 소프트웨어 보안 취약점들에 부여하는 표준화된 고유 식별 번호 체계(예: CVE-2024-1234)의 약칭은 무엇인가?",
+      "newStem": "미국 MITRE사가 총괄 운영하며, 공개적으로 발표된 소프트웨어 보안 결함 및 취약점들에 전 세계적으로 고유하게 부여하는 표준화된 식별 체계의 영문 약칭은 무엇인가?",
+      "oldAnswer": "CVE",
+      "newAnswer": "CVE",
+      "oldExplanation": "CVE(Common Vulnerabilities and Exposures)는 전 세계 취약점 정보를 공유하고 추적하기 위한 표준 식별자입니다.",
+      "newExplanation": "CVE(Common Vulnerabilities and Exposures)는 전 세계 취약점 정보를 공유하고 추적하기 위한 표준 식별자입니다.",
+      "precedingQuestionCode": "N/A",
+      "comparisonSummary": "지문 내 정답 단어(예: CVE-2024-1234) 직접 누설 제거"
+    }
+  ]
+}

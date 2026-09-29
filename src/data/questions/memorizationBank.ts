@@ -2,7 +2,7 @@ import { Question } from '../../types/question';
 
 /**
  * 실기 암기 과목 보충 및 표준 기출 문제 은행.
- * 총 742문항 (과목별 엄선된 고빈출 표준 문항 수록).
+ * 총 724문항 (정제 및 품질 검증 완료).
  * 오프라인 환경에서도 즉시 100% 동작합니다.
  */
 export const MEMORIZATION_BANK: Question[] = [
@@ -252,7 +252,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "category": "형상관리",
     "subCategory": "베이스라인",
     "type": "SHORT_ANSWER",
-    "question": "형상 항목이 공식 검토를 통과한 뒤 변경을 통제하기 위한 기준선으로 확정된 상태의 명칭을 영문 또는 한글로 쓰시오.",
+    "question": "소프트웨어 형상 관리에서 공식 검토와 승인을 거쳐 확정된 상태로, 이후 시스템 변경을 통제하고 비교하기 위한 기초가 되는 공식적인 상태의 명칭을 영문 또는 한글로 쓰시오.",
     "answer": [
       "베이스라인",
       "Baseline",
@@ -1393,7 +1393,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "category": "디자인 패턴",
     "subCategory": "구조 패턴",
     "type": "SHORT_ANSWER",
-    "question": "구현부에서 추상층을 분리하여 두 계층이 독립적으로 확장할 수 있도록 다리(Bridge) 역할을 수행하는 GoF 구조 패턴의 명칭을 쓰시오.",
+    "question": "GoF 디자인 패턴 중 기능의 클래스 계층과 구현의 클래스 계층을 분리하여 두 계층이 독립적으로 확장할 수 있도록 연결해 주는 구조 패턴의 명칭을 쓰시오.",
     "answer": [
       "브리지",
       "브리지 패턴",
@@ -1430,30 +1430,6 @@ export const MEMORIZATION_BANK: Question[] = [
       "디자인패턴",
       "구조패턴",
       "메모리공유"
-    ],
-    "source": "정보처리기사 실기 표준"
-  },
-  {
-    "id": "MEMO_SE_025",
-    "subject": "소프트웨어설계",
-    "category": "디자인 패턴",
-    "subCategory": "행위 패턴",
-    "type": "SHORT_ANSWER",
-    "question": "어떤 객체의 상태가 변하면 그 객체에 의존하는 모든 객체에 자동으로 알림이 가고 내용이 갱신되는 일대다 의존 관계의 GoF 행위 패턴을 쓰시오.",
-    "answer": [
-      "옵서버",
-      "옵저버",
-      "옵서버 패턴",
-      "옵저버 패턴",
-      "Observer"
-    ],
-    "explanation": "옵서버 패턴은 발행-구독(Publish-Subscribe) 모델로 통보 주체와 관찰자 객체 간의 결합도를 낮춥니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "옵서버",
-      "디자인패턴",
-      "행위패턴",
-      "발행구독"
     ],
     "source": "정보처리기사 실기 표준"
   },
@@ -1509,7 +1485,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "category": "디자인 패턴",
     "subCategory": "행위 패턴",
     "type": "SHORT_ANSWER",
-    "question": "객체들의 상호작용을 캡슐화하여 객체 간의 직접적인 참조를 줄이고, 복잡한 통신을 조율하는 중재자 객체를 두는 GoF 행위 패턴의 명칭을 쓰시오.",
+    "question": "객체 간의 복잡한 M:N 의존 관계를 줄이기 위해 객체들의 상호작용을 캡슐화하고 하나의 중앙 객체가 통신을 전담 제어하도록 하는 GoF 행위 패턴의 명칭을 쓰시오.",
     "answer": [
       "중재자",
       "중재자 패턴",
@@ -1983,26 +1959,6 @@ export const MEMORIZATION_BANK: Question[] = [
     "source": "정보처리기사 실기 표준"
   },
   {
-    "id": "MEMO_SE_050",
-    "subject": "소프트웨어설계",
-    "category": "모듈화",
-    "subCategory": "응집도",
-    "type": "SHORT_ANSWER",
-    "question": "모듈 내부의 모든 요소가 단 하나의 단일 목적(기능)만을 수행하기 위해 긴밀하게 구성된 가장 높고 이상적인 응집도의 명칭을 쓰시오.",
-    "answer": [
-      "기능적 응집도",
-      "Functional Cohesion"
-    ],
-    "explanation": "기능적 응집도는 최고 수준의 응집도입니다. 응집도 순서: 우연적 < 논리적 < 시간적 < 절차적 < 통신적 < 순차적 < 기능적 (우논시절통순기).",
-    "difficulty": "EASY",
-    "keywords": [
-      "응집도",
-      "기능적응집도",
-      "단일기능"
-    ],
-    "source": "정보처리기사 실기 표준"
-  },
-  {
     "id": "MEMO_SE_051",
     "subject": "소프트웨어설계",
     "category": "모듈화",
@@ -2454,28 +2410,6 @@ export const MEMORIZATION_BANK: Question[] = [
     "source": "정보처리기사 실기 표준"
   },
   {
-    "id": "MEMO_DB_022",
-    "subject": "데이터베이스구축",
-    "category": "무결성 제약조건",
-    "subCategory": "개체 무결성",
-    "type": "SHORT_ANSWER",
-    "question": "릴레이션의 기본키를 구성하는 어떤 속성도 널(NULL) 값이나 중복값을 가질 수 없다는 제약조건의 명칭을 쓰시오.",
-    "answer": [
-      "개체 무결성",
-      "개체 무결성 제약조건",
-      "Entity Integrity"
-    ],
-    "explanation": "개체 무결성은 기본키의 유일성과 Not Null을 보장하여 각 튜플을 고유하게 식별할 수 있도록 합니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "무결성",
-      "개체무결성",
-      "기본키",
-      "NotNull"
-    ],
-    "source": "정보처리기사 실기 표준"
-  },
-  {
     "id": "MEMO_DB_023",
     "subject": "데이터베이스구축",
     "category": "무결성 제약조건",
@@ -2635,7 +2569,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "category": "반정규화",
     "subCategory": "테이블 분할",
     "type": "SHORT_ANSWER",
-    "question": "하나의 대용량 테이블을 행(Row) 단위로 특정 기준(날짜, 지역 등)에 따라 여러 개의 작은 테이블로 쪼개는 수평 분할 기법의 일반적 명칭을 쓰시오.",
+    "question": "하나의 대용량 테이블을 레코드(Row) 단위로 특정 기준(날짜, 지역 등)에 맞추어 여러 물리적 테이블로 분산 저장하는 기법의 명칭을 영문 또는 한글로 쓰시오.",
     "answer": [
       "파티셔닝",
       "수평 분할",
@@ -2657,7 +2591,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "category": "트랜잭션",
     "subCategory": "ACID",
     "type": "SHORT_ANSWER",
-    "question": "트랜잭션이 성공적으로 완료되면 언제나 일관성 있는 데이터베이스 상태를 유지해야 하며, 무결성 제약조건을 위배하지 않아야 한다는 ACID 특성의 명칭을 쓰시오.",
+    "question": "트랜잭션이 성공적으로 수행된 후에도 시스템의 고정 요소나 무결성 제약조건을 위배하지 않고 모순 없는 데이터베이스 상태를 유지해야 한다는 ACID 특성의 명칭을 쓰시오.",
     "answer": [
       "일관성",
       "Consistency"
@@ -3303,7 +3237,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "category": "트랜잭션",
     "subCategory": "상태 전이",
     "type": "SHORT_ANSWER",
-    "question": "트랜잭션의 5가지 상태(활동, 부분 완료, 완료, 실패, 철회) 중 마지막 연산까지 정상 수행되었으나 커밋 연산 직전인 상태의 명칭을 쓰시오.",
+    "question": "트랜잭션의 생명주기 상태 중 트랜잭션의 마지막 연산까지 성공적으로 실행을 마쳤으나, 아직 최종 변경 내용을 디스크에 반영(Commit)하기 직전 단계의 상태 명칭을 쓰시오.",
     "answer": [
       "부분 완료",
       "Partially Committed",
@@ -3990,7 +3924,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "category": "지능형 공격",
     "subCategory": "APT",
     "type": "SHORT_ANSWER",
-    "question": "특정 조직을 목표로 정하고 다양한 IT 공격 기술과 사회공학 기법을 결합하여 장기간에 걸쳐 지속적으로 잠복하면서 기밀을 탈취하는 지능형 지속 위협의 영문 약어를 쓰시오.",
+    "question": "특정 타깃을 정하고 다양한 보안 취약점과 사회공학적 기법을 복합 활용하여 장기간 은밀하게 침투·잠복하며 핵심 기밀을 탈취하는 위협 공격 형태의 영문 약어를 쓰시오.",
     "answer": [
       "APT",
       "Advanced Persistent Threat",
@@ -4221,7 +4155,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "category": "보안 데이터 유출 방지",
     "subCategory": "DLP",
     "type": "SHORT_ANSWER",
-    "question": "사내 직원의 PC나 네트워크를 모니터링하여 기밀 문서, 개인정보 등 중요 데이터가 외부로 무단 유출되는 것을 감지하고 실시간 차단하는 데이터 유출 방지 솔루션의 영문 약어를 쓰시오.",
+    "question": "사내 엔드포인트나 네트워크 경로를 상시 감시하여 기업의 핵심 기밀 문서나 개인정보가 이메일, USB, 메신저 등을 통해 외부로 무단 반출되는 것을 방지하는 보안 솔루션의 영문 약어를 쓰시오.",
     "answer": [
       "DLP",
       "Data Loss Prevention",
@@ -4262,7 +4196,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "category": "인증 기술",
     "subCategory": "MFA",
     "type": "SHORT_ANSWER",
-    "question": "아이디/비밀번호(지식 기반) 외에 스마트폰 OTP(소유 기반)나 지문(생체 기반) 등 서로 다른 두 가지 이상의 인증 요소를 결합하여 보안을 강화하는 다중 요소 인증의 영문 약어를 쓰시오.",
+    "question": "지식(패스워드), 소유(스마트폰/OTP), 생체(지문/홍채) 중 서로 다른 2개 이상의 독립된 범주의 인증 수단을 결합하여 보안성을 강화한 인증 기법의 영문 약어를 쓰시오.",
     "answer": [
       "MFA",
       "Multi-Factor Authentication",
@@ -4306,7 +4240,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "category": "네트워크 보안",
     "subCategory": "VPN",
     "type": "SHORT_ANSWER",
-    "question": "공중 인터넷망(Public Network)을 마치 전용 사설망(Private Network)처럼 안전하게 사용할 수 있도록 터널링과 암호화 기술을 적용한 가상 사설망의 영문 약어를 쓰시오.",
+    "question": "공용 인터넷 네트워크 상에서 터널링과 암호화 기술을 적용하여 마치 독립된 전용 사설망을 사용하는 것처럼 보안 통신을 제공하는 네트워크 기술의 영문 약어를 쓰시오.",
     "answer": [
       "VPN",
       "Virtual Private Network",
@@ -4328,7 +4262,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "category": "악성코드",
     "subCategory": "백도어",
     "type": "SHORT_ANSWER",
-    "question": "시스템 개발자나 침입자가 정상적인 인증 절차를 우회하여 시스템에 손쉽게 재접근할 수 있도록 만들어 둔 비밀 통로(트랩도어)의 명칭을 쓰시오.",
+    "question": "시스템 개발자나 공격자가 정상적인 보안 인증 절차를 거치지 않고 시스템에 직접 침투할 수 있도록 고의로 마련해 둔 비인가 비밀 통로의 명칭을 쓰시오.",
     "answer": [
       "백도어",
       "트랩도어",
@@ -4351,7 +4285,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "category": "소프트웨어 아키텍처",
     "subCategory": "서버리스",
     "type": "SHORT_ANSWER",
-    "question": "개발자가 서버 인프라를 직접 프로비저닝하거나 관리하지 않고, 이벤트가 발생할 때만 특정 함수 코드가 실행되고 사용된 리소스만큼만 비용을 지불하는 클라우드 실행 모델(FaaS)의 명칭을 쓰시오.",
+    "question": "개발자가 물리적 서버 관리나 인프라 프로비저닝 없이 비즈니스 로직(함수)만을 배포하고 이벤트 구동 방식으로 실행되는 클라우드 컴퓨팅 패러다임의 명칭을 쓰시오.",
     "answer": [
       "서버리스",
       "Serverless",
@@ -5245,7 +5179,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "category": "보안 개발 방법론",
     "subCategory": "시큐어 코딩",
     "type": "SHORT_ANSWER",
-    "question": "소프트웨어 개발 생명주기(SDLC) 전 과정에 걸쳐 보안 취약점을 예방하기 위해 마이크로소프트사가 개발한 보안 개발 생명주기 프레임워크의 영문 약어를 쓰시오.",
+    "question": "소프트웨어 기획, 설계, 구현, 테스팅 등 개발 전 단계에 걸쳐 보안을 체계적으로 내재화하기 위해 MS사가 제안한 보안 개발 방법론의 영문 약어를 쓰시오.",
     "answer": [
       "SDL",
       "MS-SDL",
@@ -5313,12 +5247,11 @@ export const MEMORIZATION_BANK: Question[] = [
     "category": "정형 기술 검토",
     "subCategory": "인스펙션",
     "type": "SHORT_ANSWER",
-    "question": "원작성자가 아닌 다른 검토 전문가들이 체크리스트를 바탕으로 소스 코드나 명세서를 정밀하게 결함 식별하는 가장 공식적이고 체계적인 동료 검토 기법의 명칭을 쓰시오.",
+    "question": "저작자가 아닌 훈련된 검토팀이 사전에 정의된 체크리스트와 엄격한 규칙에 따라 소스 코드나 산출물의 결함을 찾아내는 가장 정형화된 정적 검토 기법의 명칭을 쓰시오.",
     "answer": [
       "인스펙션",
       "Inspection",
-      "코드 인스펙션",
-      "동료 검토"
+      "코드 인스펙션"
     ],
     "explanation": "패이건(Fagan)이 제안한 인스펙션은 주재자(Moderator), 작성자, 낭독자, 기록자, 검토자 역할을 엄격히 나누어 결함을 색출합니다.",
     "difficulty": "MEDIUM",
@@ -7594,23 +7527,6 @@ export const MEMORIZATION_BANK: Question[] = [
     "chapterId": "ch-se-reengineering"
   },
   {
-    "id": "EXP_SE1_020",
-    "subject": "소프트웨어설계",
-    "category": "럼바우 분석",
-    "type": "SHORT_ANSWER",
-    "question": "럼바우(Rumbaugh) 객체지향 분석 기법의 3대 모델링 중 자료 흐름도(DFD)를 주 도구로 사용하여 입력에 따른 데이터 처리와 계산 과정을 표현하는 모델링은 무엇인가?",
-    "answer": "기능 모델링",
-    "explanation": "기능 모델링(Functional Modeling)은 DFD를 사용합니다. 상태 다이어그램을 쓰는 것은 동적 모델링, ERD/객체도를 쓰는 것은 객체 모델링입니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "기능 모델링",
-      "DFD",
-      "자료흐름도"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-se-rumbaugh"
-  },
-  {
     "id": "EXP_SE1_021",
     "subject": "소프트웨어설계",
     "category": "애자일",
@@ -7785,7 +7701,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "subject": "소프트웨어설계",
     "category": "객체지향 설계",
     "type": "SHORT_ANSWER",
-    "question": "SOLID 원칙 중 소프트웨어 개체(클래스, 모듈 등)는 기능 확장에 대해서는 열려 있어야(Open) 하고, 기존 코드 수정에 대해서는 닫혀 있어야(Closed) 한다는 원칙은 무엇인가?",
+    "question": "새로운 결제 수단이나 인증 방식을 추가할 때 기존 처리 엔진 코드를 직접 수정하지 않고 다형성을 통해 기능을 유연하게 확장할 수 있도록 하는 SOLID 객체지향 설계 원칙은 무엇인가?",
     "answer": "개방 폐쇄 원칙",
     "explanation": "개방 폐쇄 원칙(OCP, Open-Closed Principle)은 기존 코드를 손대지 않고 새로운 기능을 추가할 수 있도록 인터페이스를 활용하는 원칙입니다.",
     "difficulty": "EASY",
@@ -7802,7 +7718,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "subject": "소프트웨어설계",
     "category": "객체지향 설계",
     "type": "SHORT_ANSWER",
-    "question": "SOLID 원칙 중 하나의 클래스는 단 하나의 책임만을 가져야 하며, 클래스가 변경되는 이유는 단 하나뿐이어야 한다는 원칙은 무엇인가?",
+    "question": "한 클래스가 사용자 인터페이스 출력과 데이터베이스 트랜잭션 저장을 동시에 처리하여 변경 요인이 다수 발생하는 결함을 막기 위해 적용하는 SOLID 설계 원칙은 무엇인가?",
     "answer": "단일 책임 원칙",
     "explanation": "단일 책임 원칙(SRP, Single Responsibility Principle)은 높은 응집도와 낮은 결합도를 유지하기 위한 객체지향의 기본 설계 원칙입니다.",
     "difficulty": "EASY",
@@ -7815,45 +7731,11 @@ export const MEMORIZATION_BANK: Question[] = [
     "chapterId": "ch-se-solid"
   },
   {
-    "id": "EXP_SE1_033",
-    "subject": "소프트웨어설계",
-    "category": "모듈화",
-    "type": "SHORT_ANSWER",
-    "question": "모듈 내부의 모든 기능 요소들이 하나의 단일한 목적이나 기능을 수행하기 위해 밀접하게 뭉쳐있는 가장 이상적이고 응집도가 높은 단계는 무엇인가?",
-    "answer": "기능적 응집도",
-    "explanation": "기능적 응집도(Functional Cohesion)는 모듈의 모든 구성요소가 오직 하나의 고유 기능만을 수행하는 가장 이상적인 응집도입니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "기능적 응집도",
-      "Functional Cohesion",
-      "최고응집도"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-se-cohesion"
-  },
-  {
-    "id": "EXP_SE1_034",
-    "subject": "소프트웨어설계",
-    "category": "모듈화",
-    "type": "SHORT_ANSWER",
-    "question": "모듈 내부의 요소들이 서로 아무런 관련성 없이 우연히 한 모듈 안에 모여 있는 응집도가 가장 낮고 나쁜 단계는 무엇인가?",
-    "answer": "우연적 응집도",
-    "explanation": "우연적 응집도(Coincidental Cohesion)는 전혀 관련 없는 작업들이 단지 모듈 크기를 줄이기 위해 묶인 가장 나쁜 상태입니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "우연적 응집도",
-      "Coincidental Cohesion",
-      "최저응집도"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-se-cohesion"
-  },
-  {
     "id": "EXP_SE1_035",
     "subject": "소프트웨어설계",
     "category": "모듈화",
     "type": "SHORT_ANSWER",
-    "question": "한 모듈의 출력 결과가 다음 모듈이나 요소의 입력 데이터로 순차적으로 전달되는 형태의 응집도 단계는 무엇인가?",
+    "question": "파일을 읽어 파싱한 결과 데이터셋이 다음 암호화 모듈의 입력 파라미터로 직접 연결되어 순차 처리되는 형태의 모듈 응집도 단계는 무엇인가?",
     "answer": "순차적 응집도",
     "explanation": "순차적 응집도(Sequential Cohesion)는 이전 활동의 출력이 다음 활동의 입력으로 파이프라인처럼 연결되는 응집도입니다.",
     "difficulty": "MEDIUM",
@@ -7861,23 +7743,6 @@ export const MEMORIZATION_BANK: Question[] = [
       "순차적 응집도",
       "Sequential Cohesion",
       "파이프라인"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-se-cohesion"
-  },
-  {
-    "id": "EXP_SE1_036",
-    "subject": "소프트웨어설계",
-    "category": "모듈화",
-    "type": "SHORT_ANSWER",
-    "question": "동일한 입력 데이터를 사용하여 서로 다른 여러 기능을 수행하거나, 동일한 출력 데이터를 산출해내는 모듈의 응집도 단계는 무엇인가?",
-    "answer": "통신적 응집도",
-    "explanation": "통신적 응집도(Communicational Cohesion, 교환적 응집도)는 모듈 내 구성요소들이 동일한 입출력 데이터를 공유할 때 나타납니다.",
-    "difficulty": "MEDIUM",
-    "keywords": [
-      "통신적 응집도",
-      "교환적 응집도",
-      "입출력공유"
     ],
     "source": "VERIFIED_CORE",
     "chapterId": "ch-se-cohesion"
@@ -7895,40 +7760,6 @@ export const MEMORIZATION_BANK: Question[] = [
       "자료 결합도",
       "Data Coupling",
       "최저결합도"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-se-coupling"
-  },
-  {
-    "id": "EXP_SE1_038",
-    "subject": "소프트웨어설계",
-    "category": "모듈화",
-    "type": "SHORT_ANSWER",
-    "question": "한 모듈이 다른 모듈의 내부 코드, 지역 변수, 논리적 제어 흐름을 직접 참조하거나 수정하여 결합도가 가장 높고 가장 위험한 단계는 무엇인가?",
-    "answer": "내용 결합도",
-    "explanation": "내용 결합도(Content Coupling)는 모듈 내부를 직접 침범하는 최악의 결합도입니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "내용 결합도",
-      "Content Coupling",
-      "최악결합도"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-se-coupling"
-  },
-  {
-    "id": "EXP_SE1_039",
-    "subject": "소프트웨어설계",
-    "category": "모듈화",
-    "type": "SHORT_ANSWER",
-    "question": "여러 모듈이 동일한 전역 변수나 글로벌 데이터 영역을 함께 공유하여 참조하고 갱신하는 모듈 간 결합도 단계는 무엇인가?",
-    "answer": "공통 결합도",
-    "explanation": "공통 결합도(Common Coupling)는 전역 변수 공유로 인해 한 모듈의 수정이 다른 모든 모듈에 파급될 위험이 큽니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "공통 결합도",
-      "Common Coupling",
-      "전역변수"
     ],
     "source": "VERIFIED_CORE",
     "chapterId": "ch-se-coupling"
@@ -9405,7 +9236,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "subject": "데이터베이스구축",
     "category": "SQL DML",
     "type": "SHORT_ANSWER",
-    "question": "기존 테이블에 조건에 따라 행이 이미 존재하면 UPDATE를 수행하고, 존재하지 않으면 신규 행으로 INSERT를 한 번에 처리하는 SQL 문장은 무엇인가?",
+    "question": "SQL에서 대상 테이블(TARGET)과 원본 테이블(SOURCE)을 조인하여 ON 조건에 일치하는 행이 있으면 UPDATE, 없으면 INSERT를 단일 문장으로 처리하는 DML 명령어는 무엇인가?",
     "answer": "MERGE",
     "explanation": "MERGE(Upsert) 문은 WHEN MATCHED THEN UPDATE와 WHEN NOT MATCHED THEN INSERT 절을 결합해 병합합니다.",
     "difficulty": "EASY",
@@ -9450,23 +9281,6 @@ export const MEMORIZATION_BANK: Question[] = [
     ],
     "source": "VERIFIED_CORE",
     "chapterId": "ch-db-dml"
-  },
-  {
-    "id": "EXP_DB1_030",
-    "subject": "데이터베이스구축",
-    "category": "SQL DCL",
-    "type": "SHORT_ANSWER",
-    "question": "데이터베이스 사용자에게 부여했던 특정 권한을 다시 회수(취소)할 때 사용하는 DCL 명령어는 무엇인가?",
-    "answer": "REVOKE",
-    "explanation": "REVOKE는 권한을 회수하며 CASCADE 옵션을 주면 해당 사용자가 다른 사용자에게 연쇄 부여한 권한도 함께 회수됩니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "REVOKE",
-      "권한회수",
-      "DCL"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-db-dcl"
   },
   {
     "id": "EXP_DB1_031",
@@ -9926,23 +9740,6 @@ export const MEMORIZATION_BANK: Question[] = [
     "chapterId": "ch-db-index"
   },
   {
-    "id": "EXP_DB2_009",
-    "subject": "데이터베이스구축",
-    "category": "물리 데이터베이스",
-    "type": "SHORT_ANSWER",
-    "question": "인덱스의 리프 블록에 실제 데이터 행 대신 데이터의 물리적 위치 주소(RID/ROWID)를 저장하여 테이블당 여러 개를 자유롭게 생성할 수 있는 인덱스는 무엇인가?",
-    "answer": "넌클러스터드 인덱스",
-    "explanation": "넌클러스터드 인덱스(Non-Clustered Index, 보조 인덱스)는 별도의 인덱스 페이지를 구성하여 실제 데이터 위치를 포인터로 가리킵니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "넌클러스터드 인덱스",
-      "Non-Clustered",
-      "ROWID"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-db-index"
-  },
-  {
     "id": "EXP_DB2_010",
     "subject": "데이터베이스구축",
     "category": "물리 데이터베이스",
@@ -10181,23 +9978,6 @@ export const MEMORIZATION_BANK: Question[] = [
     "chapterId": "ch-db-keys"
   },
   {
-    "id": "EXP_DB2_024",
-    "subject": "데이터베이스구축",
-    "category": "키(Key)의 개념",
-    "type": "SHORT_ANSWER",
-    "question": "여러 후보키(Candidate Key) 중에서 기본키(Primary Key)로 선택되지 못하고 남은 나머지 후보키들을 가리키는 용어는 무엇인가?",
-    "answer": "대체키",
-    "explanation": "대체키(Alternate Key, 보조키)는 언제든 기본키가 될 수 있는 자격을 갖춘 예비 후보키입니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "대체키",
-      "Alternate Key",
-      "후보키잔여"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-db-keys"
-  },
-  {
     "id": "EXP_DB2_025",
     "subject": "데이터베이스구축",
     "category": "데이터 모델링",
@@ -10232,23 +10012,6 @@ export const MEMORIZATION_BANK: Question[] = [
     "chapterId": "ch-db-modeling"
   },
   {
-    "id": "EXP_DB2_027",
-    "subject": "데이터베이스구축",
-    "category": "데이터 무결성",
-    "type": "SHORT_ANSWER",
-    "question": "데이터베이스의 기본키(Primary Key)는 어떠한 경우에도 NULL 값을 가질 수 없으며 릴레이션 내에서 중복될 수 없다는 무결성 규칙은 무엇인가?",
-    "answer": "개체 무결성",
-    "explanation": "개체 무결성(Entity Integrity)은 테이블 내의 모든 튜플을 유일하게 식별할 수 있도록 기본키가 유효한 값을 가져야 함을 규정합니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "개체 무결성",
-      "Entity Integrity",
-      "기본키규칙"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-db-integrity"
-  },
-  {
     "id": "EXP_DB2_028",
     "subject": "데이터베이스구축",
     "category": "데이터 무결성",
@@ -10270,7 +10033,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "subject": "데이터베이스구축",
     "category": "데이터 무결성",
     "type": "SHORT_ANSWER",
-    "question": "테이블의 특정 속성에 입력되는 모든 값은 그 속성에 정의된 허용 데이터 타입, 길이, 허용 값 목록(도메인)에 속해야 한다는 무결성 규칙은 무엇인가?",
+    "question": "학생 테이블의 '학년' 속성에 1부터 4 사이의 정수만 입력되도록 허용 범위를 제한하는 것처럼 속성 값이 사전에 정해진 유효 범위를 준수해야 하는 무결성 제약조건은 무엇인가?",
     "answer": "도메인 무결성",
     "explanation": "도메인 무결성(Domain Integrity)은 속성 값의 타입, 형식, 범위(예: 나이는 양수)를 검증합니다.",
     "difficulty": "EASY",
@@ -10439,7 +10202,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "subject": "데이터베이스구축",
     "category": "분산 데이터베이스",
     "type": "SHORT_ANSWER",
-    "question": "분산 데이터베이스 투명성(Transparency) 중 사용자가 데이터베이스가 물리적으로 어느 지역의 어느 서버에 저장되어 있는지 알 필요 없이 논리적 이름만으로 접근할 수 있는 특성은 무엇인가?",
+    "question": "분산 데이터베이스에서 서울 본사 서버와 부산 지사 서버에 물리적으로 나뉜 테이블의 실제 IP나 저장 경로를 몰라도 논리 명칭만으로 조회 가능한 투명성은 무엇인가?",
     "answer": "위치 투명성",
     "explanation": "위치 투명성(Location Transparency)은 사이트의 물리적 위치가 질의문에 영향을 주지 않는 특성입니다.",
     "difficulty": "EASY",
@@ -10473,7 +10236,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "subject": "데이터베이스구축",
     "category": "분산 데이터베이스",
     "type": "SHORT_ANSWER",
-    "question": "분산 데이터베이스 투명성 중 데이터의 성능과 신뢰성을 위해 동일한 데이터가 여러 사이트에 복제되어 상주하더라도 사용자는 단 하나의 사본만 존재하는 것처럼 사용하는 특성은 무엇인가?",
+    "question": "분산 환경에서 데이터 가용성을 위해 동일 테이블을 서울과 도쿄 데이터센터에 실시간 복제해 두었으나 사용자에게는 1개의 단일 테이블로 투명하게 서비스되는 특성은 무엇인가?",
     "answer": "복제 투명성",
     "explanation": "복제 투명성(Replication Transparency)은 여러 복제본 간의 일관성 동기화 작업을 시스템이 백그라운드에서 처리합니다.",
     "difficulty": "EASY",
@@ -11066,23 +10829,6 @@ export const MEMORIZATION_BANK: Question[] = [
     "chapterId": "ch-is-storage"
   },
   {
-    "id": "EXP_IS_026",
-    "subject": "정보시스템구축관리",
-    "category": "스토리지 시스템",
-    "type": "SHORT_ANSWER",
-    "question": "RAID 레벨 중 최소 3개 이상의 디스크가 필요하며, 패리티(Parity) 정보를 모든 디스크에 분산 저장하여 1개의 디스크 고장 시 복구 가능한 가장 널리 쓰이는 레벨은 무엇인가?",
-    "answer": "RAID 5",
-    "explanation": "RAID 5는 분산 패리티를 사용하여 성능과 가용성을 균형 있게 충족합니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "RAID 5",
-      "분산패리티",
-      "최소3개디스크"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-is-storage"
-  },
-  {
     "id": "EXP_IS_027",
     "subject": "정보시스템구축관리",
     "category": "스토리지 시스템",
@@ -11390,23 +11136,6 @@ export const MEMORIZATION_BANK: Question[] = [
     "chapterId": "ch-is-testing"
   },
   {
-    "id": "EXP_IS_046",
-    "subject": "정보시스템구축관리",
-    "category": "소프트웨어 테스팅",
-    "type": "SHORT_ANSWER",
-    "question": "하향식 통합 테스트(Top-down Test) 수행 시 아직 개발되지 않은 하위 모듈의 역할을 흉내 내어 호출 결과를 반환해주는 가상 임시 모듈을 무엇이라 하는가?",
-    "answer": "스텁",
-    "explanation": "스텁(Stub)은 하향식 테스트에서 하위 모듈의 대역으로 쓰입니다. 상향식 테스트에서 상위 모듈 역할을 하는 것은 드라이버(Driver)입니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "스텁",
-      "Stub",
-      "하향식테스트"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-is-testing"
-  },
-  {
     "id": "EXP_IS_047",
     "subject": "정보시스템구축관리",
     "category": "소프트웨어 테스팅",
@@ -11436,23 +11165,6 @@ export const MEMORIZATION_BANK: Question[] = [
       "회귀 테스트",
       "Regression Test",
       "사이드이펙트방지"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-is-testing"
-  },
-  {
-    "id": "EXP_IS_049",
-    "subject": "정보시스템구축관리",
-    "category": "소프트웨어 테스팅",
-    "type": "SHORT_ANSWER",
-    "question": "테스트의 기본 원칙 중 동일한 테스트 케이스로 반복 테스트를 수행하면 더 이상 새로운 결함을 찾아낼 수 없으므로 케이스를 지속적으로 갱신해야 한다는 원칙은 무엇인가?",
-    "answer": "살충제 패러독스",
-    "explanation": "살충제 패러독스(Pesticide Paradox)는 테스트 케이스를 정기적으로 개선하고 리뷰해야 함을 강조합니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "살충제 패러독스",
-      "Pesticide Paradox",
-      "테스트원칙"
     ],
     "source": "VERIFIED_CORE",
     "chapterId": "ch-is-testing"
@@ -12346,9 +12058,12 @@ export const MEMORIZATION_BANK: Question[] = [
     "subject": "신기술/보안",
     "category": "대칭키 암호",
     "type": "SHORT_ANSWER",
-    "question": "미국 표준국(NIST)의 구 표준 블록 암호화 알고리즘으로 64비트 평문 블록을 56비트 유효 키를 사용해 16라운드 Feistel 구조로 암호화하는 알고리즘은 무엇인가?",
-    "answer": "DES",
-    "explanation": "DES(Data Encryption Standard)는 56비트의 짧은 키 길이로 인해 현재는 전수 조사(Brute Force) 공격에 취약하여 사용이 권장되지 않습니다.",
+    "question": "64비트 블록 암호 알고리즘 DES에서 8비트의 패리티 검사 비트를 제외하고 실제 암호화 연산에 사용되는 순수 유효 비밀키의 크기는 몇 비트인가? (숫자만 작성)",
+    "answer": [
+      "56",
+      "56비트"
+    ],
+    "explanation": "DES의 전체 키 길이는 64비트이지만 8비트 패리티 검사 비트를 제외한 56비트가 실제 암호화 연산에 사용되는 유효 키입니다.",
     "difficulty": "EASY",
     "keywords": [
       "DES",
@@ -13279,45 +12994,11 @@ export const MEMORIZATION_BANK: Question[] = [
     "chapterId": "ch-sec-dos"
   },
   {
-    "id": "EXP_SEC2_017",
-    "subject": "신기술/보안",
-    "category": "DoS 공격",
-    "type": "SHORT_ANSWER",
-    "question": "공격자가 패킷의 출발지 IP 주소를 피해자 서버의 IP로 위조한 후, 다이렉트 브로드캐스트 주소로 대량의 ICMP Echo Request를 전송하여 네트워크 내의 모든 호스트가 피해자에게 동시에 응답(Reply)을 쏟아붓게 만드는 DoS 공격은 무엇인가?",
-    "answer": "스머프",
-    "explanation": "스머핑(Smurfing)은 ICMP 증폭 공격으로 라우터에서 다이렉트 브로드캐스트 차단을 통해 방어합니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "스머프",
-      "Smurf",
-      "ICMP증폭공격"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-sec-dos"
-  },
-  {
-    "id": "EXP_SEC2_018",
-    "subject": "신기술/보안",
-    "category": "DoS 공격",
-    "type": "SHORT_ANSWER",
-    "question": "규격 허용 최대 크기(65,535 바이트)를 초과하는 거대한 ICMP 패킷을 수많은 작은 조각(Fragment)으로 분할 전송하여 수신 측이 이를 재조합하는 과정에서 버퍼 오버플로우와 다운을 유발하는 공격은 무엇인가?",
-    "answer": "Ping of Death",
-    "explanation": "Ping of Death(죽음의 핑)는 거대 ICMP 패킷의 재조합 취약점을 악용합니다.",
-    "difficulty": "EASY",
-    "keywords": [
-      "Ping of Death",
-      "죽음의핑",
-      "거대패킷공격"
-    ],
-    "source": "VERIFIED_CORE",
-    "chapterId": "ch-sec-dos"
-  },
-  {
     "id": "EXP_SEC2_019",
     "subject": "신기술/보안",
     "category": "DoS 공격",
     "type": "SHORT_ANSWER",
-    "question": "IP 패킷 분할(Fragmentation) 시 오프셋(Fragment Offset) 값들을 의도적으로 서로 중복(Overlap)되거나 빈틈이 생기도록 조작하여 수신 시스템이 패킷 재조합 시 크래시(블루스크린)를 일으키게 하는 공격은 무엇인가?",
+    "question": "IP 헤더의 단편화 오프셋(Fragment Offset) 필드 값을 고의로 중첩되도록 조작하여 수신 호스트가 패킷을 재조합하는 메모리 버퍼 오류를 유도하는 DoS 공격은 무엇인가?",
     "answer": "티어드롭",
     "explanation": "티어드롭(Teardrop) 공격은 패킷 조각 오프셋 조작으로 인한 수신 측 OS 재조합 알고리즘의 결함을 노립니다.",
     "difficulty": "EASY",
@@ -13351,7 +13032,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "subject": "신기술/보안",
     "category": "DoS 공격",
     "type": "SHORT_ANSWER",
-    "question": "HTTP 헤더의 끝을 알리는 빈 줄(\\r\\n\\r\\n)을 고의로 전송하지 않고, 극소량의 가짜 헤더를 비정상적으로 느린 속도로 지속 전송하여 웹 서버의 동시 연결 커넥션을 모두 고갈시키는 공격은 무엇인가?",
+    "question": "HTTP 요청 시 헤더의 끝을 알리는 개행(\\r\\n\\r\\n)을 완성하지 않고 비정상적인 지연 헤더를 주기적으로 전송하여 웹 서버의 최대 동시 연결 풀(Pool)을 고갈시키는 공격은 무엇인가?",
     "answer": "슬로로리스",
     "explanation": "슬로로리스(Slowloris)는 저대역폭 애플리케이션 계층 DoS 공격으로 웹 서버의 Keep-Alive 연결 제한으로 대응합니다.",
     "difficulty": "EASY",
@@ -13743,7 +13424,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "subject": "신기술/보안",
     "category": "웹 취약점",
     "type": "SHORT_ANSWER",
-    "question": "웹 브라우저의 주소창 URL이나 즐겨찾기를 정교하게 변조하거나 DNS 호스트 파일을 조작하여 피해자가 정상 주소를 입력하더라도 가짜 파밍 사이트로 강제 유인하는 금융 사기 수법은 무엇인가?",
+    "question": "피해자 PC의 호스트(hosts) 파일이나 DNS 주소를 변조하여 피해자가 정상적인 웹사이트 주소를 정확히 입력하더라도 가짜 위장 사이트로 강제 이동시켜 개인 금융정보를 가로채는 공격 기법은 무엇인가?",
     "answer": "파밍",
     "explanation": "파밍(Pharming)은 DNS 스푸핑이나 hosts 파일 변조를 이용해 정상 URL 입력 시에도 가짜 피싱 사이트로 납치합니다.",
     "difficulty": "EASY",
@@ -13777,7 +13458,7 @@ export const MEMORIZATION_BANK: Question[] = [
     "subject": "신기술/보안",
     "category": "취약점 관리",
     "type": "SHORT_ANSWER",
-    "question": "미국 MITRE 사가 관리하며 공개적으로 알려진 소프트웨어 보안 취약점들에 부여하는 표준화된 고유 식별 번호 체계(예: CVE-2024-1234)의 약칭은 무엇인가?",
+    "question": "미국 MITRE사가 총괄 운영하며, 공개적으로 발표된 소프트웨어 보안 결함 및 취약점들에 전 세계적으로 고유하게 부여하는 표준화된 식별 체계의 영문 약칭은 무엇인가?",
     "answer": "CVE",
     "explanation": "CVE(Common Vulnerabilities and Exposures)는 전 세계 취약점 정보를 공유하고 추적하기 위한 표준 식별자입니다.",
     "difficulty": "MEDIUM",
