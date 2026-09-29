@@ -510,7 +510,7 @@ export const SettingsScreen: React.FC = () => {
               <ShieldCheck size={18} color={theme.subText} />
               <Text style={[styles.infoLabel, { color: theme.subText }]}>앱 버전</Text>
             </View>
-            <Text style={[styles.infoValue, { color: theme.text }]}>1.5.4 (타임아웃 60초·대량생성 연속오류 방어)</Text>
+            <Text style={[styles.infoValue, { color: theme.text }]}>1.5.5 (품질우선·회피목록 전체 유지·타임아웃 90초)</Text>
           </View>
         </Card>
 
