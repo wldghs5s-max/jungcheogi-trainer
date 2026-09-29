@@ -13,6 +13,9 @@ import {
   sanitizeLogMessage,
   extractTextFromSSELine,
   buildTutorPrompt,
+  thinkingLevelForModel,
+  GEMINI_38_THINKING_LEVEL,
+  GEMINI_THINKING_LEVEL,
 } from "../src/api/geminiService";
 import { parseTutorMarkdownLine } from "../src/utils/textFormatter";
 
@@ -375,7 +378,50 @@ async function runGeminiServiceTests() {
         (body) =>
           body?.generationConfig?.thinkingConfig?.thinkingLevel === "minimal",
       ),
-      "요청에 thinkingLevel=minimal 포함",
+      "3.8이 아닌 모델은 thinkingLevel=minimal",
+    );
+  }
+
+  assert(
+    thinkingLevelForModel("gemini-3.8-flash") === GEMINI_38_THINKING_LEVEL,
+    "3.8 Flash thinking은 low",
+  );
+  assert(
+    thinkingLevelForModel("gemini-3.5-flash") === GEMINI_THINKING_LEVEL,
+    "3.5 Flash thinking은 minimal",
+  );
+
+  {
+    let captured: any;
+    const mockFetch = async (_url: string | URL | Request, init?: RequestInit) => {
+      captured = JSON.parse(String(init?.body));
+      return new Response(
+        JSON.stringify({
+          candidates: [{ content: { parts: [{ text: "ok" }] } }],
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    };
+
+    const result = await GeminiService.executeWithRetry("AQ.dummy_key", "ok", {
+      models: ["gemini-3.8-flash"],
+      maxRetries: 0,
+      fetchFn: mockFetch as any,
+      sleepFn: noopSleep,
+      extraConfig: {
+        temperature: 0.8,
+        thinkingConfig: { thinkingLevel: "minimal" },
+      },
+    });
+
+    assert(result.ok, "3.8은 minimal을 low로 바꿔 성공");
+    assert(
+      captured?.generationConfig?.thinkingConfig?.thinkingLevel === "low",
+      "3.8 요청 thinkingLevel은 low",
+    );
+    assert(
+      captured?.generationConfig?.temperature === undefined,
+      "3.8 요청에서 temperature를 보내지 않음",
     );
   }
 

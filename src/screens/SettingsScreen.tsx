@@ -510,7 +510,7 @@ export const SettingsScreen: React.FC = () => {
               <ShieldCheck size={18} color={theme.subText} />
               <Text style={[styles.infoLabel, { color: theme.subText }]}>앱 버전</Text>
             </View>
-            <Text style={[styles.infoValue, { color: theme.text }]}>1.5.2 (3.8 thinking·그만두기 즉시 중단)</Text>
+            <Text style={[styles.infoValue, { color: theme.text }]}>1.5.3 (3.8 thinking low)</Text>
           </View>
         </Card>
 

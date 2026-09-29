@@ -120,9 +120,9 @@ jobs:
             Assets에서 `jungcheogi-trainer-v${{ env.VERSION }}.apk`를 받으면 됩니다.
 
             ### 이번 버전
-            - Gemini 3.8 생성은 thinking을 최소로 두고, 잘리거나 빈 JSON이면 3.5로 이어 갑니다
-            - 그만두기·일시정지는 걸려 있는 요청을 바로 끊고, 카드가 화면에 남지 않게 합니다
-            - 연결 테스트는 3.8과 3.5를 각각 보여 주고, 실패 원인 문구를 숨기지 않습니다
+            - Gemini 3.8은 thinking `low`만 쓰고, `minimal` 400을 피합니다
+            - 3.5는 기존처럼 `minimal`을 유지합니다
+            - 그만두기·일시정지는 걸려 있는 요청을 바로 끊습니다
 
             기존 앱과 서명이 다를 수 있으니, 설치 전 폰에서 예전 앱을 삭제한 뒤 설치하세요.
           files: jungcheogi-trainer-v${{ env.VERSION }}.apk

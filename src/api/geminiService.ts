@@ -42,9 +42,16 @@ export const BULK_GENERATOR_MODELS = [
   "gemini-3.5-flash",
 ];
 
-/** 3.x Flash 기본 thinking이 maxOutputTokens를 다 쓰면 JSON이 비거나 잘린다. */
+/** 3.8 Flash는 minimal을 거절하고 low/medium/high만 받는다. 다른 3.x는 minimal이 가장 가볍다. */
 export const GEMINI_THINKING_LEVEL = "minimal";
+export const GEMINI_38_THINKING_LEVEL = "low";
 export const GEMINI_REQUEST_TIMEOUT_MS = 25000;
+
+export function thinkingLevelForModel(model: string): string {
+  return /gemini-3\.8/i.test(model)
+    ? GEMINI_38_THINKING_LEVEL
+    : GEMINI_THINKING_LEVEL;
+}
 
 /**
  * 종료·신규키 차단된 1.5/2.0/2.5 계열을 제외한 안정 모델 우선순위 목록입니다.
@@ -580,6 +587,46 @@ function attachTimeout(
   };
 }
 
+function generationConfigForModel(
+  model: string,
+  maxOutputTokens: number,
+  extraConfig: Record<string, unknown> = {},
+): Record<string, unknown> {
+  const extra = { ...extraConfig };
+  const requestedThinking = extra.thinkingConfig as
+    | { thinkingLevel?: string }
+    | undefined;
+  delete extra.thinkingConfig;
+
+  const thinkingLevel = thinkingLevelForModel(model);
+  const thinkingConfig = {
+    ...(requestedThinking ?? {}),
+    thinkingLevel:
+      /gemini-3\.8/i.test(model) && requestedThinking?.thinkingLevel === "minimal"
+        ? thinkingLevel
+        : requestedThinking?.thinkingLevel || thinkingLevel,
+  };
+
+  // 3.8 Flash는 temperature/topP/topK를 거절하는 경우가 있어 빼 둔다.
+  if (/gemini-3\.8/i.test(model)) {
+    delete extra.temperature;
+    delete extra.topP;
+    delete extra.topK;
+    return {
+      maxOutputTokens,
+      ...extra,
+      thinkingConfig,
+    };
+  }
+
+  return {
+    temperature: 0.4,
+    maxOutputTokens,
+    ...extra,
+    thinkingConfig,
+  };
+}
+
 async function generateContent(
   apiKey: string,
   model: string,
@@ -609,12 +656,11 @@ async function generateContent(
       headers: authHeaders(cleanKey),
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.4,
+        generationConfig: generationConfigForModel(
+          model,
           maxOutputTokens,
-          thinkingConfig: { thinkingLevel: GEMINI_THINKING_LEVEL },
-          ...extraConfig,
-        },
+          extraConfig,
+        ),
       }),
       signal: timeout.signal,
     });
@@ -1143,7 +1189,6 @@ export class GeminiService {
 
     const cleanKey = cleanApiKey(apiKey);
     const extraConfig: Record<string, unknown> = {
-      thinkingConfig: { thinkingLevel: GEMINI_THINKING_LEVEL },
       ...(options?.extraConfig ?? {}),
     };
     if (options?.temperature !== undefined) {
@@ -1151,9 +1196,6 @@ export class GeminiService {
     }
     if (options?.json) {
       extraConfig.responseMimeType = "application/json";
-    }
-    if (!extraConfig.thinkingConfig) {
-      extraConfig.thinkingConfig = { thinkingLevel: GEMINI_THINKING_LEVEL };
     }
 
     const result = await this.executeWithRetry(cleanKey, prompt, {
@@ -1203,9 +1245,6 @@ export class GeminiService {
         sleepFn: options?.sleepFn,
         models: [model],
         maxRetries: 0,
-        extraConfig: {
-          thinkingConfig: { thinkingLevel: GEMINI_THINKING_LEVEL },
-        },
       });
       if (result.ok) {
         anyOk = true;
