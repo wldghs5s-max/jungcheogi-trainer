@@ -427,17 +427,18 @@ export async function generateOneBatch(
   existingStems: Set<string>,
   seeds: MemoTopicSeed[],
   batchId: string,
-  options?: { models?: string[]; maxRetries?: number },
-): Promise<{ questions: Question[]; error?: string }> {
+  options?: { models?: string[]; maxRetries?: number; signal?: AbortSignal },
+): Promise<{ questions: Question[]; error?: string; aborted?: boolean }> {
   const result = await GeminiService.generateText(
     buildPrompt(existingQuestions, seeds),
     {
-      maxOutputTokens: 8192,
+      maxOutputTokens: 16384,
       temperature: 0.8,
       json: true,
       models: options?.models ?? GENERATOR_MODELS,
       maxRetries: options?.maxRetries ?? 1,
       retryDelayMs: MEMO_RETRY_DELAY_MS,
+      signal: options?.signal,
       extraConfig: {
         responseMimeType: "application/json",
         responseSchema: MEMO_RESPONSE_SCHEMA,
@@ -446,7 +447,11 @@ export async function generateOneBatch(
   );
 
   if (!result.ok) {
-    return { questions: [], error: result.message };
+    return {
+      questions: [],
+      error: result.message,
+      aborted: result.aborted,
+    };
   }
 
   try {

@@ -63,8 +63,16 @@ async function runGeminiServiceTests() {
   assert(!isTransientStatus(403), "403은 일시적 오류 아님");
   assert(!isTransientStatus(404), "404는 일시적 오류 아님");
 
-  // 3. 터미널 인증 오류 분류 (400, 401, 403)
-  assert(isTerminalAuthStatus(400), "400은 즉시 종료 대상");
+  // 3. 터미널 인증 오류 분류 (401, 403, 키 관련 400)
+  assert(isTerminalAuthStatus(400), "메시지 없는 400은 즉시 종료 대상");
+  assert(
+    isTerminalAuthStatus(400, "API_KEY_INVALID"),
+    "API 키 400은 즉시 종료 대상",
+  );
+  assert(
+    !isTerminalAuthStatus(400, "Invalid argument: thinking_level"),
+    "thinking/스키마 400은 다음 모델로 넘긴다",
+  );
   assert(isTerminalAuthStatus(401), "401은 즉시 종료 대상");
   assert(isTerminalAuthStatus(403), "403은 즉시 종료 대상");
   assert(!isTerminalAuthStatus(503), "503은 터미널 인증 오류 아님");
@@ -308,6 +316,69 @@ async function runGeminiServiceTests() {
     );
   }
 
+  // 시나리오 4b: 3.8 thinking-only/잘린 JSON은 성공으로 치지 않고 다음 모델로
+  {
+    const calls: string[] = [];
+    const bodies: any[] = [];
+    const mockFetch = async (url: string | URL | Request, init?: RequestInit) => {
+      const urlStr = String(url);
+      if (init?.body) {
+        bodies.push(JSON.parse(String(init.body)));
+      }
+      if (urlStr.includes("model-thinking")) {
+        calls.push("model-thinking");
+        return new Response(
+          JSON.stringify({
+            candidates: [
+              {
+                finishReason: "MAX_TOKENS",
+                content: {
+                  parts: [{ text: "내부 추론", thought: true }],
+                },
+              },
+            ],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+      calls.push("model-valid");
+      return new Response(
+        JSON.stringify({
+          candidates: [{ content: { parts: [{ text: "정상 동작" }] } }],
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      );
+    };
+
+    const result = await GeminiService.executeWithRetry(
+      "AQ.dummy_key",
+      "테스트",
+      {
+        models: ["model-thinking", "model-valid"],
+        maxRetries: 0,
+        fetchFn: mockFetch as any,
+        sleepFn: noopSleep,
+        extraConfig: { responseMimeType: "application/json" },
+      },
+    );
+
+    assert(result.ok, "thinking-only 200은 다음 모델로 넘어가 성공");
+    if (result.ok) {
+      assert(result.model === "model-valid", "thinking 실패 후 model-valid 사용");
+    }
+    assert(
+      calls[0] === "model-thinking" && calls.includes("model-valid"),
+      "thinking 모델 다음 유효 모델을 호출",
+    );
+    assert(
+      bodies.some(
+        (body) =>
+          body?.generationConfig?.thinkingConfig?.thinkingLevel === "minimal",
+      ),
+      "요청에 thinkingLevel=minimal 포함",
+    );
+  }
+
   // 시나리오 5: testConnection이 공통 재시도 함수를 사용하여 503 시 일시적 혼잡 안내 반환 확인
   {
     const mockFetch = async () => {
@@ -328,8 +399,9 @@ async function runGeminiServiceTests() {
 
     assert(!testRes.success, "testConnection: 503 반복 시 실패 처리");
     assert(
-      testRes.message ===
+      testRes.message.includes(
         "Gemini 서버가 일시적으로 혼잡합니다. 잠시 후 다시 시도해 주세요.",
+      ),
       "testConnection: 503 발생 시 API 키/권한 오류가 아닌 일시 혼잡 안내문 반환",
     );
   }

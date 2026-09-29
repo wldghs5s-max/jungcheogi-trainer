@@ -33,8 +33,18 @@ export const GENERATOR_MODELS = [
   "gemini-3.5-flash",
 ];
 
-/** 장시간 암기 대량 생성은 품질을 위해 3.8만 쓰고, 혼잡 시 같은 모델에서 더 기다린다. */
-export const BULK_GENERATOR_MODELS = ["gemini-3.8-flash"];
+/**
+ * 장시간 암기 대량 생성은 3.8을 먼저 쓰고, 모델 부재·잘림·혼잡이 끝나면 3.5로 이어
+ * 0개에서 멈추지 않게 한다.
+ */
+export const BULK_GENERATOR_MODELS = [
+  "gemini-3.8-flash",
+  "gemini-3.5-flash",
+];
+
+/** 3.x Flash 기본 thinking이 maxOutputTokens를 다 쓰면 JSON이 비거나 잘린다. */
+export const GEMINI_THINKING_LEVEL = "minimal";
+export const GEMINI_REQUEST_TIMEOUT_MS = 25000;
 
 /**
  * 종료·신규키 차단된 1.5/2.0/2.5 계열을 제외한 안정 모델 우선순위 목록입니다.
@@ -61,15 +71,17 @@ export function isTerminalAuthStatus(
   status: number,
   message?: string,
 ): boolean {
-  if (status === 400 || status === 401 || status === 403) return true;
+  if (status === 401 || status === 403) return true;
   if (
     message &&
-    /api key|invalid argument|unregistered caller|api_key_invalid/i.test(
+    /api[_ -]?key|unregistered caller|api_key_invalid|permission denied/i.test(
       message,
     )
   ) {
     return true;
   }
+  // 키 오류가 아닌 400(스키마·thinking 설정 등)은 다음 모델로 넘긴다.
+  if (status === 400 && !message) return true;
   return false;
 }
 
@@ -120,9 +132,19 @@ export function formatGeminiErrorMessage(error: {
     return `Gemini API Key 인증 오류 (${error.status})\n\n사유: ${error.message}\n\n구글 AI Studio에서 발급한 올바른 API Key인지 확인해 주세요. (발급 직후라면 구글 서버 동기화에 1~2분 소요될 수 있습니다.)`;
   }
   if (error.status === 404) {
-    return "지원되는 Gemini 모델을 찾을 수 없습니다. 프로젝트 설정과 사용 가능한 모델을 확인해 주세요.";
+    return `지원되는 Gemini 모델을 찾을 수 없습니다${error.model ? ` (${error.model})` : ""}.`;
   }
-  return `서버 응답 오류 (${error.status}): ${error.message}`;
+  if (
+    error.status === 0 &&
+    /잘렸|비어|시간|취소/i.test(error.message || "")
+  ) {
+    return error.model
+      ? `${error.message} (${error.model})`
+      : error.message;
+  }
+  return `서버 응답 오류 (${error.status}): ${error.message}${
+    error.model ? ` (${error.model})` : ""
+  }`;
 }
 
 export interface TutorChatMessageItem {
@@ -523,6 +545,41 @@ export function pickModelsToTry(available: string[]): string[] {
   return combined.length > 0 ? combined : activeAvailable;
 }
 
+function candidateFinishReason(data: unknown): string | undefined {
+  const reason = (
+    data as {
+      candidates?: Array<{ finishReason?: string }>;
+    }
+  )?.candidates?.[0]?.finishReason;
+  return typeof reason === "string" ? reason : undefined;
+}
+
+function attachTimeout(
+  signal: AbortSignal | undefined,
+  timeoutMs: number,
+): { signal: AbortSignal; dispose: () => void; timedOut: () => boolean } {
+  const controller = new AbortController();
+  let timedOut = false;
+  const timer = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, timeoutMs);
+  const onAbort = () => controller.abort();
+  if (signal?.aborted) {
+    controller.abort();
+  } else {
+    signal?.addEventListener("abort", onAbort);
+  }
+  return {
+    signal: controller.signal,
+    timedOut: () => timedOut,
+    dispose: () => {
+      clearTimeout(timer);
+      signal?.removeEventListener("abort", onAbort);
+    },
+  };
+}
+
 async function generateContent(
   apiKey: string,
   model: string,
@@ -544,6 +601,7 @@ async function generateContent(
   const url = isLegacyKey
     ? `${GEMINI_BASE}/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(cleanKey)}`
     : `${GEMINI_BASE}/models/${encodeURIComponent(model)}:generateContent`;
+  const timeout = attachTimeout(signal, GEMINI_REQUEST_TIMEOUT_MS);
 
   try {
     const response = await fetchFn(url, {
@@ -554,15 +612,44 @@ async function generateContent(
         generationConfig: {
           temperature: 0.4,
           maxOutputTokens,
+          thinkingConfig: { thinkingLevel: GEMINI_THINKING_LEVEL },
           ...extraConfig,
         },
       }),
-      signal,
+      signal: timeout.signal,
     });
 
     const data = await response.json().catch(() => ({}));
     if (response.ok) {
-      return { text: extractText(data) };
+      const text = extractText(data);
+      const finishReason = candidateFinishReason(data);
+      if (!text) {
+        return {
+          text: null,
+          error: {
+            status: 0,
+            message:
+              finishReason === "MAX_TOKENS"
+                ? "출력이 생각(thinking) 토큰에 밀려 비었습니다."
+                : "응답 본문이 비어 있습니다.",
+            model,
+          },
+        };
+      }
+      if (
+        finishReason === "MAX_TOKENS" &&
+        extraConfig.responseMimeType === "application/json"
+      ) {
+        return {
+          text: null,
+          error: {
+            status: 0,
+            message: "JSON 출력이 잘려 이번 묶음을 쓰지 못했습니다.",
+            model,
+          },
+        };
+      }
+      return { text };
     }
 
     return {
@@ -576,11 +663,29 @@ async function generateContent(
   } catch (err: unknown) {
     if (
       signal?.aborted ||
+      (err instanceof Error && err.name === "AbortError" && !timeout.timedOut())
+    ) {
+      return { text: null, aborted: true };
+    }
+    if (timeout.timedOut() && !signal?.aborted) {
+      return {
+        text: null,
+        error: {
+          status: 0,
+          message: "응답 시간이 초과되었습니다.",
+          model,
+        },
+      };
+    }
+    if (
+      signal?.aborted ||
       (err instanceof Error && err.name === "AbortError")
     ) {
       return { text: null, aborted: true };
     }
     throw err;
+  } finally {
+    timeout.dispose();
   }
 }
 
@@ -1038,6 +1143,7 @@ export class GeminiService {
 
     const cleanKey = cleanApiKey(apiKey);
     const extraConfig: Record<string, unknown> = {
+      thinkingConfig: { thinkingLevel: GEMINI_THINKING_LEVEL },
       ...(options?.extraConfig ?? {}),
     };
     if (options?.temperature !== undefined) {
@@ -1045,6 +1151,9 @@ export class GeminiService {
     }
     if (options?.json) {
       extraConfig.responseMimeType = "application/json";
+    }
+    if (!extraConfig.thinkingConfig) {
+      extraConfig.thinkingConfig = { thinkingLevel: GEMINI_THINKING_LEVEL };
     }
 
     const result = await this.executeWithRetry(cleanKey, prompt, {
@@ -1082,26 +1191,44 @@ export class GeminiService {
       return { success: false, message: "API Key를 입력해 주세요." };
     }
 
-    // 키 유효성만 보면 되므로 전체 모델 목록 조회·다단 재시도는 하지 않는다.
-    const result = await this.executeWithRetry(cleanKey, "ok", {
-      maxOutputTokens: 8,
-      fetchFn: options?.fetchFn,
-      sleepFn: options?.sleepFn,
-      models: options?.models ?? TUTOR_MODELS.slice(0, 2),
-      maxRetries: 1,
-    });
+    const models = options?.models ?? GENERATOR_MODELS;
+    const lines: string[] = [];
+    let anyOk = false;
+    let successModel: string | undefined;
 
-    if (result.ok) {
+    for (const model of models) {
+      const result = await this.executeWithRetry(cleanKey, "ok", {
+        maxOutputTokens: 32,
+        fetchFn: options?.fetchFn,
+        sleepFn: options?.sleepFn,
+        models: [model],
+        maxRetries: 0,
+        extraConfig: {
+          thinkingConfig: { thinkingLevel: GEMINI_THINKING_LEVEL },
+        },
+      });
+      if (result.ok) {
+        anyOk = true;
+        successModel = model;
+        lines.push(`${model}: 성공`);
+      } else {
+        lines.push(
+          `${model}: 실패 — ${formatGeminiErrorMessage(result.error)}`,
+        );
+      }
+    }
+
+    if (anyOk) {
       return {
         success: true,
-        message: `성공! 정상 연결되었습니다. (${result.model})`,
-        model: result.model,
+        message: `성공! 정상 연결되었습니다.\n${lines.join("\n")}`,
+        model: successModel,
       };
     }
 
     return {
       success: false,
-      message: formatGeminiErrorMessage(result.error),
+      message: lines.join("\n") || "연결에 실패했습니다.",
     };
   }
 }

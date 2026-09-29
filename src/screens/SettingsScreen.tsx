@@ -105,7 +105,7 @@ export const SettingsScreen: React.FC = () => {
       triggerHaptic.success();
       Alert.alert(
         '연결 성공 & 등록 완료! 🎉',
-        `Gemini API와 정상적으로 연동되었습니다! (${testResult.model})\n\n이제 문제 풀이 중 [Gemini 1:1 AI 튜터] 버튼을 눌러 실시간 맞춤 과외를 받으실 수 있습니다.`
+        testResult.message,
       );
     } else {
       Alert.alert(
@@ -510,7 +510,7 @@ export const SettingsScreen: React.FC = () => {
               <ShieldCheck size={18} color={theme.subText} />
               <Text style={[styles.infoLabel, { color: theme.subText }]}>앱 버전</Text>
             </View>
-            <Text style={[styles.infoValue, { color: theme.text }]}>1.5.1 (대량 생성 이어서·그만두기)</Text>
+            <Text style={[styles.infoValue, { color: theme.text }]}>1.5.2 (3.8 thinking·그만두기 즉시 중단)</Text>
           </View>
         </Card>
 

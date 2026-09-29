@@ -101,6 +101,25 @@ class BackgroundQuestionService {
   private currentMemoJob: MemoGenerationJob | null = null;
   private pauseRequested = false;
   private cancelRequested = false;
+  private memoAbort: AbortController | null = null;
+  private memoRunId = 0;
+
+  private isMemoRunActive(): boolean {
+    return (
+      this.isGenerating &&
+      this.currentTask === "GEMINI_MEMO" &&
+      !this.pauseRequested &&
+      !this.cancelRequested
+    );
+  }
+
+  private abortMemoRequest() {
+    try {
+      this.memoAbort?.abort();
+    } catch {
+      // already aborted
+    }
+  }
 
   public getStatus(): BackgroundTaskStatus {
     return {
@@ -108,7 +127,7 @@ class BackgroundQuestionService {
       taskType: this.currentTask,
       memo: memoProgressFromJob(
         this.currentMemoJob,
-        this.isGenerating && this.currentTask === "GEMINI_MEMO",
+        this.isMemoRunActive(),
       ),
     };
   }
@@ -166,13 +185,11 @@ class BackgroundQuestionService {
     }
     this.currentMemoJob = validated;
     this.notify();
-    return memoProgressFromJob(
-      validated,
-      this.isGenerating && this.currentTask === "GEMINI_MEMO",
-    );
+    return memoProgressFromJob(validated, this.isMemoRunActive());
   }
 
   public async saveActiveJob(job: MemoGenerationJob): Promise<void> {
+    if (this.cancelRequested) return;
     await MemoJobService.saveActiveJob(job);
   }
 
@@ -244,8 +261,15 @@ class BackgroundQuestionService {
       return { ok: false, message: "지금 만들고 있는 작업이 없습니다." };
     }
     this.pauseRequested = true;
-    this.showToast("지금 만드는 묶음까지 넣은 뒤 잠시 멈춥니다.");
-    return { ok: true, message: "지금 만드는 묶음까지 넣은 뒤 잠시 멈춥니다." };
+    this.cancelRequested = false;
+    if (this.currentMemoJob) {
+      this.currentMemoJob.status = "PAUSED";
+      void this.saveActiveJob(this.currentMemoJob);
+    }
+    this.abortMemoRequest();
+    this.notify();
+    this.showToast("만들기를 잠시 멈췄습니다.");
+    return { ok: true, message: "만들기를 잠시 멈췄습니다." };
   }
 
   public async cancelMemoGeneration(): Promise<{
@@ -253,26 +277,26 @@ class BackgroundQuestionService {
     message: string;
   }> {
     const job = this.currentMemoJob || (await this.getActiveJob());
-    if (this.isGenerating && this.currentTask === "GEMINI_MEMO") {
-      this.cancelRequested = true;
-      this.pauseRequested = false;
-      this.showToast("지금 만드는 묶음까지 넣은 뒤 그만둡니다.");
-      return {
-        ok: true,
-        message: "지금 만드는 묶음까지 넣은 뒤 그만둡니다.",
-      };
+    const saved = job ? savedCountFromJob(job) : 0;
+    const canCancel =
+      (this.isGenerating && this.currentTask === "GEMINI_MEMO") ||
+      isLeftoverMemoJob(job);
+    if (!canCancel) {
+      return { ok: false, message: "그만둘 만들기가 없습니다." };
     }
-    if (isLeftoverMemoJob(job)) {
-      const saved = savedCountFromJob(job);
-      await this.clearActiveJob();
-      this.currentMemoJob = null;
-      this.isGenerating = false;
-      this.isResuming = false;
-      this.currentTask = null;
-      this.notify();
-      return { ok: true, message: cancelJobUserMessage(saved) };
-    }
-    return { ok: false, message: "그만둘 만들기가 없습니다." };
+
+    this.memoRunId += 1;
+    this.cancelRequested = true;
+    this.pauseRequested = false;
+    this.abortMemoRequest();
+    this.isGenerating = false;
+    this.isResuming = false;
+    this.currentTask = null;
+    await this.clearActiveJob();
+    this.currentMemoJob = null;
+    void stopMemoForegroundService();
+    this.notify();
+    return { ok: true, message: cancelJobUserMessage(saved) };
   }
 
   public async startOrEnqueueBulkGeneration(targetCount: number): Promise<{
@@ -531,6 +555,8 @@ class BackgroundQuestionService {
   }
 
   private async runMemoJob(initialJob: MemoGenerationJob): Promise<void> {
+    const runId = ++this.memoRunId;
+    this.memoAbort = new AbortController();
     try {
       let job: MemoGenerationJob | null = initialJob;
       while (job) {
@@ -565,10 +591,14 @@ class BackgroundQuestionService {
           : "문제 생성 중 오류가 발생했습니다.";
       this.showToast(errMsg);
     } finally {
+      if (runId !== this.memoRunId) {
+        return;
+      }
       this.pauseRequested = false;
       this.cancelRequested = false;
       this.isGenerating = false;
       this.currentTask = null;
+      this.memoAbort = null;
       this.notify();
       void stopMemoForegroundService();
     }
@@ -607,12 +637,16 @@ class BackgroundQuestionService {
           {
             models: bulk ? BULK_GENERATOR_MODELS : GENERATOR_MODELS,
             maxRetries: bulk ? 3 : 1,
+            signal: this.memoAbort?.signal,
           },
         );
 
-        if (this.cancelRequested && (!result.questions || result.questions.length === 0)) {
+        if (this.cancelRequested) {
           batch.status = "PENDING";
-          await this.saveActiveJob(job);
+          break;
+        }
+        if (this.pauseRequested || result.aborted) {
+          batch.status = "PENDING";
           break;
         }
 
@@ -665,11 +699,16 @@ class BackgroundQuestionService {
     }
 
     const saved = savedCountFromJob(job);
+    const lastError = [...job.batches]
+      .reverse()
+      .find((batch) => batch.error)?.error;
 
     if (this.cancelRequested) {
-      await this.clearActiveJob();
-      this.currentMemoJob = null;
-      this.showToast(cancelJobUserMessage(saved));
+      if (this.currentMemoJob) {
+        await this.clearActiveJob();
+        this.currentMemoJob = null;
+        this.showToast(cancelJobUserMessage(saved));
+      }
       return "stopped";
     }
 
@@ -677,7 +716,7 @@ class BackgroundQuestionService {
       job.status = "PAUSED";
       await this.saveActiveJob(job);
       this.currentMemoJob = job;
-      this.showToast(leftoverProgressMessage(saved, target));
+      this.showToast(leftoverProgressMessage(saved, target, lastError));
       return "stopped";
     }
 
@@ -692,7 +731,7 @@ class BackgroundQuestionService {
     job.status = saved > 0 ? "PARTIALLY_COMPLETED" : "FAILED";
     await this.saveActiveJob(job);
     this.currentMemoJob = job;
-    this.showToast(leftoverProgressMessage(saved, target));
+    this.showToast(leftoverProgressMessage(saved, target, lastError));
     return "stopped";
   }
 

@@ -675,14 +675,20 @@ async function run() {
     "사용자 안내에 부족 개수를 쓰지 않음",
   );
   assert(
+    leftoverProgressMessage(0, 100, "gemini-3.8-flash: 응답 시간이 초과되었습니다.").includes(
+      "응답 시간이 초과",
+    ),
+    "남은 작업 안내에 실제 실패 원인을 붙인다",
+  );
+  assert(
     cancelJobUserMessage(7).includes("7문제") &&
       !cancelJobUserMessage(7).includes("보관함"),
     "중단 안내도 사용자 말로 씀",
   );
 
   assert(
-    BULK_GENERATOR_MODELS.join(",") === "gemini-3.8-flash",
-    "대량 생성은 3.8만 사용",
+    BULK_GENERATOR_MODELS.join(",") === "gemini-3.8-flash,gemini-3.5-flash",
+    "대량 생성은 3.8 우선, 실패 시 3.5 폴백",
   );
 
   const originalGenerate = GeminiService.generateText.bind(GeminiService);
@@ -704,9 +710,9 @@ async function run() {
       maxRetries: 3,
     });
     assert(
-      bulkCall?.models?.join(",") === "gemini-3.8-flash" &&
+      bulkCall?.models?.join(",") === "gemini-3.8-flash,gemini-3.5-flash" &&
         bulkCall?.maxRetries === 3,
-      "대량 생성 묶음은 3.8만 쓰고 같은 모델에서 더 재시도",
+      "대량 생성 묶음은 3.8 우선 후 3.5 폴백, 같은 모델에서 더 재시도",
     );
   } finally {
     GeminiService.generateText = originalGenerate;

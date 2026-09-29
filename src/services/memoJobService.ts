@@ -116,11 +116,17 @@ export function prepareMemoJobForResume(job: MemoGenerationJob): MemoGenerationJ
   return job;
 }
 
-export function leftoverProgressMessage(saved: number, target: number): string {
-  if (saved <= 0) {
-    return "지금은 새 문제를 만들지 못했습니다. 잠시 후 [이어서]를 눌러 주세요.";
-  }
-  return `지금은 ${saved}문제까지 넣어 두었습니다. [이어서]를 누르면 나머지를 계속 만듭니다.`;
+export function leftoverProgressMessage(
+  saved: number,
+  target: number,
+  reason?: string,
+): string {
+  const base =
+    saved <= 0
+      ? "지금은 새 문제를 만들지 못했습니다. 잠시 후 [이어서]를 눌러 주세요."
+      : `지금은 ${saved}문제까지 넣어 두었습니다. [이어서]를 누르면 나머지를 계속 만듭니다.`;
+  if (!reason) return base;
+  return `${base}\n(${reason})`;
 }
 
 export function cancelJobUserMessage(saved: number): string {
