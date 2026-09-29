@@ -217,7 +217,7 @@ async function run() {
     if (result.ok) {
       assert(
         result.questions.length === MEMO_BATCH_SIZE * MEMO_BATCH_COUNT,
-        `2묶음 × 7문제 (실제: ${result.questions.length})`,
+        `2묶음 × ${MEMO_BATCH_SIZE}문제 (실제: ${result.questions.length})`,
       );
     }
     assert(calls.length === MEMO_BATCH_COUNT, "묶음 수만큼 API 호출");
@@ -456,20 +456,20 @@ async function run() {
   assert(duplicateAppendCount === 0, `동일 문항 재시도 시 중복 추가 차단 (실제 추가: ${duplicateAppendCount}개)`);
 
   assert(
-    memoBatchCountForTarget(MEMO_BULK_TARGET) === 15,
-    "100문제는 7개씩 15묶음",
+    memoBatchCountForTarget(MEMO_BULK_TARGET) === 20,
+    "100문제는 5개씩 20묶음",
   );
   assert(
     MEMO_BULK_MAX === 500 && MEMO_BULK_CHOICES.join(",") === "100,200,300,400,500",
     "대량 생성 상한은 500이고 100 단위로 고름",
   );
   assert(
-    memoBatchCountForTarget(MEMO_BULK_MAX) === 72,
-    "500문제는 7개씩 72묶음",
+    memoBatchCountForTarget(MEMO_BULK_MAX) === 100,
+    "500문제는 5개씩 100묶음",
   );
   assert(
     pickTopicSeeds(memoBatchCountForTarget(MEMO_BULK_TARGET) * MEMO_BATCH_SIZE)
-      .length === 105,
+      .length === 100,
     "100개 생성에 필요한 챕터 시드를 고를 수 있음",
   );
   assert(

@@ -45,7 +45,7 @@ export const BULK_GENERATOR_MODELS = [
 /** 3.8 Flash는 minimal을 거절하고 low/medium/high만 받는다. 다른 3.x는 minimal이 가장 가볍다. */
 export const GEMINI_THINKING_LEVEL = "minimal";
 export const GEMINI_38_THINKING_LEVEL = "low";
-export const GEMINI_REQUEST_TIMEOUT_MS = 90000;
+export const GEMINI_REQUEST_TIMEOUT_MS = 100000;
 
 export function thinkingLevelForModel(model: string): string {
   return /gemini-3\.8/i.test(model)

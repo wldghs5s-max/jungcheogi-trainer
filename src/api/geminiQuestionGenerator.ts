@@ -10,11 +10,11 @@ export const MEMO_SUBJECTS: Subject[] = [
   "신기술/보안",
 ];
 
-export const MEMO_BATCH_SIZE = 7;
+export const MEMO_BATCH_SIZE = 5;
 export const MEMO_BATCH_COUNT = 2;
 export const MEMO_CONCURRENCY = 2;
 export const MEMO_RETRY_DELAY_MS = 300;
-export const MEMO_MIN_ACCEPTABLE_BATCH_QUESTIONS = 4;
+export const MEMO_MIN_ACCEPTABLE_BATCH_QUESTIONS = 3;
 export const MEMO_QUICK_TARGET = MEMO_BATCH_SIZE * MEMO_BATCH_COUNT;
 export const MEMO_BULK_TARGET = 100;
 export const MEMO_BULK_MAX = 500;

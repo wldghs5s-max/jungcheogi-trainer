@@ -45,7 +45,7 @@ function assertQuestion(q: Question, label: string) {
 const ids = ALL_QUESTIONS.map((q) => q.id);
 assert(new Set(ids).size === ids.length, `정적 문제 ID 중복 없음 (${ids.length})`);
 assert(ALL_QUESTIONS.length >= 80, `정적 문제 80개 이상 (실제 ${ALL_QUESTIONS.length})`);
-assert(MEMORIZATION_BANK.length === 56, `암기 은행 56개 (실제 ${MEMORIZATION_BANK.length})`);
+assert(MEMORIZATION_BANK.length >= 250, `암기 은행 250개 이상 (실제 ${MEMORIZATION_BANK.length})`);
 assert(SUBJECTS.includes("정보시스템구축관리"), "정보시스템구축관리 과목 노출");
 assert(MEMO_SUBJECTS.length === 4, "Gemini 암기 과목 4개");
 

@@ -16,6 +16,7 @@ import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { ProgressBar } from '../components/common/ProgressBar';
 import { ProgrammingAdminModal } from '../components/programming/ProgrammingAdminModal';
+import { NightModeOverlay } from '../components/common/NightModeOverlay';
 
 const GEMINI_KEY_GUIDE_URL = 'https://aistudio.google.com/apikey';
 
@@ -28,6 +29,7 @@ export const SettingsScreen: React.FC = () => {
   const [hasSavedKey, setHasSavedKey] = useState(false);
   const [testingKey, setTestingKey] = useState(false);
   const [showAdminModal, setShowAdminModal] = useState(false);
+  const [showNightMode, setShowNightMode] = useState(false);
   const [bulkCount, setBulkCount] = useState<(typeof MEMO_BULK_CHOICES)[number]>(100);
   const [memoProgress, setMemoProgress] = useState<MemoProgress | null>(null);
   const isMountedRef = useRef(true);
@@ -131,25 +133,61 @@ export const SettingsScreen: React.FC = () => {
     const busy = Boolean(
       memoProgress && (memoProgress.running || memoProgress.paused || memoProgress.canResume),
     );
-    const title = busy ? '다음에 더 만들기' : `암기 ${bulkCount}개 만들기`;
-    const body = busy
-      ? `지금 만들기가 끝나면 ${bulkCount}개를 이어서 만듭니다. 남은 문제와 다음에 만들 개수를 합쳐 최대 ${MEMO_BULK_MAX}개까지입니다.`
-      : `알림이 켜진 채로 최대 ${bulkCount}문제를 만듭니다. 홈 버튼을 누르거나 화면을 꺼도 바로바로 저장됩니다.\n\n삼성폰은 설정 → 배터리에서 이 앱을 '제한 없음'으로 두면 자는 동안에도 잘 이어집니다.`;
-    Alert.alert(title, body, [
-      { text: '취소', style: 'cancel' },
-      {
-        text: busy ? '넣어 두기' : '시작',
-        onPress: () => {
-          void backgroundQuestionService.startOrEnqueueBulkGeneration(bulkCount).then((res) => {
-            if (res.apiKeyRequired) {
-              Alert.alert('API Key 필요', res.message);
-            } else {
-              Alert.alert(res.queued ? '다음에 만들기' : res.started ? '대량 암기 생성' : '알림', res.message);
-            }
-          });
+
+    if (busy) {
+      Alert.alert(
+        '다음에 더 만들기',
+        `지금 만들기가 끝나면 ${bulkCount}개를 이어서 만듭니다. 남은 문제와 다음에 만들 개수를 합쳐 최대 ${MEMO_BULK_MAX}개까지입니다.`,
+        [
+          { text: '취소', style: 'cancel' },
+          {
+            text: '넣어 두기',
+            onPress: () => {
+              void backgroundQuestionService.startOrEnqueueBulkGeneration(bulkCount).then((res) => {
+                if (res.apiKeyRequired) {
+                  Alert.alert('API Key 필요', res.message);
+                } else {
+                  Alert.alert('다음에 만들기', res.message);
+                }
+              });
+            },
+          },
+        ]
+      );
+      return;
+    }
+
+    Alert.alert(
+      `암기 ${bulkCount}개 생성 모드 선택`,
+      `생성 중 휴대폰을 어떻게 운영할지 선택하세요.\n\n🌙 [야간 무중단 모드 (추천)]\n화면 켜짐을 유지하며, 완전 블랙(#000000) 및 30초 픽셀 시프트로 번인을 방지합니다. (안전 3시간 하드 리밋 탑재)\n\n📱 [일반 백그라운드 모드]\n화면을 끄거나 다른 앱으로 전환할 수 있습니다. (배터리 최적화로 지연될 수 있음)`,
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '📱 일반 백그라운드',
+          onPress: () => {
+            void backgroundQuestionService.startOrEnqueueBulkGeneration(bulkCount).then((res) => {
+              if (res.apiKeyRequired) {
+                Alert.alert('API Key 필요', res.message);
+              } else {
+                Alert.alert(res.started ? '대량 암기 생성 시작' : '알림', res.message);
+              }
+            });
+          },
         },
-      },
-    ]);
+        {
+          text: '🌙 야간 무중단 모드',
+          onPress: () => {
+            setShowNightMode(true);
+            void backgroundQuestionService.startOrEnqueueBulkGeneration(bulkCount).then((res) => {
+              if (res.apiKeyRequired) {
+                setShowNightMode(false);
+                Alert.alert('API Key 필요', res.message);
+              }
+            });
+          },
+        },
+      ]
+    );
   };
 
   const handlePauseMemo = () => {
@@ -167,6 +205,7 @@ export const SettingsScreen: React.FC = () => {
   };
 
   const handleCancelMemo = () => {
+    setShowNightMode(false);
     Alert.alert('만들기 그만두기', '아직 안 만든 문제와 다음에 만들 예정은 지웁니다. 이미 넣은 문제는 그대로 둡니다.', [
       { text: '취소', style: 'cancel' },
       {
@@ -359,6 +398,15 @@ export const SettingsScreen: React.FC = () => {
                     textStyle={{ fontSize: 12 }}
                   />
                 )}
+                {memoProgress.running && (
+                  <Button
+                    title="🌙 야간화면"
+                    variant="outline"
+                    onPress={() => setShowNightMode(true)}
+                    style={styles.memoBtn}
+                    textStyle={{ fontSize: 12 }}
+                  />
+                )}
                 <Button
                   title="그만두기"
                   variant="danger"
@@ -510,7 +558,7 @@ export const SettingsScreen: React.FC = () => {
               <ShieldCheck size={18} color={theme.subText} />
               <Text style={[styles.infoLabel, { color: theme.subText }]}>앱 버전</Text>
             </View>
-            <Text style={[styles.infoValue, { color: theme.text }]}>1.5.5 (품질우선·회피목록 전체 유지·타임아웃 90초)</Text>
+            <Text style={[styles.infoValue, { color: theme.text }]}>1.6.0 (282제 기본내장·야간번인방지 3시간 하드리밋)</Text>
           </View>
         </Card>
 
@@ -524,6 +572,16 @@ export const SettingsScreen: React.FC = () => {
       <ProgrammingAdminModal
         visible={showAdminModal}
         onClose={() => setShowAdminModal(false)}
+      />
+
+      <NightModeOverlay
+        visible={showNightMode}
+        targetCount={memoProgress?.targetCount || bulkCount}
+        savedCount={memoProgress?.savedCount || 0}
+        isRunning={Boolean(memoProgress?.running)}
+        statusMessage={memoProgress?.running ? '문제 생성 및 안전 저장 중...' : memoProgress?.paused ? '일시정지됨' : undefined}
+        onDismiss={() => setShowNightMode(false)}
+        onCancelGeneration={handleCancelMemo}
       />
     </View>
   );
