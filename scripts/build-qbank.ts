@@ -39,7 +39,15 @@ export function buildQBank() {
   const stemSet = new Set<string>();
 
   for (const q of candidates) {
-    if (!q.id || !q.subject || !q.category || !q.type || !q.question || !q.answer || !q.explanation) {
+    if (
+      !q.id ||
+      !q.subject ||
+      !q.category ||
+      !q.type ||
+      !q.question ||
+      !q.answer ||
+      !q.explanation
+    ) {
       throw new Error(`문항 스키마 누락 오류: ${JSON.stringify(q)}`);
     }
     if (idSet.has(q.id)) {
@@ -60,7 +68,11 @@ export function buildQBank() {
     existingStems.add(normalizeStem(eq.question));
   }
 
-  const duplicatesWithExisting: { newId: string; existingId: string; reason: string }[] = [];
+  const duplicatesWithExisting: {
+    newId: string;
+    existingId: string;
+    reason: string;
+  }[] = [];
 
   for (const nq of candidates) {
     const stem = normalizeStem(nq.question);
@@ -87,7 +99,9 @@ export function buildQBank() {
 
   if (duplicatesWithExisting.length > 0) {
     console.error("기존 문제와 충돌된 문항 목록:", duplicatesWithExisting);
-    throw new Error(`기존 문제와 충돌 발생 (${duplicatesWithExisting.length}건). 수정이 필요합니다.`);
+    throw new Error(
+      `기존 문제와 충돌 발생 (${duplicatesWithExisting.length}건). 수정이 필요합니다.`,
+    );
   }
 
   console.log("✔ 유효성 검증 및 기존 문항과의 무중복(0 충돌) 검증 통과!");
@@ -98,7 +112,10 @@ export function buildQBank() {
   console.log(`최종 MEMORIZATION_BANK 문항 수: ${combinedBank.length}`);
 
   // 4. src/data/questions/memorizationBank.ts 파일 생성
-  const targetPath = path.resolve(__dirname, "../src/data/questions/memorizationBank.ts");
+  const targetPath = path.resolve(
+    __dirname,
+    "../src/data/questions/memorizationBank.ts",
+  );
 
   const fileContent = `import { Question } from "../../types/question";
 

@@ -11,7 +11,10 @@ import {
   isUnknownAttempt,
   QuizAttempt,
 } from "../src/types/attempt";
-import { LocalStorage, MemoryStorageAdapter } from "../src/storage/localStorage";
+import {
+  LocalStorage,
+  MemoryStorageAdapter,
+} from "../src/storage/localStorage";
 import { AttemptRepository } from "../src/repositories/attemptRepository";
 import { useQuizStore } from "../src/store/quizStore";
 
@@ -38,14 +41,26 @@ function assertQuestion(q: Question, label: string) {
   assert(!!q.question.trim(), `${label} question`);
   assert(!!q.explanation.trim(), `${label} explanation`);
   const answers = Array.isArray(q.answer) ? q.answer : [q.answer];
-  assert(answers.length > 0 && answers.every((a) => String(a).trim()), `${label} answer`);
+  assert(
+    answers.length > 0 && answers.every((a) => String(a).trim()),
+    `${label} answer`,
+  );
   assert(!!q.subject && !!q.category && !!q.type, `${label} meta`);
 }
 
 const ids = ALL_QUESTIONS.map((q) => q.id);
-assert(new Set(ids).size === ids.length, `정적 문제 ID 중복 없음 (${ids.length})`);
-assert(ALL_QUESTIONS.length >= 80, `정적 문제 80개 이상 (실제 ${ALL_QUESTIONS.length})`);
-assert(MEMORIZATION_BANK.length >= 250, `암기 은행 250개 이상 (실제 ${MEMORIZATION_BANK.length})`);
+assert(
+  new Set(ids).size === ids.length,
+  `정적 문제 ID 중복 없음 (${ids.length})`,
+);
+assert(
+  ALL_QUESTIONS.length >= 750,
+  `정적 문제 750개 이상 (실제 ${ALL_QUESTIONS.length})`,
+);
+assert(
+  MEMORIZATION_BANK.length >= 700,
+  `암기 은행 700개 이상 (실제 ${MEMORIZATION_BANK.length})`,
+);
 assert(SUBJECTS.includes("정보시스템구축관리"), "정보시스템구축관리 과목 노출");
 assert(MEMO_SUBJECTS.length === 4, "Gemini 암기 과목 4개");
 
@@ -89,7 +104,10 @@ assert(isConfusedAttempt(legacyWrong), "구버전 오답은 헷갈림으로 본�
 assert(!isUnknownAttempt(confusedAttempt), "헷갈림은 모름이 아님");
 
 assert(checkAnswer("group by", "GROUP BY"), "채점: 공백/대소문자");
-assert(checkAnswer("싱글톤패턴", ["싱글톤", "싱글톤 패턴", "Singleton"]), "채점: 동의어");
+assert(
+  checkAnswer("싱글톤패턴", ["싱글톤", "싱글톤 패턴", "Singleton"]),
+  "채점: 동의어",
+);
 assert(checkAnswer("그룹바이", "GROUP BY"), "채점: 한글/영문 동의어");
 assert(checkAnswer("싱글톤패틴", "싱글톤패턴"), "채점: 1글자 오탈자");
 assert(checkAnswer("1NF", "제1정규형"), "채점: 1NF 동의어");
@@ -107,14 +125,23 @@ const codeOutput = {
 };
 assert(!checkAnswer("5", "-5", codeOutput), "코드 채점: 부호 제거 오답");
 assert(!checkAnswer("15", "1.5", codeOutput), "코드 채점: 소수점 제거 오답");
-assert(!checkAnswer("1 23", "12 3", codeOutput), "코드 채점: 토큰 경계 붕괴 오답");
+assert(
+  !checkAnswer("1 23", "12 3", codeOutput),
+  "코드 채점: 토큰 경계 붕괴 오답",
+);
 assert(!checkAnswer("ABC", "abc", codeOutput), "코드 채점: 대소문자 무시 오답");
-assert(!checkAnswer("싱글톤", "싱글톤패턴", codeOutput), "코드 채점: 용어 유사 판정 없음");
+assert(
+  !checkAnswer("싱글톤", "싱글톤패턴", codeOutput),
+  "코드 채점: 용어 유사 판정 없음",
+);
 assert(checkAnswer("-5", "-5", codeOutput), "코드 채점: 부호 정답");
 assert(checkAnswer("1.5", "1.5", codeOutput), "코드 채점: 소수 정답");
 assert(checkAnswer("12 3", "12 3", codeOutput), "코드 채점: 토큰 정답");
 assert(checkAnswer("abc", "abc", codeOutput), "코드 채점: 소문자 정답");
-assert(checkAnswer("  -5\n", "-5", codeOutput), "코드 채점: 앞뒤 공백·줄바꿈 허용");
+assert(
+  checkAnswer("  -5\n", "-5", codeOutput),
+  "코드 채점: 앞뒤 공백·줄바꿈 허용",
+);
 assert(checkAnswer("-5\r\n", "-5", codeOutput), "코드 채점: CRLF 허용");
 assert(checkAnswer("그룹바이", "GROUP BY"), "이론 채점: 동의어 유지");
 assert(
@@ -135,28 +162,46 @@ assert(
 
 const today = new Date().toISOString();
 const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-const fourDaysAgo = new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString();
+const fourDaysAgo = new Date(
+  Date.now() - 4 * 24 * 60 * 60 * 1000,
+).toISOString();
 assert(
-  getDueReviewQuestionIds([{ ...unknownAttempt, answeredAt: today }]).includes("q1"),
+  getDueReviewQuestionIds([{ ...unknownAttempt, answeredAt: today }]).includes(
+    "q1",
+  ),
   "복습: 모름은 당일 큐에 포함",
 );
 assert(
-  getDueReviewQuestionIds([{ ...confusedAttempt, answeredAt: yesterday }]).includes("q1"),
+  getDueReviewQuestionIds([
+    { ...confusedAttempt, answeredAt: yesterday },
+  ]).includes("q1"),
   "복습: 헷갈림은 하루 뒤 포함",
 );
 assert(
   getDueReviewQuestionIds([
-    { ...confusedAttempt, isCorrect: true, missType: undefined, answeredAt: fourDaysAgo },
+    {
+      ...confusedAttempt,
+      isCorrect: true,
+      missType: undefined,
+      answeredAt: fourDaysAgo,
+    },
   ]).includes("q1"),
   "복습: 정답은 3일 뒤 포함",
 );
 assert(
-  !getDueReviewQuestionIds([{ ...confusedAttempt, answeredAt: today }]).includes("q1"),
+  !getDueReviewQuestionIds([
+    { ...confusedAttempt, answeredAt: today },
+  ]).includes("q1"),
   "복습: 헷갈림은 당일 제외",
 );
 assert(
   !getDueReviewQuestionIds([
-    { ...confusedAttempt, isCorrect: true, missType: undefined, answeredAt: yesterday },
+    {
+      ...confusedAttempt,
+      isCorrect: true,
+      missType: undefined,
+      answeredAt: yesterday,
+    },
   ]).includes("q1"),
   "복습: 정답은 하루 뒤 제외",
 );
@@ -233,10 +278,16 @@ import {
 } from "../src/utils/memoDedupe";
 
 // 1. 이론 데이터 검증
-assert(THEORY_DATA.length >= 10, `이론 데이터 10개 이상 (실제 ${THEORY_DATA.length})`);
+assert(
+  THEORY_DATA.length >= 10,
+  `이론 데이터 10개 이상 (실제 ${THEORY_DATA.length})`,
+);
 for (const th of THEORY_DATA) {
   assert(!!th.id && !!th.title && !!th.category, `이론 메타: ${th.id}`);
-  assert(!!th.analogy && th.analogy.length >= 10, `이론 비유 작성됨: ${th.title}`);
+  assert(
+    !!th.analogy && th.analogy.length >= 10,
+    `이론 비유 작성됨: ${th.title}`,
+  );
   assert(th.coreConcepts.length >= 2, `이론 핵심개념 2개 이상: ${th.title}`);
   assert(th.examPoints.length >= 1, `이론 출제포인트 1개 이상: ${th.title}`);
 }
@@ -244,17 +295,27 @@ const theorySubjects = new Set(THEORY_DATA.map((t) => t.subject));
 assert(theorySubjects.size === 5, "5개 전 과목 이론 요약 포함");
 
 // 2. 고빈출 기출 두음 암기장 검증
-assert(MNEMONIC_DATA.length >= 15, `고빈출 두음 데이터 15개 이상 (실제 ${MNEMONIC_DATA.length})`);
+assert(
+  MNEMONIC_DATA.length >= 15,
+  `고빈출 두음 데이터 15개 이상 (실제 ${MNEMONIC_DATA.length})`,
+);
 for (const mn of MNEMONIC_DATA) {
   assert(!!mn.id && !!mn.title && !!mn.acronym, `두음 메타: ${mn.id}`);
-  assert(!!mn.catchphrase && mn.catchphrase.length >= 5, `두음 리듬 암기문구: ${mn.title}`);
+  assert(
+    !!mn.catchphrase && mn.catchphrase.length >= 5,
+    `두음 리듬 암기문구: ${mn.title}`,
+  );
   assert(mn.items.length >= 2, `두음 세부 항목 2개 이상: ${mn.title}`);
   assert(!!mn.trapPoint, `두음 시험 함정 주의: ${mn.title}`);
 }
 
 // 3. 안 푼 문제 필터링 검증
 const allQuestions = QuestionRepository.getAll();
-const mockAttempted = new Set([allQuestions[0].id, allQuestions[1].id, allQuestions[2].id]);
+const mockAttempted = new Set([
+  allQuestions[0].id,
+  allQuestions[1].id,
+  allQuestions[2].id,
+]);
 const unsolved = QuestionRepository.getUnsolvedQuestions(mockAttempted);
 assert(
   unsolved.every((q) => !mockAttempted.has(q.id)),
@@ -271,7 +332,9 @@ const designUnsolved = QuestionRepository.getUnsolvedQuestions(
   "소프트웨어설계",
 );
 assert(
-  designUnsolved.every((q) => q.subject === "소프트웨어설계" && !mockAttempted.has(q.id)),
+  designUnsolved.every(
+    (q) => q.subject === "소프트웨어설계" && !mockAttempted.has(q.id),
+  ),
   "과목별 안 푼 문제 필터링 정확도",
 );
 
@@ -282,13 +345,19 @@ const theoryRelated = QuestionRepository.getTheoryRelatedQuestions(
   ["GoF", "디자인패턴", "생성"],
   5,
 );
-assert(theoryRelated.length === 5, `이론 문제 검색 limit(5개) 도달 (실제: ${theoryRelated.length}개)`);
+assert(
+  theoryRelated.length === 5,
+  `이론 문제 검색 limit(5개) 도달 (실제: ${theoryRelated.length}개)`,
+);
 assert(
   theoryRelated.every((q) => q.subject === "소프트웨어설계"),
   "이론 매칭 문제는 해당 과목에 속함",
 );
 const theoryIds = new Set(theoryRelated.map((q) => q.id));
-assert(theoryIds.size === theoryRelated.length, "이론 매칭 결과에 중복 ID 없음");
+assert(
+  theoryIds.size === theoryRelated.length,
+  "이론 매칭 결과에 중복 ID 없음",
+);
 
 // (2) 0개 매칭 시 일반 문제로 보충 케이스
 const zeroMatched = QuestionRepository.getTheoryRelatedQuestions(
@@ -296,9 +365,18 @@ const zeroMatched = QuestionRepository.getTheoryRelatedQuestions(
   ["non_existent_keyword_db_xyz_9999"],
   5,
 );
-assert(zeroMatched.length === 5, `0개 매칭 시 동일 과목 문제로 5개 보충 (실제: ${zeroMatched.length}개)`);
-assert(zeroMatched.every((q) => q.subject === "데이터베이스구축"), "보충 문제 과목 일치");
-assert(new Set(zeroMatched.map((q) => q.id)).size === 5, "0개 매칭 보충 결과 중복 ID 없음");
+assert(
+  zeroMatched.length === 5,
+  `0개 매칭 시 동일 과목 문제로 5개 보충 (실제: ${zeroMatched.length}개)`,
+);
+assert(
+  zeroMatched.every((q) => q.subject === "데이터베이스구축"),
+  "보충 문제 과목 일치",
+);
+assert(
+  new Set(zeroMatched.map((q) => q.id)).size === 5,
+  "0개 매칭 보충 결과 중복 ID 없음",
+);
 
 // (3) 소수(1개) 매칭 시 부족분 비매칭 문제로 보충 케이스
 // 1개만 매칭될 가능성이 높은 고유 키워드 검색
@@ -307,13 +385,26 @@ const fewMatched = QuestionRepository.getTheoryRelatedQuestions(
   ["이상 현상", "삽입 이상"],
   5,
 );
-assert(fewMatched.length === 5, `소수 매칭 시 5개까지 정확히 보충 (실제: ${fewMatched.length}개)`);
-assert(fewMatched.every((q) => q.subject === "데이터베이스구축"), "소수 매칭 보충 문제 과목 일치");
-assert(new Set(fewMatched.map((q) => q.id)).size === 5, "소수 매칭 보충 결과 중복 ID 없음");
-
-assert(MEMO_TOPIC_SEEDS.length >= 100, `암기 챕터 시드 100개 이상 (실제 ${MEMO_TOPIC_SEEDS.length})`);
 assert(
-  new Set(MEMO_TOPIC_SEEDS.map((item) => item.id)).size === MEMO_TOPIC_SEEDS.length,
+  fewMatched.length === 5,
+  `소수 매칭 시 5개까지 정확히 보충 (실제: ${fewMatched.length}개)`,
+);
+assert(
+  fewMatched.every((q) => q.subject === "데이터베이스구축"),
+  "소수 매칭 보충 문제 과목 일치",
+);
+assert(
+  new Set(fewMatched.map((q) => q.id)).size === 5,
+  "소수 매칭 보충 결과 중복 ID 없음",
+);
+
+assert(
+  MEMO_TOPIC_SEEDS.length >= 100,
+  `암기 챕터 시드 100개 이상 (실제 ${MEMO_TOPIC_SEEDS.length})`,
+);
+assert(
+  new Set(MEMO_TOPIC_SEEDS.map((item) => item.id)).size ===
+    MEMO_TOPIC_SEEDS.length,
   "암기 챕터 시드 id 중복 없음",
 );
 assert(
@@ -349,11 +440,15 @@ const memoOther: Question = {
   answer: "PKI",
   keywords: ["PKI"],
 };
-assert(isNearDuplicateMemo(memoSameAnswer, memoOrig), "같은 정답 바꿔 말하기는 근사 중복");
+assert(
+  isNearDuplicateMemo(memoSameAnswer, memoOrig),
+  "같은 정답 바꿔 말하기는 근사 중복",
+);
 assert(!isNearDuplicateMemo(memoOther, memoOrig), "다른 정답은 중복이 아님");
 assert(
-  filterNewMemoQuestions([memoSameAnswer, memoOther], [memoOrig]).map((item) => item.id).join() ===
-    "MEMO_PKI",
+  filterNewMemoQuestions([memoSameAnswer, memoOther], [memoOrig])
+    .map((item) => item.id)
+    .join() === "MEMO_PKI",
   "생성 묶음에서 근사 중복만 걸러 냄",
 );
 
@@ -390,7 +485,7 @@ const sampleCodeQuestion: Question = {
   id: "QUIZ_LOCK_2",
   type: "CODE_TRACE",
   subject: "프로그래밍언어활용",
-  code: "printf(\"%d\", -5);",
+  code: 'printf("%d", -5);',
   question: "실행 결과를 쓰시오.",
   answer: "-5",
 };
@@ -469,7 +564,10 @@ async function runAsyncSelfTests() {
   useQuizStore.getState().selectAnswer("-5");
   storage.failNext = true;
   const failedSave = await useQuizStore.getState().submitAnswer();
-  assert(failedSave.ok === false && failedSave.reason === "save_failed", "저장 실패를 안내");
+  assert(
+    failedSave.ok === false && failedSave.reason === "save_failed",
+    "저장 실패를 안내",
+  );
   assert(
     useQuizStore.getState().isSubmitted === false &&
       useQuizStore.getState().isSubmitting === false,
@@ -509,4 +607,3 @@ void runAsyncSelfTests().catch((error) => {
   console.error(error);
   process.exit(1);
 });
-

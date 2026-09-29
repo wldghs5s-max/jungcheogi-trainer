@@ -89,7 +89,8 @@ export const NightModeOverlay: React.FC<NightModeOverlayProps> = ({
 
   if (!visible) return null;
 
-  const isCompleted = !isRunning && savedCount >= targetCount && targetCount > 0;
+  const isCompleted =
+    !isRunning && savedCount >= targetCount && targetCount > 0;
 
   return (
     <TouchableOpacity
@@ -136,7 +137,9 @@ export const NightModeOverlay: React.FC<NightModeOverlayProps> = ({
           </View>
         </View>
 
-        <Text style={styles.touchHint}>화면 아무 곳이나 터치하면 일반 화면으로 돌아갑니다</Text>
+        <Text style={styles.touchHint}>
+          화면 아무 곳이나 터치하면 일반 화면으로 돌아갑니다
+        </Text>
 
         {onCancelGeneration && isRunning && (
           <TouchableOpacity

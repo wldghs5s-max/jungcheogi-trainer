@@ -1,4 +1,8 @@
-import { GeminiService, GENERATOR_MODELS, BULK_GENERATOR_MODELS } from "../src/api/geminiService";
+import {
+  GeminiService,
+  GENERATOR_MODELS,
+  BULK_GENERATOR_MODELS,
+} from "../src/api/geminiService";
 import {
   MEMO_BATCH_COUNT,
   MEMO_BATCH_SIZE,
@@ -20,7 +24,19 @@ import {
   parseJsonPayload,
 } from "../src/api/geminiQuestionGenerator";
 import { MEMO_TOPIC_SEEDS, pickTopicSeeds } from "../src/data/memoTopicSeeds";
-import { MemoJobService, queuedCountFromJob, remainingFromJob, recordBatchSaveResult, shouldSkipMemoBatch, prepareMemoJobForResume, leftoverProgressMessage, cancelJobUserMessage, isLeftoverMemoJob, MAX_MEMO_BATCH_ATTEMPTS, savedCountFromJob } from "../src/services/memoJobService";
+import {
+  MemoJobService,
+  queuedCountFromJob,
+  remainingFromJob,
+  recordBatchSaveResult,
+  shouldSkipMemoBatch,
+  prepareMemoJobForResume,
+  leftoverProgressMessage,
+  cancelJobUserMessage,
+  isLeftoverMemoJob,
+  MAX_MEMO_BATCH_ATTEMPTS,
+  savedCountFromJob,
+} from "../src/services/memoJobService";
 import { QuestionRepository } from "../src/repositories/questionRepository";
 import { MemoGenerationJob } from "../src/types/generationJob";
 import { Question } from "../src/types/question";
@@ -60,7 +76,12 @@ function memoPayload(suffix: string, count = MEMO_BATCH_SIZE) {
 async function run() {
   console.log("=== Gemini 암기 시드·묶음 생성 검증 ===\n");
 
-  const seeds = pickTopicSeeds(MEMO_BATCH_SIZE, [], MEMO_TOPIC_SEEDS, () => 0.2);
+  const seeds = pickTopicSeeds(
+    MEMO_BATCH_SIZE,
+    [],
+    MEMO_TOPIC_SEEDS,
+    () => 0.2,
+  );
   assert(seeds.length === MEMO_BATCH_SIZE, `시드 ${MEMO_BATCH_SIZE}개 추출`);
   assert(
     new Set(seeds.map((item) => item.subject)).size >= 4,
@@ -73,7 +94,13 @@ async function run() {
 
   const covered = pickTopicSeeds(
     3,
-    [{ subject: "소프트웨어설계", keywords: ["응집도"], question: "결합도를 쓰시오." }],
+    [
+      {
+        subject: "소프트웨어설계",
+        keywords: ["응집도"],
+        question: "결합도를 쓰시오.",
+      },
+    ],
     [
       {
         id: "sd-mod-cohesion",
@@ -110,10 +137,15 @@ async function run() {
   const prompt = buildPrompt([], seeds);
   assert(prompt.includes("지정 챕터"), "프롬프트에 시드 섹션 포함");
   assert(
-    seeds.every((seed) => prompt.includes(seed.topic) && prompt.includes(seed.id)),
+    seeds.every(
+      (seed) => prompt.includes(seed.topic) && prompt.includes(seed.id),
+    ),
     "선택한 시드가 프롬프트에 주입됨",
   );
-  assert(prompt.includes(`총 ${seeds.length}개`), "묶음 크기가 프롬프트에 명시");
+  assert(
+    prompt.includes(`총 ${seeds.length}개`),
+    "묶음 크기가 프롬프트에 명시",
+  );
   assert(
     prompt.includes("같은 정답") && prompt.includes("바꿔 말하기"),
     "프롬프트가 같은 정답·바꿔 말하기를 금지",
@@ -138,7 +170,8 @@ async function run() {
   if (rbacSeed) {
     const avoidPrompt = buildPrompt([existingForAvoid], [rbacSeed]);
     assert(
-      avoidPrompt.includes("역할 기반 접근통제") && avoidPrompt.includes("RBAC"),
+      avoidPrompt.includes("역할 기반 접근통제") &&
+        avoidPrompt.includes("RBAC"),
       "해당 챕터 기존 지문·정답이 회피 목록에 들어감",
     );
   }
@@ -150,7 +183,10 @@ async function run() {
     MEMO_BATCH_SIZE,
     seeds,
   );
-  assert(parsed.length === MEMO_BATCH_SIZE, "한 묶음에서 과목 중복 허용해 7문제 수집");
+  assert(
+    parsed.length === MEMO_BATCH_SIZE,
+    "한 묶음에서 과목 중복 허용해 7문제 수집",
+  );
   assert(
     parsed.every((item, index) => item.chapterId === seeds[index].id),
     "수집 문항에 챕터 id를 붙임",
@@ -160,7 +196,8 @@ async function run() {
       JSON.stringify(memoPayload("A")),
       new Set([normalizeStem("주제 A-0 A묶음 항목0를 쓰시오.")]),
       "t",
-    ).length === MEMO_BATCH_SIZE - 1,
+    ).length ===
+      MEMO_BATCH_SIZE - 1,
     "기존 지문은 묶음에서 제외",
   );
 
@@ -267,8 +304,15 @@ async function run() {
 
   // 1. 닫히지 않은 마크다운 코드블록 복구 테스트
   const unclosedMarkdown = "```json\n" + JSON.stringify(memoPayload("M"));
-  const unclosedParsed = collectQuestionsFromText(unclosedMarkdown, new Set(), "unclosed");
-  assert(unclosedParsed.length === MEMO_BATCH_SIZE, "닫히지 않은 마크다운 코드블록 정상 파싱");
+  const unclosedParsed = collectQuestionsFromText(
+    unclosedMarkdown,
+    new Set(),
+    "unclosed",
+  );
+  assert(
+    unclosedParsed.length === MEMO_BATCH_SIZE,
+    "닫히지 않은 마크다운 코드블록 정상 파싱",
+  );
 
   // 2. 문자열 내부의 실제 줄바꿈(개행) 제어문자 정규화 테스트
   const rawWithNewlines = `{
@@ -299,8 +343,15 @@ async function run() {
       }
     ]
   }`;
-  const parsedWithNewlines = collectQuestionsFromText(rawWithNewlines, new Set(), "nl");
-  assert(parsedWithNewlines.length === 4, "문자열 내 비이스케이프 줄바꿈 정상 이스케이프 및 수집");
+  const parsedWithNewlines = collectQuestionsFromText(
+    rawWithNewlines,
+    new Set(),
+    "nl",
+  );
+  assert(
+    parsedWithNewlines.length === 4,
+    "문자열 내 비이스케이프 줄바꿈 정상 이스케이프 및 수집",
+  );
 
   // 3. 문자열 내부에 코드/괄호({, }, [, ])가 포함된 경우 토큰 인식 안전성 테스트
   const jsonWithInnerBrackets = `{
@@ -331,8 +382,15 @@ async function run() {
       }
     ]
   }`;
-  const parsedWithInnerBrackets = collectQuestionsFromText(jsonWithInnerBrackets, new Set(), "bracket");
-  assert(parsedWithInnerBrackets.length === 4, "문자열 내부 중괄호/대괄호가 포함되어도 토큰 손상 없이 안전 파싱");
+  const parsedWithInnerBrackets = collectQuestionsFromText(
+    jsonWithInnerBrackets,
+    new Set(),
+    "bracket",
+  );
+  assert(
+    parsedWithInnerBrackets.length === 4,
+    "문자열 내부 중괄호/대괄호가 포함되어도 토큰 손상 없이 안전 파싱",
+  );
 
   // 4. 잘린 JSON 배열(Truncated JSON)의 구조 복구 테스트 (5문항 완료 후 6문항 도중 절단)
   const truncatedPayload = `{
@@ -371,8 +429,15 @@ async function run() {
         "subject": "데이터베이스구축",
         "question": "이행적 함수 종속을 제`; // 6번째 문항 중간 절단
 
-  const repairedQuestions = collectQuestionsFromText(truncatedPayload, new Set(), "trunc");
-  assert(repairedQuestions.length === 5, `중간 절단 시 완성된 5문항 정상 복구 수집 (실제: ${repairedQuestions.length})`);
+  const repairedQuestions = collectQuestionsFromText(
+    truncatedPayload,
+    new Set(),
+    "trunc",
+  );
+  assert(
+    repairedQuestions.length === 5,
+    `중간 절단 시 완성된 5문항 정상 복구 수집 (실제: ${repairedQuestions.length})`,
+  );
 
   // 5. 엄격한 품질 임계값 검증: 유효 문항 수가 최소 기준(4개) 미만이면 실패 처리
   const severelyTruncated = `{
@@ -419,8 +484,12 @@ async function run() {
     source: "테스트",
   }));
 
-  const addedCount = await QuestionRepository.appendCachedQuestions(mockBatch0Questions);
-  assert(addedCount === 7, `모의 1차 배치 7문제 QuestionRepository 저장 완료 (실제: ${addedCount})`);
+  const addedCount =
+    await QuestionRepository.appendCachedQuestions(mockBatch0Questions);
+  assert(
+    addedCount === 7,
+    `모의 1차 배치 7문제 QuestionRepository 저장 완료 (실제: ${addedCount})`,
+  );
 
   const mockJob: MemoGenerationJob = {
     jobId: testJobId,
@@ -446,21 +515,36 @@ async function run() {
     ],
   };
 
-  const validatedJob = await MemoJobService.crossValidateJobWithRepository(mockJob);
-  assert(validatedJob.batches[0].status === "COMPLETED", "저장소에 문제가 존재하면 1차 배치는 COMPLETED로 자동 보정됨");
-  assert(validatedJob.batches[0].savedQuestionIds.length === 7, "저장된 7개 Question ID가 정확히 연동됨");
-  assert(validatedJob.batches[1].status === "PENDING", "저장소에 없는 2차 배치는 PENDING 유지");
+  const validatedJob =
+    await MemoJobService.crossValidateJobWithRepository(mockJob);
+  assert(
+    validatedJob.batches[0].status === "COMPLETED",
+    "저장소에 문제가 존재하면 1차 배치는 COMPLETED로 자동 보정됨",
+  );
+  assert(
+    validatedJob.batches[0].savedQuestionIds.length === 7,
+    "저장된 7개 Question ID가 정확히 연동됨",
+  );
+  assert(
+    validatedJob.batches[1].status === "PENDING",
+    "저장소에 없는 2차 배치는 PENDING 유지",
+  );
 
   // 7. 멱등성(Idempotency) 검증: 이미 저장된 1차 배치 문제들을 다시 appendCachedQuestions에 넣어도 중복 저장되지 않음 (0개 추가)
-  const duplicateAppendCount = await QuestionRepository.appendCachedQuestions(mockBatch0Questions);
-  assert(duplicateAppendCount === 0, `동일 문항 재시도 시 중복 추가 차단 (실제 추가: ${duplicateAppendCount}개)`);
+  const duplicateAppendCount =
+    await QuestionRepository.appendCachedQuestions(mockBatch0Questions);
+  assert(
+    duplicateAppendCount === 0,
+    `동일 문항 재시도 시 중복 추가 차단 (실제 추가: ${duplicateAppendCount}개)`,
+  );
 
   assert(
     memoBatchCountForTarget(MEMO_BULK_TARGET) === 20,
     "100문제는 5개씩 20묶음",
   );
   assert(
-    MEMO_BULK_MAX === 500 && MEMO_BULK_CHOICES.join(",") === "100,200,300,400,500",
+    MEMO_BULK_MAX === 500 &&
+      MEMO_BULK_CHOICES.join(",") === "100,200,300,400,500",
     "대량 생성 상한은 500이고 100 단위로 고름",
   );
   assert(
@@ -563,9 +647,16 @@ async function run() {
     keywords: [`저장검증${index}`],
     source: "테스트",
   });
-  const partialQuestions = [uniqueMemo(0, "부분저장알파"), uniqueMemo(1, "부분저장베타")];
-  const partialAdded = await QuestionRepository.appendCachedQuestions(partialQuestions);
-  assert(partialAdded === 2, `부분 저장 2개만 보관함에 추가 (실제 ${partialAdded})`);
+  const partialQuestions = [
+    uniqueMemo(0, "부분저장알파"),
+    uniqueMemo(1, "부분저장베타"),
+  ];
+  const partialAdded =
+    await QuestionRepository.appendCachedQuestions(partialQuestions);
+  assert(
+    partialAdded === 2,
+    `부분 저장 2개만 보관함에 추가 (실제 ${partialAdded})`,
+  );
 
   const requestedIds = [
     ...partialQuestions.map((item) => item.id),
@@ -583,12 +674,25 @@ async function run() {
     requestedIds,
     new Set(QuestionRepository.existingIds(requestedIds)),
   );
-  assert(savedIds.length === 2, `제외된 문항은 저장 성공으로 세지 않음 (실제 ${savedIds.length})`);
-  assert(partialBatch.status === "COMPLETED", "일부라도 실제 저장되면 해당 배치는 완료");
-  assert(savedIds.every((id) => QuestionRepository.getById(id)), "저장 ID는 보관함에 존재");
+  assert(
+    savedIds.length === 2,
+    `제외된 문항은 저장 성공으로 세지 않음 (실제 ${savedIds.length})`,
+  );
+  assert(
+    partialBatch.status === "COMPLETED",
+    "일부라도 실제 저장되면 해당 배치는 완료",
+  );
+  assert(
+    savedIds.every((id) => QuestionRepository.getById(id)),
+    "저장 ID는 보관함에 존재",
+  );
 
-  const duplicateAdded = await QuestionRepository.appendCachedQuestions(partialQuestions);
-  assert(duplicateAdded === 0, `재개 시 기존 문항 중복 저장 없음 (실제 ${duplicateAdded})`);
+  const duplicateAdded =
+    await QuestionRepository.appendCachedQuestions(partialQuestions);
+  assert(
+    duplicateAdded === 0,
+    `재개 시 기존 문항 중복 저장 없음 (실제 ${duplicateAdded})`,
+  );
   assert(
     QuestionRepository.existingIds(requestedIds).length === 2,
     "중복 제외 후에도 실제 문항은 2개",
@@ -611,7 +715,8 @@ async function run() {
       },
     ],
   };
-  const ghostValidated = await MemoJobService.crossValidateJobWithRepository(ghostJob);
+  const ghostValidated =
+    await MemoJobService.crossValidateJobWithRepository(ghostJob);
   assert(
     savedCountFromJob(ghostValidated) === 0,
     "완료 기록만 있고 실제 문항이 없으면 저장 수는 0",
@@ -620,7 +725,10 @@ async function run() {
     ghostValidated.batches[0].status === "PENDING",
     "실제 문항이 없는 COMPLETED 배치는 재개 가능하게 되돌림",
   );
-  assert(ghostValidated.status !== "COMPLETED", "목표 미달 작업을 성공으로 지우지 않음");
+  assert(
+    ghostValidated.status !== "COMPLETED",
+    "목표 미달 작업을 성공으로 지우지 않음",
+  );
 
   const failBatch: MemoGenerationJob["batches"][number] = {
     batchIndex: 1,
@@ -632,7 +740,8 @@ async function run() {
     recordBatchSaveResult(failBatch, ["missing-id"], new Set());
   }
   assert(
-    failBatch.attemptCount === MAX_MEMO_BATCH_ATTEMPTS && shouldSkipMemoBatch(failBatch),
+    failBatch.attemptCount === MAX_MEMO_BATCH_ATTEMPTS &&
+      shouldSkipMemoBatch(failBatch),
     "저장 실패 반복은 시도 한도에서 멈춤",
   );
 
@@ -675,9 +784,11 @@ async function run() {
     "사용자 안내에 부족 개수를 쓰지 않음",
   );
   assert(
-    leftoverProgressMessage(0, 100, "gemini-3.8-flash: 응답 시간이 초과되었습니다.").includes(
-      "응답 시간이 초과",
-    ),
+    leftoverProgressMessage(
+      0,
+      100,
+      "gemini-3.8-flash: 응답 시간이 초과되었습니다.",
+    ).includes("응답 시간이 초과"),
     "남은 작업 안내에 실제 실패 원인을 붙인다",
   );
   assert(

@@ -7,9 +7,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "보안 3대 요소",
     subCategory: "기밀성",
     type: "SHORT_ANSWER",
-    question: "인가된 사용자만이 시스템과 정보에 접근할 수 있으며, 비인가자가 정보를 열람하거나 탈취하지 못하도록 보호하는 보안 원칙의 명칭을 쓰시오.",
+    question:
+      "인가된 사용자만이 시스템과 정보에 접근할 수 있으며, 비인가자가 정보를 열람하거나 탈취하지 못하도록 보호하는 보안 원칙의 명칭을 쓰시오.",
     answer: ["기밀성", "Confidentiality"],
-    explanation: "정보보안 3대 요소(CIA)는 기밀성(Confidentiality), 무결성(Integrity), 가용성(Availability)입니다. 기밀성은 암호화와 접근 통제로 보장합니다.",
+    explanation:
+      "정보보안 3대 요소(CIA)는 기밀성(Confidentiality), 무결성(Integrity), 가용성(Availability)입니다. 기밀성은 암호화와 접근 통제로 보장합니다.",
     difficulty: "EASY",
     keywords: ["CIA", "기밀성", "Confidentiality", "보안3대요소"],
     source: "정보처리기사 실기 표준",
@@ -20,9 +22,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "보안 원칙",
     subCategory: "부인 방지",
     type: "SHORT_ANSWER",
-    question: "송신자나 수신자가 메시지를 전송하거나 수신한 사실을 사후에 거짓으로 부인할 수 없도록 전자서명 등의 기술로 명백한 증거를 제공하는 보안 서비스의 명칭을 쓰시오.",
+    question:
+      "송신자나 수신자가 메시지를 전송하거나 수신한 사실을 사후에 거짓으로 부인할 수 없도록 전자서명 등의 기술로 명백한 증거를 제공하는 보안 서비스의 명칭을 쓰시오.",
     answer: ["부인 방지", "부인봉쇄", "Non-Repudiation", "부인방지"],
-    explanation: "부인 방지(Non-Repudiation)는 공개키 기반 전자서명(Digital Signature)을 통해 발신 사실과 수신 사실을 증명하여 법적 분쟁을 방지합니다.",
+    explanation:
+      "부인 방지(Non-Repudiation)는 공개키 기반 전자서명(Digital Signature)을 통해 발신 사실과 수신 사실을 증명하여 법적 분쟁을 방지합니다.",
     difficulty: "EASY",
     keywords: ["보안원칙", "부인방지", "전자서명", "Non-Repudiation"],
     source: "정보처리기사 실기 표준",
@@ -33,9 +37,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "보안 3대 요소",
     subCategory: "가용성",
     type: "SHORT_ANSWER",
-    question: "인가된 사용자가 시스템이나 정보 자원을 필요로 할 때 언제든지 지체 없이 정상적으로 사용할 수 있도록 보장하는 보안 원칙의 명칭을 쓰시오.",
+    question:
+      "인가된 사용자가 시스템이나 정보 자원을 필요로 할 때 언제든지 지체 없이 정상적으로 사용할 수 있도록 보장하는 보안 원칙의 명칭을 쓰시오.",
     answer: ["가용성", "Availability"],
-    explanation: "가용성(Availability)은 DoS/DDoS 공격이나 시스템 장애로부터 보호하고 백업 및 이중화를 통해 유지됩니다.",
+    explanation:
+      "가용성(Availability)은 DoS/DDoS 공격이나 시스템 장애로부터 보호하고 백업 및 이중화를 통해 유지됩니다.",
     difficulty: "EASY",
     keywords: ["CIA", "가용성", "Availability", "정상사용"],
     source: "정보처리기사 실기 표준",
@@ -46,9 +52,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "암호화",
     subCategory: "대칭키 암호",
     type: "SHORT_ANSWER",
-    question: "1975년 미국 NBS(현 NIST)가 표준으로 채택했던 64비트 평문 블록을 56비트 비밀키를 사용하여 16라운드 페이스텔(Feistel) 구조로 암호화하는 고전 대칭키 암호 알고리즘의 영문 약어를 쓰시오.",
+    question:
+      "1975년 미국 NBS(현 NIST)가 표준으로 채택했던 64비트 평문 블록을 56비트 비밀키를 사용하여 16라운드 페이스텔(Feistel) 구조로 암호화하는 고전 대칭키 암호 알고리즘의 영문 약어를 쓰시오.",
     answer: ["DES", "des", "Data Encryption Standard"],
-    explanation: "DES는 56비트의 짧은 키 길이로 인해 현재는 전수 공격에 취약하여 AES로 완전히 대체되었습니다.",
+    explanation:
+      "DES는 56비트의 짧은 키 길이로 인해 현재는 전수 공격에 취약하여 AES로 완전히 대체되었습니다.",
     difficulty: "EASY",
     keywords: ["암호화", "DES", "대칭키", "페이스텔", "56비트키"],
     source: "정보처리기사 실기 표준",
@@ -59,9 +67,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "암호화",
     subCategory: "공개키 암호",
     type: "SHORT_ANSWER",
-    question: "타원곡선 위의 이산대수 문제에 기반하여 RSA보다 훨씬 짧은 키 길이(256비트)로도 동일한 보안 강도를 제공하는 공개키 암호화 기법의 영문 약어를 쓰시오.",
+    question:
+      "타원곡선 위의 이산대수 문제에 기반하여 RSA보다 훨씬 짧은 키 길이(256비트)로도 동일한 보안 강도를 제공하는 공개키 암호화 기법의 영문 약어를 쓰시오.",
     answer: ["ECC", "Elliptic Curve Cryptography", "타원곡선 암호"],
-    explanation: "ECC는 연산 부담과 키 길이가 작아 스마트카드, 모바일 기기, SSL 인증서 등에 널리 활용됩니다.",
+    explanation:
+      "ECC는 연산 부담과 키 길이가 작아 스마트카드, 모바일 기기, SSL 인증서 등에 널리 활용됩니다.",
     difficulty: "MEDIUM",
     keywords: ["암호화", "ECC", "타원곡선", "공개키"],
     source: "정보처리기사 실기 표준",
@@ -72,9 +82,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "암호화",
     subCategory: "키 교환",
     type: "SHORT_ANSWER",
-    question: "사전에 비밀을 공유하지 않은 두 당사자가 안전하지 않은 공개 통신 채널을 통해 공통의 대칭키를 안전하게 생성하고 교환할 수 있게 한 최초의 키 교환 알고리즘의 명칭을 쓰시오.",
+    question:
+      "사전에 비밀을 공유하지 않은 두 당사자가 안전하지 않은 공개 통신 채널을 통해 공통의 대칭키를 안전하게 생성하고 교환할 수 있게 한 최초의 키 교환 알고리즘의 명칭을 쓰시오.",
     answer: ["디피 헬만", "디피 헬먼", "Diffie-Hellman", "DH"],
-    explanation: "디피-헬만(Diffie-Hellman) 키 교환은 이산대수 문제의 난이도에 기반하며 TLS 핸드셰이크 등에서 세션키를 공유할 때 쓰입니다.",
+    explanation:
+      "디피-헬만(Diffie-Hellman) 키 교환은 이산대수 문제의 난이도에 기반하며 TLS 핸드셰이크 등에서 세션키를 공유할 때 쓰입니다.",
     difficulty: "MEDIUM",
     keywords: ["암호화", "디피헬만", "Diffie-Hellman", "키교환"],
     source: "정보처리기사 실기 표준",
@@ -85,9 +97,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "암호화",
     subCategory: "대칭키 암호",
     type: "SHORT_ANSWER",
-    question: "1999년 한국인터넷진흥원(KISA)이 개발한 128비트 블록 암호화 알고리즘으로 전자상거래 표준으로 채택된 국내 대칭키 암호 알고리즘의 명칭을 쓰시오.",
+    question:
+      "1999년 한국인터넷진흥원(KISA)이 개발한 128비트 블록 암호화 알고리즘으로 전자상거래 표준으로 채택된 국내 대칭키 암호 알고리즘의 명칭을 쓰시오.",
     answer: ["SEED", "씨드", "시드"],
-    explanation: "SEED는 128비트 블록 크기, 128비트 키 크기를 사용하며 페이스텔(Feistel) 구조로 설계된 국내 표준 암호 알고리즘입니다.",
+    explanation:
+      "SEED는 128비트 블록 크기, 128비트 키 크기를 사용하며 페이스텔(Feistel) 구조로 설계된 국내 표준 암호 알고리즘입니다.",
     difficulty: "EASY",
     keywords: ["암호화", "SEED", "KISA", "대칭키"],
     source: "정보처리기사 실기 표준",
@@ -98,9 +112,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "암호화",
     subCategory: "대칭키 암호",
     type: "SHORT_ANSWER",
-    question: "국가정보원과 산학연이 함께 개발한 경량 블록 암호화 알고리즘으로, 경량 환경 및 하드웨어 구현 효율성을 고려하여 SPN 구조를 채택한 국내 표준 암호 알고리즘의 명칭을 쓰시오.",
+    question:
+      "국가정보원과 산학연이 함께 개발한 경량 블록 암호화 알고리즘으로, 경량 환경 및 하드웨어 구현 효율성을 고려하여 SPN 구조를 채택한 국내 표준 암호 알고리즘의 명칭을 쓰시오.",
     answer: ["ARIA", "아리아"],
-    explanation: "ARIA(Academy, Research Institute, Agency)는 128/192/256비트 키를 지원하는 국내 블록 암호 알고리즘입니다.",
+    explanation:
+      "ARIA(Academy, Research Institute, Agency)는 128/192/256비트 키를 지원하는 국내 블록 암호 알고리즘입니다.",
     difficulty: "MEDIUM",
     keywords: ["암호화", "ARIA", "국가정보원", "SPN구조"],
     source: "정보처리기사 실기 표준",
@@ -111,9 +127,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "암호화",
     subCategory: "해시 함수",
     type: "SHORT_ANSWER",
-    question: "임의 길이의 입력 데이터를 고정된 256비트 길이의 해시 값으로 변환하며, 미국 NSA가 설계한 SHA-2 제품군에 속하는 암호학적 해시 함수의 명칭을 쓰시오.",
+    question:
+      "임의 길이의 입력 데이터를 고정된 256비트 길이의 해시 값으로 변환하며, 미국 NSA가 설계한 SHA-2 제품군에 속하는 암호학적 해시 함수의 명칭을 쓰시오.",
     answer: ["SHA-256", "SHA256", "sha256"],
-    explanation: "SHA-256은 블록체인 비트코인, 공인인증서, 비밀번호 해싱 등 전 세계 보안 표준으로 사용되는 일방향 해시 함수입니다.",
+    explanation:
+      "SHA-256은 블록체인 비트코인, 공인인증서, 비밀번호 해싱 등 전 세계 보안 표준으로 사용되는 일방향 해시 함수입니다.",
     difficulty: "EASY",
     keywords: ["해시함수", "SHA-256", "256비트"],
     source: "정보처리기사 실기 표준",
@@ -124,9 +142,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "암호화",
     subCategory: "해시 보강",
     type: "SHORT_ANSWER",
-    question: "비밀번호를 해시할 때 레인보우 테이블(Rainbow Table) 역추적 공격을 방어하기 위해 비밀번호 원문에 추가하는 무작위 난수 데이터의 명칭을 쓰시오.",
+    question:
+      "비밀번호를 해시할 때 레인보우 테이블(Rainbow Table) 역추적 공격을 방어하기 위해 비밀번호 원문에 추가하는 무작위 난수 데이터의 명칭을 쓰시오.",
     answer: ["솔트", "소금", "Salt", "솔팅"],
-    explanation: "솔트(Salt)를 추가하여 해싱하면 동일한 비밀번호라도 서로 완전히 다른 해시 결과가 나와 사전 공격과 레인보우 공격을 무력화합니다.",
+    explanation:
+      "솔트(Salt)를 추가하여 해싱하면 동일한 비밀번호라도 서로 완전히 다른 해시 결과가 나와 사전 공격과 레인보우 공격을 무력화합니다.",
     difficulty: "EASY",
     keywords: ["암호화", "솔트", "Salt", "레인보우테이블"],
     source: "정보처리기사 실기 표준",
@@ -137,9 +157,16 @@ export const SEC_QUESTIONS: Question[] = [
     category: "접근 통제",
     subCategory: "MAC",
     type: "SHORT_ANSWER",
-    question: "주체의 보안 등급(Secret, Top Secret 등)과 객체의 보안 레이블을 시스템 관리자가 비교하여 접근을 엄격히 강제하는 접근 통제 모델의 영문 약어를 쓰시오.",
-    answer: ["MAC", "Mandatory Access Control", "강제적 접근 통제", "강제 접근 통제"],
-    explanation: "MAC는 군사, 정부 등 고보안 환경에 적합하며 사용자가 임의로 권한을 부여할 수 없습니다.",
+    question:
+      "주체의 보안 등급(Secret, Top Secret 등)과 객체의 보안 레이블을 시스템 관리자가 비교하여 접근을 엄격히 강제하는 접근 통제 모델의 영문 약어를 쓰시오.",
+    answer: [
+      "MAC",
+      "Mandatory Access Control",
+      "강제적 접근 통제",
+      "강제 접근 통제",
+    ],
+    explanation:
+      "MAC는 군사, 정부 등 고보안 환경에 적합하며 사용자가 임의로 권한을 부여할 수 없습니다.",
     difficulty: "EASY",
     keywords: ["접근통제", "MAC", "강제적접근통제", "보안등급"],
     source: "정보처리기사 실기 표준",
@@ -150,9 +177,16 @@ export const SEC_QUESTIONS: Question[] = [
     category: "접근 통제",
     subCategory: "ABAC",
     type: "SHORT_ANSWER",
-    question: "주체의 속성(직급, 부서), 객체의 속성(보안 등급), 환경 속성(접속 시간, 위치) 등을 동적 정책 규칙에 따라 비교 평가하여 접근을 허용하거나 차단하는 차세대 접근 통제 모델의 영문 약어를 쓰시오.",
-    answer: ["ABAC", "Attribute-Based Access Control", "속성 기반 접근 통제", "속성기반 접근통제"],
-    explanation: "ABAC는 RBAC보다 훨씬 더 세밀하고 유연한 접근 제어를 동적으로 수행할 수 있는 최신 접근 통제 표준입니다.",
+    question:
+      "주체의 속성(직급, 부서), 객체의 속성(보안 등급), 환경 속성(접속 시간, 위치) 등을 동적 정책 규칙에 따라 비교 평가하여 접근을 허용하거나 차단하는 차세대 접근 통제 모델의 영문 약어를 쓰시오.",
+    answer: [
+      "ABAC",
+      "Attribute-Based Access Control",
+      "속성 기반 접근 통제",
+      "속성기반 접근통제",
+    ],
+    explanation:
+      "ABAC는 RBAC보다 훨씬 더 세밀하고 유연한 접근 제어를 동적으로 수행할 수 있는 최신 접근 통제 표준입니다.",
     difficulty: "HARD",
     keywords: ["접근통제", "ABAC", "속성기반", "동적정책"],
     source: "정보처리기사 실기 표준",
@@ -163,9 +197,17 @@ export const SEC_QUESTIONS: Question[] = [
     category: "보안 모델",
     subCategory: "벨-라파듈라",
     type: "SHORT_ANSWER",
-    question: "군사용 보안 모델로 기밀성을 보장하기 위해 'No Read Up(상위 등급 읽기 금지)', 'No Write Down(하위 등급 쓰기 금지)' 속성을 정의한 보안 모델의 명칭을 쓰시오.",
-    answer: ["벨 라파듈라", "벨 라파듈라 모델", "Bell-LaPadula", "BLP", "BLP 모델"],
-    explanation: "벨-라파듈라(BLP) 모델은 기밀성을 최우선으로 하여 비밀 정보가 하위 보안 등급으로 누출되는 것을 엄격히 방지합니다.",
+    question:
+      "군사용 보안 모델로 기밀성을 보장하기 위해 'No Read Up(상위 등급 읽기 금지)', 'No Write Down(하위 등급 쓰기 금지)' 속성을 정의한 보안 모델의 명칭을 쓰시오.",
+    answer: [
+      "벨 라파듈라",
+      "벨 라파듈라 모델",
+      "Bell-LaPadula",
+      "BLP",
+      "BLP 모델",
+    ],
+    explanation:
+      "벨-라파듈라(BLP) 모델은 기밀성을 최우선으로 하여 비밀 정보가 하위 보안 등급으로 누출되는 것을 엄격히 방지합니다.",
     difficulty: "MEDIUM",
     keywords: ["보안모델", "벨라파듈라", "BLP", "기밀성", "NoReadUp"],
     source: "정보처리기사 실기 표준",
@@ -176,9 +218,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "보안 모델",
     subCategory: "비바 모델",
     type: "SHORT_ANSWER",
-    question: "벨-라파듈라의 단점을 보완하여 무결성(Integrity)을 최우선으로 하며, 'No Read Down(하위 등급 읽기 금지)', 'No Write Up(상위 등급 쓰기 금지)' 규칙을 갖는 보안 모델의 명칭을 쓰시오.",
+    question:
+      "벨-라파듈라의 단점을 보완하여 무결성(Integrity)을 최우선으로 하며, 'No Read Down(하위 등급 읽기 금지)', 'No Write Up(상위 등급 쓰기 금지)' 규칙을 갖는 보안 모델의 명칭을 쓰시오.",
     answer: ["비바", "비바 모델", "Biba", "Biba Model"],
-    explanation: "비바(Biba) 모델은 비인가자에 의한 데이터 오염을 막아 무결성을 보장합니다. 상위 무결성 주체가 하위 데이터를 읽어 오염되는 것을 차단합니다.",
+    explanation:
+      "비바(Biba) 모델은 비인가자에 의한 데이터 오염을 막아 무결성을 보장합니다. 상위 무결성 주체가 하위 데이터를 읽어 오염되는 것을 차단합니다.",
     difficulty: "MEDIUM",
     keywords: ["보안모델", "비바모델", "Biba", "무결성", "NoReadDown"],
     source: "정보처리기사 실기 표준",
@@ -189,9 +233,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "인증 기술",
     subCategory: "SSO",
     type: "SHORT_ANSWER",
-    question: "한 번의 로그인 인증으로 기업 내 분산된 여러 웹 시스템 및 애플리케이션을 추가 인증 없이 자유롭게 이용할 수 있는 통합 인증 기술의 영문 약어를 쓰시오.",
+    question:
+      "한 번의 로그인 인증으로 기업 내 분산된 여러 웹 시스템 및 애플리케이션을 추가 인증 없이 자유롭게 이용할 수 있는 통합 인증 기술의 영문 약어를 쓰시오.",
     answer: ["SSO", "Single Sign-On", "싱글 사인온"],
-    explanation: "SSO는 사용자 편의성을 높이고 인증 중앙 관리를 가능하게 합니다. SAML, OAuth, OIDC 프로토콜 등이 기반으로 쓰입니다.",
+    explanation:
+      "SSO는 사용자 편의성을 높이고 인증 중앙 관리를 가능하게 합니다. SAML, OAuth, OIDC 프로토콜 등이 기반으로 쓰입니다.",
     difficulty: "EASY",
     keywords: ["인증", "SSO", "SingleSignOn", "통합로그인"],
     source: "정보처리기사 실기 표준",
@@ -202,9 +248,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "인증 기술",
     subCategory: "OAuth",
     type: "SHORT_ANSWER",
-    question: "사용자의 비밀번호를 노출하지 않고 제3자 애플리케이션에 자원(API) 접근 권한을 위임(Authorization)하기 위한 개방형 표준 프로토콜의 명칭을 쓰시오.",
+    question:
+      "사용자의 비밀번호를 노출하지 않고 제3자 애플리케이션에 자원(API) 접근 권한을 위임(Authorization)하기 위한 개방형 표준 프로토콜의 명칭을 쓰시오.",
     answer: ["OAuth", "OAuth 2.0", "OAuth2.0"],
-    explanation: "OAuth 2.0은 Access Token을 발급하여 구글, 카카오 등의 소셜 로그인 및 리소스 접근 권한 위임에 널리 쓰입니다.",
+    explanation:
+      "OAuth 2.0은 Access Token을 발급하여 구글, 카카오 등의 소셜 로그인 및 리소스 접근 권한 위임에 널리 쓰입니다.",
     difficulty: "EASY",
     keywords: ["인증", "OAuth", "OAuth2.0", "권한위임"],
     source: "정보처리기사 실기 표준",
@@ -215,9 +263,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "네트워크 공격",
     subCategory: "DoS",
     type: "SHORT_ANSWER",
-    question: "TCP 3-Way Handshake 취약점을 이용하여 공격자가 대량의 SYN 패킷만 전송하고 ACK 응답을 보내지 않아 서버의 대기 큐(Backlog Queue)를 고갈시키는 DoS 공격의 명칭을 쓰시오.",
+    question:
+      "TCP 3-Way Handshake 취약점을 이용하여 공격자가 대량의 SYN 패킷만 전송하고 ACK 응답을 보내지 않아 서버의 대기 큐(Backlog Queue)를 고갈시키는 DoS 공격의 명칭을 쓰시오.",
     answer: ["SYN Flooding", "SYN 플러딩", "신 플러딩"],
-    explanation: "SYN Flooding은 서버를 SYN_RECEIVED 상태로 묶어 두어 정상 연결을 차단합니다. SYN Cookie 기법 등으로 방어합니다.",
+    explanation:
+      "SYN Flooding은 서버를 SYN_RECEIVED 상태로 묶어 두어 정상 연결을 차단합니다. SYN Cookie 기법 등으로 방어합니다.",
     difficulty: "EASY",
     keywords: ["DoS", "SYNFlooding", "3-wayHandshake", "백로그큐"],
     source: "정보처리기사 실기 표준",
@@ -228,9 +278,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "네트워크 공격",
     subCategory: "DoS",
     type: "SHORT_ANSWER",
-    question: "출발지 IP 주소를 피해자 서버 IP로 위조한 후, 다이렉트 브로드캐스트 주소로 대량의 ICMP Echo Request를 보내 네트워크 전체가 증폭된 응답을 피해자에게 쏟아붓게 하는 공격의 명칭을 쓰시오.",
+    question:
+      "출발지 IP 주소를 피해자 서버 IP로 위조한 후, 다이렉트 브로드캐스트 주소로 대량의 ICMP Echo Request를 보내 네트워크 전체가 증폭된 응답을 피해자에게 쏟아붓게 하는 공격의 명칭을 쓰시오.",
     answer: ["스머프", "스머핑", "Smurf", "Smurfing", "스머프 공격"],
-    explanation: "스머프(Smurf) 공격은 ICMP 반사 및 증폭을 이용한 서비스 거부 공격입니다. 라우터에서 Directed Broadcast를 차단하여 대응합니다.",
+    explanation:
+      "스머프(Smurf) 공격은 ICMP 반사 및 증폭을 이용한 서비스 거부 공격입니다. 라우터에서 Directed Broadcast를 차단하여 대응합니다.",
     difficulty: "EASY",
     keywords: ["DoS", "Smurf", "스머프", "ICMP", "브로드캐스트"],
     source: "정보처리기사 실기 표준",
@@ -241,9 +293,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "네트워크 공격",
     subCategory: "DoS",
     type: "SHORT_ANSWER",
-    question: "인터넷 규격 허용 크기(65,535바이트)를 초과하는 거대한 ICMP 패킷을 의도적으로 잘게 쪼개어 전송함으로써 수신 측이 이를 재조합하는 과정에서 버퍼 오버플로우와 시스템 마비를 일으키는 공격을 쓰시오.",
+    question:
+      "인터넷 규격 허용 크기(65,535바이트)를 초과하는 거대한 ICMP 패킷을 의도적으로 잘게 쪼개어 전송함으로써 수신 측이 이를 재조합하는 과정에서 버퍼 오버플로우와 시스템 마비를 일으키는 공격을 쓰시오.",
     answer: ["Ping of Death", "죽음의 핑", "핑 오브 데스"],
-    explanation: "Ping of Death는 분할된 패킷의 재조합 취약점을 노려 블루스크린이나 커널 충돌을 유발하는 고전적 DoS 공격입니다.",
+    explanation:
+      "Ping of Death는 분할된 패킷의 재조합 취약점을 노려 블루스크린이나 커널 충돌을 유발하는 고전적 DoS 공격입니다.",
     difficulty: "EASY",
     keywords: ["DoS", "PingofDeath", "죽음의핑", "ICMP"],
     source: "정보처리기사 실기 표준",
@@ -254,9 +308,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "네트워크 공격",
     subCategory: "DoS",
     type: "SHORT_ANSWER",
-    question: "송신자의 출발지 IP와 포트 번호를 수신자의 목적지 IP 및 포트 번호와 동일하게 조작하여 전송함으로써, 피해 서버가 자신에게 계속 응답 패킷을 보내 루프에 빠지게 만드는 공격의 명칭을 쓰시오.",
+    question:
+      "송신자의 출발지 IP와 포트 번호를 수신자의 목적지 IP 및 포트 번호와 동일하게 조작하여 전송함으로써, 피해 서버가 자신에게 계속 응답 패킷을 보내 루프에 빠지게 만드는 공격의 명칭을 쓰시오.",
     answer: ["랜드 어택", "Land Attack", "랜드 공격"],
-    explanation: "Land Attack은 출발지와 목적지가 동일한 비정상 패킷을 수신 측 방화벽에서 필터링하여 차단합니다.",
+    explanation:
+      "Land Attack은 출발지와 목적지가 동일한 비정상 패킷을 수신 측 방화벽에서 필터링하여 차단합니다.",
     difficulty: "EASY",
     keywords: ["DoS", "LandAttack", "랜드어택", "출발지목적지동일"],
     source: "정보처리기사 실기 표준",
@@ -267,9 +323,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "네트워크 공격",
     subCategory: "DoS",
     type: "SHORT_ANSWER",
-    question: "IP 패킷을 분할(Fragmentation)하여 전송할 때 오프셋(Fragment Offset) 필드의 값을 고의로 중복되거나 어긋나게 조작하여 수신 시스템이 패킷 재조합 시 오류로 다운되게 만드는 공격을 쓰시오.",
+    question:
+      "IP 패킷을 분할(Fragmentation)하여 전송할 때 오프셋(Fragment Offset) 필드의 값을 고의로 중복되거나 어긋나게 조작하여 수신 시스템이 패킷 재조합 시 오류로 다운되게 만드는 공격을 쓰시오.",
     answer: ["티어드롭", "Teardrop", "티어드롭 공격"],
-    explanation: "티어드롭(Teardrop) 공격은 IP 분할 오프셋의 오버랩(겹침) 계산 취약점을 악용합니다.",
+    explanation:
+      "티어드롭(Teardrop) 공격은 IP 분할 오프셋의 오버랩(겹침) 계산 취약점을 악용합니다.",
     difficulty: "MEDIUM",
     keywords: ["DoS", "Teardrop", "티어드롭", "단편화오프셋"],
     source: "정보처리기사 실기 표준",
@@ -280,9 +338,16 @@ export const SEC_QUESTIONS: Question[] = [
     category: "웹 취약점 공격",
     subCategory: "CSRF",
     type: "SHORT_ANSWER",
-    question: "로그인된 피해자의 권한(쿠키/세션)을 악용하여, 공격자가 조작한 악성 링크를 클릭하게 만들어 피해자의 의도와 상관없이 게시글 작성이나 비밀번호 변경 등 악의적 요청을 서버로 보내게 하는 공격의 약어를 쓰시오.",
-    answer: ["CSRF", "csrf", "Cross Site Request Forgery", "크로스 사이트 요청 위조"],
-    explanation: "CSRF는 사용자의 권한을 도용하여 서버 요청을 위조합니다. 방어 대책으로 CSRF 토큰(Token), 재인증(CAPTCHA), SameSite 쿠키가 쓰입니다.",
+    question:
+      "로그인된 피해자의 권한(쿠키/세션)을 악용하여, 공격자가 조작한 악성 링크를 클릭하게 만들어 피해자의 의도와 상관없이 게시글 작성이나 비밀번호 변경 등 악의적 요청을 서버로 보내게 하는 공격의 약어를 쓰시오.",
+    answer: [
+      "CSRF",
+      "csrf",
+      "Cross Site Request Forgery",
+      "크로스 사이트 요청 위조",
+    ],
+    explanation:
+      "CSRF는 사용자의 권한을 도용하여 서버 요청을 위조합니다. 방어 대책으로 CSRF 토큰(Token), 재인증(CAPTCHA), SameSite 쿠키가 쓰입니다.",
     difficulty: "EASY",
     keywords: ["웹취약점", "CSRF", "요청위조", "CSRF토큰"],
     source: "정보처리기사 실기 표준",
@@ -293,9 +358,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "시스템 보안 취약점",
     subCategory: "버퍼 오버플로우",
     type: "SHORT_ANSWER",
-    question: "메모리에 할당된 버퍼의 크기보다 더 큰 데이터를 입력하여 스택 메모리의 복귀 주소(Return Address)를 덮어쓰고, 공격자가 원하는 악성 코드를 실행시키는 공격의 명칭을 쓰시오.",
+    question:
+      "메모리에 할당된 버퍼의 크기보다 더 큰 데이터를 입력하여 스택 메모리의 복귀 주소(Return Address)를 덮어쓰고, 공격자가 원하는 악성 코드를 실행시키는 공격의 명칭을 쓰시오.",
     answer: ["버퍼 오버플로우", "Buffer Overflow", "스택 버퍼 오버플로우"],
-    explanation: "버퍼 오버플로우는 C/C++에서 경계값 검사가 없는 strcpy, gets 등의 함수를 쓸 때 발생합니다. 방어책으로 ASLR, 카나리(Stack Canary), 안전한 함수(strncpy)가 있습니다.",
+    explanation:
+      "버퍼 오버플로우는 C/C++에서 경계값 검사가 없는 strcpy, gets 등의 함수를 쓸 때 발생합니다. 방어책으로 ASLR, 카나리(Stack Canary), 안전한 함수(strncpy)가 있습니다.",
     difficulty: "EASY",
     keywords: ["보안공격", "버퍼오버플로우", "스택", "복귀주소"],
     source: "정보처리기사 실기 표준",
@@ -306,9 +373,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "네트워크 도청/위조",
     subCategory: "스푸핑",
     type: "SHORT_ANSWER",
-    question: "동일 로컬 네트워크(LAN)에서 공격자가 특정 대상의 IP 주소와 자신의 MAC 주소를 매핑한 가짜 ARP Reply 패킷을 주기적으로 보내 희생자의 통신 패킷을 가로채는 공격의 명칭을 쓰시오.",
+    question:
+      "동일 로컬 네트워크(LAN)에서 공격자가 특정 대상의 IP 주소와 자신의 MAC 주소를 매핑한 가짜 ARP Reply 패킷을 주기적으로 보내 희생자의 통신 패킷을 가로채는 공격의 명칭을 쓰시오.",
     answer: ["ARP 스푸핑", "ARP Spoofing"],
-    explanation: "ARP 스푸핑은 희생자의 ARP 캐시 테이블을 오염시켜 게이트웨이로 가는 모든 트래픽을 공격자에게 통과하게 만들어 스니핑을 유발합니다.",
+    explanation:
+      "ARP 스푸핑은 희생자의 ARP 캐시 테이블을 오염시켜 게이트웨이로 가는 모든 트래픽을 공격자에게 통과하게 만들어 스니핑을 유발합니다.",
     difficulty: "MEDIUM",
     keywords: ["네트워크공격", "ARP스푸핑", "ARPCachePoisoning"],
     source: "정보처리기사 실기 표준",
@@ -319,9 +388,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "네트워크 도청/위조",
     subCategory: "스니핑",
     type: "SHORT_ANSWER",
-    question: "네트워크 카드를 무차별 모드(Promiscuous Mode)로 설정하여 자신이 수신 대상이 아닌 패킷까지 모두 수집하고 도청하는 수동적 공격 기법의 명칭을 쓰시오.",
+    question:
+      "네트워크 카드를 무차별 모드(Promiscuous Mode)로 설정하여 자신이 수신 대상이 아닌 패킷까지 모두 수집하고 도청하는 수동적 공격 기법의 명칭을 쓰시오.",
     answer: ["스니핑", "Sniffing", "패킷 스니핑"],
-    explanation: "스니핑은 암호화되지 않은 HTTP, FTP 통신의 ID/PW를 그대로 엿볼 수 있으며, HTTPS나 SSH 같은 암호화 통신으로 방어합니다.",
+    explanation:
+      "스니핑은 암호화되지 않은 HTTP, FTP 통신의 ID/PW를 그대로 엿볼 수 있으며, HTTPS나 SSH 같은 암호화 통신으로 방어합니다.",
     difficulty: "EASY",
     keywords: ["네트워크공격", "스니핑", "Sniffing", "무차별모드"],
     source: "정보처리기사 실기 표준",
@@ -332,9 +403,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "네트워크 도청/위조",
     subCategory: "세션 하이재킹",
     type: "SHORT_ANSWER",
-    question: "정상적으로 인증을 마쳐 연결이 확립된 두 호스트 간의 세션 식별자(Session ID)나 시퀀스 번호를 가로채 인증 과정을 거치지 않고 세션을 가로채는 공격 기법의 명칭을 쓰시오.",
+    question:
+      "정상적으로 인증을 마쳐 연결이 확립된 두 호스트 간의 세션 식별자(Session ID)나 시퀀스 번호를 가로채 인증 과정을 거치지 않고 세션을 가로채는 공격 기법의 명칭을 쓰시오.",
     answer: ["세션 하이재킹", "Session Hijacking"],
-    explanation: "세션 하이재킹은 TCP Sequence 번호를 예측하거나 웹 세션 쿠키를 탈취하여 침투합니다.",
+    explanation:
+      "세션 하이재킹은 TCP Sequence 번호를 예측하거나 웹 세션 쿠키를 탈취하여 침투합니다.",
     difficulty: "MEDIUM",
     keywords: ["보안공격", "세션하이재킹", "SessionHijacking"],
     source: "정보처리기사 실기 표준",
@@ -345,9 +418,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "악성코드",
     subCategory: "랜섬웨어",
     type: "SHORT_ANSWER",
-    question: "피해자의 컴퓨터 시스템 파일들을 암호화하여 접근할 수 없게 만든 후, 이를 복호화해 주는 대가로 가상화폐(비트코인 등) 금전을 요구하는 악성 소프트웨어의 명칭을 쓰시오.",
+    question:
+      "피해자의 컴퓨터 시스템 파일들을 암호화하여 접근할 수 없게 만든 후, 이를 복호화해 주는 대가로 가상화폐(비트코인 등) 금전을 요구하는 악성 소프트웨어의 명칭을 쓰시오.",
     answer: ["랜섬웨어", "Ransomware"],
-    explanation: "랜섬웨어는 중요한 문서를 강력한 비대칭/대칭키로 암호화하며, 오프라인 백업 및 주기적 보안 패치가 최선의 예방책입니다.",
+    explanation:
+      "랜섬웨어는 중요한 문서를 강력한 비대칭/대칭키로 암호화하며, 오프라인 백업 및 주기적 보안 패치가 최선의 예방책입니다.",
     difficulty: "EASY",
     keywords: ["악성코드", "랜섬웨어", "Ransomware", "파일암호화"],
     source: "정보처리기사 실기 표준",
@@ -358,9 +433,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "지능형 공격",
     subCategory: "APT",
     type: "SHORT_ANSWER",
-    question: "특정 조직을 목표로 정하고 다양한 IT 공격 기술과 사회공학 기법을 결합하여 장기간에 걸쳐 지속적으로 잠복하면서 기밀을 탈취하는 지능형 지속 위협의 영문 약어를 쓰시오.",
+    question:
+      "특정 조직을 목표로 정하고 다양한 IT 공격 기술과 사회공학 기법을 결합하여 장기간에 걸쳐 지속적으로 잠복하면서 기밀을 탈취하는 지능형 지속 위협의 영문 약어를 쓰시오.",
     answer: ["APT", "Advanced Persistent Threat", "지능형 지속 위협"],
-    explanation: "APT는 침투(Infiltration) → 거점 확보 → 내부 정찰 및 권한 상승 → 지속 유출의 라이프사이클을 가집니다.",
+    explanation:
+      "APT는 침투(Infiltration) → 거점 확보 → 내부 정찰 및 권한 상승 → 지속 유출의 라이프사이클을 가집니다.",
     difficulty: "EASY",
     keywords: ["보안공격", "APT", "지능형지속위협"],
     source: "정보처리기사 실기 표준",
@@ -371,9 +448,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "지능형 공격",
     subCategory: "워터링 홀",
     type: "SHORT_ANSWER",
-    question: "표적 집단이 자주 방문하는 특정 웹사이트를 사전에 미리 감염시켜 두고, 표적 피해자가 접속해 올 때 악성코드에 감염시키는 표적형 공격 기법의 명칭을 쓰시오.",
+    question:
+      "표적 집단이 자주 방문하는 특정 웹사이트를 사전에 미리 감염시켜 두고, 표적 피해자가 접속해 올 때 악성코드에 감염시키는 표적형 공격 기법의 명칭을 쓰시오.",
     answer: ["워터링 홀", "워터링홀", "Watering Hole"],
-    explanation: "워터링 홀(Watering Hole)은 맹수가 먹잇감을 사냥하기 위해 물웅덩이에 매복하는 모습에서 유래되었습니다.",
+    explanation:
+      "워터링 홀(Watering Hole)은 맹수가 먹잇감을 사냥하기 위해 물웅덩이에 매복하는 모습에서 유래되었습니다.",
     difficulty: "MEDIUM",
     keywords: ["보안공격", "워터링홀", "WateringHole", "표적공격"],
     source: "정보처리기사 실기 표준",
@@ -384,9 +463,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "보안 취약점",
     subCategory: "제로데이",
     type: "SHORT_ANSWER",
-    question: "소프트웨어의 취약점이 공식 발표되거나 보안 패치가 배포되기 전에, 해당 취약점을 악용하여 공격을 감행하는 기법의 명칭을 쓰시오.",
+    question:
+      "소프트웨어의 취약점이 공식 발표되거나 보안 패치가 배포되기 전에, 해당 취약점을 악용하여 공격을 감행하는 기법의 명칭을 쓰시오.",
     answer: ["제로데이 공격", "제로데이", "Zero-Day Attack", "0-day"],
-    explanation: "제로데이 공격은 패치가 존재하지 않는 상태에서 이루어지므로 시그니처 기반 백신으로 탐지하기 매우 어렵습니다.",
+    explanation:
+      "제로데이 공격은 패치가 존재하지 않는 상태에서 이루어지므로 시그니처 기반 백신으로 탐지하기 매우 어렵습니다.",
     difficulty: "EASY",
     keywords: ["보안취약점", "제로데이", "Zero-Day", "패치전공격"],
     source: "정보처리기사 실기 표준",
@@ -397,9 +478,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "보안 장비",
     subCategory: "WAF",
     type: "SHORT_ANSWER",
-    question: "일반 방화벽이 차단하지 못하는 웹 애플리케이션 계층(Layer 7)의 SQL Injection, XSS 등의 공격 트래픽을 특화하여 탐지하고 차단하는 보안 솔루션의 영문 약어를 쓰시오.",
+    question:
+      "일반 방화벽이 차단하지 못하는 웹 애플리케이션 계층(Layer 7)의 SQL Injection, XSS 등의 공격 트래픽을 특화하여 탐지하고 차단하는 보안 솔루션의 영문 약어를 쓰시오.",
     answer: ["WAF", "Web Application Firewall", "웹 방화벽"],
-    explanation: "WAF는 웹 트래픽(HTTP/HTTPS) 페이로드를 직접 분석하여 웹 표준 취약점 공격을 방어합니다.",
+    explanation:
+      "WAF는 웹 트래픽(HTTP/HTTPS) 페이로드를 직접 분석하여 웹 표준 취약점 공격을 방어합니다.",
     difficulty: "EASY",
     keywords: ["보안솔루션", "WAF", "웹방화벽"],
     source: "정보처리기사 실기 표준",
@@ -410,9 +493,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "보안 프로토콜",
     subCategory: "IPsec",
     type: "SHORT_ANSWER",
-    question: "네트워크 계층(IP 계층)에서 안전한 통신을 제공하는 IPsec 프로토콜 제품군 중 데이터의 기밀성(암호화)과 무결성, 발신처 인증을 모두 제공하는 프로토콜의 영문 약어를 쓰시오.",
+    question:
+      "네트워크 계층(IP 계층)에서 안전한 통신을 제공하는 IPsec 프로토콜 제품군 중 데이터의 기밀성(암호화)과 무결성, 발신처 인증을 모두 제공하는 프로토콜의 영문 약어를 쓰시오.",
     answer: ["ESP", "Encapsulating Security Payload"],
-    explanation: "IPsec에서 AH는 인증과 무결성만 제공(기밀성 미지원)하고, ESP는 기밀성(암호화)까지 함께 제공합니다.",
+    explanation:
+      "IPsec에서 AH는 인증과 무결성만 제공(기밀성 미지원)하고, ESP는 기밀성(암호화)까지 함께 제공합니다.",
     difficulty: "HARD",
     keywords: ["IPsec", "ESP", "기밀성", "네트워크보안"],
     source: "정보처리기사 실기 표준",
@@ -423,9 +508,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "보안 솔루션",
     subCategory: "허니팟",
     type: "SHORT_ANSWER",
-    question: "해커나 악성 침입자를 유인하기 위해 일부러 취약하게 설정해 둔 가짜 미끼 시스템으로, 공격자의 행동 패턴과 기법을 분석하기 위해 설치하는 유인 시스템의 명칭을 쓰시오.",
+    question:
+      "해커나 악성 침입자를 유인하기 위해 일부러 취약하게 설정해 둔 가짜 미끼 시스템으로, 공격자의 행동 패턴과 기법을 분석하기 위해 설치하는 유인 시스템의 명칭을 쓰시오.",
     answer: ["허니팟", "Honeypot"],
-    explanation: "허니팟(Honeypot)은 꿀단지처럼 공격자를 유인하여 실제 운영 시스템을 보호하고 새로운 공격 기법을 연구합니다.",
+    explanation:
+      "허니팟(Honeypot)은 꿀단지처럼 공격자를 유인하여 실제 운영 시스템을 보호하고 새로운 공격 기법을 연구합니다.",
     difficulty: "EASY",
     keywords: ["보안솔루션", "허니팟", "Honeypot", "유인시스템"],
     source: "정보처리기사 실기 표준",
@@ -436,9 +523,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "보안 패러다임",
     subCategory: "제로 트러스트",
     type: "SHORT_ANSWER",
-    question: "'절대 믿지 말고 항상 검증하라(Never Trust, Always Verify)'는 기본 원칙을 바탕으로, 내부 네트워크에 위치한 사용자나 단말기조차 신뢰하지 않고 모든 접근을 지속 인증하는 최신 보안 모델의 명칭을 쓰시오.",
+    question:
+      "'절대 믿지 말고 항상 검증하라(Never Trust, Always Verify)'는 기본 원칙을 바탕으로, 내부 네트워크에 위치한 사용자나 단말기조차 신뢰하지 않고 모든 접근을 지속 인증하는 최신 보안 모델의 명칭을 쓰시오.",
     answer: ["제로 트러스트", "Zero Trust"],
-    explanation: "제로 트러스트는 경계 기반 보안의 한계를 극복하고 최소 권한, 마이크로 세그멘테이션, 지속적 신원 검증을 요구합니다.",
+    explanation:
+      "제로 트러스트는 경계 기반 보안의 한계를 극복하고 최소 권한, 마이크로 세그멘테이션, 지속적 신원 검증을 요구합니다.",
     difficulty: "EASY",
     keywords: ["보안패러다임", "제로트러스트", "ZeroTrust"],
     source: "정보처리기사 실기 표준",
@@ -449,9 +538,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "네트워크 신기술",
     subCategory: "SDN",
     type: "SHORT_ANSWER",
-    question: "네트워크 장비의 제어부(Control Plane)와 데이터 전송부(Data Plane)를 물리적으로 분리하여, 중앙의 소프트웨어 컨트롤러를 통해 네트워크 트래픽을 동적으로 제어하고 프로그래밍하는 기술의 영문 약어를 쓰시오.",
+    question:
+      "네트워크 장비의 제어부(Control Plane)와 데이터 전송부(Data Plane)를 물리적으로 분리하여, 중앙의 소프트웨어 컨트롤러를 통해 네트워크 트래픽을 동적으로 제어하고 프로그래밍하는 기술의 영문 약어를 쓰시오.",
     answer: ["SDN", "Software-Defined Networking", "소프트웨어 정의 네트워킹"],
-    explanation: "SDN은 오픈플로우(OpenFlow) 프로토콜 등을 활용하여 중앙 집중형으로 네트워크 정책을 유연하게 제어합니다.",
+    explanation:
+      "SDN은 오픈플로우(OpenFlow) 프로토콜 등을 활용하여 중앙 집중형으로 네트워크 정책을 유연하게 제어합니다.",
     difficulty: "MEDIUM",
     keywords: ["신기술", "SDN", "제어부데이터부분리", "소프트웨어정의"],
     source: "정보처리기사 실기 표준",
@@ -462,9 +553,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "개발 방법론",
     subCategory: "DevSecOps",
     type: "SHORT_ANSWER",
-    question: "개발(Development)과 운영(Operations)의 통합 프로세스 전반에 보안(Security)을 초기 단계부터 내재화하여 소프트웨어를 안전하게 배포하는 개발 및 운영 문화의 명칭을 쓰시오.",
+    question:
+      "개발(Development)과 운영(Operations)의 통합 프로세스 전반에 보안(Security)을 초기 단계부터 내재화하여 소프트웨어를 안전하게 배포하는 개발 및 운영 문화의 명칭을 쓰시오.",
     answer: ["DevSecOps", "데브섹옵스"],
-    explanation: "DevSecOps는 보안을 사후 점검이 아닌 파이프라인의 시작점(Shift-Left)부터 통합하여 취약점을 조기에 제거합니다.",
+    explanation:
+      "DevSecOps는 보안을 사후 점검이 아닌 파이프라인의 시작점(Shift-Left)부터 통합하여 취약점을 조기에 제거합니다.",
     difficulty: "EASY",
     keywords: ["신기술", "DevSecOps", "보안내재화"],
     source: "정보처리기사 실기 표준",
@@ -475,9 +568,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "클라우드 서비스 모델",
     subCategory: "SaaS",
     type: "SHORT_ANSWER",
-    question: "인프라나 플랫폼을 구축할 필요 없이 클라우드 제공업체가 제공하는 완성된 애플리케이션 소프트웨어를 웹 브라우저나 전용 클라이언트를 통해 구독 형태로 이용하는 서비스 모델의 영문 약어를 쓰시오.",
+    question:
+      "인프라나 플랫폼을 구축할 필요 없이 클라우드 제공업체가 제공하는 완성된 애플리케이션 소프트웨어를 웹 브라우저나 전용 클라이언트를 통해 구독 형태로 이용하는 서비스 모델의 영문 약어를 쓰시오.",
     answer: ["SaaS", "Software as a Service"],
-    explanation: "SaaS는 Google Workspace, Microsoft 365, Slack 등이 대표적인 예입니다.",
+    explanation:
+      "SaaS는 Google Workspace, Microsoft 365, Slack 등이 대표적인 예입니다.",
     difficulty: "EASY",
     keywords: ["클라우드", "SaaS", "구독형소프트웨어"],
     source: "정보처리기사 실기 표준",
@@ -488,9 +583,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "클라우드 서비스 모델",
     subCategory: "IaaS",
     type: "SHORT_ANSWER",
-    question: "서버, 스토리지, 네트워크 같은 기본 컴퓨팅 하드웨어 자원을 가상화하여 고객에게 클라우드로 임대하고, 고객이 직접 OS와 미들웨어를 설치하여 관리하는 서비스 모델의 영문 약어를 쓰시오.",
+    question:
+      "서버, 스토리지, 네트워크 같은 기본 컴퓨팅 하드웨어 자원을 가상화하여 고객에게 클라우드로 임대하고, 고객이 직접 OS와 미들웨어를 설치하여 관리하는 서비스 모델의 영문 약어를 쓰시오.",
     answer: ["IaaS", "Infrastructure as a Service"],
-    explanation: "IaaS는 AWS EC2, GCP Compute Engine, Azure VM 등이 대표적입니다.",
+    explanation:
+      "IaaS는 AWS EC2, GCP Compute Engine, Azure VM 등이 대표적입니다.",
     difficulty: "EASY",
     keywords: ["클라우드", "IaaS", "인프라임대"],
     source: "정보처리기사 실기 표준",
@@ -501,9 +598,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "보안 데이터 유출 방지",
     subCategory: "DLP",
     type: "SHORT_ANSWER",
-    question: "사내 직원의 PC나 네트워크를 모니터링하여 기밀 문서, 개인정보 등 중요 데이터가 외부로 무단 유출되는 것을 감지하고 실시간 차단하는 데이터 유출 방지 솔루션의 영문 약어를 쓰시오.",
+    question:
+      "사내 직원의 PC나 네트워크를 모니터링하여 기밀 문서, 개인정보 등 중요 데이터가 외부로 무단 유출되는 것을 감지하고 실시간 차단하는 데이터 유출 방지 솔루션의 영문 약어를 쓰시오.",
     answer: ["DLP", "Data Loss Prevention", "데이터 유출 방지"],
-    explanation: "DLP는 USB 복사 차단, 이메일 첨부파일 검사, 화면 캡처 방지 등을 통해 내부 정보 유출을 막습니다.",
+    explanation:
+      "DLP는 USB 복사 차단, 이메일 첨부파일 검사, 화면 캡처 방지 등을 통해 내부 정보 유출을 막습니다.",
     difficulty: "EASY",
     keywords: ["보안솔루션", "DLP", "데이터유출방지"],
     source: "정보처리기사 실기 표준",
@@ -514,9 +613,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "보안 로그 관리",
     subCategory: "SIEM",
     type: "SHORT_ANSWER",
-    question: "네트워크 장비, 서버, 보안 솔루션에서 발생하는 방대한 보안 로그와 이벤트를 빅데이터 기술로 실시간 수집·통합 분석하여 위협을 조기 감지하는 통합 보안 관제 시스템의 영문 약어를 쓰시오.",
+    question:
+      "네트워크 장비, 서버, 보안 솔루션에서 발생하는 방대한 보안 로그와 이벤트를 빅데이터 기술로 실시간 수집·통합 분석하여 위협을 조기 감지하는 통합 보안 관제 시스템의 영문 약어를 쓰시오.",
     answer: ["SIEM", "Security Information and Event Management"],
-    explanation: "SIEM은 이기종 장비의 로그를 상관분석(Correlation Analysis)하여 지능형 위협을 신속히 탐지합니다.",
+    explanation:
+      "SIEM은 이기종 장비의 로그를 상관분석(Correlation Analysis)하여 지능형 위협을 신속히 탐지합니다.",
     difficulty: "MEDIUM",
     keywords: ["보안솔루션", "SIEM", "통합로그관제"],
     source: "정보처리기사 실기 표준",
@@ -527,9 +628,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "인증 기술",
     subCategory: "MFA",
     type: "SHORT_ANSWER",
-    question: "아이디/비밀번호(지식 기반) 외에 스마트폰 OTP(소유 기반)나 지문(생체 기반) 등 서로 다른 두 가지 이상의 인증 요소를 결합하여 보안을 강화하는 다중 요소 인증의 영문 약어를 쓰시오.",
+    question:
+      "아이디/비밀번호(지식 기반) 외에 스마트폰 OTP(소유 기반)나 지문(생체 기반) 등 서로 다른 두 가지 이상의 인증 요소를 결합하여 보안을 강화하는 다중 요소 인증의 영문 약어를 쓰시오.",
     answer: ["MFA", "Multi-Factor Authentication", "다중 요소 인증", "2FA"],
-    explanation: "MFA는 단일 패스워드 유출로 인한 계정 탈취를 효과적으로 차단합니다.",
+    explanation:
+      "MFA는 단일 패스워드 유출로 인한 계정 탈취를 효과적으로 차단합니다.",
     difficulty: "EASY",
     keywords: ["인증", "MFA", "다중요소인증", "2FA"],
     source: "정보처리기사 실기 표준",
@@ -540,9 +643,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "웹 프로토콜",
     subCategory: "HTTPS",
     type: "SHORT_ANSWER",
-    question: "기존 HTTP 프로토콜의 일반 평문 통신 취약점을 해결하기 위해 전송 계층 보안 프로토콜(SSL/TLS)을 결합하여 데이터를 암호화 전송하는 보안 통신 프로토콜의 명칭을 쓰시오.",
+    question:
+      "기존 HTTP 프로토콜의 일반 평문 통신 취약점을 해결하기 위해 전송 계층 보안 프로토콜(SSL/TLS)을 결합하여 데이터를 암호화 전송하는 보안 통신 프로토콜의 명칭을 쓰시오.",
     answer: ["HTTPS", "https"],
-    explanation: "HTTPS는 기본 443번 포트를 사용하며 데이터 암호화, 서버 인증, 무결성 보장을 제공합니다.",
+    explanation:
+      "HTTPS는 기본 443번 포트를 사용하며 데이터 암호화, 서버 인증, 무결성 보장을 제공합니다.",
     difficulty: "EASY",
     keywords: ["프로토콜", "HTTPS", "TLS암호화", "443"],
     source: "정보처리기사 실기 표준",
@@ -553,9 +658,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "네트워크 보안",
     subCategory: "VPN",
     type: "SHORT_ANSWER",
-    question: "공중 인터넷망(Public Network)을 마치 전용 사설망(Private Network)처럼 안전하게 사용할 수 있도록 터널링과 암호화 기술을 적용한 가상 사설망의 영문 약어를 쓰시오.",
+    question:
+      "공중 인터넷망(Public Network)을 마치 전용 사설망(Private Network)처럼 안전하게 사용할 수 있도록 터널링과 암호화 기술을 적용한 가상 사설망의 영문 약어를 쓰시오.",
     answer: ["VPN", "Virtual Private Network", "가상 사설망"],
-    explanation: "VPN은 원격 근무자나 지사 간 통신을 안전하게 보호하며 IPsec VPN, SSL VPN 등이 대표적입니다.",
+    explanation:
+      "VPN은 원격 근무자나 지사 간 통신을 안전하게 보호하며 IPsec VPN, SSL VPN 등이 대표적입니다.",
     difficulty: "EASY",
     keywords: ["네트워크", "VPN", "가상사설망", "터널링"],
     source: "정보처리기사 실기 표준",
@@ -566,9 +673,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "악성코드",
     subCategory: "백도어",
     type: "SHORT_ANSWER",
-    question: "시스템 개발자나 침입자가 정상적인 인증 절차를 우회하여 시스템에 손쉽게 재접근할 수 있도록 만들어 둔 비밀 통로(트랩도어)의 명칭을 쓰시오.",
+    question:
+      "시스템 개발자나 침입자가 정상적인 인증 절차를 우회하여 시스템에 손쉽게 재접근할 수 있도록 만들어 둔 비밀 통로(트랩도어)의 명칭을 쓰시오.",
     answer: ["백도어", "트랩도어", "Backdoor", "Trapdoor"],
-    explanation: "백도어(Backdoor)는 침입 후 지속적인 제어를 위해 심어두며 포트 스캔 및 무결성 검사로 탐지합니다.",
+    explanation:
+      "백도어(Backdoor)는 침입 후 지속적인 제어를 위해 심어두며 포트 스캔 및 무결성 검사로 탐지합니다.",
     difficulty: "EASY",
     keywords: ["악성코드", "백도어", "Backdoor", "트랩도어"],
     source: "정보처리기사 실기 표준",
@@ -579,9 +688,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "소프트웨어 아키텍처",
     subCategory: "서버리스",
     type: "SHORT_ANSWER",
-    question: "개발자가 서버 인프라를 직접 프로비저닝하거나 관리하지 않고, 이벤트가 발생할 때만 특정 함수 코드가 실행되고 사용된 리소스만큼만 비용을 지불하는 클라우드 실행 모델(FaaS)의 명칭을 쓰시오.",
+    question:
+      "개발자가 서버 인프라를 직접 프로비저닝하거나 관리하지 않고, 이벤트가 발생할 때만 특정 함수 코드가 실행되고 사용된 리소스만큼만 비용을 지불하는 클라우드 실행 모델(FaaS)의 명칭을 쓰시오.",
     answer: ["서버리스", "Serverless", "FaaS"],
-    explanation: "서버리스(Serverless, Function as a Service)는 AWS Lambda, Google Cloud Functions 등이 대표적입니다.",
+    explanation:
+      "서버리스(Serverless, Function as a Service)는 AWS Lambda, Google Cloud Functions 등이 대표적입니다.",
     difficulty: "EASY",
     keywords: ["신기술", "서버리스", "Serverless", "FaaS"],
     source: "정보처리기사 실기 표준",
@@ -592,9 +703,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "사이버 공격",
     subCategory: "Slowloris",
     type: "SHORT_ANSWER",
-    question: "HTTP 요청 헤더의 끝을 알리는 개행 문자(\\r\\n\\r\\n)를 전송하지 않고 조작된 불완전한 헤더를 매우 느린 속도로 지속 전송하여 웹 서버의 연결 커넥션을 고갈시키는 DoS 공격의 명칭을 쓰시오.",
+    question:
+      "HTTP 요청 헤더의 끝을 알리는 개행 문자(\\r\\n\\r\\n)를 전송하지 않고 조작된 불완전한 헤더를 매우 느린 속도로 지속 전송하여 웹 서버의 연결 커넥션을 고갈시키는 DoS 공격의 명칭을 쓰시오.",
     answer: ["슬로로리스", "Slowloris"],
-    explanation: "Slowloris는 저대역폭 DoS 공격 기법으로 아파치 같은 프로세스/스레드 기반 웹 서버의 동시 연결 자원을 쉽게 고갈시킵니다.",
+    explanation:
+      "Slowloris는 저대역폭 DoS 공격 기법으로 아파치 같은 프로세스/스레드 기반 웹 서버의 동시 연결 자원을 쉽게 고갈시킵니다.",
     difficulty: "HARD",
     keywords: ["DoS", "Slowloris", "슬로로리스", "HTTP헤더지연"],
     source: "정보처리기사 실기 표준",
@@ -605,9 +718,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "네트워크 프로토콜",
     subCategory: "SSH",
     type: "SHORT_ANSWER",
-    question: "평문 통신으로 취약했던 텔넷(Telnet)을 대체하여, 암호화된 안전한 채널을 통해 원격 서버에 접속하고 명령을 실행할 수 있도록 기본 22번 포트를 사용하는 프로토콜의 영문 약어를 쓰시오.",
+    question:
+      "평문 통신으로 취약했던 텔넷(Telnet)을 대체하여, 암호화된 안전한 채널을 통해 원격 서버에 접속하고 명령을 실행할 수 있도록 기본 22번 포트를 사용하는 프로토콜의 영문 약어를 쓰시오.",
     answer: ["SSH", "Secure Shell", "시큐어 셸"],
-    explanation: "SSH는 공개키 암호화 기반으로 상호 인증하고 세션 트래픽 전체를 암호화합니다.",
+    explanation:
+      "SSH는 공개키 암호화 기반으로 상호 인증하고 세션 트래픽 전체를 암호화합니다.",
     difficulty: "EASY",
     keywords: ["프로토콜", "SSH", "원격접속", "22번포트"],
     source: "정보처리기사 실기 표준",
@@ -618,9 +733,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "네트워크 관리",
     subCategory: "DHCP",
     type: "SHORT_ANSWER",
-    question: "네트워크에 접속한 단말에 IP 주소, 서브넷 마스크, 기본 게이트웨이, DNS 서버 정보를 자동으로 동적 할당해 주는 네트워크 프로토콜의 영문 약어를 쓰시오.",
+    question:
+      "네트워크에 접속한 단말에 IP 주소, 서브넷 마스크, 기본 게이트웨이, DNS 서버 정보를 자동으로 동적 할당해 주는 네트워크 프로토콜의 영문 약어를 쓰시오.",
     answer: ["DHCP", "Dynamic Host Configuration Protocol"],
-    explanation: "DHCP는 DORA(Discover, Offer, Request, Acknowledge) 과정을 통해 클라이언트에게 IP를 임대합니다.",
+    explanation:
+      "DHCP는 DORA(Discover, Offer, Request, Acknowledge) 과정을 통해 클라이언트에게 IP를 임대합니다.",
     difficulty: "EASY",
     keywords: ["네트워크", "DHCP", "자동IP할당"],
     source: "정보처리기사 실기 표준",
@@ -631,9 +748,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "네트워크 보안",
     subCategory: "NAC",
     type: "SHORT_ANSWER",
-    question: "기업 내부 네트워크에 접속하려는 PC나 모바일 단말의 백신 설치 여부, OS 패치 상태 등 보안 정책 준수 여부를 사전 검증하여 비인가 단말의 네트워크 접근을 통제하는 솔루션의 영문 약어를 쓰시오.",
+    question:
+      "기업 내부 네트워크에 접속하려는 PC나 모바일 단말의 백신 설치 여부, OS 패치 상태 등 보안 정책 준수 여부를 사전 검증하여 비인가 단말의 네트워크 접근을 통제하는 솔루션의 영문 약어를 쓰시오.",
     answer: ["NAC", "Network Access Control", "네트워크 접근 제어"],
-    explanation: "NAC는 격리 네트워크에서 단말의 무결성을 점검하고 치료한 후 사내망 접속을 승인합니다.",
+    explanation:
+      "NAC는 격리 네트워크에서 단말의 무결성을 점검하고 치료한 후 사내망 접속을 승인합니다.",
     difficulty: "MEDIUM",
     keywords: ["보안솔루션", "NAC", "네트워크접근제어"],
     source: "정보처리기사 실기 표준",
@@ -644,9 +763,11 @@ export const SEC_QUESTIONS: Question[] = [
     category: "최신 웹 기술",
     subCategory: "웹소켓",
     type: "SHORT_ANSWER",
-    question: "단일 TCP 연결 위에서 클라이언트와 서버 간에 전이중(Full-Duplex) 실시간 양방향 통신을 가능하게 하는 HTML5 표준 프로토콜의 명칭을 쓰시오.",
+    question:
+      "단일 TCP 연결 위에서 클라이언트와 서버 간에 전이중(Full-Duplex) 실시간 양방향 통신을 가능하게 하는 HTML5 표준 프로토콜의 명칭을 쓰시오.",
     answer: ["웹소켓", "WebSocket"],
-    explanation: "WebSocket은 HTTP 업그레이드 핸드셰이크 이후 오버헤드가 적은 프레임으로 실시간 채팅, 주식 시세 등을 전송합니다.",
+    explanation:
+      "WebSocket은 HTTP 업그레이드 핸드셰이크 이후 오버헤드가 적은 프레임으로 실시간 채팅, 주식 시세 등을 전송합니다.",
     difficulty: "EASY",
     keywords: ["신기술", "웹소켓", "WebSocket", "양방향통신"],
     source: "정보처리기사 실기 표준",

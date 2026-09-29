@@ -1,8 +1,8 @@
-import { Question } from "../../types/question";
+import { Question } from '../../types/question';
 
 /**
  * 실기 암기 과목 보충 및 표준 기출 문제 은행.
- * 총 256문항 (과목별 엄선된 고빈출 표준 문항 수록).
+ * 총 742문항 (과목별 엄선된 고빈출 표준 문항 수록).
  * 오프라인 환경에서도 즉시 100% 동작합니다.
  */
 export const MEMORIZATION_BANK: Question[] = [
@@ -5572,5 +5572,8272 @@ export const MEMORIZATION_BANK: Question[] = [
       "4대가치"
     ],
     "source": "정보처리기사 실기 표준"
+  },
+  {
+    "id": "EXP_PR_001",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어에서 동적으로 힙(Heap) 영역에 메모리를 할당할 때 사용하는 표준 라이브러리 함수는 무엇인가?",
+    "answer": "malloc",
+    "explanation": "malloc은 힙 영역에 지정된 바이트 크기만큼 메모리를 동적으로 할당하고 시작 주소를 void 포인터로 반환합니다. 할당 해제는 free를 사용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "malloc",
+      "동적할당",
+      "C언어",
+      "힙"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-memory"
+  },
+  {
+    "id": "EXP_PR_002",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어에서 malloc이나 calloc으로 동적 할당된 힙 영역의 메모리를 운영체제에 반환하여 메모리 누수를 방지하는 함수는 무엇인가?",
+    "answer": "free",
+    "explanation": "free 함수는 동적 할당된 메모리를 해제합니다. 해제하지 않고 참조를 잃어버리면 메모리 누수(Memory Leak)가 발생합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "free",
+      "메모리해제",
+      "메모리누수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-memory"
+  },
+  {
+    "id": "EXP_PR_003",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어에서 변수 또는 데이터 타입의 메모리 크기를 바이트 단위로 계산하여 반환하는 연산자는 무엇인가?",
+    "answer": "sizeof",
+    "explanation": "sizeof 연산자는 피연산자의 크기를 바이트 단위로 반환하며 컴파일 시점에 평가됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "sizeof",
+      "바이트크기",
+      "연산자"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-syntax"
+  },
+  {
+    "id": "EXP_PR_004",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어에서 일반 변수의 주소값을 구하기 위해 변수명 앞에 붙이는 주소 연산자 기호는 무엇인가?",
+    "answer": "&",
+    "explanation": "&(앰퍼샌드)는 피연산자의 메모리 주소를 반환하는 주소 연산자입니다. 포인터가 가리키는 값을 참조할 때는 *(역참조)를 사용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "&",
+      "주소연산자",
+      "앰퍼샌드"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-pointer"
+  },
+  {
+    "id": "EXP_PR_005",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 포인터 변수가 어떤 유효한 메모리 주소도 가리키고 있지 않음을 명시적으로 나타내는 상수는 무엇인가?",
+    "answer": "NULL",
+    "explanation": "NULL은 가리키는 대상이 없는 포인터를 초기화할 때 사용하며 일반적으로 0으로 정의됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "NULL",
+      "널포인터",
+      "초기화"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-pointer"
+  },
+  {
+    "id": "EXP_PR_006",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어에서 서로 다른 데이터 타입을 하나의 묶음으로 묶어 새로운 사용자 정의 자료형을 만들 때 사용하는 키워드는 무엇인가?",
+    "answer": "struct",
+    "explanation": "struct(구조체)는 서로 다른 타입의 변수들을 하나의 단위로 묶는 사용자 정의 자료형입니다. 모든 멤버가 메모리를 공유하는 union(공용체)과 구별해야 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "struct",
+      "구조체",
+      "사용자정의형"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-struct"
+  },
+  {
+    "id": "EXP_PR_007",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 구조체 포인터 변수를 통해 해당 구조체의 멤버 변수에 접근할 때 사용하는 화살표 모양의 멤버 접근 연산자 기호는 무엇인가?",
+    "answer": "->",
+    "explanation": "구조체 포인터에서 멤버를 직접 접근할 때 -> 연산자를 사용합니다. (*ptr).member 와 동일한 의미입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "->",
+      "화살표연산자",
+      "구조체포인터"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-struct"
+  },
+  {
+    "id": "EXP_PR_008",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어에서 기존 데이터 타입에 새로운 별칭(alias)을 부여할 때 사용하는 키워드는 무엇인가?",
+    "answer": "typedef",
+    "explanation": "typedef는 기존 자료형에 짧고 직관적인 새 이름을 붙여 가독성을 높이고 코드 수정을 용이하게 만듭니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "typedef",
+      "타입별칭"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-syntax"
+  },
+  {
+    "id": "EXP_PR_009",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 컴파일 전 소스코드 내에서 특정 기호 상수를 치환하거나 매크로를 정의할 때 사용하는 전처리기 지시자는 무엇인가?",
+    "answer": "#define",
+    "explanation": "#define 지시자는 상수를 정의하거나 매크로 함수를 만들 때 사용하며, 컴파일 전에 단순 문자열 치환 방식으로 동작합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "#define",
+      "전처리기",
+      "매크로"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-syntax"
+  },
+  {
+    "id": "EXP_PR_010",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "함수 호출 시 인자의 실제 값을 복사하여 전달하므로 호출된 함수 내부에서 값을 변경해도 호출한 원래 변수에는 영향이 없는 매개변수 전달 방식은 무엇인가?",
+    "answer": "Call by Value",
+    "explanation": "값에 의한 호출(Call by Value)은 인자의 복사본을 넘겨 원본이 안전하게 보존됩니다. 원본을 수정하려면 주소를 넘기는 Call by Reference를 써야 합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "Call by Value",
+      "값에의한호출"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-function"
+  },
+  {
+    "id": "EXP_PR_011",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "함수 호출 시 실인자의 메모리 주소를 전달하여 호출된 함수 내부에서 원본 변수의 값을 직접 변경할 수 있는 매개변수 전달 방식은 무엇인가?",
+    "answer": "Call by Reference",
+    "explanation": "참조에 의한 호출(Call by Reference)은 주소값을 넘겨 함수 내에서 원본 변수를 조작합니다. C언어에서는 포인터를 활용하여 이를 흉내냅니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "Call by Reference",
+      "참조에의한호출"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-function"
+  },
+  {
+    "id": "EXP_PR_012",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 printf 서식 문자열에서 16진수 정수를 소문자 형태로 출력할 때 사용하는 서식 지정자는 무엇인가?",
+    "answer": "%x",
+    "explanation": "%x는 16진수 소문자 출력, %X는 대문자 출력 서식 지정자입니다. 8진수는 %o, 10진수 정수는 %d입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "%x",
+      "서식지정자",
+      "16진수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-syntax"
+  },
+  {
+    "id": "EXP_PR_013",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 printf 서식 지정자 중 메모리 주소값(포인터 값)을 16진수 형태로 출력할 때 사용하는 지정자는 무엇인가?",
+    "answer": "%p",
+    "explanation": "%p는 포인터 변수가 담고 있는 주소값을 출력하는 서식 지정자입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "%p",
+      "서식지정자",
+      "포인터주소"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-syntax"
+  },
+  {
+    "id": "EXP_PR_014",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 비트 연산자 중 두 비트가 서로 다를 때만 1을 반환하는 배타적 논리합(XOR) 연산자 기호는 무엇인가?",
+    "answer": "^",
+    "explanation": "^(캐럿)은 XOR 연산자로서 두 비트가 다를 때 1, 같을 때 0을 반환합니다. &(AND)와 |(OR)와 구분해야 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "^",
+      "XOR",
+      "비트연산자"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-bitwise"
+  },
+  {
+    "id": "EXP_PR_015",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 비트 연산자 중 모든 비트를 0은 1로, 1은 0으로 반전시키는 1의 보수(비트 NOT) 연산자 기호는 무엇인가?",
+    "answer": "~",
+    "explanation": "~(물결)은 비트 단위 NOT 연산자입니다. 논리 부정(!)과 기호를 혼동하지 않도록 주의해야 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "~",
+      "비트NOT",
+      "1의보수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-bitwise"
+  },
+  {
+    "id": "EXP_PR_016",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 비트 연산에서 피연산자의 비트들을 왼쪽으로 n칸 이동시키고 빈자리를 0으로 채우는 비트 시프트 연산자 기호는 무엇인가?",
+    "answer": "<<",
+    "explanation": "<< 연산자는 왼쪽으로 1비트 이동할 때마다 2를 곱한 효과(2^n)를 냅니다. 오른쪽 시프트는 >>입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "<<",
+      "왼쪽시프트",
+      "비트연산자"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-bitwise"
+  },
+  {
+    "id": "EXP_PR_017",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "함수 호출 시 생성되는 지역 변수, 매개변수, 반환 주소 등이 임시 저장되는 메모리 영역의 이름은 무엇인가?",
+    "answer": "스택",
+    "explanation": "스택(Stack) 영역은 함수 호출 시 할당되고 함수 종료 시 자동으로 소멸하는 LIFO 구조의 메모리 영역입니다. 힙(Heap)은 프로그래머가 동적 할당합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "스택",
+      "Stack",
+      "메모리영역",
+      "지역변수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-memory"
+  },
+  {
+    "id": "EXP_PR_018",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "전역 변수와 정적(static) 변수가 저장되며 프로그램 시작 시 할당되고 프로그램 종료 시 소멸하는 메모리 영역의 이름은 무엇인가?",
+    "answer": "데이터 영역",
+    "explanation": "데이터(Data) 영역은 전역 변수와 static 변수가 저장되는 공간으로 프로그램 실행 중 상주합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "데이터 영역",
+      "Data",
+      "전역변수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-memory"
+  },
+  {
+    "id": "EXP_PR_019",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java에서 동일한 클래스 내에 이름이 같은 메서드를 매개변수의 타입이나 개수를 다르게 하여 여러 개 정의하는 객체지향 기법은 무엇인가?",
+    "answer": "오버로딩",
+    "explanation": "오버로딩(Overloading)은 같은 이름의 메서드를 매개변수 목록을 다르게 정의하는 기법입니다. 상속 관계에서 부모 메서드를 재정의하는 오버라이딩(Overriding)과 구별해야 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "오버로딩",
+      "Overloading",
+      "다형성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-oop"
+  },
+  {
+    "id": "EXP_PR_020",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java에서 자식 클래스가 상속받은 부모 클래스의 메서드를 동일한 이름, 매개변수, 반환형으로 본문(로직)만 재정의하는 기법은 무엇인가?",
+    "answer": "오버라이딩",
+    "explanation": "오버라이딩(Overriding)은 상위 클래스의 메서드를 하위 클래스에서 재정의하는 동적 바인딩 기법입니다. @Override 어노테이션으로 검증할 수 있습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "오버라이딩",
+      "Overriding",
+      "메서드재정의"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-oop"
+  },
+  {
+    "id": "EXP_PR_021",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java에서 한 클래스가 다른 부모 클래스를 상속받을 때 클래스 선언부에 사용하는 상속 키워드는 무엇인가?",
+    "answer": "extends",
+    "explanation": "extends는 클래스 상속 시 사용하며 Java는 단일 상속만 허용합니다. 인터페이스 구현에는 implements를 사용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "extends",
+      "상속키워드",
+      "Java"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-syntax"
+  },
+  {
+    "id": "EXP_PR_022",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java에서 클래스가 인터페이스의 추상 메서드들을 구현하겠다고 선언할 때 사용하는 키워드는 무엇인가?",
+    "answer": "implements",
+    "explanation": "implements는 인터페이스를 클래스에서 다중 구현할 때 사용합니다. 인터페이스끼리 상속할 때는 extends를 씁니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "implements",
+      "인터페이스구현",
+      "Java"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-syntax"
+  },
+  {
+    "id": "EXP_PR_023",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java 자식 클래스 내부에서 부모 클래스의 생성자나 멤버 변수/메서드를 명시적으로 호출할 때 사용하는 키워드는 무엇인가?",
+    "answer": "super",
+    "explanation": "super 키워드는 부모 객체를 가리킵니다. 부모 생성자 호출은 super(), 자신의 멤버를 가리킬 때는 this를 씁니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "super",
+      "부모클래스참조",
+      "생성자"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-syntax"
+  },
+  {
+    "id": "EXP_PR_024",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java에서 인스턴스 생성 없이 클래스 이름만으로 직접 접근할 수 있는 클래스 변수나 정적 메서드를 선언할 때 사용하는 키워드는 무엇인가?",
+    "answer": "static",
+    "explanation": "static 키워드로 선언된 멤버는 클래스 로딩 시 메서드 영역(Method Area)에 생성되어 모든 인스턴스가 공유합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "static",
+      "정적키워드",
+      "클래스변수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-syntax"
+  },
+  {
+    "id": "EXP_PR_025",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java에서 변수를 상수로 만들어 값의 변경을 금지하거나, 메서드의 오버라이딩을 금지하고 클래스의 상속을 금지할 때 사용하는 키워드는 무엇인가?",
+    "answer": "final",
+    "explanation": "final 변수는 상수, final 메서드는 오버라이딩 불가, final 클래스는 상속 불가를 의미합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "final",
+      "상수",
+      "오버라이딩금지"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-syntax"
+  },
+  {
+    "id": "EXP_PR_026",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java 4대 접근 제어자 중 해당 클래스가 정의된 동일 패키지 내부와 다른 패키지의 자식 클래스에서만 접근을 허용하는 제어자는 무엇인가?",
+    "answer": "protected",
+    "explanation": "protected는 동일 패키지 및 상속받은 하위 클래스에 접근을 허용합니다. 같은 클래스만 허용하는 것은 private, 전체 공개는 public입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "protected",
+      "접근제어자",
+      "상속"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-syntax"
+  },
+  {
+    "id": "EXP_PR_027",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java 예외 처리 구문 중 예외 발생 여부와 상관없이 무조건 마지막에 반드시 실행되는 코드 블록을 지정하는 키워드는 무엇인가?",
+    "answer": "finally",
+    "explanation": "finally 블록은 try-catch 실행 후 파일 스트림이나 DB 연결 닫기 같은 리소스 해제 작업을 무조건 보장하기 위해 사용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "finally",
+      "예외처리",
+      "리소스해제"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-syntax"
+  },
+  {
+    "id": "EXP_PR_028",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java JVM 힙 영역에서 더 이상 어떤 참조도 닿지 않는 쓰레기 객체들을 주기적으로 탐색하여 메모리를 자동으로 회수하는 시스템 프로세스는 무엇인가?",
+    "answer": "가비지 컬렉터",
+    "explanation": "가비지 컬렉터(Garbage Collector, GC)는 도달 불가능(unreachable) 객체를 자동 수거하여 프로그래머가 수동으로 메모리를 해제하지 않도록 돕습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "가비지 컬렉터",
+      "GC",
+      "Garbage Collector"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-jvm"
+  },
+  {
+    "id": "EXP_PR_029",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java 컬렉션 프레임워크 중 순서를 보장하지 않고 데이터의 중복 저장을 절대 허용하지 않는 인터페이스는 무엇인가?",
+    "answer": "Set",
+    "explanation": "Set은 중복을 허용하지 않는 집합 컬렉션(대표 구현체: HashSet, TreeSet)입니다. 순서와 중복을 허용하는 것은 List입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Set",
+      "컬렉션",
+      "중복불가"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-collections"
+  },
+  {
+    "id": "EXP_PR_030",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java 컬렉션 프레임워크 중 키(Key)와 값(Value)의 쌍으로 데이터를 관리하며, 키는 중복될 수 없는 인터페이스는 무엇인가?",
+    "answer": "Map",
+    "explanation": "Map은 Key-Value 매핑 컬렉션(대표 구현체: HashMap, TreeMap)으로 키의 중복은 불허하지만 값의 중복은 허용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Map",
+      "Key-Value",
+      "HashMap"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-collections"
+  },
+  {
+    "id": "EXP_PR_031",
+    "subject": "프로그래밍언어활용",
+    "category": "Python",
+    "type": "SHORT_ANSWER",
+    "question": "Python에서 한 번 생성된 후 내부 요소의 추가, 삭제, 수정이 불가능한 불변(Immutable) 시퀀스 자료형으로 소괄호 ()로 표현하는 것은 무엇인가?",
+    "answer": "튜플",
+    "explanation": "튜플(Tuple)은 불변 자료형으로 요소를 변경할 수 없습니다. 대괄호 []로 감싸 수정 가능한 것은 리스트(List)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "튜플",
+      "Tuple",
+      "불변자료형"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-py-datatype"
+  },
+  {
+    "id": "EXP_PR_032",
+    "subject": "프로그래밍언어활용",
+    "category": "Python",
+    "type": "SHORT_ANSWER",
+    "question": "Python에서 키(Key)와 값(Value)의 쌍으로 구성되며 중괄호 {}를 사용해 선언하는 가변 매핑 자료형은 무엇인가?",
+    "answer": "딕셔너리",
+    "explanation": "딕셔너리(Dictionary)는 키 기반 검색을 지원하는 매핑 자료형입니다. 키는 해시 가능한 불변 타입이어야 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "딕셔너리",
+      "dict",
+      "Dictionary"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-py-datatype"
+  },
+  {
+    "id": "EXP_PR_033",
+    "subject": "프로그래밍언어활용",
+    "category": "Python",
+    "type": "SHORT_ANSWER",
+    "question": "Python에서 별도의 def 함수 선언 없이 이름이 없는 한 줄짜리 인라인 익명 함수를 정의할 때 사용하는 키워드는 무엇인가?",
+    "answer": "lambda",
+    "explanation": "lambda 키워드는 인라인 익명 함수를 만들며 `lambda x: x * 2` 형태로 작성합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "lambda",
+      "익명함수",
+      "파이썬"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-py-syntax"
+  },
+  {
+    "id": "EXP_PR_034",
+    "subject": "프로그래밍언어활용",
+    "category": "Python",
+    "type": "SHORT_ANSWER",
+    "question": "Python 문자열이나 리스트 s에 대해 슬라이싱 기법을 이용하여 전체 시퀀스를 뒤에서부터 역순으로 뒤집을 때 사용하는 슬라이스 표기식은 무엇인가?",
+    "answer": "[::-1]",
+    "explanation": "`[::-1]`은 start와 end를 생략하고 step을 -1로 지정하여 전체 시퀀스를 역순으로 뒤집는 파이썬 관용구입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "[::-1]",
+      "슬라이싱",
+      "역순"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-py-syntax"
+  },
+  {
+    "id": "EXP_PR_035",
+    "subject": "프로그래밍언어활용",
+    "category": "Python",
+    "type": "SHORT_ANSWER",
+    "question": "Python 리스트나 딕셔너리 등 시퀀스의 전체 요소 개수(길이)를 구할 때 사용하는 표준 내장 함수는 무엇인가?",
+    "answer": "len",
+    "explanation": "len() 함수는 객체의 원소 개수를 반환합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "len",
+      "길이반환",
+      "파이썬내장함수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-py-syntax"
+  },
+  {
+    "id": "EXP_PR_036",
+    "subject": "프로그래밍언어활용",
+    "category": "Python",
+    "type": "SHORT_ANSWER",
+    "question": "Python에서 여러 반복 가능한(iterable) 객체들을 인자로 받아 동일 인덱스의 요소들을 튜플로 묶어주는 내장 함수는 무엇인가?",
+    "answer": "zip",
+    "explanation": "zip() 함수는 2개 이상의 리스트나 튜플에서 동일 위치의 원소들을 묶어 튜플의 이터레이터를 생성합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "zip",
+      "내장함수",
+      "튜플묶기"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-py-syntax"
+  },
+  {
+    "id": "EXP_PR_037",
+    "subject": "프로그래밍언어활용",
+    "category": "Python",
+    "type": "SHORT_ANSWER",
+    "question": "Python 딕셔너리에서 존재하지 않는 키를 조회할 때 KeyError 예외를 발생시키지 않고 안전하게 기본값을 반환받는 메서드는 무엇인가?",
+    "answer": "get",
+    "explanation": "dict.get(key, default) 메서드는 키가 없을 때 기본값(지정 안 하면 None)을 안전하게 반환합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "get",
+      "딕셔너리메서드",
+      "예외방지"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-py-syntax"
+  },
+  {
+    "id": "EXP_PR_038",
+    "subject": "프로그래밍언어활용",
+    "category": "Python",
+    "type": "SHORT_ANSWER",
+    "question": "Python 세트(set) 자료형에서 중복 요소를 제거하고 두 집합의 공통 원소만을 구할 때 사용하는 교집합 연산자 기호는 무엇인가?",
+    "answer": "&",
+    "explanation": "파이썬 집합 자료형에서 &(앰퍼샌드)는 교집합 연산자입니다. 합집합은 |, 차집합은 - 기호를 사용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "&",
+      "교집합",
+      "세트연산자"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-py-datatype"
+  },
+  {
+    "id": "EXP_PR_039",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 문자열의 끝을 컴퓨터가 식별하기 위해 모든 문자열의 마지막에 자동으로 추가되는 널 문자 표기는 무엇인가?",
+    "answer": "\\0",
+    "explanation": "\\0(널 문자, ASCII 0)은 C언어 문자열의 종료를 알리는 센티널 값입니다. 문자 \"0\"(ASCII 48)과 구별해야 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "\\0",
+      "널문자",
+      "문자열종료"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-syntax"
+  },
+  {
+    "id": "EXP_PR_040",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 표준 라이브러리 <string.h>에서 두 문자열이 사전순으로 일치하는지 비교하는 함수의 이름은 무엇인가?",
+    "answer": "strcmp",
+    "explanation": "strcmp(s1, s2)는 두 문자열이 같으면 0, s1이 크면 양수, s2가 크면 음수를 반환합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "strcmp",
+      "문자열비교",
+      "string.h"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-string"
+  },
+  {
+    "id": "EXP_PR_041",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 표준 라이브러리 <string.h>에서 원본 문자열을 대상 버퍼에 복사하는 함수의 이름은 무엇인가?",
+    "answer": "strcpy",
+    "explanation": "strcpy(dest, src)는 src 문자열을 dest 버퍼에 널 문자까지 복사합니다. 버퍼 오버플로우 방지를 위해 strncpy 사용이 권장됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "strcpy",
+      "문자열복사",
+      "string.h"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-string"
+  },
+  {
+    "id": "EXP_PR_042",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 표준 라이브러리 <string.h>에서 하나의 문자열 뒤에 다른 문자열을 덧붙이는(연결하는) 함수의 이름은 무엇인가?",
+    "answer": "strcat",
+    "explanation": "strcat(dest, src)는 dest 문자열 끝에 src를 덧붙입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "strcat",
+      "문자열연결",
+      "string.h"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-string"
+  },
+  {
+    "id": "EXP_PR_043",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 표준 라이브러리 <string.h>에서 널 문자를 제외한 순수 문자열의 글자 수를 계산해 반환하는 함수는 무엇인가?",
+    "answer": "strlen",
+    "explanation": "strlen(str)은 시작점부터 \\0 직전까지의 바이트/문자 수를 계산합니다. sizeof(배열)은 할당된 전체 버퍼 크기를 반환하므로 다릅니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "strlen",
+      "문자열길이",
+      "string.h"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-string"
+  },
+  {
+    "id": "EXP_PR_044",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java에서 두 문자열 객체의 내용(값)이 동일한지 비교할 때 == 연산자 대신 반드시 호출해야 하는 메서드는 무엇인가?",
+    "answer": "equals",
+    "explanation": "Java에서 == 연산자는 객체의 주소값(참조)을 비교하므로, 문자열의 실제 내용을 비교하려면 equals() 메서드를 호출해야 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "equals",
+      "문자열비교",
+      "내용비교"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-syntax"
+  },
+  {
+    "id": "EXP_PR_045",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java String 클래스는 불변(Immutable) 객체이므로 문자열을 빈번히 결합할 때 성능 저하를 방지하기 위해 사용하는 가변(Mutable) 버퍼 클래스는 무엇인가?",
+    "answer": "StringBuilder",
+    "explanation": "StringBuilder는 가변 버퍼를 지원하여 append() 시 새로운 객체를 매번 생성하지 않고 기존 버퍼를 확장합니다. 멀티스레드 동기화가 필요한 경우 StringBuffer를 씁니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "StringBuilder",
+      "문자열결합",
+      "가변객체"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-syntax"
+  },
+  {
+    "id": "EXP_PR_046",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java에서 컴파일 타임에 다양한 타입을 일반화하여 타입 안전성(Type Safety)을 보장하고 형변환의 번거로움을 줄여주는 기법은 무엇인가?",
+    "answer": "제네릭",
+    "explanation": "제네릭(Generics, `<T>`)은 클래스나 메서드에서 사용할 데이터 타입을 파라미터화하여 컴파일 시 엄격한 타입 체크를 수행합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "제네릭",
+      "Generics",
+      "타입안전성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-syntax"
+  },
+  {
+    "id": "EXP_PR_047",
+    "subject": "프로그래밍언어활용",
+    "category": "Python",
+    "type": "SHORT_ANSWER",
+    "question": "Python 리스트에서 [표현식 for 항목 in 반복가능객체 if 조건문] 형태로 간결하게 새로운 리스트를 생성하는 문법 표기법은 무엇인가?",
+    "answer": "리스트 컴프리헨션",
+    "explanation": "리스트 컴프리헨션(List Comprehension)은 반복문과 조건문을 축약하여 한 줄로 새 리스트를 필터링/가공하는 파이썬 고유 문법입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "리스트 컴프리헨션",
+      "List Comprehension"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-py-syntax"
+  },
+  {
+    "id": "EXP_PR_048",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 삼항 조건 연산자(조건 ? 수식1 : 수식2)에서 조건식이 참(True)일 때 평가되는 수식은 수식1인가 수식2인가?",
+    "answer": "수식1",
+    "explanation": "삼항 연산자 `condition ? expr1 : expr2`는 조건이 참이면 expr1, 거짓이면 expr2를 평가합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "수식1",
+      "삼항연산자",
+      "조건연산자"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-syntax"
+  },
+  {
+    "id": "EXP_PR_049",
+    "subject": "프로그래밍언어활용",
+    "category": "Java",
+    "type": "SHORT_ANSWER",
+    "question": "Java switch-case 문에서 특정 case 문을 실행한 후 아래쪽 case 문들로 계속 흘러내리는(Fall-through) 현상을 막고 switch 문을 탈출하기 위해 쓰는 제어문 키워드는 무엇인가?",
+    "answer": "break",
+    "explanation": "break 문은 switch 문이나 반복문(for, while)을 즉시 종료하고 블록을 빠져나옵니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "break",
+      "switch-case",
+      "루프탈출"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-java-syntax"
+  },
+  {
+    "id": "EXP_PR_050",
+    "subject": "프로그래밍언어활용",
+    "category": "C언어",
+    "type": "SHORT_ANSWER",
+    "question": "C언어나 Java 반복문(for, while) 내부에서 현재 반복 회차의 나머지 코드를 건너뛰고 다음 반복 회차의 조건 검사로 즉시 건너뛰게 만드는 제어문 키워드는 무엇인가?",
+    "answer": "continue",
+    "explanation": "continue는 현재 회차의 남은 실행문을 건너뛰고 루프의 다음 증감/조건식으로 이동합니다. 루프를 완전히 끝내는 break와 다릅니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "continue",
+      "반복문제어",
+      "건너뛰기"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-c-syntax"
+  },
+  {
+    "id": "EXP_OS_001",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "운영체제 프로세스 상태 전이 중 준비(Ready) 상태에 있던 프로세스가 CPU를 할당받아 실행(Running) 상태로 전이되는 과정을 무엇이라 하는가?",
+    "answer": "디스패치",
+    "explanation": "디스패치(Dispatch)는 준비 큐의 맨 앞에 있던 프로세스가 CPU 스케줄러에 의해 CPU를 점유하여 실행 상태로 바뀌는 동작입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "디스패치",
+      "Dispatch",
+      "프로세스상태전이"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-process"
+  },
+  {
+    "id": "EXP_OS_002",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "운영체제가 각 프로세스를 관리하고 제어하기 위해 프로세스의 식별자, 현재 상태, 레지스터 값 등을 저장하는 자료구조 블록의 약칭은 무엇인가?",
+    "answer": "PCB",
+    "explanation": "PCB(Process Control Block, 프로세스 제어 블록)는 운영체제가 프로세스마다 유지하는 핵심 메타데이터 저장 블록입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "PCB",
+      "Process Control Block",
+      "프로세스제어블록"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-process"
+  },
+  {
+    "id": "EXP_OS_003",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "하나의 프로세스에서 다른 프로세스로 CPU의 제어권이 넘어갈 때 기존 프로세스의 상태를 PCB에 저장하고 새 프로세스의 상태를 레지스터로 복구하는 작업을 무엇이라 하는가?",
+    "answer": "문맥 교환",
+    "explanation": "문맥 교환(Context Switching)은 인터럽트나 스케줄링 시 발생하며, 잦은 문맥 교환은 시스템 오버헤드를 유발합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "문맥 교환",
+      "Context Switching",
+      "PCB"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-process"
+  },
+  {
+    "id": "EXP_OS_004",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "비선점 스케줄링 기법 중 실행 시간이 긴 프로세스가 무한정 대기하는 기아 현상(Starvation)을 방지하기 위해 대기 시간과 서비스(실행) 시간을 고려하여 에이징(Aging) 효과를 부여한 알고리즘은 무엇인가?",
+    "answer": "HRN",
+    "explanation": "HRN(Highest Response-ratio Next)은 우선순위 = (대기시간 + 서비스시간) / 서비스시간 공식을 사용하여 대기 시간이 길수록 우선순위를 높입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "HRN",
+      "스케줄링",
+      "기아현상해결"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-scheduling"
+  },
+  {
+    "id": "EXP_OS_005",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "시분할 시스템을 위해 설계된 선점형 스케줄링 알고리즘으로, 각 프로세스에 동일한 크기의 CPU 시간 할당량(Time Quantum)을 부여하고 시간 초과 시 다음 프로세스로 넘기는 기법은 무엇인가?",
+    "answer": "라운드 로빈",
+    "explanation": "라운드 로빈(Round Robin, RR)은 시간 할당량이 너무 크면 FCFS처럼 작동하고, 너무 작으면 문맥 교환 오버헤드가 급증합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "라운드 로빈",
+      "Round Robin",
+      "Time Quantum"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-scheduling"
+  },
+  {
+    "id": "EXP_OS_006",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "SJF(최단 작업 우선) 알고리즘을 선점형 방식으로 변형한 것으로, 현재 실행 중인 프로세스의 남은 실행 시간보다 더 짧은 실행 시간을 가진 새 프로세스가 도착하면 CPU를 빼앗는 스케줄링 기법은 무엇인가?",
+    "answer": "SRT",
+    "explanation": "SRT(Shortest Remaining Time First)는 남은 처리 시간이 가장 짧은 프로세스에게 CPU를 선점시키는 기법입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "SRT",
+      "Shortest Remaining Time",
+      "선점스케줄링"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-scheduling"
+  },
+  {
+    "id": "EXP_OS_007",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "교착상태(Deadlock) 발생 4대 필요조건 중 한 번에 하나의 프로세스만이 자원을 독점적으로 사용할 수 있어야 한다는 조건은 무엇인가?",
+    "answer": "상호 배제",
+    "explanation": "상호 배제(Mutual Exclusion)는 자원을 동시에 공유할 수 없는 조건입니다. 나머지 3조건은 점유와 대기, 비선점, 환형 대기입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "상호 배제",
+      "Mutual Exclusion",
+      "교착상태조건"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-deadlock"
+  },
+  {
+    "id": "EXP_OS_008",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "교착상태(Deadlock) 발생 4대 필요조건 중 다른 프로세스에 할당된 자원을 강제로 빼앗을 수 없고 점유한 프로세스가 자발적으로만 해제할 수 있다는 조건은 무엇인가?",
+    "answer": "비선점",
+    "explanation": "비선점(Non-preemption)은 강제로 자원을 회수하지 못하는 조건입니다. 선점을 허용하면 교착상태를 예방할 수 있습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "비선점",
+      "Non-preemption",
+      "교착상태"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-deadlock"
+  },
+  {
+    "id": "EXP_OS_009",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "교착상태 발생 4대 필요조건 중 프로세스들이 순환 형태로 서로가 가진 자원을 요구하며 꼬리를 물고 무한 대기하는 조건은 무엇인가?",
+    "answer": "환형 대기",
+    "explanation": "환형 대기(Circular Wait)는 자원 할당 그래프에서 사이클을 형성하는 조건입니다. 자원에 번호를 매겨 한 방향으로만 요구하게 하면 예방됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "환형 대기",
+      "Circular Wait",
+      "교착상태"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-deadlock"
+  },
+  {
+    "id": "EXP_OS_010",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "교착상태 해결 방법 중 다익스트라(Dijkstra)가 제안한 기법으로, 자원 할당 전 시스템이 안전 상태(Safe State)를 유지할 수 있는지 사전에 검사하여 교착상태를 회피하는 대표 알고리즘은 무엇인가?",
+    "answer": "은행가 알고리즘",
+    "explanation": "은행가 알고리즘(Banker's Algorithm)은 안전 상태일 때만 자원을 할당하는 대표적인 교착상태 회피(Avoidance) 알고리즘입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "은행가 알고리즘",
+      "Banker",
+      "교착상태회피"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-deadlock"
+  },
+  {
+    "id": "EXP_OS_011",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "메모리 배치(Placement) 전략 중 들어갈 수 있는 빈 메모리 공간들 중 크기가 요구량에 가장 딱 맞아서 내부 단편화를 최소화할 수 있는 공간을 찾아 배치하는 기법은 무엇인가?",
+    "answer": "Best Fit",
+    "explanation": "최적 적합(Best Fit)은 잔여 단편화 공간을 최소화하지만 매우 작은 쓸모없는 자투리 공간을 많이 남기는 단점이 있습니다. 첫 발견 공간에 넣는 것은 First Fit입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Best Fit",
+      "최적적합",
+      "메모리배치"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-memory"
+  },
+  {
+    "id": "EXP_OS_012",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "메모리 배치 전략 중 메모리의 첫 주소부터 검색하여 프로세스가 들어갈 수 있는 크기의 첫 번째 빈 공간을 발견하자마자 즉시 배치하는 기법은 무엇인가?",
+    "answer": "First Fit",
+    "explanation": "최초 적합(First Fit)은 검색 속도가 가장 빠르며 오버헤드가 적은 메모리 배치 기법입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "First Fit",
+      "최초적합",
+      "메모리배치"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-memory"
+  },
+  {
+    "id": "EXP_OS_013",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "가상 메모리 관리 기법 중 가상 기억장치의 프로그램을 동일한 크기의 고정된 블록 단위로 분할하여 관리하는 기법은 무엇인가?",
+    "answer": "페이징",
+    "explanation": "페이징(Paging)은 고정 크기 블록(페이지)으로 나누어 외부 단편화를 해결하지만, 마지막 페이지에서 내부 단편화가 발생할 수 있습니다. 가변 논리 단위 분할은 세그멘테이션입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "페이징",
+      "Paging",
+      "가상메모리"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-memory"
+  },
+  {
+    "id": "EXP_OS_014",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "가상 메모리 관리 기법 중 프로그램을 코드, 데이터, 스택 등 논리적인 의미를 지닌 서로 다른 가변 크기의 단위로 분할하여 관리하는 기법은 무엇인가?",
+    "answer": "세그멘테이션",
+    "explanation": "세그멘테이션(Segmentation)은 가변 크기 단위로 나누어 내부 단편화를 없애지만, 외부 단편화가 발생할 수 있습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "세그멘테이션",
+      "Segmentation",
+      "가상메모리"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-memory"
+  },
+  {
+    "id": "EXP_OS_015",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "페이지 교체 알고리즘 중 가장 오랫동안 참조되지 않은(가장 과거에 사용된) 페이지를 교체 대상으로 선택하는 기법의 약칭은 무엇인가?",
+    "answer": "LRU",
+    "explanation": "LRU(Least Recently Used)는 최근 사용 시간(시간적 참조 국부성)을 기준으로 가장 오래 참조되지 않은 페이지를 내보냅니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "LRU",
+      "Least Recently Used",
+      "페이지교체"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-replacement"
+  },
+  {
+    "id": "EXP_OS_016",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "페이지 교체 알고리즘 중 과거에 사용된 횟수(참조 빈도)가 가장 적은 페이지를 교체 대상으로 선택하는 기법의 약칭은 무엇인가?",
+    "answer": "LFU",
+    "explanation": "LFU(Least Frequently Used)는 참조 횟수를 카운트하여 가장 적게 참조된 페이지를 교체합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "LFU",
+      "Least Frequently Used",
+      "페이지교체"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-replacement"
+  },
+  {
+    "id": "EXP_OS_017",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "페이지 교체 알고리즘 중 참조 비트(Reference Bit)와 변형 비트(Modified Bit)를 조합(00, 01, 10, 11)하여 교체 대상을 결정하는 알고리즘은 무엇인가?",
+    "answer": "NUR",
+    "explanation": "NUR(Not Used Recently, 최근 미사용) 알고리즘은 2비트를 사용하여 오버헤드를 줄이며 LRU와 유사한 성능을 냅니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "NUR",
+      "Not Used Recently",
+      "참조비트"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-replacement"
+  },
+  {
+    "id": "EXP_OS_018",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "프로세스가 실행되는 동안 자주 발생하는 페이지 부재(Page Fault)로 인해 프로세스 실행 시간보다 페이지 교체 시간이 더 많아져 CPU 사용률이 급격히 떨어지는 현상을 무엇이라 하는가?",
+    "answer": "스래싱",
+    "explanation": "스래싱(Thrashing)은 다중 프로그래밍 정도가 너무 높아져 발생합니다. 워킹셋이나 페이지 부재 빈도(PFF) 조절로 예방합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "스래싱",
+      "Thrashing",
+      "페이지부재"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-memory"
+  },
+  {
+    "id": "EXP_OS_019",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "데닝(Denning)이 제안한 기법으로, 스래싱을 방지하기 위해 프로세스가 일정 시간 동안 자주 참조하는 페이지 집합을 주기억장치에 상주시켜 유지하는 모델은 무엇인가?",
+    "answer": "워킹셋",
+    "explanation": "워킹셋(Working Set)은 프로세스가 자주 사용하는 페이지 집합을 메모리에 적재하여 페이지 부재를 최소화합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "워킹셋",
+      "Working Set",
+      "스래싱방지"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-memory"
+  },
+  {
+    "id": "EXP_OS_020",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "프로세스의 페이지 부재율에 상한선과 하한선을 설정하여, 상한을 넘으면 페이지 프레임을 추가 할당하고 하한 밑으로 떨어지면 회수하는 스래싱 방지 기법의 약칭은 무엇인가?",
+    "answer": "PFF",
+    "explanation": "PFF(Page Fault Frequency, 페이지 부재 빈도)는 부재율을 기반으로 프로세스별 페이지 프레임 수를 동적으로 조절합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "PFF",
+      "Page Fault Frequency",
+      "페이지부재빈도"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-memory"
+  },
+  {
+    "id": "EXP_OS_021",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "리눅스/유닉스에서 파일이나 디렉터리의 읽기(r), 쓰기(w), 실행(x) 접근 권한 모드를 변경할 때 사용하는 명령어는 무엇인가?",
+    "answer": "chmod",
+    "explanation": "chmod(change mode)는 파일 접근 권한을 8진수(예: 755, 644)나 기호 모드로 변경합니다. 소유자 변경은 chown입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "chmod",
+      "권한변경",
+      "리눅스명령어"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-unix"
+  },
+  {
+    "id": "EXP_OS_022",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "리눅스/유닉스에서 파일이나 디렉터리의 소유자(Owner) 또는 소유 그룹을 변경할 때 사용하는 명령어는 무엇인가?",
+    "answer": "chown",
+    "explanation": "chown(change owner)은 파일 소유권과 그룹 소유권을 변경하는 명령어입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "chown",
+      "소유자변경",
+      "리눅스명령어"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-unix"
+  },
+  {
+    "id": "EXP_OS_023",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "리눅스/유닉스 시스템 호출(System Call) 중 현재 실행 중인 부모 프로세스의 메모리를 완벽히 복제하여 새로운 자식 프로세스를 생성하는 함수는 무엇인가?",
+    "answer": "fork",
+    "explanation": "fork()는 기존 프로세스를 복제하여 PID가 다른 새 프로세스를 생성합니다. 생성된 자식 프로세스에 새 프로그램을 덮어씌워 실행하는 것은 exec()입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "fork",
+      "자식프로세스생성",
+      "시스템콜"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-unix"
+  },
+  {
+    "id": "EXP_OS_024",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "리눅스/유닉스에서 현재 시스템에서 실행 중인 프로세스들의 목록과 PID, 상태 등을 조회할 때 사용하는 기본 명령어는 무엇인가?",
+    "answer": "ps",
+    "explanation": "ps(process status)는 현재 활성 프로세스들을 조회합니다. 실시간 모니터링은 top 명령어를 씁니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ps",
+      "프로세스조회",
+      "PID"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-unix"
+  },
+  {
+    "id": "EXP_OS_025",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "리눅스/유닉스에서 지정된 프로세스 ID(PID)에 특정 시그널(예: SIGKILL 9번)을 전달하여 비정상 프로세스를 강제 종료시킬 때 사용하는 명령어는 무엇인가?",
+    "answer": "kill",
+    "explanation": "kill 명령어는 프로세스에 종료 시그널(kill -9 PID)을 전송하여 프로세스를 종료합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "kill",
+      "프로세스종료",
+      "시그널"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-unix"
+  },
+  {
+    "id": "EXP_OS_026",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "리눅스/유닉스에서 파일 내용 중 특정 정규표현식 패턴이나 문자열이 포함된 줄을 검색하여 출력해주는 필터 명령어는 무엇인가?",
+    "answer": "grep",
+    "explanation": "grep(global regular expression print)은 텍스트 파일이나 파이프 스트림에서 지정된 패턴을 검색하는 대표 필터입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "grep",
+      "패턴검색",
+      "리눅스필터"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-unix"
+  },
+  {
+    "id": "EXP_OS_027",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "리눅스/유닉스 쉘에서 현재 작업 중인 디렉터리의 절대 경로(Print Working Directory)를 화면에 출력하는 명령어는 무엇인가?",
+    "answer": "pwd",
+    "explanation": "pwd는 현재 작업 디렉터리의 전체 경로를 출력합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "pwd",
+      "현재디렉터리",
+      "절대경로"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-unix"
+  },
+  {
+    "id": "EXP_OS_028",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "리눅스 파일 접근 권한에서 소유자에게 읽기(r=4), 쓰기(w=2), 실행(x=1) 권한을 모두 부여할 때 해당하는 8진수 숫자는 무엇인가?",
+    "answer": "7",
+    "explanation": "r(4) + w(2) + x(1) = 7 입니다. 읽기와 쓰기만 부여하면 6, 읽기와 실행만 부여하면 5가 됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "7",
+      "8진수권한",
+      "chmod"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-unix"
+  },
+  {
+    "id": "EXP_OS_029",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "페이지 부재율을 줄이기 위해 페이지 프레임 수를 늘려주었음에도 불구하고 오히려 페이지 부재 횟수가 증가하는 이상 현상을 무엇이라 하는가?",
+    "answer": "벨레이디의 모순",
+    "explanation": "벨레이디의 모순(Belady's Anomaly)은 주로 FIFO 페이지 교체 알고리즘에서 프레임 수를 늘릴 때 나타나는 역설적 현상입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "벨레이디의 모순",
+      "Belady",
+      "FIFO이상현상"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-replacement"
+  },
+  {
+    "id": "EXP_OS_030",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "임계 영역(Critical Section)에서 둘 이상의 프로세스가 공유 자원에 동시에 접근하려고 경쟁할 때 접근 순서에 따라 실행 결과가 달라지는 상황을 무엇이라 하는가?",
+    "answer": "경쟁 상태",
+    "explanation": "경쟁 상태(Race Condition)는 동기화 메커니즘이 부재할 때 발생하며, 뮤텍스(Mutex)나 세마포어(Semaphore)로 상호 배제를 달성해야 합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "경쟁 상태",
+      "Race Condition",
+      "동기화"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-sync"
+  },
+  {
+    "id": "EXP_OS_031",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "공유 자원에 대한 접근을 동기화하기 위해 다익스트라가 고안한 정수형 변수 기반의 동기화 도구로 P(wait)와 V(signal) 연산을 사용하는 것은 무엇인가?",
+    "answer": "세마포어",
+    "explanation": "세마포어(Semaphore)는 정수형 변수 S를 이용해 다수의 자원 접근을 제어합니다. 단 1개의 스레드만 허용하는 락은 뮤텍스(Mutex)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "세마포어",
+      "Semaphore",
+      "동기화도구"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-sync"
+  },
+  {
+    "id": "EXP_OS_032",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "하나의 프로세스 내에서 실행 흐름의 최소 단위로, 코드/데이터/힙 영역은 공유하고 독립적인 스택과 레지스터 집합만을 갖는 경량 프로세스를 무엇이라 하는가?",
+    "answer": "스레드",
+    "explanation": "스레드(Thread)는 프로세스 자원을 공유하여 생성 및 문맥 교환 비용이 프로세스보다 훨씬 가볍습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "스레드",
+      "Thread",
+      "경량프로세스"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-process"
+  },
+  {
+    "id": "EXP_OS_033",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "동일 프로세스 내에서 자원을 공유하는 다중 스레드 구조에서 한 스레드의 메모리 훼손이 전체 프로세스로 번질 수 있는 단점에도 불구하고 스레드를 사용하는 가장 큰 성능상 장점은 무엇인가?",
+    "answer": "문맥 교환 오버헤드 감소",
+    "explanation": "스레드는 코드/데이터/힙 공간을 공유하므로 캐시 메모리를 비우지 않아 문맥 교환 속도가 매우 빠릅니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "문맥 교환 오버헤드 감소",
+      "스레드장점"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-process"
+  },
+  {
+    "id": "EXP_OS_034",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "자식 프로세스가 종료되었으나 부모 프로세스가 wait() 호출로 종료 상태를 회수하지 않아 프로세스 테이블에 남아있는 프로세스를 무엇이라 하는가?",
+    "answer": "좀비 프로세스",
+    "explanation": "좀비 프로세스(Zombie Process)는 실행은 끝났지만 PID와 종료 코드가 프로세스 테이블에 잔존하는 프로세스입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "좀비 프로세스",
+      "Zombie",
+      "wait"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-process"
+  },
+  {
+    "id": "EXP_OS_035",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "부모 프로세스가 자식 프로세스보다 먼저 종료되어 고아가 된 프로세스를 거두어 새로운 부모가 되어주는 유닉스 최상위 1번 프로세스는 무엇인가?",
+    "answer": "init",
+    "explanation": "init(또는 현대 리눅스의 systemd) 프로세스는 부모를 잃은 고아 프로세스를 입양하여 종료 시 정상 회수합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "init",
+      "고아프로세스",
+      "PID 1"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-process"
+  },
+  {
+    "id": "EXP_OS_036",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "기억장치 단편화 해결 기법 중 흩어져 있는 작은 빈 공간들을 하나로 모아 큰 단편화 공간을 만드는 작업을 무엇이라 하는가?",
+    "answer": "메모리 압축",
+    "explanation": "메모리 압축(Compaction, 쓰레기 수집)은 외부 단편화를 해결하기 위해 프로세스들을 재배치하여 공간을 하나로 합칩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "메모리 압축",
+      "Compaction",
+      "단편화해결"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-memory"
+  },
+  {
+    "id": "EXP_OS_037",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "프로세스가 기억장치 내의 특정 영역을 단기간에 집중적으로 참조하는 특성으로, 시간적 구역성과 공간적 구역성으로 나뉘는 개념은 무엇인가?",
+    "answer": "국부성",
+    "explanation": "국부성(Locality, 지역성)은 캐시 및 가상 메모리 페이징 기법의 성능 보장에 핵심이 되는 이론적 근거입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "국부성",
+      "지역성",
+      "Locality"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-memory"
+  },
+  {
+    "id": "EXP_OS_038",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "최근에 한 번 참조된 메모리 위치는 가까운 미래에 곧바로 다시 참조될 가능성이 높다는 국부성(Locality)의 종류는 무엇인가?",
+    "answer": "시간 구역성",
+    "explanation": "시간 구역성(Temporal Locality)의 대표적인 예로는 루프(반복문) 제어 변수, 스택 등이 있습니다. 근처 주소를 참조하는 것은 공간 구역성입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "시간 구역성",
+      "Temporal Locality",
+      "지역성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-memory"
+  },
+  {
+    "id": "EXP_OS_039",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "프로그램 실행 시 한 메모리 위치가 참조되면 그 인접한 주소에 위치한 데이터들이 곧이어 참조될 가능성이 높다는 국부성의 종류는 무엇인가?",
+    "answer": "공간 구역성",
+    "explanation": "공간 구역성(Spatial Locality)의 대표적 예로는 배열 순차 순회, 명령 코드의 순차 실행 등이 있습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "공간 구역성",
+      "Spatial Locality",
+      "배열순회"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-memory"
+  },
+  {
+    "id": "EXP_OS_040",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "CPU에서 물리적 주소 변환 속도를 높이기 위해 페이지 테이블의 최근 변환 항목들을 임시 캐싱해두는 고속 하드웨어 캐시 메모리의 약칭은 무엇인가?",
+    "answer": "TLB",
+    "explanation": "TLB(Translation Lookaside Buffer, 변환 색인 버퍼)는 가상 주소를 물리 주소로 고속 변환해 주는 연관 사상 캐시입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "TLB",
+      "Translation Lookaside Buffer",
+      "주소변환"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-memory"
+  },
+  {
+    "id": "EXP_OS_041",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "비선점 스케줄링 기법 중 준비 큐에 먼저 도착한 프로세스에게 CPU를 먼저 할당하여 작업이 끝날 때까지 수행시키는 가장 단순한 방식의 약칭은 무엇인가?",
+    "answer": "FCFS",
+    "explanation": "FCFS(First-Come First-Served)는 도착 순서대로 처리하므로 긴 작업이 먼저 오면 짧은 작업이 뒤에서 오래 기다리는 콘보이 효과(Convoy Effect)가 발생합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "FCFS",
+      "First-Come First-Served",
+      "콘보이효과"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-scheduling"
+  },
+  {
+    "id": "EXP_OS_042",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "비선점 스케줄링 기법 중 CPU 요구(실행) 시간이 가장 짧은 프로세스에게 우선적으로 CPU를 할당하여 평균 대기시간을 최소화하는 방식의 약칭은 무엇인가?",
+    "answer": "SJF",
+    "explanation": "SJF(Shortest Job First)는 평균 대기시간을 최소화하지만, 긴 작업이 계속 밀리는 기아 현상(Starvation)이 발생할 수 있습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SJF",
+      "Shortest Job First",
+      "평균대기시간최소화"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-scheduling"
+  },
+  {
+    "id": "EXP_OS_043",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "준비 큐를 여러 개로 분할하여 각각 다른 우선순위와 스케줄링 방식을 부여하되, 프로세스가 큐 사이를 이동할 수 없는 스케줄링 기법은 무엇인가?",
+    "answer": "다단계 큐",
+    "explanation": "다단계 큐(Multilevel Queue)는 큐 간 이동이 불가합니다. 반면 하위 큐의 프로세스가 너무 오래 기다리면 상위 큐로 올려주는(Aging) 방식은 다단계 피드백 큐입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "다단계 큐",
+      "Multilevel Queue",
+      "스케줄링"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-scheduling"
+  },
+  {
+    "id": "EXP_OS_044",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "프로세스가 CPU를 점유 중일 때 입출력 완료나 타이머 종료와 같은 외부 사건이 발생하여 CPU에게 즉시 처리를 요청하고 제어권을 넘기는 하드웨어 신호는 무엇인가?",
+    "answer": "인터럽트",
+    "explanation": "인터럽트(Interrupt)가 발생하면 CPU는 현재 작업을 중단하고 인터럽트 서비스 루틴(ISR)을 실행합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "인터럽트",
+      "Interrupt",
+      "ISR"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-interrupt"
+  },
+  {
+    "id": "EXP_OS_045",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "프로그램 실행 중 0으로 나누기(Divide by Zero)나 잘못된 메모리 주소 참조 등 비정상적인 상황에 의해 CPU 내부에서 자체적으로 발생하는 인터럽트는 무엇인가?",
+    "answer": "트랩",
+    "explanation": "트랩(Trap) 또는 내부 인터럽트는 소프트웨어 예외 상황 시 CPU 내부에서 발생합니다. 입출력 등 하드웨어 장치에 의한 것은 외부 인터럽트입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "트랩",
+      "Trap",
+      "내부인터럽트"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-interrupt"
+  },
+  {
+    "id": "EXP_OS_046",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "리눅스/유닉스에서 실행 중인 프로세스의 백그라운드 작업을 포그라운드로 가져오거나 백그라운드로 전환할 때 사용하는 약어 명령어는 무엇인가?",
+    "answer": "fg",
+    "explanation": "fg(foreground)는 백그라운드 작업을 전면으로 가져오며, bg는 일시 정지된 작업을 백그라운드에서 재개합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "fg",
+      "포그라운드",
+      "작업제어"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-unix"
+  },
+  {
+    "id": "EXP_OS_047",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "리눅스/유닉스에서 파일 생성 시 기본으로 부여되는 접근 권한에서 제외할 권한 비트를 마스킹(설정)하는 명령어는 무엇인가?",
+    "answer": "umask",
+    "explanation": "umask는 기본 파일 생성 권한(666)이나 디렉터리 권한(777)에서 마스크 값을 차감하여 초기 권한을 결정합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "umask",
+      "권한마스크",
+      "기본권한"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-unix"
+  },
+  {
+    "id": "EXP_OS_048",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "리눅스/유닉스에서 빈 파일을 생성하거나 기존 파일의 최종 수정 시간을 현재 시간으로 갱신할 때 사용하는 명령어는 무엇인가?",
+    "answer": "touch",
+    "explanation": "touch 명령어는 크기가 0인 빈 파일을 만들거나 타임스탬프를 갱신합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "touch",
+      "파일생성",
+      "타임스탬프"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-unix"
+  },
+  {
+    "id": "EXP_OS_049",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "리눅스/유닉스 파일 시스템의 최상위 루트 디렉터리를 나타내는 기호는 무엇인가?",
+    "answer": "/",
+    "explanation": "/(슬래시)는 유닉스 계열 파일 시스템의 최상위 루트 디렉터리를 의미합니다. 윈도우의 C:\\ 와 대응됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "/",
+      "루트디렉터리",
+      "파일시스템"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-unix"
+  },
+  {
+    "id": "EXP_OS_050",
+    "subject": "프로그래밍언어활용",
+    "category": "운영체제",
+    "type": "SHORT_ANSWER",
+    "question": "리눅스에서 명령어의 표준 출력을 다른 명령어의 표준 입력으로 직접 연결해 주는 파이프라인 기호는 무엇인가?",
+    "answer": "|",
+    "explanation": "|(파이프)는 한 명령어의 출력 결과를 다음 명령어의 입력으로 파이프라이닝할 때 사용합니다 (예: ps -ef | grep java).",
+    "difficulty": "EASY",
+    "keywords": [
+      "|",
+      "파이프",
+      "리눅스기호"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-prog-os-unix"
+  },
+  {
+    "id": "EXP_SE1_001",
+    "subject": "소프트웨어설계",
+    "category": "요구사항",
+    "type": "SHORT_ANSWER",
+    "question": "요구사항 검증 기법 중 작성자가 요구사항 명세서를 설명하고 동료들이 결함을 찾아내는 비공식적이고 가장 친숙한 검토 회의 기법은 무엇인가?",
+    "answer": "워크스루",
+    "explanation": "워크스루(Walkthrough)는 개발자 주도의 비공식적 결함 검출 회의입니다. 정해진 절차와 역할을 맡아 체크리스트로 공식 검토하는 것은 인스펙션(Inspection)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "워크스루",
+      "Walkthrough",
+      "요구사항검증"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-requirements"
+  },
+  {
+    "id": "EXP_SE1_002",
+    "subject": "소프트웨어설계",
+    "category": "요구사항",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 개발 표준에 맞춰 작성된 명세서의 결함을 체크리스트를 기반으로 정형화된 공식 절차에 따라 저작자를 제외한 전문가들이 팀을 이뤄 검토하는 기법은 무엇인가?",
+    "answer": "인스펙션",
+    "explanation": "인스펙션(Inspection, 파간 인스펙션)은 주재자(Moderator), 낭독자, 기록자 등의 역할을 나누어 결함을 공식적으로 기록/측정하는 최고 수준의 정형 검토 기법입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "인스펙션",
+      "Inspection",
+      "공식검토"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-requirements"
+  },
+  {
+    "id": "EXP_SE1_003",
+    "subject": "소프트웨어설계",
+    "category": "요구사항",
+    "type": "SHORT_ANSWER",
+    "question": "요구사항 검토 방법 중 2~3명의 동료 개발자가 명세서 작성자와 함께 편안한 분위기에서 명세서를 읽으며 오류를 찾는 검토 기법은 무엇인가?",
+    "answer": "동료 검토",
+    "explanation": "동료 검토(Peer Review)는 작성자가 동료들에게 작업물을 설명하고 피드백을 받는 비공식 검토 방식입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "동료 검토",
+      "Peer Review",
+      "요구사항검토"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-requirements"
+  },
+  {
+    "id": "EXP_SE1_004",
+    "subject": "소프트웨어설계",
+    "category": "디자인 패턴",
+    "type": "SHORT_ANSWER",
+    "question": "GoF 디자인 패턴 중 문법 규칙을 클래스로 표현하여 특정 언어나 표기법으로 작성된 문장을 해석하고 평가하는 행위 패턴은 무엇인가?",
+    "answer": "인터프리터",
+    "explanation": "인터프리터(Interpreter, 해석자) 패턴은 SQL 파서나 정규식 파서처럼 언어의 문법 정의를 클래스로 캡슐화하여 문장을 구문 분석할 때 쓰입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "인터프리터",
+      "Interpreter",
+      "GoF행위패턴"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-design-patterns"
+  },
+  {
+    "id": "EXP_SE1_005",
+    "subject": "소프트웨어설계",
+    "category": "디자인 패턴",
+    "type": "SHORT_ANSWER",
+    "question": "GoF 디자인 패턴 중 요청을 처리할 수 있는 객체들을 체인(사슬) 형태로 연결해두고 요청을 처리할 때까지 순차적으로 넘기는 행위 패턴은 무엇인가?",
+    "answer": "책임 연쇄",
+    "explanation": "책임 연쇄(Chain of Responsibility) 패턴은 송신자와 수신자의 결합도를 낮추고 다수의 처리 객체가 요청을 다음 객체로 전달할 수 있게 합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "책임 연쇄",
+      "Chain of Responsibility",
+      "사슬패턴"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-design-patterns"
+  },
+  {
+    "id": "EXP_SE1_006",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 아키텍처",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 아키텍처 4+1 뷰 중 시스템의 비기능적 요구사항인 동시성, 병렬 처리, 스레드, 성능, 동기화 관점을 표현하는 뷰는 무엇인가?",
+    "answer": "프로세스 뷰",
+    "explanation": "프로세스 뷰(Process View)는 런타임 시점의 프로세스 흐름, 스레드 제어, 시스템 통합 성능을 다룹니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "프로세스 뷰",
+      "Process View",
+      "동시성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-architecture"
+  },
+  {
+    "id": "EXP_SE1_007",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 아키텍처",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 아키텍처 4+1 뷰 중 소스코드의 정적 조직 구조, 컴포넌트, 모듈, 서브시스템의 물리적 구성과 패키징 관점을 다루는 뷰는 무엇인가?",
+    "answer": "구현 뷰",
+    "explanation": "구현 뷰(Implementation View, 개발 뷰)는 개발자 관점에서 소프트웨어 모듈들의 물리적 구조와 형상을 표현합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "구현 뷰",
+      "Implementation View",
+      "개발뷰"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-architecture"
+  },
+  {
+    "id": "EXP_SE1_008",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 아키텍처",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 아키텍처 4+1 뷰 중 소프트웨어 컴포넌트가 실제 서버 노드, 하드웨어 장비, 물리적 네트워크에 어떻게 배치되는지 표현하는 뷰는 무엇인가?",
+    "answer": "배포 뷰",
+    "explanation": "배포 뷰(Deployment View)는 인프라 및 시스템 엔지니어 관점에서 물리적 노드와 네트워크 구성을 표현합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "배포 뷰",
+      "Deployment View",
+      "하드웨어매핑"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-architecture"
+  },
+  {
+    "id": "EXP_SE1_009",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 아키텍처",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 아키텍처 4+1 뷰에서 나머지 4개의 뷰(논리, 프로세스, 구현, 배포)를 검증하고 통합하는 기준이 되는 중심 뷰는 무엇인가?",
+    "answer": "유스케이스 뷰",
+    "explanation": "유스케이스 뷰(Use Case View, 시나리오 뷰)는 최종 사용자의 관점에서 시스템의 핵심 요구 기능을 시나리오로 표현하며 나머지 4개 뷰의 중심 축(1)이 됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "유스케이스 뷰",
+      "Use Case View",
+      "4+1뷰"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-architecture"
+  },
+  {
+    "id": "EXP_SE1_010",
+    "subject": "소프트웨어설계",
+    "category": "UI 설계",
+    "type": "SHORT_ANSWER",
+    "question": "UI 설계 4대 원칙 중 사용자가 UI의 기능과 조작법을 초보자라도 별도의 학습 부담 없이 쉽고 빠르게 익힐 수 있어야 한다는 원칙은 무엇인가?",
+    "answer": "학습성",
+    "explanation": "학습성(Learnability)은 누구나 쉽게 시스템 사용법을 배울 수 있어야 한다는 원칙입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "학습성",
+      "Learnability",
+      "UI원칙"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-ui"
+  },
+  {
+    "id": "EXP_SE1_011",
+    "subject": "소프트웨어설계",
+    "category": "UI 설계",
+    "type": "SHORT_ANSWER",
+    "question": "UI 설계 4대 원칙 중 사용자의 다양한 요구사항을 최대한 수용하고 인터랙션 과정의 실수를 쉽게 수정할 수 있어야 한다는 원칙은 무엇인가?",
+    "answer": "유연성",
+    "explanation": "유연성(Flexibility)은 사용자의 인터랙션 스타일을 유연하게 포용하고 오류 발생 시 손쉽게 되돌릴 수 있어야 한다는 원칙입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "유연성",
+      "Flexibility",
+      "UI원칙"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-ui"
+  },
+  {
+    "id": "EXP_SE1_012",
+    "subject": "소프트웨어설계",
+    "category": "UML",
+    "type": "SHORT_ANSWER",
+    "question": "UML 유스케이스 다이어그램에서 한 유스케이스가 정상 동작하기 위해 다른 유스케이스를 조건 없이 반드시 실행해야 하는 관계를 나타내는 스테레오타입은 무엇인가?",
+    "answer": "<<include>>",
+    "explanation": "포함 관계(<<include>>)는 필수적인 공통 기능을 재사용할 때 쓰입니다. 특정 조건 만족 시에만 선택적으로 확장되는 것은 <<extend>> 입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "<<include>>",
+      "포함관계",
+      "스테레오타입"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-uml"
+  },
+  {
+    "id": "EXP_SE1_013",
+    "subject": "소프트웨어설계",
+    "category": "UML",
+    "type": "SHORT_ANSWER",
+    "question": "UML 유스케이스 다이어그램에서 특정 예외 상황이나 확장 조건을 만족할 때만 선택적으로 기본 유스케이스에 기능을 덧붙이는 관계를 나타내는 스테레오타입은 무엇인가?",
+    "answer": "<<extend>>",
+    "explanation": "확장 관계(<<extend>>)는 부가적이고 선택적인 기능을 분리할 때 사용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "<<extend>>",
+      "확장관계",
+      "스테레오타입"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-uml"
+  },
+  {
+    "id": "EXP_SE1_014",
+    "subject": "소프트웨어설계",
+    "category": "UML",
+    "type": "SHORT_ANSWER",
+    "question": "UML 관계 중 하위 요소가 상위 일반화된 요소의 속성과 연산을 물려받는 상속 관계를 나타내는 관계 유형의 이름은 무엇인가?",
+    "answer": "일반화 관계",
+    "explanation": "일반화 관계(Generalization)는 객체지향의 상속(is-a) 관계를 뜻하며 속이 빈 삼각형 실선 화살표로 표현합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "일반화 관계",
+      "Generalization",
+      "상속관계"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-uml"
+  },
+  {
+    "id": "EXP_SE1_015",
+    "subject": "소프트웨어설계",
+    "category": "UML",
+    "type": "SHORT_ANSWER",
+    "question": "UML 관계 중 한 클래스가 다른 클래스를 메서드의 매개변수나 로컬 변수로 잠시 참조하여 짧은 기간만 영향을 주고받는 관계를 나타내는 유형은 무엇인가?",
+    "answer": "의존 관계",
+    "explanation": "의존 관계(Dependency)는 한 클래스의 변화가 일시적으로 다른 클래스에 영향을 미치는 관계이며 점선 화살표로 표시합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "의존 관계",
+      "Dependency",
+      "점선화살표"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-uml"
+  },
+  {
+    "id": "EXP_SE1_016",
+    "subject": "소프트웨어설계",
+    "category": "UML",
+    "type": "SHORT_ANSWER",
+    "question": "UML 클래스 다이어그램에서 인터페이스에 정의된 추상 메서드를 구체 클래스가 실제로 구현하는 관계를 나타내는 관계 유형의 이름은 무엇인가?",
+    "answer": "실체화 관계",
+    "explanation": "실체화 관계(Realization)는 인터페이스 구현을 나타내며 속이 빈 삼각형 점선 화살표로 표기합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "실체화 관계",
+      "Realization",
+      "인터페이스구현"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-uml"
+  },
+  {
+    "id": "EXP_SE1_017",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 재공학",
+    "type": "SHORT_ANSWER",
+    "question": "기존에 작성된 레거시 시스템의 소스코드나 실행 바이너리를 역으로 분석하여 설계 문서, 사양서, 데이터 모델 등을 복원 추출해내는 소프트웨어 재공학 활동은 무엇인가?",
+    "answer": "역공학",
+    "explanation": "역공학(Reverse Engineering)은 완성된 소프트웨어를 거꾸로 추적하여 상위의 설계서와 요구사항을 도출하는 기법입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "역공학",
+      "Reverse Engineering",
+      "소프트웨어재공학"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-reengineering"
+  },
+  {
+    "id": "EXP_SE1_018",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 재공학",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어의 외적인 동작과 기능은 그대로 유지하면서 내부 구조(소스코드)를 개선하여 가독성과 유지보수성을 향상시키는 재공학 활동은 무엇인가?",
+    "answer": "리팩토링",
+    "explanation": "리팩토링(Refactoring) 또는 코드 재구성은 결과 동작을 바꾸지 않고 코드 악취(Code Smell)를 제거하는 내부 구조 개선 활동입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "리팩토링",
+      "Refactoring",
+      "코드개선"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-reengineering"
+  },
+  {
+    "id": "EXP_SE1_019",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 재공학",
+    "type": "SHORT_ANSWER",
+    "question": "기존 소프트웨어 시스템을 완전히 새로운 운영체제, 하드웨어 플랫폼, 데이터베이스 환경으로 옮겨 설치하고 실행할 수 있도록 변환하는 재공학 활동은 무엇인가?",
+    "answer": "이관",
+    "explanation": "이관(Migration)은 소프트웨어의 본래 가치를 유지하면서 새 플랫폼 환경으로 옮기는 활동입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "이관",
+      "Migration",
+      "플랫폼이전"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-reengineering"
+  },
+  {
+    "id": "EXP_SE1_020",
+    "subject": "소프트웨어설계",
+    "category": "럼바우 분석",
+    "type": "SHORT_ANSWER",
+    "question": "럼바우(Rumbaugh) 객체지향 분석 기법의 3대 모델링 중 자료 흐름도(DFD)를 주 도구로 사용하여 입력에 따른 데이터 처리와 계산 과정을 표현하는 모델링은 무엇인가?",
+    "answer": "기능 모델링",
+    "explanation": "기능 모델링(Functional Modeling)은 DFD를 사용합니다. 상태 다이어그램을 쓰는 것은 동적 모델링, ERD/객체도를 쓰는 것은 객체 모델링입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "기능 모델링",
+      "DFD",
+      "자료흐름도"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-rumbaugh"
+  },
+  {
+    "id": "EXP_SE1_021",
+    "subject": "소프트웨어설계",
+    "category": "애자일",
+    "type": "SHORT_ANSWER",
+    "question": "스크럼(Scrum)에서 스프린트 기간 동안 매일 서서 짧게(15분 내외) 어제 한 일, 오늘 할 일, 문제점을 공유하는 일일 회의의 명칭은 무엇인가?",
+    "answer": "데일리 스크럼",
+    "explanation": "데일리 스크럼(Daily Scrum, 일일 스탠드업 미팅)은 팀원 간의 진행 상황을 빠르게 동기화하고 장애물을 조기 식별합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "데일리 스크럼",
+      "Daily Scrum",
+      "스탠드업미팅"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-agile"
+  },
+  {
+    "id": "EXP_SE1_022",
+    "subject": "소프트웨어설계",
+    "category": "애자일",
+    "type": "SHORT_ANSWER",
+    "question": "애자일 프로젝트에서 시간의 흐름에 따라 남아있는 작업량(남은 스토리 포인트나 시간)이 줄어드는 추세를 시각적으로 추적하는 차트의 명칭은 무엇인가?",
+    "answer": "번다운 차트",
+    "explanation": "번다운 차트(Burn-down Chart)는 계획된 작업 대비 실제 소진 속도를 비교하여 스프린트 완료 가능성을 예측합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "번다운 차트",
+      "Burn-down Chart",
+      "애자일차트"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-agile"
+  },
+  {
+    "id": "EXP_SE1_023",
+    "subject": "소프트웨어설계",
+    "category": "애자일",
+    "type": "SHORT_ANSWER",
+    "question": "스크럼에서 하나의 스프린트가 완료되었을 때 팀이 모여 프로세스상의 좋았던 점과 개선할 점을 솔직하게 되돌아보고 다음 스프린트에 반영하는 회의는 무엇인가?",
+    "answer": "스프린트 회고",
+    "explanation": "스프린트 회고(Sprint Retrospective)는 팀의 지속적인 성장과 프로세스 개선을 위한 정기 피드백 미팅입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "스프린트 회고",
+      "Retrospective",
+      "회고회의"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-agile"
+  },
+  {
+    "id": "EXP_SE1_024",
+    "subject": "소프트웨어설계",
+    "category": "UI 설계",
+    "type": "SHORT_ANSWER",
+    "question": "UI 설계 도구 중 기획 초기 단계에 레이아웃, 버튼 위치 등 화면의 골격을 흑백 선과 상자로 단순하게 스케치하는 정적 산출물은 무엇인가?",
+    "answer": "와이어프레임",
+    "explanation": "와이어프레임(Wireframe)은 UI의 뼈대 구조를 잡는 초기 설계도입니다. 색상과 실제 디자인이 들어간 완성형 정적 화면은 목업(Mockup)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "와이어프레임",
+      "Wireframe",
+      "UI골격"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-ui"
+  },
+  {
+    "id": "EXP_SE1_025",
+    "subject": "소프트웨어설계",
+    "category": "UI 설계",
+    "type": "SHORT_ANSWER",
+    "question": "와이어프레임에 실제 색상, 폰트, 그래픽 비주얼 디자인을 적용하여 최종 화면과 거의 유사하지만 클릭 인터랙션은 없는 정적 모형은 무엇인가?",
+    "answer": "목업",
+    "explanation": "목업(Mockup)은 비주얼 디자인이 완성된 정적 화면입니다. 실제 클릭하고 동작할 수 있게 만든 동적 모형은 프로토타입입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "목업",
+      "Mockup",
+      "UI설계"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-ui"
+  },
+  {
+    "id": "EXP_SE1_026",
+    "subject": "소프트웨어설계",
+    "category": "요구사항",
+    "type": "SHORT_ANSWER",
+    "question": "요구사항 개발 프로세스 4단계는 도출(Elicitation) → (   ) → 명세(Specification) → 확인(Validation) 순서이다. 괄호에 들어갈 단계는 무엇인가?",
+    "answer": "분석",
+    "explanation": "요구사항 개발 4단계는 \"도출 → 분석(Analysis) → 명세 → 확인\"입니다. 분석 단계에서는 타당성 검토와 모델링이 이루어집니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "분석",
+      "요구사항분석",
+      "요구사항개발프로세스"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-requirements"
+  },
+  {
+    "id": "EXP_SE1_027",
+    "subject": "소프트웨어설계",
+    "category": "요구사항",
+    "type": "SHORT_ANSWER",
+    "question": "요구사항의 종류 중 시스템의 응답 속도, 처리량, 보안성, 가용성, 신뢰성 등 품질적 속성이나 제약 조건을 기술하는 요구사항은 무엇인가?",
+    "answer": "비기능적 요구사항",
+    "explanation": "비기능적 요구사항(Non-functional Requirements)은 시스템이 제공해야 할 성능, 보안, 제약조건 등을 정의합니다. 실제 제공할 기능을 명시하는 것은 기능적 요구사항입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "비기능적 요구사항",
+      "Non-functional",
+      "품질속성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-requirements"
+  },
+  {
+    "id": "EXP_SE1_028",
+    "subject": "소프트웨어설계",
+    "category": "객체지향 설계",
+    "type": "SHORT_ANSWER",
+    "question": "SOLID 원칙 중 객체는 자신이 사용하지 않는 메서드에 의존하지 않아야 하므로 거대한 인터페이스보다 명확한 다수의 작은 인터페이스로 분리하라는 원칙은 무엇인가?",
+    "answer": "인터페이스 분리 원칙",
+    "explanation": "인터페이스 분리 원칙(ISP, Interface Segregation Principle)은 클라이언트에 특화된 세분화된 인터페이스를 지향합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "인터페이스 분리 원칙",
+      "ISP",
+      "SOLID"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-solid"
+  },
+  {
+    "id": "EXP_SE1_029",
+    "subject": "소프트웨어설계",
+    "category": "객체지향 설계",
+    "type": "SHORT_ANSWER",
+    "question": "SOLID 원칙 중 상위 모듈은 하위 모듈의 구체 클래스에 직접 의존하면 안 되며, 양쪽 모두 추상화(인터페이스)에 의존해야 한다는 원칙은 무엇인가?",
+    "answer": "의존 역전 원칙",
+    "explanation": "의존 역전 원칙(DIP, Dependency Inversion Principle)은 변하기 쉬운 구체 클래스 대신 변하기 어려운 추상 클래스나 인터페이스에 의존하게 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "의존 역전 원칙",
+      "DIP",
+      "추상화의존"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-solid"
+  },
+  {
+    "id": "EXP_SE1_030",
+    "subject": "소프트웨어설계",
+    "category": "객체지향 설계",
+    "type": "SHORT_ANSWER",
+    "question": "SOLID 원칙 중 하위 클래스는 상위 클래스의 인스턴스를 대신하여 프로그램의 정확성을 해치지 않고 어디서든 교체될 수 있어야 한다는 원칙은 무엇인가?",
+    "answer": "리스코프 치환 원칙",
+    "explanation": "리스코프 치환 원칙(LSP, Liskov Substitution Principle)은 올바른 상속 구조를 설계하여 다형성을 보장하는 규칙입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "리스코프 치환 원칙",
+      "LSP",
+      "하위클래스대체"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-solid"
+  },
+  {
+    "id": "EXP_SE1_031",
+    "subject": "소프트웨어설계",
+    "category": "객체지향 설계",
+    "type": "SHORT_ANSWER",
+    "question": "SOLID 원칙 중 소프트웨어 개체(클래스, 모듈 등)는 기능 확장에 대해서는 열려 있어야(Open) 하고, 기존 코드 수정에 대해서는 닫혀 있어야(Closed) 한다는 원칙은 무엇인가?",
+    "answer": "개방 폐쇄 원칙",
+    "explanation": "개방 폐쇄 원칙(OCP, Open-Closed Principle)은 기존 코드를 손대지 않고 새로운 기능을 추가할 수 있도록 인터페이스를 활용하는 원칙입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "개방 폐쇄 원칙",
+      "OCP",
+      "기능확장"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-solid"
+  },
+  {
+    "id": "EXP_SE1_032",
+    "subject": "소프트웨어설계",
+    "category": "객체지향 설계",
+    "type": "SHORT_ANSWER",
+    "question": "SOLID 원칙 중 하나의 클래스는 단 하나의 책임만을 가져야 하며, 클래스가 변경되는 이유는 단 하나뿐이어야 한다는 원칙은 무엇인가?",
+    "answer": "단일 책임 원칙",
+    "explanation": "단일 책임 원칙(SRP, Single Responsibility Principle)은 높은 응집도와 낮은 결합도를 유지하기 위한 객체지향의 기본 설계 원칙입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "단일 책임 원칙",
+      "SRP",
+      "단일책임"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-solid"
+  },
+  {
+    "id": "EXP_SE1_033",
+    "subject": "소프트웨어설계",
+    "category": "모듈화",
+    "type": "SHORT_ANSWER",
+    "question": "모듈 내부의 모든 기능 요소들이 하나의 단일한 목적이나 기능을 수행하기 위해 밀접하게 뭉쳐있는 가장 이상적이고 응집도가 높은 단계는 무엇인가?",
+    "answer": "기능적 응집도",
+    "explanation": "기능적 응집도(Functional Cohesion)는 모듈의 모든 구성요소가 오직 하나의 고유 기능만을 수행하는 가장 이상적인 응집도입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "기능적 응집도",
+      "Functional Cohesion",
+      "최고응집도"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-cohesion"
+  },
+  {
+    "id": "EXP_SE1_034",
+    "subject": "소프트웨어설계",
+    "category": "모듈화",
+    "type": "SHORT_ANSWER",
+    "question": "모듈 내부의 요소들이 서로 아무런 관련성 없이 우연히 한 모듈 안에 모여 있는 응집도가 가장 낮고 나쁜 단계는 무엇인가?",
+    "answer": "우연적 응집도",
+    "explanation": "우연적 응집도(Coincidental Cohesion)는 전혀 관련 없는 작업들이 단지 모듈 크기를 줄이기 위해 묶인 가장 나쁜 상태입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "우연적 응집도",
+      "Coincidental Cohesion",
+      "최저응집도"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-cohesion"
+  },
+  {
+    "id": "EXP_SE1_035",
+    "subject": "소프트웨어설계",
+    "category": "모듈화",
+    "type": "SHORT_ANSWER",
+    "question": "한 모듈의 출력 결과가 다음 모듈이나 요소의 입력 데이터로 순차적으로 전달되는 형태의 응집도 단계는 무엇인가?",
+    "answer": "순차적 응집도",
+    "explanation": "순차적 응집도(Sequential Cohesion)는 이전 활동의 출력이 다음 활동의 입력으로 파이프라인처럼 연결되는 응집도입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "순차적 응집도",
+      "Sequential Cohesion",
+      "파이프라인"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-cohesion"
+  },
+  {
+    "id": "EXP_SE1_036",
+    "subject": "소프트웨어설계",
+    "category": "모듈화",
+    "type": "SHORT_ANSWER",
+    "question": "동일한 입력 데이터를 사용하여 서로 다른 여러 기능을 수행하거나, 동일한 출력 데이터를 산출해내는 모듈의 응집도 단계는 무엇인가?",
+    "answer": "통신적 응집도",
+    "explanation": "통신적 응집도(Communicational Cohesion, 교환적 응집도)는 모듈 내 구성요소들이 동일한 입출력 데이터를 공유할 때 나타납니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "통신적 응집도",
+      "교환적 응집도",
+      "입출력공유"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-cohesion"
+  },
+  {
+    "id": "EXP_SE1_037",
+    "subject": "소프트웨어설계",
+    "category": "모듈화",
+    "type": "SHORT_ANSWER",
+    "question": "모듈 간에 주고받는 인터페이스가 단순한 파라미터(인자) 값으로만 구성되어 결합도가 가장 낮고 가장 좋은 단계는 무엇인가?",
+    "answer": "자료 결합도",
+    "explanation": "자료 결합도(Data Coupling)는 모듈 간 오직 필요한 단순 데이터만 값으로 전달하여 독립성이 가장 높습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "자료 결합도",
+      "Data Coupling",
+      "최저결합도"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-coupling"
+  },
+  {
+    "id": "EXP_SE1_038",
+    "subject": "소프트웨어설계",
+    "category": "모듈화",
+    "type": "SHORT_ANSWER",
+    "question": "한 모듈이 다른 모듈의 내부 코드, 지역 변수, 논리적 제어 흐름을 직접 참조하거나 수정하여 결합도가 가장 높고 가장 위험한 단계는 무엇인가?",
+    "answer": "내용 결합도",
+    "explanation": "내용 결합도(Content Coupling)는 모듈 내부를 직접 침범하는 최악의 결합도입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "내용 결합도",
+      "Content Coupling",
+      "최악결합도"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-coupling"
+  },
+  {
+    "id": "EXP_SE1_039",
+    "subject": "소프트웨어설계",
+    "category": "모듈화",
+    "type": "SHORT_ANSWER",
+    "question": "여러 모듈이 동일한 전역 변수나 글로벌 데이터 영역을 함께 공유하여 참조하고 갱신하는 모듈 간 결합도 단계는 무엇인가?",
+    "answer": "공통 결합도",
+    "explanation": "공통 결합도(Common Coupling)는 전역 변수 공유로 인해 한 모듈의 수정이 다른 모든 모듈에 파급될 위험이 큽니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "공통 결합도",
+      "Common Coupling",
+      "전역변수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-coupling"
+  },
+  {
+    "id": "EXP_SE1_040",
+    "subject": "소프트웨어설계",
+    "category": "모듈화",
+    "type": "SHORT_ANSWER",
+    "question": "두 모듈 간에 레코드나 구조체 같은 복합 자료구조 전체가 인자로 전달될 때, 호출받은 모듈이 그중 일부 필드만 사용하더라도 성립하는 결합도 단계는 무엇인가?",
+    "answer": "스탬프 결합도",
+    "explanation": "스탬프 결합도(Stamp Coupling)는 전체 데이터 구조를 통째로 전달할 때 발생합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "스탬프 결합도",
+      "Stamp Coupling",
+      "자료구조전달"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-coupling"
+  },
+  {
+    "id": "EXP_SE1_041",
+    "subject": "소프트웨어설계",
+    "category": "모듈화",
+    "type": "SHORT_ANSWER",
+    "question": "한 모듈이 다른 모듈에게 무엇을 어떻게 실행할지 결정하는 제어 신호(Control Flag, 제어 파라미터)를 넘겨 흐름을 제어하는 결합도 단계는 무엇인가?",
+    "answer": "제어 결합도",
+    "explanation": "제어 결합도(Control Coupling)는 상위 모듈이 하위 모듈의 세부 내부 로직을 지시할 때 발생합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "제어 결합도",
+      "Control Coupling",
+      "제어플래그"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-coupling"
+  },
+  {
+    "id": "EXP_SE1_042",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 아키텍처",
+    "type": "SHORT_ANSWER",
+    "question": "아키텍처 패턴 중 비동기 메시지 기반으로 복잡한 문제 해결을 위해 공유 메모리 공간에 전문 지식을 가진 에이전트들이 정보를 기록하고 소통하는 패턴은 무엇인가?",
+    "answer": "블랙보드 패턴",
+    "explanation": "블랙보드 패턴(Blackboard Pattern)은 음성 인식, 신호 처리 등 결정적 해결 알고리즘이 없는 영역에서 전문가 모듈들이 공유 칠판(블랙보드)을 통해 협력합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "블랙보드 패턴",
+      "Blackboard",
+      "공유메모리"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-architecture"
+  },
+  {
+    "id": "EXP_SE1_043",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 아키텍처",
+    "type": "SHORT_ANSWER",
+    "question": "분산 시스템에서 컴포넌트 간의 원격 서비스 요청과 통신을 중개(브로커)하여 분산 객체 환경의 투명성을 제공하는 아키텍처 패턴은 무엇인가?",
+    "answer": "브로커 패턴",
+    "explanation": "브로커 패턴(Broker Pattern)은 클라이언트와 서버 사이에서 원격 통신 요청을 전달하고 바인딩을 조정하는 중개자 패턴(대표 예: CORBA)입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "브로커 패턴",
+      "Broker Pattern",
+      "분산객체중개"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-architecture"
+  },
+  {
+    "id": "EXP_SE1_044",
+    "subject": "소프트웨어설계",
+    "category": "UML",
+    "type": "SHORT_ANSWER",
+    "question": "UML 다이어그램 중 시간 경과에 따른 객체 간의 메시지 송수신 순서를 생명선(Lifeline)과 활성 막대를 이용해 수직 시간축으로 표현하는 다이어그램은 무엇인가?",
+    "answer": "시퀀스 다이어그램",
+    "explanation": "시퀀스 다이어그램(Sequence Diagram)은 동적 상호작용을 시간 순서에 따라 시각화합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "시퀀스 다이어그램",
+      "Sequence Diagram",
+      "생명선"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-uml"
+  },
+  {
+    "id": "EXP_SE1_045",
+    "subject": "소프트웨어설계",
+    "category": "UML",
+    "type": "SHORT_ANSWER",
+    "question": "UML 다이어그램 중 하나의 객체가 특정 외부 이벤트나 자극을 받아 상태가 어떻게 바뀌는지 상태 전이와 진입/탈출 동작을 표현하는 다이어그램은 무엇인가?",
+    "answer": "상태 다이어그램",
+    "explanation": "상태 다이어그램(State Diagram)은 객체의 전체 생명주기 동안의 상태 변화를 모델링합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "상태 다이어그램",
+      "State Diagram",
+      "상태전이"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-uml"
+  },
+  {
+    "id": "EXP_SE1_046",
+    "subject": "소프트웨어설계",
+    "category": "UML",
+    "type": "SHORT_ANSWER",
+    "question": "UML 다이어그램 중 시스템이 수행하는 처리 과정의 로직 흐름이나 비즈니스 프로세스 워크플로우를 처리 상자와 분기 기호로 도식화한 다이어그램은 무엇인가?",
+    "answer": "활동 다이어그램",
+    "explanation": "활동 다이어그램(Activity Diagram)은 순서도(Flowchart)를 객체지향적으로 확장한 동적 모델링 도구입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "활동 다이어그램",
+      "Activity Diagram",
+      "워크플로우"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-uml"
+  },
+  {
+    "id": "EXP_SE1_047",
+    "subject": "소프트웨어설계",
+    "category": "UML",
+    "type": "SHORT_ANSWER",
+    "question": "UML 클래스 관계 중 전체(Whole)와 부분(Part)의 관계이지만, 전체 객체가 소멸하더라도 부분 객체는 독립적으로 생존할 수 있는 약한 결합의 집약 관계 기호는 무엇인가?",
+    "answer": "속이 빈 다이아몬드",
+    "explanation": "집약 관계(Aggregation)는 속이 빈 마름모(다이아몬드)로 표기하며 독립 생존이 가능합니다. 전체와 수명을 함께하는 합성 관계는 속이 찬 마름모입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "속이 빈 다이아몬드",
+      "집약관계",
+      "마름모기호"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-uml"
+  },
+  {
+    "id": "EXP_SE1_048",
+    "subject": "소프트웨어설계",
+    "category": "UML",
+    "type": "SHORT_ANSWER",
+    "question": "UML 클래스 관계 중 전체 객체가 소멸하면 부분 객체도 메모리에서 함께 소멸하는 강한 결합을 갖는 합성 관계 기호는 무엇인가?",
+    "answer": "속이 찬 다이아몬드",
+    "explanation": "합성 관계(Composition)는 강한 라이프사이클 종속성을 가지며 속이 찬 검은 마름모로 표현합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "속이 찬 다이아몬드",
+      "합성관계",
+      "검은마름모"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-uml"
+  },
+  {
+    "id": "EXP_SE1_049",
+    "subject": "소프트웨어설계",
+    "category": "객체지향 설계",
+    "type": "SHORT_ANSWER",
+    "question": "객체지향 기법에서 객체의 상세한 내부 데이터와 구현 로직을 외부로부터 숨기고, 오직 공개된 메서드 인터페이스를 통해서만 상호작용하도록 보호하는 특성은 무엇인가?",
+    "answer": "캡슐화",
+    "explanation": "캡슐화(Encapsulation)는 데이터 보호(정보 은닉)와 높은 응집도를 실현하는 핵심 특성입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "캡슐화",
+      "Encapsulation",
+      "정보은닉"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-oop"
+  },
+  {
+    "id": "EXP_SE1_050",
+    "subject": "소프트웨어설계",
+    "category": "객체지향 설계",
+    "type": "SHORT_ANSWER",
+    "question": "객체지향 기법에서 동일한 이름의 연산(메서드)이 서로 다른 클래스의 객체에서 각자의 방식에 맞게 서로 다르게 동작할 수 있는 능력을 무엇이라 하는가?",
+    "answer": "다형성",
+    "explanation": "다형성(Polymorphism)은 오버로딩과 오버라이딩을 통해 실현되며, 코드의 유연성과 재사용성을 극대화합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "다형성",
+      "Polymorphism",
+      "객체지향특성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-oop"
+  },
+  {
+    "id": "EXP_SE2_001",
+    "subject": "소프트웨어설계",
+    "category": "시스템 연계",
+    "type": "SHORT_ANSWER",
+    "question": "EAI(엔터프라이즈 애플리케이션 통합) 구축 유형 중 단일 접점인 중앙 허브를 통해 시스템들을 통합하여 유지보수는 용이하지만 허브 장애 시 전체가 마비될 수 있는 중앙 집중형 토폴로지는 무엇인가?",
+    "answer": "허브 앤 스포크",
+    "explanation": "허브 앤 스포크(Hub & Spoke)는 중앙 허브가 모든 통신을 중개하므로 확장성이 좋지만 중앙 허브가 단일 실패 지점(SPOF)이 될 수 있습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "허브 앤 스포크",
+      "Hub & Spoke",
+      "EAI"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-eai"
+  },
+  {
+    "id": "EXP_SE2_002",
+    "subject": "소프트웨어설계",
+    "category": "시스템 연계",
+    "type": "SHORT_ANSWER",
+    "question": "EAI 구축 유형 중 애플리케이션 사이에 미들웨어 통신 버스를 두고 데이터 교환을 수행하여 뛰어난 확장성과 대용량 처리가 가능한 토폴로지는 무엇인가?",
+    "answer": "메시지 버스",
+    "explanation": "메시지 버스(Message Bus)는 공통 버스 파이프라인을 통해 각 애플리케이션 어댑터가 통신하며 ESB(Enterprise Service Bus)의 기반이 됩니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "메시지 버스",
+      "Message Bus",
+      "EAI"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-eai"
+  },
+  {
+    "id": "EXP_SE2_003",
+    "subject": "소프트웨어설계",
+    "category": "시스템 연계",
+    "type": "SHORT_ANSWER",
+    "question": "웹 서비스(Web Services) 3대 표준 기술 중 웹 서비스의 위치, 제공하는 메서드, 매개변수 등을 XML 형식으로 기술한 서비스 기술 언어의 약칭은 무엇인가?",
+    "answer": "WSDL",
+    "explanation": "WSDL(Web Services Description Language)은 웹 서비스의 상세 사양을 XML로 명세합니다. 메시지 전송 규약은 SOAP, 등록/검색소는 UDDI입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "WSDL",
+      "Web Services Description Language",
+      "웹서비스"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-webservice"
+  },
+  {
+    "id": "EXP_SE2_004",
+    "subject": "소프트웨어설계",
+    "category": "시스템 연계",
+    "type": "SHORT_ANSWER",
+    "question": "웹 서비스 3대 표준 기술 중 HTTP, HTTPS 등의 전송 프로토콜을 통해 XML 기반의 메시지를 분산 환경에서 교환하기 위한 경량 통신 프로토콜의 약칭은 무엇인가?",
+    "answer": "SOAP",
+    "explanation": "SOAP(Simple Object Access Protocol)은 XML 기반 메시지 봉투(Envelope, Header, Body) 구조를 사용하여 원격 객체를 호출합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SOAP",
+      "Simple Object Access Protocol",
+      "웹서비스"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-webservice"
+  },
+  {
+    "id": "EXP_SE2_005",
+    "subject": "소프트웨어설계",
+    "category": "시스템 연계",
+    "type": "SHORT_ANSWER",
+    "question": "웹 서비스 3대 표준 기술 중 전 세계의 비즈니스와 제공되는 웹 서비스 목록을 공개 등록하고 검색할 수 있는 XML 기반의 비즈니스 레지스트리(저장소) 규격의 약칭은 무엇인가?",
+    "answer": "UDDI",
+    "explanation": "UDDI(Universal Description, Discovery and Integration)는 웹 서비스의 전화번호부 역할을 하는 표준 등록 저장소입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "UDDI",
+      "Universal Description Discovery and Integration",
+      "웹서비스"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-webservice"
+  },
+  {
+    "id": "EXP_SE2_006",
+    "subject": "소프트웨어설계",
+    "category": "시스템 연계",
+    "type": "SHORT_ANSWER",
+    "question": "REST 아키텍처 원칙 중 서버가 클라이언트의 이전 요청 상태(세션 등)를 보관하지 않고, 각 요청을 독립적으로 처리해야 한다는 원칙은 무엇인가?",
+    "answer": "무상태성",
+    "explanation": "무상태성(Statelessness)은 서버가 클라이언트 컨텍스트를 저장하지 않음으로써 서버의 수평 확장성(Scale-out)을 극대화합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "무상태성",
+      "Stateless",
+      "REST원칙"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-rest"
+  },
+  {
+    "id": "EXP_SE2_007",
+    "subject": "소프트웨어설계",
+    "category": "시스템 연계",
+    "type": "SHORT_ANSWER",
+    "question": "RESTful API에서 리소스의 고유 식별자로 사용하는 URI와 함께, 리소스의 조회(Read) 작업을 요청할 때 사용하는 HTTP 표준 메서드는 무엇인가?",
+    "answer": "GET",
+    "explanation": "GET은 리소스 조회 메서드로 멱등성(Idempotency)과 안전성을 가집니다. 생성을 요청할 때는 POST를 씁니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "GET",
+      "HTTP메서드",
+      "RESTful"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-rest"
+  },
+  {
+    "id": "EXP_SE2_008",
+    "subject": "소프트웨어설계",
+    "category": "시스템 연계",
+    "type": "SHORT_ANSWER",
+    "question": "RESTful API에서 기존 리소스의 전체 내용을 새로운 데이터로 교체(치환)하여 갱신할 때 사용하는 멱등성을 가진 HTTP 메서드는 무엇인가?",
+    "answer": "PUT",
+    "explanation": "PUT은 전체 리소스 교체 갱신 메서드이며 멱등성을 만족합니다. 리소스의 일부 속성만 부분 수정할 때는 PATCH를 사용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "PUT",
+      "HTTP메서드",
+      "리소스갱신"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-rest"
+  },
+  {
+    "id": "EXP_SE2_009",
+    "subject": "소프트웨어설계",
+    "category": "시스템 연계",
+    "type": "SHORT_ANSWER",
+    "question": "RESTful API에서 기존 리소스의 특정 필드나 일부 속성만을 선택적으로 수정할 때 사용하는 HTTP 메서드는 무엇인가?",
+    "answer": "PATCH",
+    "explanation": "PATCH는 리소스의 부분 변경(Partial Modification)을 수행하는 HTTP 메서드입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "PATCH",
+      "HTTP메서드",
+      "부분수정"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-rest"
+  },
+  {
+    "id": "EXP_SE2_010",
+    "subject": "소프트웨어설계",
+    "category": "시스템 연계",
+    "type": "SHORT_ANSWER",
+    "question": "속성과 값의 쌍(Key-Value)으로 데이터를 표현하며 XML보다 용량이 작고 웹과 모바일 환경에서 널리 쓰이는 경량 데이터 교환 포맷의 약칭은 무엇인가?",
+    "answer": "JSON",
+    "explanation": "JSON(JavaScript Object Notation)은 인간이 읽기 쉽고 파싱 속도가 빠른 표준 텍스트 데이터 교환 형식입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "JSON",
+      "JavaScript Object Notation",
+      "데이터교환"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-dataformat"
+  },
+  {
+    "id": "EXP_SE2_011",
+    "subject": "소프트웨어설계",
+    "category": "미들웨어",
+    "type": "SHORT_ANSWER",
+    "question": "미들웨어 종류 중 분산 환경에서 송수신자 간에 큐(Queue) 방식의 비동기 메시지 전달을 지원하는 메시지 지향 미들웨어의 약칭은 무엇인가?",
+    "answer": "MOM",
+    "explanation": "MOM(Message-Oriented Middleware)은 비동기 큐잉을 통해 분산 시스템 간의 결합도를 낮추고 신뢰성 있는 메시지 전달을 보장합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "MOM",
+      "Message-Oriented Middleware",
+      "비동기큐"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-middleware"
+  },
+  {
+    "id": "EXP_SE2_012",
+    "subject": "소프트웨어설계",
+    "category": "미들웨어",
+    "type": "SHORT_ANSWER",
+    "question": "미들웨어 종류 중 은행 결제나 항공 예약처럼 대규모 트랜잭션의 원자성과 무결성을 보장하고 부하 분산을 제어하는 트랜잭션 처리 모니터의 약칭은 무엇인가?",
+    "answer": "TP-Monitor",
+    "explanation": "TP-Monitor(Transaction Processing Monitor)는 대규모 분산 트랜잭션을 감시하고 ACID 속성을 엄격히 보장합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "TP-Monitor",
+      "트랜잭션모니터",
+      "미들웨어"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-middleware"
+  },
+  {
+    "id": "EXP_SE2_013",
+    "subject": "소프트웨어설계",
+    "category": "미들웨어",
+    "type": "SHORT_ANSWER",
+    "question": "미들웨어 종류 중 원격 네트워크 상의 컴퓨터에 위치한 프로시저나 함수를 로컬 컴퓨터의 함수처럼 원격 호출할 수 있게 해주는 기술의 약칭은 무엇인가?",
+    "answer": "RPC",
+    "explanation": "RPC(Remote Procedure Call, 원격 프로시저 호출)는 네트워크 세부 프로토콜을 숨기고 원격 함수를 손쉽게 호출하게 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "RPC",
+      "Remote Procedure Call",
+      "원격함수호출"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-middleware"
+  },
+  {
+    "id": "EXP_SE2_014",
+    "subject": "소프트웨어설계",
+    "category": "미들웨어",
+    "type": "SHORT_ANSWER",
+    "question": "클라이언트의 요청을 받아 동적인 비즈니스 로직을 처리하고 데이터베이스와의 연동을 전담하는 서버 측 소프트웨어 인프라(예: 톰캣, 웹로직 등)의 약칭은 무엇인가?",
+    "answer": "WAS",
+    "explanation": "WAS(Web Application Server)는 정적 페이지만을 제공하는 일반 웹 서버(Apache 등)와 달리 비즈니스 로직과 서블릿 컨테이너를 구동합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "WAS",
+      "Web Application Server",
+      "웹애플리케이션서버"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-middleware"
+  },
+  {
+    "id": "EXP_SE2_015",
+    "subject": "소프트웨어설계",
+    "category": "비용 산정",
+    "type": "SHORT_ANSWER",
+    "question": "보헴(Boehm)이 제안한 COCOMO 모형의 소프트웨어 개발 유형 중 기관 내부 업무용 소프트웨어로 규모가 5만 라인(50 KDSI) 이하인 소규모 프로젝트 유형은 무엇인가?",
+    "answer": "조직형",
+    "explanation": "조직형(Organic Mode)은 경험 많은 팀이 친숙한 환경에서 개발하는 5만 라인 이하의 소규모 개발 유형입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "조직형",
+      "Organic Mode",
+      "COCOMO"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-cost"
+  },
+  {
+    "id": "EXP_SE2_016",
+    "subject": "소프트웨어설계",
+    "category": "비용 산정",
+    "type": "SHORT_ANSWER",
+    "question": "COCOMO 모형의 소프트웨어 개발 유형 중 트랜잭션 처리 시스템이나 OS처럼 30만 라인(300 KDSI) 이하의 중간 규모 개발 유형은 무엇인가?",
+    "answer": "반분리형",
+    "explanation": "반분리형(Semi-detached Mode)은 중간 수준의 규모와 복잡도를 가진 프로젝트 유형입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "반분리형",
+      "Semi-detached Mode",
+      "COCOMO"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-cost"
+  },
+  {
+    "id": "EXP_SE2_017",
+    "subject": "소프트웨어설계",
+    "category": "비용 산정",
+    "type": "SHORT_ANSWER",
+    "question": "COCOMO 모형의 소프트웨어 개발 유형 중 항공기 제어, 원자력 시스템처럼 엄격한 하드웨어 제약 조건과 30만 라인 이상의 대규모 시스템 개발 유형은 무엇인가?",
+    "answer": "내장형",
+    "explanation": "내장형(Embedded Mode)은 극도의 신뢰성과 하드웨어 종속성을 요구하는 초대형 임베디드 프로젝트 유형입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "내장형",
+      "Embedded Mode",
+      "COCOMO"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-cost"
+  },
+  {
+    "id": "EXP_SE2_018",
+    "subject": "소프트웨어설계",
+    "category": "비용 산정",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 생명주기 전 과정에서 소요되는 인력의 노력 분포를 레일리-노든(Rayleigh-Norden) 곡선에 기초하여 예측하는 비용 산정 모형은 무엇인가?",
+    "answer": "Putnam 모형",
+    "explanation": "푸트남(Putnam) 모형은 시간에 따른 인력 소요 곡선(Rayleigh-Norden)을 기초로 하며 대표 자동화 추정 도구로 SLIM이 있습니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "Putnam 모형",
+      "푸트남모형",
+      "레일리노든곡선"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-cost"
+  },
+  {
+    "id": "EXP_SE2_019",
+    "subject": "소프트웨어설계",
+    "category": "비용 산정",
+    "type": "SHORT_ANSWER",
+    "question": "알브레히트(Albrecht)가 제안한 기능점수(FP) 기법에서 시스템 내부에서 유지 관리되는 사용자 식별 가능한 논리적 데이터 그룹을 가리키는 측정 요소의 약칭은 무엇인가?",
+    "answer": "ILF",
+    "explanation": "ILF(Internal Logical File, 내부 논리 파일)는 애플리케이션 경계 내부에서 관리되는 데이터 그룹입니다. 타 시스템에서 참조만 하는 것은 EIF(External Interface File)입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "ILF",
+      "Internal Logical File",
+      "내부논리파일"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-cost"
+  },
+  {
+    "id": "EXP_SE2_020",
+    "subject": "소프트웨어설계",
+    "category": "비용 산정",
+    "type": "SHORT_ANSWER",
+    "question": "기능점수(FP) 기법에서 타 시스템에서 관리되지만 본 시스템이 참조(읽기) 목적으로 사용하는 외부 논리 파일 그룹의 약칭은 무엇인가?",
+    "answer": "EIF",
+    "explanation": "EIF(External Interface File, 외부 연계 파일)는 타 애플리케이션의 데이터를 인터페이스로 참조할 때 측정합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "EIF",
+      "External Interface File",
+      "외부연계파일"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-cost"
+  },
+  {
+    "id": "EXP_SE2_021",
+    "subject": "소프트웨어설계",
+    "category": "비용 산정",
+    "type": "SHORT_ANSWER",
+    "question": "기능점수(FP) 트랜잭션 기능 중 외부에서 들어온 데이터나 제어 정보를 처리하여 내부 논리 파일(ILF)을 등록, 수정, 삭제하는 기능 요소의 약칭은 무엇인가?",
+    "answer": "EI",
+    "explanation": "EI(External Input, 외부 입력)는 사용자나 타 시스템이 데이터를 입력하여 시스템 내부 상태를 갱신하는 기능입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "EI",
+      "External Input",
+      "외부입력"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-cost"
+  },
+  {
+    "id": "EXP_SE2_022",
+    "subject": "소프트웨어설계",
+    "category": "비용 산정",
+    "type": "SHORT_ANSWER",
+    "question": "기능점수(FP) 트랜잭션 기능 중 단순히 데이터를 검색하여 화면에 표시하되 계산이나 수학적 공식 가공 없이 그대로 조회하는 기능의 약칭은 무엇인가?",
+    "answer": "EQ",
+    "explanation": "EQ(External InQuiry, 외부 조회)는 계산 로직 없이 데이터를 찾아 반환합니다. 계산 로직이나 통계 파생 데이터가 포함되면 EO(External Output)입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "EQ",
+      "External Inquiry",
+      "외부조회"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-cost"
+  },
+  {
+    "id": "EXP_SE2_023",
+    "subject": "소프트웨어설계",
+    "category": "비용 산정",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 개발 프로젝트에서 총 30,000 라인의 코드를 개발하려 할 때, 개발자 1명의 월간 생산성이 1,000 라인이라면 필요한 노력 인월(Man-Month) 수는 얼마인가?",
+    "answer": "30",
+    "explanation": "Man-Month = 총 라인수(30,000) / 1인당 월 생산성(1,000) = 30 인월(M/M)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "30",
+      "Man-Month",
+      "비용산정계산"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-cost"
+  },
+  {
+    "id": "EXP_SE2_024",
+    "subject": "소프트웨어설계",
+    "category": "비용 산정",
+    "type": "SHORT_ANSWER",
+    "question": "총 개발 노력이 50 Man-Month로 추정된 프로젝트에 5명의 개발자를 전담 투입한다면 프로젝트 소요 기간(개월)은 얼마인가?",
+    "answer": "10",
+    "explanation": "개발 기간 = 총 노력(50 M/M) / 투입 인원(5명) = 10개월입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "10",
+      "개발기간",
+      "Man-Month"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-cost"
+  },
+  {
+    "id": "EXP_SE2_025",
+    "subject": "소프트웨어설계",
+    "category": "일정 관리",
+    "type": "SHORT_ANSWER",
+    "question": "네트워크 기반 일정 관리 기법 중 프로젝트의 시작부터 종료까지의 모든 작업 경로 중 가장 긴 소요 시간이 걸리는 경로를 가리키는 용어는 무엇인가?",
+    "answer": "임계 경로",
+    "explanation": "임계 경로(Critical Path, 임계선)는 총 여유 시간(Float)이 0인 핵심 작업들의 경로로, 이 경로상의 작업이 하루라도 지연되면 전체 프로젝트 완료 일정이 지연됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "임계 경로",
+      "Critical Path",
+      "CPM"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-schedule"
+  },
+  {
+    "id": "EXP_SE2_026",
+    "subject": "소프트웨어설계",
+    "category": "일정 관리",
+    "type": "SHORT_ANSWER",
+    "question": "프로젝트 일정 계획 수립 도구 중 각 작업들의 시작일과 완료일을 수평 막대 그래프 형태로 표현하여 작업의 진행 상황을 한눈에 파악할 수 있는 차트는 무엇인가?",
+    "answer": "간트 차트",
+    "explanation": "간트 차트(Gantt Chart, 바 차트)는 시간 축에 따른 작업들의 일정과 진척도를 막대 형태로 시각화합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "간트 차트",
+      "Gantt Chart",
+      "일정관리차트"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-schedule"
+  },
+  {
+    "id": "EXP_SE2_027",
+    "subject": "소프트웨어설계",
+    "category": "일정 관리",
+    "type": "SHORT_ANSWER",
+    "question": "PERT 일정 계산에서 비결정적 작업 기간을 산정하기 위해 활용하는 3점 추정치는 낙관치(a), 최빈치(m), 그리고 어떤 예측치인가?",
+    "answer": "비관치",
+    "explanation": "PERT는 3점 추정치인 낙관치(a), 최빈치(m, 기대치), 비관치(b)를 이용해 기댓값 = (a + 4m + b) / 6 공식을 적용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "비관치",
+      "PERT",
+      "3점추정"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-schedule"
+  },
+  {
+    "id": "EXP_SE2_028",
+    "subject": "소프트웨어설계",
+    "category": "일정 관리",
+    "type": "SHORT_ANSWER",
+    "question": "프로젝트 일정 지연을 만회하기 위해 추가 인력을 집중 투입하거나 야근, 외주 비용을 투입하여 임계 경로상의 작업 기간을 단축하는 기법은 무엇인가?",
+    "answer": "크래싱",
+    "explanation": "크래싱(Crashing, 공정 압축법)은 추가 자원을 투입해 일정을 줄이는 기법으로 비용 증가 위험이 있습니다. 순차 작업을 병렬로 겹쳐 수행하는 것은 패스트 트래킹(Fast-Tracking)입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "크래싱",
+      "Crashing",
+      "일정단축기법"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-schedule"
+  },
+  {
+    "id": "EXP_SE2_029",
+    "subject": "소프트웨어설계",
+    "category": "일정 관리",
+    "type": "SHORT_ANSWER",
+    "question": "원래 순차적으로 진행되어야 할 후속 작업들을 앞당겨 선행 작업과 동시에 병렬로 진행시킴으로써 일정 기간을 단축하는 기법은 무엇인가?",
+    "answer": "패스트 트래킹",
+    "explanation": "패스트 트래킹(Fast Tracking, 공정 중첩법)은 비용은 추가되지 않지만 재작업(Rework) 위험이 커집니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "패스트 트래킹",
+      "Fast Tracking",
+      "공정중첩법"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-schedule"
+  },
+  {
+    "id": "EXP_SE2_030",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 공학",
+    "type": "SHORT_ANSWER",
+    "question": "지연되는 소프트웨어 개발 프로젝트에 새로운 인력을 뒤늦게 추가 투입하는 것은 의사소통 비용을 폭증시켜 프로젝트를 더 지연시킬 뿐이라는 법칙은 무엇인가?",
+    "answer": "브룩스의 법칙",
+    "explanation": "브룩스의 법칙(Brooks' Law)은 신규 인력 교육 및 커뮤니케이션 오버헤드로 인해 프로젝트가 더욱 지연된다는 경험적 법칙입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "브룩스의 법칙",
+      "Brooks Law",
+      "인력투입지연"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-laws"
+  },
+  {
+    "id": "EXP_SE2_031",
+    "subject": "소프트웨어설계",
+    "category": "요구사항",
+    "type": "SHORT_ANSWER",
+    "question": "요구사항 분석 도구인 자료 흐름도(DFD)에서 데이터의 처리 및 변환 과정을 나타내는 기호의 도형 모양은 무엇인가?",
+    "answer": "원",
+    "explanation": "DFD에서 프로세스(처리기)는 원(○), 자료 흐름은 화살표(→), 자료 저장소는 평행선(=), 단말(외부 엔티티)은 사각형(□)으로 표기합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "원",
+      "DFD",
+      "프로세스기호"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-requirements"
+  },
+  {
+    "id": "EXP_SE2_032",
+    "subject": "소프트웨어설계",
+    "category": "요구사항",
+    "type": "SHORT_ANSWER",
+    "question": "자료 흐름도(DFD)에서 데이터가 저장되어 있는 파일이나 데이터베이스 같은 자료 저장소를 나타내는 기호의 형태는 무엇인가?",
+    "answer": "평행선",
+    "explanation": "자료 저장소(Data Store)는 두 줄의 평행선(=)으로 표현합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "평행선",
+      "자료저장소",
+      "DFD기호"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-requirements"
+  },
+  {
+    "id": "EXP_SE2_033",
+    "subject": "소프트웨어설계",
+    "category": "요구사항",
+    "type": "SHORT_ANSWER",
+    "question": "자료 흐름도(DFD)에 등장하는 모든 데이터 항목, 데이터 흐름, 저장소의 정의를 체계적으로 정리하여 누구나 동일하게 이해하도록 만든 사전을 무엇이라 하는가?",
+    "answer": "자료 사전",
+    "explanation": "자료 사전(DD, Data Dictionary)은 메타데이터의 집합체로 정의 기호(=, +, {}, [], (), **)를 사용해 데이터의 의미와 구조를 명세합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "자료 사전",
+      "Data Dictionary",
+      "자료흐름도"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-requirements"
+  },
+  {
+    "id": "EXP_SE2_034",
+    "subject": "소프트웨어설계",
+    "category": "요구사항",
+    "type": "SHORT_ANSWER",
+    "question": "자료 사전(Data Dictionary) 작성 시 특정 데이터 항목의 0회 이상 무한 반복(Repetition)을 나타낼 때 사용하는 기호는 무엇인가?",
+    "answer": "{}",
+    "explanation": "중괄호 {}는 반복을 의미합니다. 대괄호 []는 선택, 소괄호 ()는 생략 가능(선택적), 등호 =는 정의, 플러스 +는 연결을 나타냅니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "{}",
+      "중괄호",
+      "자료사전기호",
+      "반복"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-requirements"
+  },
+  {
+    "id": "EXP_SE2_035",
+    "subject": "소프트웨어설계",
+    "category": "요구사항",
+    "type": "SHORT_ANSWER",
+    "question": "자료 사전(Data Dictionary) 기호 중 나열된 여러 데이터 항목 중 오직 하나만을 택하는 선택(Selection)을 표현할 때 사용하는 기호는 무엇인가?",
+    "answer": "[]",
+    "explanation": "대괄호 [A | B | C]는 목록 중 하나를 선택함을 의미합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "[]",
+      "대괄호",
+      "자료사전기호",
+      "선택"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-requirements"
+  },
+  {
+    "id": "EXP_SE2_036",
+    "subject": "소프트웨어설계",
+    "category": "요구사항",
+    "type": "SHORT_ANSWER",
+    "question": "자료 사전(Data Dictionary) 기호 중 데이터 항목이 있을 수도 있고 없을 수도 있음을 나타내는 생략 가능(Optional) 기호는 무엇인가?",
+    "answer": "()",
+    "explanation": "소괄호 ()는 해당 항목이 선택적으로 생략 가능함을 나타냅니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "()",
+      "소괄호",
+      "자료사전기호",
+      "생략"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-requirements"
+  },
+  {
+    "id": "EXP_SE2_037",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 설계",
+    "type": "SHORT_ANSWER",
+    "question": "인터페이스 보안을 위해 통신 구간의 암호화를 제공하는 표준 보안 프로토콜로, HTTP의 80번 포트 대신 443번 포트를 사용하는 기술은 무엇인가?",
+    "answer": "HTTPS",
+    "explanation": "HTTPS는 HTTP에 SSL/TLS 보안 계층을 결합하여 데이터의 도청과 변조를 방지합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "HTTPS",
+      "SSL/TLS",
+      "443번포트"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-interface"
+  },
+  {
+    "id": "EXP_SE2_038",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 설계",
+    "type": "SHORT_ANSWER",
+    "question": "네트워크 통신 계층 중 IP 계층에서 보안 서비스를 제공하여 패킷의 기밀성, 무결성, 인증을 보장하는 표준 프로토콜 세트의 명칭은 무엇인가?",
+    "answer": "IPsec",
+    "explanation": "IPsec은 네트워크 계층(L3)에서 AH(인증)와 ESP(암호화/기밀성) 프로토콜을 사용해 안전한 터널링을 구축합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "IPsec",
+      "IP보안프로토콜",
+      "AH",
+      "ESP"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-interface"
+  },
+  {
+    "id": "EXP_SE2_039",
+    "subject": "소프트웨어설계",
+    "category": "시스템 연계",
+    "type": "SHORT_ANSWER",
+    "question": "웹 브라우저와 웹 서버 간에 별도의 추가 연결 수립 없이 단일 TCP 연결 상에서 실시간 전이중(Full-Duplex) 양방향 통신을 제공하는 프로토콜은 무엇인가?",
+    "answer": "웹소켓",
+    "explanation": "웹소켓(WebSocket, ws://)은 핸드셰이크 후 지속적인 양방향 채널을 열어 채팅이나 실시간 데이터 스트리밍에 사용됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "웹소켓",
+      "WebSocket",
+      "전이중양방향통신"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-interface"
+  },
+  {
+    "id": "EXP_SE2_040",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 공학",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 프로젝트 관리를 구성하는 3대 핵심 관리 요소(3P)는 People(인력), Problem(문제), 그리고 무엇인가?",
+    "answer": "Process",
+    "explanation": "프로젝트 관리의 3P는 People(사람), Problem(문제/목표), Process(절차/과정)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Process",
+      "프로세스",
+      "3P",
+      "프로젝트관리"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-management"
+  },
+  {
+    "id": "EXP_SE2_041",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 공학",
+    "type": "SHORT_ANSWER",
+    "question": "폭포수 모델의 선형 순차적 접근 방식의 단점을 보완하여 프로젝트 전체 범위를 계층적으로 분할하고(Work Breakdown Structure) 관리하는 도구의 약칭은 무엇인가?",
+    "answer": "WBS",
+    "explanation": "WBS(Work Breakdown Structure, 작업 분할 구조도)는 프로젝트의 전체 목표를 달성 가능한 소규모 작업 패키지로 계층 분할합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "WBS",
+      "Work Breakdown Structure",
+      "작업분할구조도"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-management"
+  },
+  {
+    "id": "EXP_SE2_042",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 개발 모델",
+    "type": "SHORT_ANSWER",
+    "question": "보헴(Boehm)이 제안한 소프트웨어 개발 모델로, 폭포수와 프로토타입의 장점을 수용하고 계획 수립 → 위험 분석 → 개발 및 검증 → 고객 평가의 4단계를 점진적으로 반복하는 모델은 무엇인가?",
+    "answer": "나선형 모델",
+    "explanation": "나선형 모델(Spiral Model)의 가장 핵심적인 특징은 나선을 돌 때마다 \"위험 분석(Risk Analysis)\"을 집중 수행한다는 점입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "나선형 모델",
+      "Spiral Model",
+      "위험분석"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-sdlc"
+  },
+  {
+    "id": "EXP_SE2_043",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 개발 모델",
+    "type": "SHORT_ANSWER",
+    "question": "고전적 소프트웨어 개발 모델 중 요구사항 분석부터 유지보수까지 각 단계가 이전 단계의 완료를 전제로 엄격히 순차 진행되는 가장 오래된 모델은 무엇인가?",
+    "answer": "폭포수 모델",
+    "explanation": "폭포수 모델(Waterfall Model)은 하향식 순차 진행 모델로, 문서화가 잘 되지만 요구사항 변경 수용이 어렵습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "폭포수 모델",
+      "Waterfall Model",
+      "순차적모델"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-sdlc"
+  },
+  {
+    "id": "EXP_SE2_044",
+    "subject": "소프트웨어설계",
+    "category": "애자일",
+    "type": "SHORT_ANSWER",
+    "question": "XP(eXtreme Programming)의 12대 기본 실천 사항 중 모든 비즈니스 로직에 대해 실제 구현 코드를 작성하기 전에 실패하는 자동화 테스트 케이스를 먼저 작성하는 기법의 약칭은 무엇인가?",
+    "answer": "TDD",
+    "explanation": "TDD(Test-Driven Development, 테스트 주도 개발)는 \"Red(실패) → Green(통과) → Refactor(개선)\" 주기를 반복합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "TDD",
+      "Test-Driven Development",
+      "테스트주도개발"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-agile"
+  },
+  {
+    "id": "EXP_SE2_045",
+    "subject": "소프트웨어설계",
+    "category": "애자일",
+    "type": "SHORT_ANSWER",
+    "question": "XP의 12대 기본 실천 사항 중 두 명의 개발자가 한 컴퓨터에 나란히 앉아 한 명은 코드를 작성하고(드라이버) 다른 한 명은 코드를 검토하는(내비게이터) 기법은 무엇인가?",
+    "answer": "페어 프로그래밍",
+    "explanation": "페어 프로그래밍(Pair Programming, 짝 프로그래밍)은 코드 품질을 즉시 향상시키고 팀 내 지식 공유를 극대화합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "페어 프로그래밍",
+      "Pair Programming",
+      "짝프로그래밍"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-agile"
+  },
+  {
+    "id": "EXP_SE2_046",
+    "subject": "소프트웨어설계",
+    "category": "애자일",
+    "type": "SHORT_ANSWER",
+    "question": "XP의 12대 기본 실천 사항 중 개발자가 작업한 소스코드를 하루에도 수차례씩 중앙 공유 리포지토리에 지속적으로 빌드하고 통합하는 원칙의 약칭은 무엇인가?",
+    "answer": "CI",
+    "explanation": "지속적 통합(CI, Continuous Integration)은 빈번한 머지와 자동 빌드/테스트를 통해 통합 지옥(Integration Hell)을 방지합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CI",
+      "Continuous Integration",
+      "지속적통합"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-agile"
+  },
+  {
+    "id": "EXP_SE2_047",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 설계",
+    "type": "SHORT_ANSWER",
+    "question": "인터페이스 설계 시 분산 시스템 컴포넌트 간에 동기적 방식이 아닌 큐를 통해 송신자와 수신자의 실행 타이밍을 분리하는 통신 방식을 무엇이라 하는가?",
+    "answer": "비동기 통신",
+    "explanation": "비동기(Asynchronous) 통신은 송신자가 응답을 기다리지 않고 다음 작업을 즉시 수행할 수 있어 시스템 처리량이 높아집니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "비동기 통신",
+      "Asynchronous",
+      "메시지큐"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-interface"
+  },
+  {
+    "id": "EXP_SE2_048",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 공학",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 개발 프로젝트의 조직 형태 중 소프트웨어 프로젝트가 완료되면 해산되는 임시 TF팀 형태로 프로젝트 관리자에게 전권이 부여되는 조직 구조는 무엇인가?",
+    "answer": "프로젝트형 조직",
+    "explanation": "프로젝트형 조직(Projectized Organization)은 PM에게 자원과 예산의 통제 전권이 있으며 프로젝트 집중도가 높습니다. 부서별 기능 전문성을 유지하는 것은 기능형 조직입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "프로젝트형 조직",
+      "Projectized",
+      "조직구조"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-management"
+  },
+  {
+    "id": "EXP_SE2_049",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 공학",
+    "type": "SHORT_ANSWER",
+    "question": "기존 기능 조직의 수직적 전문성과 프로젝트 조직의 수평적 유연성을 결합하여 팀원이 원래 부서와 프로젝트 양쪽에 소속되는 하이브리드 조직 형태는 무엇인가?",
+    "answer": "매트릭스 조직",
+    "explanation": "매트릭스 조직(Matrix Organization)은 팀원이 기능 부서장과 프로젝트 관리자 2명에게 이중 보고하는 구조를 갖습니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "매트릭스 조직",
+      "Matrix Organization",
+      "이중보고"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-management"
+  },
+  {
+    "id": "EXP_SE2_050",
+    "subject": "소프트웨어설계",
+    "category": "소프트웨어 공학",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 제품의 라이프사이클 전반에 걸쳐 요구사항 명세서, 소스코드, 테스트 케이스 간의 일관성과 추적 가능성을 보장하기 위해 작성하는 표를 무엇이라 하는가?",
+    "answer": "추적성 매트릭스",
+    "explanation": "추적성 매트릭스(Traceability Matrix, RTM)는 요구사항이 설계, 구현, 테스트 케이스로 온전히 누락 없이 연결되었는지 교차 추적합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "추적성 매트릭스",
+      "Traceability Matrix",
+      "RTM"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-se-management"
+  },
+  {
+    "id": "EXP_DB1_001",
+    "subject": "데이터베이스구축",
+    "category": "SQL 제약조건",
+    "type": "SHORT_ANSWER",
+    "question": "관계형 데이터베이스에서 테이블 생성 시 특정 컬럼에 입력될 수 있는 값의 범위나 조건을 제한식으로 검증하는 무결성 제약조건 키워드는 무엇인가?",
+    "answer": "CHECK",
+    "explanation": "CHECK 제약조건은 데이터 입력/수정 시 특정 논리식(예: CHECK(age >= 0 AND age <= 150))을 만족하는지 검사합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CHECK",
+      "제약조건",
+      "범위검증"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-constraints"
+  },
+  {
+    "id": "EXP_DB1_002",
+    "subject": "데이터베이스구축",
+    "category": "SQL 제약조건",
+    "type": "SHORT_ANSWER",
+    "question": "외래키(FOREIGN KEY) 제약조건 설정 시 부모 테이블의 행이 삭제되면 이를 참조하는 자식 테이블의 모든 관련 행도 연쇄적으로 자동 삭제되도록 지정하는 옵션은 무엇인가?",
+    "answer": "CASCADE",
+    "explanation": "ON DELETE CASCADE는 부모 행 삭제 시 외래키로 참조하는 모든 자식 행들을 함께 삭제하여 참조 무결성을 유지합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CASCADE",
+      "ON DELETE CASCADE",
+      "참조무결성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-constraints"
+  },
+  {
+    "id": "EXP_DB1_003",
+    "subject": "데이터베이스구축",
+    "category": "SQL 제약조건",
+    "type": "SHORT_ANSWER",
+    "question": "외래키 제약조건 설정 시 자식 테이블에서 해당 행을 참조하고 있는 경우 부모 테이블의 행을 삭제하지 못하도록 차단(거절)하는 기본 동작 옵션은 무엇인가?",
+    "answer": "RESTRICT",
+    "explanation": "ON DELETE RESTRICT(또는 NO ACTION)는 자식 행이 존재할 때 부모 행 삭제를 금지하여 참조 무결성 위반을 방지합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "RESTRICT",
+      "ON DELETE RESTRICT",
+      "삭제차단"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-constraints"
+  },
+  {
+    "id": "EXP_DB1_004",
+    "subject": "데이터베이스구축",
+    "category": "SQL 제약조건",
+    "type": "SHORT_ANSWER",
+    "question": "외래키 설정 시 부모 테이블의 튜플이 삭제되면 이를 참조하던 자식 테이블 외래키 속성 값을 자동으로 NULL로 변경하는 옵션은 무엇인가?",
+    "answer": "SET NULL",
+    "explanation": "ON DELETE SET NULL 옵션은 부모 튜플 삭제 시 자식 튜플의 참조 컬럼 값을 NULL로 갱신합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SET NULL",
+      "ON DELETE SET NULL",
+      "외래키옵션"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-constraints"
+  },
+  {
+    "id": "EXP_DB1_005",
+    "subject": "데이터베이스구축",
+    "category": "SQL 제약조건",
+    "type": "SHORT_ANSWER",
+    "question": "테이블 정의 시 INSERT 문에서 특정 컬럼의 값을 생략했을 때 자동으로 들어갈 기본값을 사전에 지정하는 제약조건 키워드는 무엇인가?",
+    "answer": "DEFAULT",
+    "explanation": "DEFAULT 키워드는 컬럼 값이 명시되지 않았을 때 지정된 기본값(예: DEFAULT 0, DEFAULT SYSDATE)을 입력합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DEFAULT",
+      "기본값설정",
+      "SQL제약조건"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-constraints"
+  },
+  {
+    "id": "EXP_DB1_006",
+    "subject": "데이터베이스구축",
+    "category": "SQL 제약조건",
+    "type": "SHORT_ANSWER",
+    "question": "테이블의 속성에 중복된 값이 들어올 수 없도록 고유성을 보장하되, 기본키(PK)와 달리 NULL 값의 저장은 허용하는 제약조건 키워드는 무엇인가?",
+    "answer": "UNIQUE",
+    "explanation": "UNIQUE 제약조건은 고유성을 강제하지만 NULL 값은 허용(DBMS에 따라 여러 NULL 허용)합니다. 기본키(PRIMARY KEY)는 UNIQUE + NOT NULL 입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "UNIQUE",
+      "고유키",
+      "NULL허용"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-constraints"
+  },
+  {
+    "id": "EXP_DB1_007",
+    "subject": "데이터베이스구축",
+    "category": "SQL DDL",
+    "type": "SHORT_ANSWER",
+    "question": "기존에 생성되어 있는 테이블의 구조를 변경하기 위해 컬럼을 추가하거나 수정, 삭제할 때 사용하는 DDL 명령어는 무엇인가?",
+    "answer": "ALTER TABLE",
+    "explanation": "ALTER TABLE 문은 ADD(컬럼 추가), MODIFY/ALTER(컬럼 타입 변경), DROP(컬럼 삭제) 등의 세부 명령과 함께 쓰입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ALTER TABLE",
+      "테이블구조변경",
+      "DDL"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-ddl"
+  },
+  {
+    "id": "EXP_DB1_008",
+    "subject": "데이터베이스구축",
+    "category": "SQL DDL",
+    "type": "SHORT_ANSWER",
+    "question": "테이블 삭제 시 해당 테이블을 다른 테이블에서 외래키로 참조하고 있더라도 연관된 모든 제약조건을 강제로 함께 제거하고 테이블을 삭제시키는 DROP 문 옵션은 무엇인가?",
+    "answer": "CASCADE CONSTRAINTS",
+    "explanation": "DROP TABLE 테이블명 CASCADE CONSTRAINTS 옵션은 참조하고 있는 외래키 제약조건을 먼저 삭제한 뒤 테이블을 성공적으로 제거합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "CASCADE CONSTRAINTS",
+      "테이블삭제",
+      "DROP"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-ddl"
+  },
+  {
+    "id": "EXP_DB1_009",
+    "subject": "데이터베이스구축",
+    "category": "SQL DDL vs DML",
+    "type": "SHORT_ANSWER",
+    "question": "테이블의 모든 행(데이터)을 고속으로 삭제하되 트랜잭션 로그를 거의 남기지 않고 즉시 자동 커밋(Auto Commit)되어 ROLLBACK으로 되돌릴 수 없는 DDL 명령어는 무엇인가?",
+    "answer": "TRUNCATE",
+    "explanation": "TRUNCATE는 테이블의 구조는 남기고 모든 레코드를 빠르게 비우는 DDL입니다. 행 단위로 삭제 로그를 남겨 ROLLBACK이 가능한 것은 DML인 DELETE입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "TRUNCATE",
+      "테이블초기화",
+      "롤백불가"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-ddl"
+  },
+  {
+    "id": "EXP_DB1_010",
+    "subject": "데이터베이스구축",
+    "category": "SQL 집계 함수",
+    "type": "SHORT_ANSWER",
+    "question": "SQL 집계 함수 중 특정 컬럼 속성에 NULL 값이 들어있는 행까지 포함하여 전체 행의 총 개수를 셀 때 사용하는 표현식은 COUNT(컬럼명)인가 COUNT(*)인가?",
+    "answer": "COUNT(*)",
+    "explanation": "COUNT(*)는 NULL을 포함한 모든 행을 세며, COUNT(컬럼명)은 해당 컬럼 값이 NULL인 행을 제외하고 셉니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "COUNT(*)",
+      "집계함수",
+      "NULL포함"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-aggregate"
+  },
+  {
+    "id": "EXP_DB1_011",
+    "subject": "데이터베이스구축",
+    "category": "SQL NULL 함수",
+    "type": "SHORT_ANSWER",
+    "question": "SQL 표준 함수 중 인자로 나열된 여러 개의 값 중에서 NULL이 아닌 최초의(첫 번째) 값을 반환하는 함수의 이름은 무엇인가?",
+    "answer": "COALESCE",
+    "explanation": "COALESCE(val1, val2, val3, ...)는 앞에서부터 검사하여 처음 만나는 NULL이 아닌 값을 반환합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "COALESCE",
+      "NULL처리",
+      "표준함수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-functions"
+  },
+  {
+    "id": "EXP_DB1_012",
+    "subject": "데이터베이스구축",
+    "category": "SQL NULL 함수",
+    "type": "SHORT_ANSWER",
+    "question": "SQL 함수 중 두 개의 인자(expr1, expr2)를 비교하여 두 값이 같으면 NULL을 반환하고, 다르면 expr1을 반환하는 함수의 이름은 무엇인가?",
+    "answer": "NULLIF",
+    "explanation": "NULLIF(a, b)는 a와 b가 같을 때 NULL을 반환하여 0으로 나누기(Divide by Zero) 에러 등을 방지할 때 유용합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "NULLIF",
+      "동등비교NULL",
+      "SQL함수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-functions"
+  },
+  {
+    "id": "EXP_DB1_013",
+    "subject": "데이터베이스구축",
+    "category": "SQL 윈도우 함수",
+    "type": "SHORT_ANSWER",
+    "question": "SQL 윈도우 순위 함수 중 동일한 점수가 나오면 같은 순위를 부여하고, 그 다음 순위는 동점자 수만큼 건너뛰어 부여하는(예: 1등, 2등, 2등, 4등) 함수는 무엇인가?",
+    "answer": "RANK",
+    "explanation": "RANK() 함수는 동순위 발생 시 순위를 건너뜁니다. 순위를 건너뛰지 않고 1등, 2등, 2등, 3등으로 매기는 것은 DENSE_RANK()입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "RANK",
+      "순위함수",
+      "순위건너뜀"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-window"
+  },
+  {
+    "id": "EXP_DB1_014",
+    "subject": "데이터베이스구축",
+    "category": "SQL 윈도우 함수",
+    "type": "SHORT_ANSWER",
+    "question": "SQL 윈도우 순위 함수 중 점수의 동일 여부와 상관없이 무조건 각 행마다 1부터 시작하여 유일하고 고유한 연속 일련번호(1, 2, 3, 4, ...)를 부여하는 함수는 무엇인가?",
+    "answer": "ROW_NUMBER",
+    "explanation": "ROW_NUMBER()는 동점자가 존재하더라도 정렬 기준에 따라 고유한 연속 번호를 할당합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ROW_NUMBER",
+      "일련번호부여",
+      "윈도우함수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-window"
+  },
+  {
+    "id": "EXP_DB1_015",
+    "subject": "데이터베이스구축",
+    "category": "SQL 윈도우 함수",
+    "type": "SHORT_ANSWER",
+    "question": "SQL 윈도우 순위 함수 중 동일한 값에 대해 같은 순위를 매기되, 바로 다음 순위를 건너뛰지 않고 연속된 번호로 부여하는(예: 1등, 2등, 2등, 3등) 함수는 무엇인가?",
+    "answer": "DENSE_RANK",
+    "explanation": "DENSE_RANK()는 빈틈없이(dense) 순위를 매겨 동점자 다음 순위를 연속된 숫자로 이어갑니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DENSE_RANK",
+      "연속순위",
+      "윈도우함수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-window"
+  },
+  {
+    "id": "EXP_DB1_016",
+    "subject": "데이터베이스구축",
+    "category": "SQL 그룹 함수",
+    "type": "SHORT_ANSWER",
+    "question": "GROUP BY 절과 함께 쓰여 명시된 컬럼들의 소계(Subtotal)와 총계(Grand Total)를 계층적 단계별로 자동 산출해주는 그룹 함수는 무엇인가?",
+    "answer": "ROLLUP",
+    "explanation": "ROLLUP(A, B)은 (A, B)별 집계, A별 소계, 전체 총계를 계층적으로 생성합니다. 나열 순서에 따라 집계 결과가 달라집니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ROLLUP",
+      "소계총계",
+      "그룹함수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-group"
+  },
+  {
+    "id": "EXP_DB1_017",
+    "subject": "데이터베이스구축",
+    "category": "SQL 그룹 함수",
+    "type": "SHORT_ANSWER",
+    "question": "GROUP BY 절과 함께 쓰여 결합 가능한 모든 다차원 조합(2^N)에 대해 집계를 산출하여 다각적 데이터 분석을 지원하는 그룹 함수는 무엇인가?",
+    "answer": "CUBE",
+    "explanation": "CUBE(A, B)는 (A, B), (A), (B), () 전체의 모든 가능한 경우의 수로 집계를 생성합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CUBE",
+      "다차원집계",
+      "모든조합"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-group"
+  },
+  {
+    "id": "EXP_DB1_018",
+    "subject": "데이터베이스구축",
+    "category": "SQL 그룹 함수",
+    "type": "SHORT_ANSWER",
+    "question": "GROUP BY 절에서 원하는 개별 집계 대상 컬럼들을 튜플 목록으로 직접 지정하여 각각 독립적으로 집계하는 그룹 집합 함수는 무엇인가?",
+    "answer": "GROUPING SETS",
+    "explanation": "GROUPING SETS(A, B)는 A 기준 집계와 B 기준 집계의 결과를 UNION ALL 한 것과 동일한 효과를 냅니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "GROUPING SETS",
+      "개별그룹집계",
+      "그룹함수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-group"
+  },
+  {
+    "id": "EXP_DB1_019",
+    "subject": "데이터베이스구축",
+    "category": "SQL 서브쿼리",
+    "type": "SHORT_ANSWER",
+    "question": "SQL 문장 중 메인 쿼리의 SELECT 절에 위치하여 매 행마다 단 하나의 단일 값(1행 1열)만을 반환해야 하는 서브쿼리를 무엇이라 하는가?",
+    "answer": "스칼라 서브쿼리",
+    "explanation": "스칼라 서브쿼리(Scalar Subquery)는 SELECT 절에서 사용되며 반드시 1개의 값만 반환해야 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "스칼라 서브쿼리",
+      "Scalar Subquery",
+      "SELECT절서브쿼리"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-subquery"
+  },
+  {
+    "id": "EXP_DB1_020",
+    "subject": "데이터베이스구축",
+    "category": "SQL 서브쿼리",
+    "type": "SHORT_ANSWER",
+    "question": "SQL 문장 중 메인 쿼리의 FROM 절 내부에 작성되어 마치 가상의 테이블처럼 임시로 사용되는 서브쿼리를 무엇이라 하는가?",
+    "answer": "인라인 뷰",
+    "explanation": "인라인 뷰(Inline View)는 FROM 절에 위치하는 동적 뷰 역할을 수행하는 서브쿼리입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "인라인 뷰",
+      "Inline View",
+      "FROM절서브쿼리"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-subquery"
+  },
+  {
+    "id": "EXP_DB1_021",
+    "subject": "데이터베이스구축",
+    "category": "SQL 서브쿼리",
+    "type": "SHORT_ANSWER",
+    "question": "서브쿼리가 메인 쿼리의 특정 컬럼 값을 가져와서 비교 연산에 사용함으로써, 메인 쿼리의 행 수만큼 반복 실행되는 종속적인 서브쿼리는 무엇인가?",
+    "answer": "상관 서브쿼리",
+    "explanation": "상관 서브쿼리(Correlated Subquery)는 메인 쿼리와 종속 관계를 가지며 EXISTS 조건 등과 함께 자주 쓰입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "상관 서브쿼리",
+      "Correlated Subquery",
+      "메인쿼리참조"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-subquery"
+  },
+  {
+    "id": "EXP_DB1_022",
+    "subject": "데이터베이스구축",
+    "category": "SQL 서브쿼리",
+    "type": "SHORT_ANSWER",
+    "question": "다중 행 서브쿼리 연산자 중 서브쿼리의 반환 결과에 해당하는 레코드가 최소 1건이라도 존재하는지 여부만을 판단하여 참/거짓을 반환하는 연산자는 무엇인가?",
+    "answer": "EXISTS",
+    "explanation": "EXISTS 연산자는 조건에 맞는 행이 1개라도 발견되면 즉시 스캔을 멈추고 TRUE를 반환하므로 성능상 매우 유리합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "EXISTS",
+      "존재여부확인",
+      "다중행연산자"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-subquery"
+  },
+  {
+    "id": "EXP_DB1_023",
+    "subject": "데이터베이스구축",
+    "category": "SQL 조인",
+    "type": "SHORT_ANSWER",
+    "question": "두 테이블을 조인할 때 조인 조건에 일치하지 않는 왼쪽 테이블의 모든 행도 버리지 않고 결과에 포함시키는 외부 조인(Outer Join)의 명칭은 무엇인가?",
+    "answer": "LEFT OUTER JOIN",
+    "explanation": "LEFT OUTER JOIN은 왼쪽 테이블의 모든 행을 유지하며, 일치하지 않는 오른쪽 테이블의 컬럼은 NULL로 채웁니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "LEFT OUTER JOIN",
+      "왼쪽외부조인",
+      "조인"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-join"
+  },
+  {
+    "id": "EXP_DB1_024",
+    "subject": "데이터베이스구축",
+    "category": "SQL 조인",
+    "type": "SHORT_ANSWER",
+    "question": "조인 조건절(ON) 없이 두 테이블을 단순 연결하여 왼쪽 테이블 m개 행과 오른쪽 테이블 n개 행의 모든 조합인 m x n개의 행을 반환하는 조인은 무엇인가?",
+    "answer": "CROSS JOIN",
+    "explanation": "CROSS JOIN(카티션 프로덕트, 교차 조인)은 두 테이블 간의 모든 카티션 곱 조합을 산출합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CROSS JOIN",
+      "카티션곱",
+      "교차조인"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-join"
+  },
+  {
+    "id": "EXP_DB1_025",
+    "subject": "데이터베이스구축",
+    "category": "SQL 조인",
+    "type": "SHORT_ANSWER",
+    "question": "동일한 하나의 테이블을 서로 다른 별칭(Alias)을 부여하여 자기 자신과 결합하는 형태의 조인을 무엇이라 하는가?",
+    "answer": "셀프 조인",
+    "explanation": "셀프 조인(Self Join)은 사원과 관리자 관계처럼 계층 구조나 부모-자식 관계가 한 테이블 내에 있을 때 사용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "셀프 조인",
+      "Self Join",
+      "자가조인"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-join"
+  },
+  {
+    "id": "EXP_DB1_026",
+    "subject": "데이터베이스구축",
+    "category": "SQL DML",
+    "type": "SHORT_ANSWER",
+    "question": "기존 테이블에 조건에 따라 행이 이미 존재하면 UPDATE를 수행하고, 존재하지 않으면 신규 행으로 INSERT를 한 번에 처리하는 SQL 문장은 무엇인가?",
+    "answer": "MERGE",
+    "explanation": "MERGE(Upsert) 문은 WHEN MATCHED THEN UPDATE와 WHEN NOT MATCHED THEN INSERT 절을 결합해 병합합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "MERGE",
+      "Upsert",
+      "병합문"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-dml"
+  },
+  {
+    "id": "EXP_DB1_027",
+    "subject": "데이터베이스구축",
+    "category": "SQL DML",
+    "type": "SHORT_ANSWER",
+    "question": "SELECT 문에서 검색 결과의 중복 행을 제거하고 유일한 고유값만 출력하도록 지시하는 키워드는 무엇인가?",
+    "answer": "DISTINCT",
+    "explanation": "DISTINCT 키워드는 중복 행을 정렬 및 필터링하여 유일한 행들만 반환합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DISTINCT",
+      "중복제거",
+      "SELECT문"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-dml"
+  },
+  {
+    "id": "EXP_DB1_028",
+    "subject": "데이터베이스구축",
+    "category": "SQL DML",
+    "type": "SHORT_ANSWER",
+    "question": "SQL 집계 함수 결과에 대한 필터링 조건(예: 부서별 인원수가 5명 이상)을 지정할 때 WHERE 절 대신 반드시 사용해야 하는 절은 무엇인가?",
+    "answer": "HAVING",
+    "explanation": "HAVING 절은 GROUP BY로 묶인 그룹 집계 결과에 조건을 부여할 때 씁니다. 개별 행 조건은 WHERE 절에 씁니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "HAVING",
+      "그룹조건",
+      "집계함수필터"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-dml"
+  },
+  {
+    "id": "EXP_DB1_030",
+    "subject": "데이터베이스구축",
+    "category": "SQL DCL",
+    "type": "SHORT_ANSWER",
+    "question": "데이터베이스 사용자에게 부여했던 특정 권한을 다시 회수(취소)할 때 사용하는 DCL 명령어는 무엇인가?",
+    "answer": "REVOKE",
+    "explanation": "REVOKE는 권한을 회수하며 CASCADE 옵션을 주면 해당 사용자가 다른 사용자에게 연쇄 부여한 권한도 함께 회수됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "REVOKE",
+      "권한회수",
+      "DCL"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-dcl"
+  },
+  {
+    "id": "EXP_DB1_031",
+    "subject": "데이터베이스구축",
+    "category": "SQL DCL",
+    "type": "SHORT_ANSWER",
+    "question": "GRANT 문으로 권한을 부여할 때 권한을 부여받은 사용자가 자신이 받은 권한을 다른 제3의 사용자에게도 재부여할 수 있도록 허용하는 옵션은 무엇인가?",
+    "answer": "WITH GRANT OPTION",
+    "explanation": "WITH GRANT OPTION은 일반 객체 권한을 다른 사용자에게 위임할 수 있는 전파 권한 옵션입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "WITH GRANT OPTION",
+      "권한전파",
+      "DCL"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-dcl"
+  },
+  {
+    "id": "EXP_DB1_032",
+    "subject": "데이터베이스구축",
+    "category": "SQL TCL",
+    "type": "SHORT_ANSWER",
+    "question": "트랜잭션 실행 중 오류가 발생했을 때 전체를 취소하지 않고 특정 지정 시점까지만 부분 취소(Rollback)할 수 있도록 설정하는 저장점 지정 명령어는 무엇인가?",
+    "answer": "SAVEPOINT",
+    "explanation": "SAVEPOINT 저장점명을 선언해두면 ROLLBACK TO 저장점명 명령으로 해당 지점까지의 작업만 부분 취소할 수 있습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SAVEPOINT",
+      "저장점",
+      "부분롤백"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-tcl"
+  },
+  {
+    "id": "EXP_DB1_033",
+    "subject": "데이터베이스구축",
+    "category": "SQL 내장 함수",
+    "type": "SHORT_ANSWER",
+    "question": "SQL 문자열 함수 중 특정 문자열에서 원하는 시작 위치부터 지정한 개수만큼의 부분 문자열을 잘라내어 추출하는 함수의 이름은 무엇인가?",
+    "answer": "SUBSTR",
+    "explanation": "SUBSTR(str, pos, len)은 pos 위치부터 len개의 문자를 추출합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SUBSTR",
+      "부분문자열",
+      "문자열함수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-functions"
+  },
+  {
+    "id": "EXP_DB1_034",
+    "subject": "데이터베이스구축",
+    "category": "SQL 내장 함수",
+    "type": "SHORT_ANSWER",
+    "question": "SQL 문자열의 양쪽 끝에 존재하는 불필요한 공백 문자나 특정 지정 문자를 잘라내어 제거하는 함수의 이름은 무엇인가?",
+    "answer": "TRIM",
+    "explanation": "TRIM(str)은 앞뒤 공백을 제거합니다. 왼쪽만 제거는 LTRIM, 오른쪽만 제거는 RTRIM입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "TRIM",
+      "공백제거",
+      "문자열함수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-functions"
+  },
+  {
+    "id": "EXP_DB1_035",
+    "subject": "데이터베이스구축",
+    "category": "SQL 조건 표현식",
+    "type": "SHORT_ANSWER",
+    "question": "SQL에서 프로그래밍 언어의 if-else 조건문과 유사하게 조건에 따라 분기하여 다른 값을 반환할 때 사용하는 표준 표현식은 무엇인가?",
+    "answer": "CASE",
+    "explanation": "CASE WHEN 조건 THEN 결과 ELSE 기본값 END 구조로 조건 분기를 처리합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CASE",
+      "CASE WHEN",
+      "조건식"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-functions"
+  },
+  {
+    "id": "EXP_DB1_036",
+    "subject": "데이터베이스구축",
+    "category": "SQL 뷰",
+    "type": "SHORT_ANSWER",
+    "question": "뷰(View)를 정의할 때 WHERE 절의 조건에 위배되는 튜플의 INSERT나 UPDATE 연산이 실행되지 못하도록 차단하는 뷰 생성 옵션은 무엇인가?",
+    "answer": "WITH CHECK OPTION",
+    "explanation": "CREATE VIEW ... WITH CHECK OPTION은 뷰 정의 조건식을 벗어나는 데이터 변경을 원천 거절하여 데이터 무결성을 보장합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "WITH CHECK OPTION",
+      "뷰제약옵션",
+      "무결성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-view"
+  },
+  {
+    "id": "EXP_DB1_037",
+    "subject": "데이터베이스구축",
+    "category": "SQL 뷰",
+    "type": "SHORT_ANSWER",
+    "question": "뷰(View) 생성 시 사용자가 뷰를 통해 기본 테이블의 데이터를 조회(SELECT)만 할 수 있고 INSERT, UPDATE, DELETE 수정은 절대 하지 못하도록 강제하는 옵션은 무엇인가?",
+    "answer": "WITH READ ONLY",
+    "explanation": "WITH READ ONLY 옵션을 추가하면 해당 뷰는 읽기 전용으로 설정되어 데이터 변경 시도가 차단됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "WITH READ ONLY",
+      "읽기전용뷰",
+      "뷰옵션"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-view"
+  },
+  {
+    "id": "EXP_DB1_038",
+    "subject": "데이터베이스구축",
+    "category": "데이터베이스 객체",
+    "type": "SHORT_ANSWER",
+    "question": "데이터베이스에서 테이블의 특정 컬럼(예: 사원번호, 주문번호)에 자동으로 고유한 연속 번호를 생성해주는 객체의 이름은 무엇인가?",
+    "answer": "시퀀스",
+    "explanation": "시퀀스(Sequence)는 일련번호를 자동으로 생성하며 .NEXTVAL로 다음 번호를 발급받습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "시퀀스",
+      "Sequence",
+      "일련번호생성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-objects"
+  },
+  {
+    "id": "EXP_DB1_039",
+    "subject": "데이터베이스구축",
+    "category": "데이터베이스 객체",
+    "type": "SHORT_ANSWER",
+    "question": "데이터베이스 객체(테이블, 뷰 등)에 영구적인 별칭을 붙여 긴 스키마명을 생략하거나 보안상 실제 테이블명을 감출 때 사용하는 데이터베이스 객체는 무엇인가?",
+    "answer": "동의어",
+    "explanation": "동의어(Synonym)는 실제 객체에 별칭을 부여하여 객체 접근의 투명성과 보안성을 높입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "동의어",
+      "Synonym",
+      "객체별칭"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-objects"
+  },
+  {
+    "id": "EXP_DB1_040",
+    "subject": "데이터베이스구축",
+    "category": "SQL 연산자",
+    "type": "SHORT_ANSWER",
+    "question": "SQL WHERE 절에서 와일드카드 문자 중 임의의 문자 단 1글자와 매칭될 때 사용하는 기호는 무엇인가?",
+    "answer": "_",
+    "explanation": "_(언더스코어)는 정확히 1글자와 매칭되며, 0개 이상의 모든 문자열과 매칭되는 것은 %(퍼센트)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "_",
+      "언더스코어",
+      "와일드카드"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-dml"
+  },
+  {
+    "id": "EXP_DB1_041",
+    "subject": "데이터베이스구축",
+    "category": "SQL 연산자",
+    "type": "SHORT_ANSWER",
+    "question": "SQL WHERE 절에서 특정 속성의 값이 NULL인지 확인할 때 = NULL 대신 반드시 사용해야 하는 올바른 연산 구문은 무엇인가?",
+    "answer": "IS NULL",
+    "explanation": "NULL은 알 수 없는(Unknown) 값이므로 = 연산자로 비교할 수 없으며 IS NULL 또는 IS NOT NULL 구문을 써야 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "IS NULL",
+      "NULL비교연산자"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-dml"
+  },
+  {
+    "id": "EXP_DB1_042",
+    "subject": "데이터베이스구축",
+    "category": "SQL 연산자",
+    "type": "SHORT_ANSWER",
+    "question": "SQL WHERE 절에서 특정 컬럼의 값이 주어진 범위(하한값 이상, 상한값 이하)에 속하는지 검사할 때 사용하는 연산자는 무엇인가?",
+    "answer": "BETWEEN",
+    "explanation": "컬럼명 BETWEEN a AND b 구문은 a 이상 b 이하의 범위를 나타내며 양 끝값(a, b)을 모두 포함합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "BETWEEN",
+      "범위연산자",
+      "BETWEEN AND"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-dml"
+  },
+  {
+    "id": "EXP_DB1_043",
+    "subject": "데이터베이스구축",
+    "category": "SQL 연산자",
+    "type": "SHORT_ANSWER",
+    "question": "SQL WHERE 절에서 특정 컬럼의 값이 나열된 리스트 안의 값 중 하나와 일치하는지 검사할 때 사용하는 다중 OR 대체 연산자는 무엇인가?",
+    "answer": "IN",
+    "explanation": "컬럼명 IN (val1, val2, val3) 연산자는 목록 내 일치하는 값이 있는지 검사합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "IN",
+      "리스트일치연산자"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-dml"
+  },
+  {
+    "id": "EXP_DB1_044",
+    "subject": "데이터베이스구축",
+    "category": "SQL 집합 연산자",
+    "type": "SHORT_ANSWER",
+    "question": "두 SELECT 문의 실행 결과를 합치되 중복 행을 제거하지 않고 모든 행을 그대로 유지하여 출력하는 집합 연산자는 무엇인가?",
+    "answer": "UNION ALL",
+    "explanation": "UNION ALL은 중복 제거를 위한 정렬 작업을 수행하지 않으므로 UNION보다 실행 속도가 훨씬 빠릅니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "UNION ALL",
+      "중복포함합집합",
+      "집합연산자"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-set"
+  },
+  {
+    "id": "EXP_DB1_045",
+    "subject": "데이터베이스구축",
+    "category": "SQL 집합 연산자",
+    "type": "SHORT_ANSWER",
+    "question": "첫 번째 SELECT 문의 결과에서 두 번째 SELECT 문의 결과에 포함된 공통 행들을 제외한 차집합 결과를 반환하는 표준 연산자(Oracle의 MINUS와 동등)는 무엇인가?",
+    "answer": "EXCEPT",
+    "explanation": "SQL 표준에서 차집합 연산자는 EXCEPT이며 오라클에서는 MINUS 키워드를 지원합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "EXCEPT",
+      "MINUS",
+      "차집합연산자"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-set"
+  },
+  {
+    "id": "EXP_DB1_046",
+    "subject": "데이터베이스구축",
+    "category": "SQL 집합 연산자",
+    "type": "SHORT_ANSWER",
+    "question": "두 SELECT 문의 결과에서 양쪽에 공통으로 존재하는 교집합 행들만을 중복을 제거하여 반환하는 SQL 집합 연산자는 무엇인가?",
+    "answer": "INTERSECT",
+    "explanation": "INTERSECT는 두 쿼리 결과의 공통 행만을 추출하는 교집합 연산자입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "INTERSECT",
+      "교집합연산자",
+      "집합연산자"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-set"
+  },
+  {
+    "id": "EXP_DB1_047",
+    "subject": "데이터베이스구축",
+    "category": "SQL 조인",
+    "type": "SHORT_ANSWER",
+    "question": "두 테이블에서 공통으로 존재하는 동일한 이름과 타입을 가진 모든 컬럼을 기준으로 자동으로 등가(=) 조인을 수행하는 조인 구문은 무엇인가?",
+    "answer": "NATURAL JOIN",
+    "explanation": "NATURAL JOIN은 동일한 이름의 컬럼들을 자동으로 매칭하여 조인하며 별도의 ON이나 USING 절을 쓸 수 없습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "NATURAL JOIN",
+      "자연조인",
+      "동일컬럼자동조인"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-join"
+  },
+  {
+    "id": "EXP_DB1_048",
+    "subject": "데이터베이스구축",
+    "category": "SQL 조인",
+    "type": "SHORT_ANSWER",
+    "question": "조인 조건으로 등호(=) 연산자 대신 부등호(<, >, <=, >=)나 BETWEEN 연산자 등을 사용하는 조인을 무엇이라 하는가?",
+    "answer": "비등가 조인",
+    "explanation": "비등가 조인(Non-Equi Join)은 급여 등급 테이블처럼 값이 특정 구간 범위에 들어맞는지 비교할 때 사용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "비등가 조인",
+      "Non-Equi Join",
+      "부등호조인"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-join"
+  },
+  {
+    "id": "EXP_DB1_049",
+    "subject": "데이터베이스구축",
+    "category": "데이터베이스 언어",
+    "type": "SHORT_ANSWER",
+    "question": "SQL을 관계대수와 관계해석의 관점에서 분류할 때, 사용자가 \"무엇(What)\"을 원하는지만 선언하고 \"어떻게(How)\" 유도할지는 기술하지 않는 비절차적 특성을 갖는 기초 이론은 무엇인가?",
+    "answer": "관계해석",
+    "explanation": "관계해석(Relational Calculus)은 원하는 결과(What)만을 명시하는 비절차적 언어입니다. 절차적 연산 순서를 명시하는 것은 관계대수(Relational Algebra)입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "관계해석",
+      "비절차적언어",
+      "What"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-theory"
+  },
+  {
+    "id": "EXP_DB1_050",
+    "subject": "데이터베이스구축",
+    "category": "SQL DML",
+    "type": "SHORT_ANSWER",
+    "question": "SELECT 문에서 정렬 기준을 명시하는 ORDER BY 절에서 오름차순과 내림차순 정렬을 지정할 때 각각 사용하는 예약어 2가지는 무엇인가?",
+    "answer": "ASC, DESC",
+    "explanation": "ASC는 오름차순(기본값), DESC는 내림차순 정렬 예약어입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ASC, DESC",
+      "ORDER BY",
+      "정렬예약어"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-dml"
+  },
+  {
+    "id": "EXP_DB2_002",
+    "subject": "데이터베이스구축",
+    "category": "트랜잭션 격리수준",
+    "type": "SHORT_ANSWER",
+    "question": "대부분의 상용 RDBMS(Oracle, SQL Server 등)의 기본 격리수준으로, COMMIT이 완료된 유효한 데이터만 읽을 수 있어 Dirty Read를 방지하는 단계는 무엇인가?",
+    "answer": "READ COMMITTED",
+    "explanation": "READ COMMITTED는 커밋된 데이터만 읽어 Dirty Read를 막지만, 동일 트랜잭션 내 재조회 시 결과가 달라지는 Non-repeatable Read는 발생할 수 있습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "READ COMMITTED",
+      "기본격리수준",
+      "커밋된데이터조회"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-isolation"
+  },
+  {
+    "id": "EXP_DB2_003",
+    "subject": "데이터베이스구축",
+    "category": "트랜잭션 격리수준",
+    "type": "SHORT_ANSWER",
+    "question": "하나의 트랜잭션 내에서 동일한 SELECT 쿼리를 여러 번 실행하더라도 항상 동일한 데이터를 반환하도록 스냅샷을 보장하는 MySQL(InnoDB) 기본 격리수준은 무엇인가?",
+    "answer": "REPEATABLE READ",
+    "explanation": "REPEATABLE READ는 트랜잭션 시작 시점의 스냅샷을 유지하여 Non-repeatable Read를 방지합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "REPEATABLE READ",
+      "격리수준",
+      "반복읽기보장"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-isolation"
+  },
+  {
+    "id": "EXP_DB2_004",
+    "subject": "데이터베이스구축",
+    "category": "트랜잭션 격리수준",
+    "type": "SHORT_ANSWER",
+    "question": "트랜잭션들이 완전히 순차적으로(직렬로) 실행되는 것처럼 완벽히 격리하여 Dirty Read, Non-repeatable Read, Phantom Read를 모두 차단하는 최고 격리수준은 무엇인가?",
+    "answer": "SERIALIZABLE",
+    "explanation": "SERIALIZABLE은 데이터 일관성을 100% 보장하지만 동시 처리 성능(Throughput)이 가장 떨어집니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SERIALIZABLE",
+      "최고격리수준",
+      "직렬화"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-isolation"
+  },
+  {
+    "id": "EXP_DB2_005",
+    "subject": "데이터베이스구축",
+    "category": "트랜잭션 이상현상",
+    "type": "SHORT_ANSWER",
+    "question": "트랜잭션 A가 데이터를 수정한 후 COMMIT하기 전에 트랜잭션 B가 해당 수정본을 읽었으나, 이후 A가 ROLLBACK되어 B가 무효한 쓰레기 값을 보유하게 되는 이상현상은 무엇인가?",
+    "answer": "Dirty Read",
+    "explanation": "Dirty Read(오독)는 커밋되지 않은 미완성 변경 데이터를 읽을 때 발생합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Dirty Read",
+      "오독",
+      "트랜잭션이상현상"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-isolation"
+  },
+  {
+    "id": "EXP_DB2_006",
+    "subject": "데이터베이스구축",
+    "category": "트랜잭션 이상현상",
+    "type": "SHORT_ANSWER",
+    "question": "하나의 트랜잭션 내에서 같은 튜플을 두 번 조회하는 도중 다른 트랜잭션이 해당 튜플을 UPDATE 및 커밋하여 두 번의 조회 결과 값이 서로 달라지는 현상은 무엇인가?",
+    "answer": "Non-repeatable Read",
+    "explanation": "Non-repeatable Read(비반복 읽기)는 동일 트랜잭션 내에서 데이터 행의 값이 바뀌어 나타나는 현상입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "Non-repeatable Read",
+      "비반복읽기",
+      "트랜잭션이상"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-isolation"
+  },
+  {
+    "id": "EXP_DB2_007",
+    "subject": "데이터베이스구축",
+    "category": "트랜잭션 이상현상",
+    "type": "SHORT_ANSWER",
+    "question": "하나의 트랜잭션 내에서 동일한 범위(Range)의 쿼리를 두 번 실행했을 때, 다른 트랜잭션이 새로운 행을 INSERT 및 커밋하여 이전에 없던 유령 행이 나타나는 현상은 무엇인가?",
+    "answer": "Phantom Read",
+    "explanation": "Phantom Read(유령 읽기)는 범위 조건 검색 시 새로운 레코드가 불쑥 나타나거나 사라지는 현상입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "Phantom Read",
+      "유령읽기",
+      "범위검색이상"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-isolation"
+  },
+  {
+    "id": "EXP_DB2_008",
+    "subject": "데이터베이스구축",
+    "category": "물리 데이터베이스",
+    "type": "SHORT_ANSWER",
+    "question": "인덱스의 리프 블록(Leaf Block)이 실제 데이터 페이지와 일치하여 물리적으로 키 순서대로 정렬되어 저장되며, 테이블당 오직 1개만 생성 가능한 인덱스는 무엇인가?",
+    "answer": "클러스터드 인덱스",
+    "explanation": "클러스터드 인덱스(Clustered Index, 군집 인덱스)는 실제 데이터 행 자체가 인덱스 키 순서로 정렬되어 범위 검색(BETWEEN) 속도가 매우 뛰어납니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "클러스터드 인덱스",
+      "Clustered Index",
+      "물리정렬"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-index"
+  },
+  {
+    "id": "EXP_DB2_009",
+    "subject": "데이터베이스구축",
+    "category": "물리 데이터베이스",
+    "type": "SHORT_ANSWER",
+    "question": "인덱스의 리프 블록에 실제 데이터 행 대신 데이터의 물리적 위치 주소(RID/ROWID)를 저장하여 테이블당 여러 개를 자유롭게 생성할 수 있는 인덱스는 무엇인가?",
+    "answer": "넌클러스터드 인덱스",
+    "explanation": "넌클러스터드 인덱스(Non-Clustered Index, 보조 인덱스)는 별도의 인덱스 페이지를 구성하여 실제 데이터 위치를 포인터로 가리킵니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "넌클러스터드 인덱스",
+      "Non-Clustered",
+      "ROWID"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-index"
+  },
+  {
+    "id": "EXP_DB2_010",
+    "subject": "데이터베이스구축",
+    "category": "물리 데이터베이스",
+    "type": "SHORT_ANSWER",
+    "question": "성별(남/여)이나 결제여부(Y/N)처럼 카디널리티(데이터 값의 종류)가 매우 적은 대용량 컬럼에 적합하며, 데이터를 0과 1의 비트 배열로 관리하는 인덱스는 무엇인가?",
+    "answer": "비트맵 인덱스",
+    "explanation": "비트맵 인덱스(Bitmap Index)는 카디널리티가 낮은 컬럼의 다중 조건 검색 및 대용량 DW(데이터웨어하우스) 배치 분석에 매우 효과적입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "비트맵 인덱스",
+      "Bitmap Index",
+      "낮은카디널리티"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-index"
+  },
+  {
+    "id": "EXP_DB2_011",
+    "subject": "데이터베이스구축",
+    "category": "물리 데이터베이스",
+    "type": "SHORT_ANSWER",
+    "question": "데이터 파티셔닝(Partitioning) 기법 중 연속된 날짜(예: 2024년 1월, 2월 등)나 숫자 범위를 기준으로 대용량 테이블을 물리적으로 분할 저장하는 방식은 무엇인가?",
+    "answer": "범위 분할",
+    "explanation": "범위 분할(Range Partitioning)은 날짜나 시계열 데이터를 관리할 때 가장 보편적으로 쓰이는 파티셔닝 방식입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "범위 분할",
+      "Range Partitioning",
+      "파티셔닝"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-partitioning"
+  },
+  {
+    "id": "EXP_DB2_012",
+    "subject": "데이터베이스구축",
+    "category": "물리 데이터베이스",
+    "type": "SHORT_ANSWER",
+    "question": "데이터 파티셔닝 기법 중 파티션 키 컬럼에 해시 함수를 적용하여 연산된 결과값에 따라 데이터를 여러 파티션에 균등하게 분산 배치하는 방식은 무엇인가?",
+    "answer": "해시 분할",
+    "explanation": "해시 분할(Hash Partitioning)은 데이터의 고른 분산으로 특정 파티션에 병목이 집중되는 현상을 방지합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "해시 분할",
+      "Hash Partitioning",
+      "균등분산"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-partitioning"
+  },
+  {
+    "id": "EXP_DB2_013",
+    "subject": "데이터베이스구축",
+    "category": "물리 데이터베이스",
+    "type": "SHORT_ANSWER",
+    "question": "데이터 파티셔닝 기법 중 지역 코드(서울, 경기, 부산)나 지점 코드처럼 명시적으로 정해진 개별 값들의 목록을 기준으로 데이터를 분할하는 방식은 무엇인가?",
+    "answer": "목록 분할",
+    "explanation": "목록 분할(List Partitioning)은 고정된 특정 카테고리나 코드 목록별로 파티션을 매핑합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "목록 분할",
+      "List Partitioning",
+      "코드목록분할"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-partitioning"
+  },
+  {
+    "id": "EXP_DB2_014",
+    "subject": "데이터베이스구축",
+    "category": "물리 데이터베이스",
+    "type": "SHORT_ANSWER",
+    "question": "대용량 데이터를 효율적으로 관리하기 위해 1차로 범위 분할(Range)을 적용한 후 각 파티션 내부를 다시 해시 분할(Hash)로 세분화하는 2단계 복합 파티셔닝 방식은 무엇인가?",
+    "answer": "복합 분할",
+    "explanation": "복합 분할(Composite Partitioning)은 서브 파티셔닝(Sub-partitioning) 기술을 결합하여 대규모 데이터를 최적 관리합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "복합 분할",
+      "Composite Partitioning",
+      "2단계분할"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-partitioning"
+  },
+  {
+    "id": "EXP_DB2_015",
+    "subject": "데이터베이스구축",
+    "category": "정규화",
+    "type": "SHORT_ANSWER",
+    "question": "복합 기본키 {학번, 과목코드} 중 기본키의 전체가 아니라 단지 {과목코드} 일부에만 특정 속성(과목명)이 종속되는 현상을 가리키는 용어는 무엇인가?",
+    "answer": "부분 함수 종속",
+    "explanation": "부분 함수 종속(Partial Functional Dependency)은 제2정규형(2NF)을 만족하기 위해 반드시 분리 제거해야 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "부분 함수 종속",
+      "Partial FD",
+      "2NF대상"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-normalization"
+  },
+  {
+    "id": "EXP_DB2_016",
+    "subject": "데이터베이스구축",
+    "category": "정규화",
+    "type": "SHORT_ANSWER",
+    "question": "속성 X가 Y를 결정하고(X → Y), 다시 Y가 Z를 결정하여(Y → Z) 논리적으로 X가 Z를 결정하게 되는(X → Z) 종속 관계를 무엇이라 하는가?",
+    "answer": "이행적 함수 종속",
+    "explanation": "이행적 함수 종속(Transitive Functional Dependency)은 제3정규형(3NF)에서 별도 테이블로 분리 제거합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "이행적 함수 종속",
+      "Transitive FD",
+      "3NF대상"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-normalization"
+  },
+  {
+    "id": "EXP_DB2_017",
+    "subject": "데이터베이스구축",
+    "category": "정규화",
+    "type": "SHORT_ANSWER",
+    "question": "제3정규형을 만족하는 릴레이션에서 모든 결정자(Determinant)가 반드시 후보키(Candidate Key)가 되도록 강제하는 정규형은 무엇인가?",
+    "answer": "BCNF",
+    "explanation": "보이스-코드 정규형(BCNF, Boyce-Codd Normal Form)은 후보키가 아닌 결정자를 제거하는 강한 제3정규형입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "BCNF",
+      "Boyce-Codd",
+      "결정자후보키"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-normalization"
+  },
+  {
+    "id": "EXP_DB2_018",
+    "subject": "데이터베이스구축",
+    "category": "정규화",
+    "type": "SHORT_ANSWER",
+    "question": "하나의 릴레이션 내에서 어떤 속성 X의 값 하나에 다른 속성 Y의 다중 값들이 독립적으로 대응되는 다치 종속(MVD)을 제거하는 정규형은 무엇인가?",
+    "answer": "제4정규형",
+    "explanation": "제4정규형(4NF)은 다치 종속(Multi-Valued Dependency, A ->> B)을 분리 제거하는 단계입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "제4정규형",
+      "4NF",
+      "다치종속제거"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-normalization"
+  },
+  {
+    "id": "EXP_DB2_019",
+    "subject": "데이터베이스구축",
+    "category": "정규화",
+    "type": "SHORT_ANSWER",
+    "question": "테이블을 분해했다가 다시 무손실 조인할 때 원래 없던 이상한 거짓 튜플이 생기지 않도록 조인 종속성(JD)을 만족시키는 최고 수준의 정규형은 무엇인가?",
+    "answer": "제5정규형",
+    "explanation": "제5정규형(5NF, PJ/NF)은 조인 종속성(Join Dependency)을 제거하여 후보키만을 통해 무손실 분해/조인이 가능하도록 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "제5정규형",
+      "5NF",
+      "조인종속제거"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-normalization"
+  },
+  {
+    "id": "EXP_DB2_020",
+    "subject": "데이터베이스구축",
+    "category": "데이터 모델링",
+    "type": "SHORT_ANSWER",
+    "question": "데이터베이스 모델링 3단계 중 요구사항 명세서를 바탕으로 핵심 엔티티와 관계를 도출하여 개념적 스키마(개체-관계 다이어그램, ERD)를 생성하는 단계는 무엇인가?",
+    "answer": "개념적 설계",
+    "explanation": "개념적 설계(Conceptual Design)는 DBMS에 독립적인 추상화 단계로 핵심 산출물은 ERD입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "개념적 설계",
+      "Conceptual Design",
+      "ERD"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-modeling"
+  },
+  {
+    "id": "EXP_DB2_021",
+    "subject": "데이터베이스구축",
+    "category": "데이터 모델링",
+    "type": "SHORT_ANSWER",
+    "question": "데이터베이스 모델링 3단계 중 개념 스키마를 바탕으로 목표 RDBMS에 맞게 정규화를 수행하고 외래키와 테이블 스키마를 정의하는 단계는 무엇인가?",
+    "answer": "논리적 설계",
+    "explanation": "논리적 설계(Logical Design)는 정규화, 매핑 룰, 트랜잭션 인터페이스를 설계하는 단계입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "논리적 설계",
+      "Logical Design",
+      "정규화수행"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-modeling"
+  },
+  {
+    "id": "EXP_DB2_022",
+    "subject": "데이터베이스구축",
+    "category": "데이터 모델링",
+    "type": "SHORT_ANSWER",
+    "question": "데이터베이스 모델링 3단계 중 실제 특정 하드웨어 및 DBMS 엔진의 저장 구조를 고려하여 인덱스, 파티셔닝, 반정규화, 테이블스페이스를 설계하는 단계는 무엇인가?",
+    "answer": "물리적 설계",
+    "explanation": "물리적 설계(Physical Design)는 성능 향상을 위해 저장 장치 레코드 배치, 반정규화, 인덱스를 세부 설계합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "물리적 설계",
+      "Physical Design",
+      "인덱스및반정규화"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-modeling"
+  },
+  {
+    "id": "EXP_DB2_023",
+    "subject": "데이터베이스구축",
+    "category": "키(Key)의 개념",
+    "type": "SHORT_ANSWER",
+    "question": "릴레이션에서 튜플을 고유하게 식별할 수 있는 유일성(Uniqueness)은 만족하지만, 불필요한 속성이 포함되어 최소성(Minimality)은 만족하지 못하는 키는 무엇인가?",
+    "answer": "슈퍼키",
+    "explanation": "슈퍼키(Super Key)는 유일성만 만족합니다. 유일성과 최소성을 모두 만족하는 키는 후보키(Candidate Key)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "슈퍼키",
+      "Super Key",
+      "유일성만만족"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-keys"
+  },
+  {
+    "id": "EXP_DB2_024",
+    "subject": "데이터베이스구축",
+    "category": "키(Key)의 개념",
+    "type": "SHORT_ANSWER",
+    "question": "여러 후보키(Candidate Key) 중에서 기본키(Primary Key)로 선택되지 못하고 남은 나머지 후보키들을 가리키는 용어는 무엇인가?",
+    "answer": "대체키",
+    "explanation": "대체키(Alternate Key, 보조키)는 언제든 기본키가 될 수 있는 자격을 갖춘 예비 후보키입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "대체키",
+      "Alternate Key",
+      "후보키잔여"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-keys"
+  },
+  {
+    "id": "EXP_DB2_025",
+    "subject": "데이터베이스구축",
+    "category": "데이터 모델링",
+    "type": "SHORT_ANSWER",
+    "question": "부모 엔티티의 기본키가 자식 엔티티의 기본키(PK)의 일부(구성원)로 그대로 상속되어 상속받는 엔티티 관계를 무엇이라 하는가?",
+    "answer": "식별 관계",
+    "explanation": "식별 관계(Identifying Relationship)는 부모 없이는 자식이 독립적으로 존재할 수 없는 강한 종속 관계이며 실선으로 표기합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "식별 관계",
+      "Identifying",
+      "실선표기"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-modeling"
+  },
+  {
+    "id": "EXP_DB2_026",
+    "subject": "데이터베이스구축",
+    "category": "데이터 모델링",
+    "type": "SHORT_ANSWER",
+    "question": "부모 엔티티의 기본키가 자식 엔티티의 일반 속성(외래키 FK)으로만 상속되어 자식 엔티티가 부모 없이도 독립적으로 존재 가능한 관계를 무엇이라 하는가?",
+    "answer": "비식별 관계",
+    "explanation": "비식별 관계(Non-identifying Relationship)는 약한 종속 관계이며 점선으로 표기합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "비식별 관계",
+      "Non-identifying",
+      "점선표기"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-modeling"
+  },
+  {
+    "id": "EXP_DB2_027",
+    "subject": "데이터베이스구축",
+    "category": "데이터 무결성",
+    "type": "SHORT_ANSWER",
+    "question": "데이터베이스의 기본키(Primary Key)는 어떠한 경우에도 NULL 값을 가질 수 없으며 릴레이션 내에서 중복될 수 없다는 무결성 규칙은 무엇인가?",
+    "answer": "개체 무결성",
+    "explanation": "개체 무결성(Entity Integrity)은 테이블 내의 모든 튜플을 유일하게 식별할 수 있도록 기본키가 유효한 값을 가져야 함을 규정합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "개체 무결성",
+      "Entity Integrity",
+      "기본키규칙"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-integrity"
+  },
+  {
+    "id": "EXP_DB2_028",
+    "subject": "데이터베이스구축",
+    "category": "데이터 무결성",
+    "type": "SHORT_ANSWER",
+    "question": "자식 릴레이션의 외래키(Foreign Key) 값은 반드시 참조하는 부모 릴레이션의 기본키 값과 동일하거나 또는 NULL이어야 한다는 무결성 규칙은 무엇인가?",
+    "answer": "참조 무결성",
+    "explanation": "참조 무결성(Referential Integrity)은 존재하지 않는 부모 레코드를 참조하는 고아 레코드(Orphan Record)의 발생을 차단합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "참조 무결성",
+      "Referential Integrity",
+      "외래키규칙"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-integrity"
+  },
+  {
+    "id": "EXP_DB2_029",
+    "subject": "데이터베이스구축",
+    "category": "데이터 무결성",
+    "type": "SHORT_ANSWER",
+    "question": "테이블의 특정 속성에 입력되는 모든 값은 그 속성에 정의된 허용 데이터 타입, 길이, 허용 값 목록(도메인)에 속해야 한다는 무결성 규칙은 무엇인가?",
+    "answer": "도메인 무결성",
+    "explanation": "도메인 무결성(Domain Integrity)은 속성 값의 타입, 형식, 범위(예: 나이는 양수)를 검증합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "도메인 무결성",
+      "Domain Integrity",
+      "허용범위"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-integrity"
+  },
+  {
+    "id": "EXP_DB2_030",
+    "subject": "데이터베이스구축",
+    "category": "데이터베이스 회복",
+    "type": "SHORT_ANSWER",
+    "question": "트랜잭션 회복 연산 중 장애 발생 시 트랜잭션의 변경 작업이 시작된 이후의 로그 기록을 바탕으로 취소(취소하여 원래대로 되돌림)하는 연산은 무엇인가?",
+    "answer": "UNDO",
+    "explanation": "UNDO(취소)는 완료되지 못한 미완성 트랜잭션의 수정을 취소하여 이전 상태로 복구합니다. 이미 COMMIT된 작업을 재실행하는 것은 REDO(재실행)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "UNDO",
+      "취소연산",
+      "회복"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-recovery"
+  },
+  {
+    "id": "EXP_DB2_031",
+    "subject": "데이터베이스구축",
+    "category": "데이터베이스 회복",
+    "type": "SHORT_ANSWER",
+    "question": "트랜잭션 회복 연산 중 이미 성공적으로 COMMIT 완료된 트랜잭션의 변경 내용이 장애로 디스크에 반영되지 못했을 때 로그를 바탕으로 재실행하여 반영하는 연산은 무엇인가?",
+    "answer": "REDO",
+    "explanation": "REDO(재실행)는 커밋된 트랜잭션의 영속성을 보장하기 위해 로그를 읽어 변경 사항을 디스크에 다시 씁니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "REDO",
+      "재실행연산",
+      "영속성보장"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-recovery"
+  },
+  {
+    "id": "EXP_DB2_032",
+    "subject": "데이터베이스구축",
+    "category": "데이터베이스 회복",
+    "type": "SHORT_ANSWER",
+    "question": "회복 기법 중 트랜잭션 수행 도중에는 변경 내용을 로그 파일에만 기록해두고, 트랜잭션이 완전히 COMMIT된 이후에만 실제 데이터베이스 디스크에 반영하는 기법은 무엇인가?",
+    "answer": "지연 갱신 기법",
+    "explanation": "지연 갱신(Deferred Update) 기법은 커밋 전까지 디스크를 수정하지 않으므로 장애 시 UNDO가 필요 없고 오직 REDO 연산만 수행합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "지연 갱신 기법",
+      "Deferred Update",
+      "REDO만수행"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-recovery"
+  },
+  {
+    "id": "EXP_DB2_033",
+    "subject": "데이터베이스구축",
+    "category": "데이터베이스 회복",
+    "type": "SHORT_ANSWER",
+    "question": "회복 기법 중 트랜잭션 수행 도중 발생한 변경 결과를 디스크에 즉시 반영하되, 장애 발생 시 커밋되지 않은 트랜잭션은 로그를 통해 UNDO하는 기법은 무엇인가?",
+    "answer": "즉시 갱신 기법",
+    "explanation": "즉시 갱신(Immediate Update) 기법은 디스크가 즉시 갱신되므로 미완료 트랜잭션에 대해서는 UNDO, 완료된 트랜잭션에 대해서는 REDO가 모두 필요합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "즉시 갱신 기법",
+      "Immediate Update",
+      "REDO와UNDO"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-recovery"
+  },
+  {
+    "id": "EXP_DB2_034",
+    "subject": "데이터베이스구축",
+    "category": "데이터베이스 회복",
+    "type": "SHORT_ANSWER",
+    "question": "로그 파일의 전체를 처음부터 끝까지 검색하지 않도록 주기적으로 주기억장치의 버퍼 내용을 디스크에 강제 플러시하고 검사점을 기록하여 회복 시간을 단축하는 기법은 무엇인가?",
+    "answer": "체크포인트 회복 기법",
+    "explanation": "체크포인트(Checkpoint, 검사점) 회복 기법은 장애 시 가장 최근의 검사점 이후의 로그만 검사하여 불필요한 REDO/UNDO 작업을 대폭 줄입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "체크포인트 회복 기법",
+      "검사점",
+      "Checkpoint"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-recovery"
+  },
+  {
+    "id": "EXP_DB2_035",
+    "subject": "데이터베이스구축",
+    "category": "병행 제어",
+    "type": "SHORT_ANSWER",
+    "question": "로킹(Locking) 단위가 너무 클 때(예: 데이터베이스 전체 잠금) 병행성(동시성 수준)은 어떻게 되는가 (높아진다 / 낮아진다)?",
+    "answer": "낮아진다",
+    "explanation": "로킹 단위가 커지면 관리할 락의 수는 줄어 오버헤드는 감소하지만, 다른 트랜잭션들이 접근하지 못해 병행성(동시성)은 급격히 낮아집니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "낮아진다",
+      "로킹단위",
+      "병행성감소"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-concurrency"
+  },
+  {
+    "id": "EXP_DB2_036",
+    "subject": "데이터베이스구축",
+    "category": "병행 제어",
+    "type": "SHORT_ANSWER",
+    "question": "로킹 단위가 너무 작을 때(예: 레코드나 필드 단위 잠금) 시스템이 관리해야 할 락(Lock)의 총 개수와 오버헤드는 어떻게 되는가 (증가한다 / 감소한다)?",
+    "answer": "증가한다",
+    "explanation": "로킹 단위가 세밀해질수록 동시 처리성은 극대화되지만, 관리해야 할 락 테이블의 크기와 관리 오버헤드는 크게 증가합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "증가한다",
+      "로킹단위오버헤드"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-concurrency"
+  },
+  {
+    "id": "EXP_DB2_037",
+    "subject": "데이터베이스구축",
+    "category": "병행 제어",
+    "type": "SHORT_ANSWER",
+    "question": "공유 락(Shared Lock, S-Lock)이 걸려있는 데이터에 대해 다른 트랜잭션이 추가로 획득할 수 있는 락은 공유 락(S)인가 배타 락(X)인가?",
+    "answer": "공유 락",
+    "explanation": "공유 락은 읽기 전용 락으로 다른 트랜잭션의 동시 읽기(S-Lock)는 허용하지만, 데이터 수정을 위한 배타 락(Exclusive Lock, X-Lock)은 허용하지 않습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "공유 락",
+      "Shared Lock",
+      "S-Lock호환성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-concurrency"
+  },
+  {
+    "id": "EXP_DB2_038",
+    "subject": "데이터베이스구축",
+    "category": "병행 제어",
+    "type": "SHORT_ANSWER",
+    "question": "2단계 로킹 규약(2PL)에서 트랜잭션은 락을 새롭게 획득하기만 하고 해제는 절대 할 수 없는 단계를 무엇이라 하는가?",
+    "answer": "확장 단계",
+    "explanation": "2PL은 락을 획득만 하는 확장 단계(Growing Phase)와 락을 해제만 하는 축소 단계(Shrinking Phase)로 엄격히 구분됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "확장 단계",
+      "Growing Phase",
+      "2PL"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-concurrency"
+  },
+  {
+    "id": "EXP_DB2_039",
+    "subject": "데이터베이스구축",
+    "category": "분산 데이터베이스",
+    "type": "SHORT_ANSWER",
+    "question": "분산 데이터베이스 투명성(Transparency) 중 사용자가 데이터베이스가 물리적으로 어느 지역의 어느 서버에 저장되어 있는지 알 필요 없이 논리적 이름만으로 접근할 수 있는 특성은 무엇인가?",
+    "answer": "위치 투명성",
+    "explanation": "위치 투명성(Location Transparency)은 사이트의 물리적 위치가 질의문에 영향을 주지 않는 특성입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "위치 투명성",
+      "Location Transparency",
+      "분산투명성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-distributed"
+  },
+  {
+    "id": "EXP_DB2_040",
+    "subject": "데이터베이스구축",
+    "category": "분산 데이터베이스",
+    "type": "SHORT_ANSWER",
+    "question": "분산 데이터베이스 투명성 중 하나의 큰 테이블이 여러 세부 파티션 조각으로 나뉘어 여러 노드에 분산 저장되어 있더라도 사용자는 마치 단일 테이블인 것처럼 조회할 수 있는 특성은 무엇인가?",
+    "answer": "분할 투명성",
+    "explanation": "분할 투명성(Fragmentation Transparency)은 단편화 구조를 사용자로부터 은닉합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "분할 투명성",
+      "Fragmentation Transparency",
+      "단편화은닉"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-distributed"
+  },
+  {
+    "id": "EXP_DB2_041",
+    "subject": "데이터베이스구축",
+    "category": "분산 데이터베이스",
+    "type": "SHORT_ANSWER",
+    "question": "분산 데이터베이스 투명성 중 데이터의 성능과 신뢰성을 위해 동일한 데이터가 여러 사이트에 복제되어 상주하더라도 사용자는 단 하나의 사본만 존재하는 것처럼 사용하는 특성은 무엇인가?",
+    "answer": "복제 투명성",
+    "explanation": "복제 투명성(Replication Transparency)은 여러 복제본 간의 일관성 동기화 작업을 시스템이 백그라운드에서 처리합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "복제 투명성",
+      "Replication Transparency",
+      "사본관리"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-distributed"
+  },
+  {
+    "id": "EXP_DB2_042",
+    "subject": "데이터베이스구축",
+    "category": "분산 데이터베이스",
+    "type": "SHORT_ANSWER",
+    "question": "분산 데이터베이스 투명성 중 특정 노드의 서버나 통신 네트워크에 장애가 발생하더라도 전체 데이터베이스 시스템의 트랜잭션 무결성이 유지되는 특성은 무엇인가?",
+    "answer": "장애 투명성",
+    "explanation": "장애 투명성(Failure Transparency)은 국소적 하드웨어/통신 장애에도 불구하고 시스템이 올바르게 작업을 완수하도록 보장합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "장애 투명성",
+      "Failure Transparency",
+      "내고장성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-distributed"
+  },
+  {
+    "id": "EXP_DB2_043",
+    "subject": "데이터베이스구축",
+    "category": "분산 시스템 이론",
+    "type": "SHORT_ANSWER",
+    "question": "에릭 브루어(Eric Brewer)의 CAP 정리에서 3대 특성 중 네트워크 분할 장애가 발생하더라도 정상 노드들이 즉시 응답을 반환할 수 있어야 한다는 가용성의 영문 약칭은 무엇인가?",
+    "answer": "A",
+    "explanation": "CAP 정리는 일관성(Consistency: C), 가용성(Availability: A), 분할 내구성(Partition Tolerance: P) 중 동시 2가지만 충족 가능함을 증명한 이론입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "A",
+      "Availability",
+      "가용성",
+      "CAP정리"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-nosql"
+  },
+  {
+    "id": "EXP_DB2_044",
+    "subject": "데이터베이스구축",
+    "category": "NoSQL 데이터베이스",
+    "type": "SHORT_ANSWER",
+    "question": "NoSQL 데이터 모델 중 Redis, Memcached처럼 가장 단순한 구조로 키와 값의 일대일 매핑만을 지원하여 초고속 조회가 가능한 유형은 무엇인가?",
+    "answer": "Key-Value",
+    "explanation": "Key-Value 모델은 데이터 구조가 가장 단순하여 캐싱 및 세션 저장소로 광범위하게 쓰입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Key-Value",
+      "키값저장소",
+      "NoSQL유형"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-nosql"
+  },
+  {
+    "id": "EXP_DB2_045",
+    "subject": "데이터베이스구축",
+    "category": "NoSQL 데이터베이스",
+    "type": "SHORT_ANSWER",
+    "question": "NoSQL 데이터 모델 중 MongoDB, CouchDB처럼 JSON, BSON, XML 등의 유연한 계층형 문서 형식으로 데이터를 저장하고 검색하는 유형은 무엇인가?",
+    "answer": "문서형 데이터베이스",
+    "explanation": "문서형(Document Store) NoSQL은 스키마리스(Schema-less) 특성으로 복합 중첩 객체를 유연하게 저장합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "문서형 데이터베이스",
+      "Document Store",
+      "MongoDB"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-nosql"
+  },
+  {
+    "id": "EXP_DB2_046",
+    "subject": "데이터베이스구축",
+    "category": "반정규화",
+    "type": "SHORT_ANSWER",
+    "question": "정규화된 시스템에서 빈번한 조인(Join)으로 인한 성능 저하를 해결하기 위해 시스템의 일관성을 일부 희생하고 의도적으로 중복, 병합을 수행하는 기법은 무엇인가?",
+    "answer": "반정규화",
+    "explanation": "반정규화(De-normalization, 역정규화)는 데이터 조회 성능 향상을 목적으로 테이블 병합, 컬럼 중복 등을 수행합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "반정규화",
+      "역정규화",
+      "조인성능개선"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-denormalization"
+  },
+  {
+    "id": "EXP_DB2_047",
+    "subject": "데이터베이스구축",
+    "category": "반정규화",
+    "type": "SHORT_ANSWER",
+    "question": "반정규화 기법 중 한 테이블의 컬럼 수가 너무 많아(예: 100개 이상) 디스크 I/O 블록 경합이 발생할 때 컬럼 사용 빈도에 따라 테이블을 1:1로 수직 쪼개는 기법은 무엇인가?",
+    "answer": "테이블 수직 분할",
+    "explanation": "테이블 수직 분할(Vertical Partitioning)은 자주 조회되는 핵심 컬럼과 거의 조회되지 않는 컬럼을 분리하여 I/O 성능을 높입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "테이블 수직 분할",
+      "Vertical Partitioning",
+      "반정규화"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-denormalization"
+  },
+  {
+    "id": "EXP_DB2_048",
+    "subject": "데이터베이스구축",
+    "category": "반정규화",
+    "type": "SHORT_ANSWER",
+    "question": "특정 테이블의 행(레코드) 수가 수천만 건에 달할 때 기간별 또는 지점별로 행 단위로 수평 쪼개어 별도의 테이블들로 분리하는 기법은 무엇인가?",
+    "answer": "테이블 수평 분할",
+    "explanation": "테이블 수평 분할(Horizontal Partitioning)은 행(레코드)을 기준으로 쪼개어 검색 범위를 축소시킵니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "테이블 수평 분할",
+      "Horizontal Partitioning",
+      "반정규화"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-denormalization"
+  },
+  {
+    "id": "EXP_DB2_049",
+    "subject": "데이터베이스구축",
+    "category": "데이터베이스 설계",
+    "type": "SHORT_ANSWER",
+    "question": "데이터베이스의 상태를 변경시키는 작업의 논리적 기본 단위로, 원자성(A), 일관성(C), 격리성(I), 영속성(D)의 4대 특성을 갖는 개념은 무엇인가?",
+    "answer": "트랜잭션",
+    "explanation": "트랜잭션(Transaction)은 전부 실행되거나 전부 취소(All or Nothing)되어야 하는 작업의 완전한 논리 단위입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "트랜잭션",
+      "Transaction",
+      "ACID"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-transaction"
+  },
+  {
+    "id": "EXP_DB2_050",
+    "subject": "데이터베이스구축",
+    "category": "데이터베이스 설계",
+    "type": "SHORT_ANSWER",
+    "question": "관계형 데이터베이스 릴레이션에서 속성(Attribute)들의 총 개수를 나타내는 용어는 무엇인가?",
+    "answer": "디그리",
+    "explanation": "디그리(Degree, 차수)는 속성의 개수입니다. 튜플(행)의 총 개수는 카디널리티(Cardinality, 기수)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "디그리",
+      "Degree",
+      "차수",
+      "속성수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-db-theory"
+  },
+  {
+    "id": "EXP_IS_001",
+    "subject": "정보시스템구축관리",
+    "category": "품질 표준",
+    "type": "SHORT_ANSWER",
+    "question": "ISO/IEC 9126 소프트웨어 품질 특성 중 명시된 조건에서 시스템이 오류 없이 지속적으로 정상 동작을 유지할 수 있는 정도를 나타내는 품질 특성은 무엇인가?",
+    "answer": "신뢰성",
+    "explanation": "신뢰성(Reliability)은 성숙성, 고장 허용성, 회복성 등의 세부 부특성을 포함합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "신뢰성",
+      "Reliability",
+      "ISO 9126"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-quality"
+  },
+  {
+    "id": "EXP_IS_002",
+    "subject": "정보시스템구축관리",
+    "category": "품질 표준",
+    "type": "SHORT_ANSWER",
+    "question": "ISO/IEC 9126 소프트웨어 품질 특성 중 소프트웨어를 다른 하드웨어나 운영체제 환경으로 쉽게 변환하거나 이전하여 실행할 수 있는 능력을 나타내는 특성은 무엇인가?",
+    "answer": "이식성",
+    "explanation": "이식성(Portability)은 적용성, 설치성, 대체성, 공존성 등의 부특성을 가집니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "이식성",
+      "Portability",
+      "환경이전"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-quality"
+  },
+  {
+    "id": "EXP_IS_003",
+    "subject": "정보시스템구축관리",
+    "category": "품질 표준",
+    "type": "SHORT_ANSWER",
+    "question": "ISO/IEC 25010(SQuaRE) 표준에서 기존 ISO/IEC 9126의 6대 품질 특성에 새롭게 독립적인 주특성으로 추가된 2가지 품질 특성은 호환성과 무엇인가?",
+    "answer": "보안성",
+    "explanation": "ISO/IEC 25010은 보안성(Security)과 호환성(Compatibility)을 주특성으로 신설하여 총 8대 품질 모델을 구성했습니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "보안성",
+      "Security",
+      "ISO 25010"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-quality"
+  },
+  {
+    "id": "EXP_IS_004",
+    "subject": "정보시스템구축관리",
+    "category": "프로세스 성숙도",
+    "type": "SHORT_ANSWER",
+    "question": "CMMI(통합 능력 성숙도 모델)의 5단계 성숙도 레벨 중 조직 차원의 표준 프로세스가 문서화되어 전사적으로 체계화된 3단계의 명칭은 무엇인가?",
+    "answer": "정의됨",
+    "explanation": "CMMI 5단계는 1단계 초기(Initial) → 2단계 관리됨(Managed) → 3단계 정의됨(Defined) → 4단계 정량적 관리됨 → 5단계 최적화 순서입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "정의됨",
+      "Defined",
+      "CMMI 3단계"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-cmmi"
+  },
+  {
+    "id": "EXP_IS_005",
+    "subject": "정보시스템구축관리",
+    "category": "프로세스 성숙도",
+    "type": "SHORT_ANSWER",
+    "question": "CMMI 5단계 중 프로젝트 목표 달성을 위해 통계적 기법과 정량적 데이터 측정을 활용하여 프로세스를 예측하고 통제하는 4단계의 명칭은 무엇인가?",
+    "answer": "정량적 관리됨",
+    "explanation": "4단계 정량적 관리됨(Quantitatively Managed)은 측정 지표와 통계적 기법을 프로세스 통제에 활용합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "정량적 관리됨",
+      "Quantitatively Managed",
+      "CMMI 4단계"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-cmmi"
+  },
+  {
+    "id": "EXP_IS_006",
+    "subject": "정보시스템구축관리",
+    "category": "프로세스 성숙도",
+    "type": "SHORT_ANSWER",
+    "question": "CMMI 최고 단계인 5단계로, 지속적인 프로세스 혁신과 피드백을 통해 프로세스를 지속적으로 개선해 나가는 단계의 명칭은 무엇인가?",
+    "answer": "최적화",
+    "explanation": "5단계 최적화(Optimizing)는 신기술 도입과 결함 원인 분석을 통해 프로세스를 끊임없이 자체 혁신합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "최적화",
+      "Optimizing",
+      "CMMI 5단계"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-cmmi"
+  },
+  {
+    "id": "EXP_IS_007",
+    "subject": "정보시스템구축관리",
+    "category": "프로세스 평가",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 프로세스 평가 및 개선을 위한 국제 표준 규격으로 ISO/IEC 15504라는 명칭으로도 불리는 표준의 이름은 무엇인가?",
+    "answer": "SPICE",
+    "explanation": "SPICE(Software Process Improvement and Capability dEtermination)는 0~5단계의 6개 프로세스 수행 수준을 제시합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SPICE",
+      "ISO 15504",
+      "프로세스평가"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-spice"
+  },
+  {
+    "id": "EXP_IS_008",
+    "subject": "정보시스템구축관리",
+    "category": "형상 관리",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 형상 관리(SCM) 4대 활동 중 소프트웨어 개발 주기 동안 만들어지는 각종 산출물에 고유 번호를 부여하고 형상 항목을 식별하는 활동은 무엇인가?",
+    "answer": "형상 식별",
+    "explanation": "형상 식별(Configuration Identification)은 베이스라인(기준선)을 수립하고 형상 항목의 명칭과 버전을 부여합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "형상 식별",
+      "베이스라인",
+      "형상관리활동"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-scm"
+  },
+  {
+    "id": "EXP_IS_009",
+    "subject": "정보시스템구축관리",
+    "category": "형상 관리",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 형상 변경 요청이 들어왔을 때 형상 통제 위원회(CCB)가 그 타당성을 검토하고 승인, 변경 작업을 관리하는 활동은 무엇인가?",
+    "answer": "형상 통제",
+    "explanation": "형상 통제(Configuration Control)는 베이스라인의 무단 변경을 방지하고 공식 변경 승인 절차를 관리합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "형상 통제",
+      "CCB",
+      "변경승인"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-scm"
+  },
+  {
+    "id": "EXP_IS_010",
+    "subject": "정보시스템구축관리",
+    "category": "형상 관리",
+    "type": "SHORT_ANSWER",
+    "question": "베이스라인의 무결성을 평가하기 위해 소프트웨어 형상 항목들이 요구사항과 일치하게 온전히 작성되었는지 공식적으로 검증하는 활동은 무엇인가?",
+    "answer": "형상 감사",
+    "explanation": "형상 감사(Configuration Audit)는 기능적/물리적 감사를 수행하여 형상 항목의 무결성을 보증합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "형상 감사",
+      "Configuration Audit",
+      "무결성검증"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-scm"
+  },
+  {
+    "id": "EXP_IS_011",
+    "subject": "정보시스템구축관리",
+    "category": "형상 관리",
+    "type": "SHORT_ANSWER",
+    "question": "형상 관리에서 소프트웨어 개발 과정 중 특정 시점에 모든 팀원이 공식적으로 합의하고 승인하여 변경을 엄격히 통제하는 기준점을 무엇이라 하는가?",
+    "answer": "베이스라인",
+    "explanation": "베이스라인(Baseline, 기준선)은 이후 변경 사항을 추적하고 비교하는 기준이 됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "베이스라인",
+      "Baseline",
+      "기준선"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-scm"
+  },
+  {
+    "id": "EXP_IS_012",
+    "subject": "정보시스템구축관리",
+    "category": "형상 관리",
+    "type": "SHORT_ANSWER",
+    "question": "형상 항목의 변경 요구를 공식적으로 접수하여 변경의 타당성, 위험도, 영향도를 심의하고 승인 여부를 결정하는 대표 기구의 약칭은 무엇인가?",
+    "answer": "CCB",
+    "explanation": "CCB(Configuration Control Board, 형상 통제 위원회)는 형상 변경의 승인과 통제를 총괄하는 의사결정 협의체입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CCB",
+      "형상통제위원회",
+      "Configuration Control Board"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-scm"
+  },
+  {
+    "id": "EXP_IS_013",
+    "subject": "정보시스템구축관리",
+    "category": "버전 관리",
+    "type": "SHORT_ANSWER",
+    "question": "버전 관리 도구 중 Git이나 Mercurial처럼 중앙 서버가 다운되어도 개발자의 로컬 저장소에서 독립적으로 커밋과 브랜치 작업을 완벽히 수행할 수 있는 저장소 유형은 무엇인가?",
+    "answer": "분산 저장소 방식",
+    "explanation": "분산 버전 관리(DVCS)는 모든 개발자가 전체 프로젝트 히스토리를 로컬에 복제하므로 오프라인 작업이 가능합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "분산 저장소 방식",
+      "DVCS",
+      "Git"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-scm"
+  },
+  {
+    "id": "EXP_IS_014",
+    "subject": "정보시스템구축관리",
+    "category": "버전 관리",
+    "type": "SHORT_ANSWER",
+    "question": "버전 관리 도구 중 SVN이나 CVS처럼 하나의 중앙 원격 서버에 모든 리포지토리가 집중되어 클라이언트가 중앙 서버에 접속해야만 커밋할 수 있는 유형은 무엇인가?",
+    "answer": "클라이언트 서버 방식",
+    "explanation": "클라이언트/서버 방식(CVCS)은 중앙 서버에 변경 사항이 집중되므로 서버 장애 시 원격 커밋 작업이 중단됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "클라이언트 서버 방식",
+      "CVCS",
+      "SVN"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-scm"
+  },
+  {
+    "id": "EXP_IS_015",
+    "subject": "정보시스템구축관리",
+    "category": "개발 방법론 테일러링",
+    "type": "SHORT_ANSWER",
+    "question": "프로젝트 특성에 맞게 소프트웨어 개발 방법론의 절차나 산출물을 조정하는 테일러링(Tailoring) 시 법적 규제나 정부 표준 가이드라인은 내부적 요인인가 외부적 요인인가?",
+    "answer": "외부적 요인",
+    "explanation": "법적 규제, 국제 표준, 고객사의 컴플라이언스는 외부적 요인에 속합니다. 개발팀의 역량, 기술 환경, 납기는 내부적 요인입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "외부적 요인",
+      "테일러링요인",
+      "법적규제"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-tailoring"
+  },
+  {
+    "id": "EXP_IS_016",
+    "subject": "정보시스템구축관리",
+    "category": "재해 복구",
+    "type": "SHORT_ANSWER",
+    "question": "재해 복구(DR) 목표 지표 중 시스템에 중단 장애가 발생한 시점부터 다시 정상적으로 업무 서비스를 재개할 때까지 걸리는 최대 허용 시간의 약칭은 무엇인가?",
+    "answer": "RTO",
+    "explanation": "RTO(Recovery Time Objective, 목표 복구 시간)는 업무 복구까지 허용되는 최대 시간입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "RTO",
+      "Recovery Time Objective",
+      "목표복구시간"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-dr"
+  },
+  {
+    "id": "EXP_IS_017",
+    "subject": "정보시스템구축관리",
+    "category": "재해 복구",
+    "type": "SHORT_ANSWER",
+    "question": "재해 복구 목표 지표 중 데이터 백업 주기와 관련하여 재해 발생 시 최대로 허용 가능한 데이터 유실 시점(시간적 범위)을 나타내는 약칭은 무엇인가?",
+    "answer": "RPO",
+    "explanation": "RPO(Recovery Point Objective, 목표 복구 시점)는 유실되어도 무방하다고 감내할 수 있는 데이터의 과거 시점입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "RPO",
+      "Recovery Point Objective",
+      "목표복구시점"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-dr"
+  },
+  {
+    "id": "EXP_IS_018",
+    "subject": "정보시스템구축관리",
+    "category": "재해 복구",
+    "type": "SHORT_ANSWER",
+    "question": "재해 복구 센터 유형 중 주 센터와 완전히 동일한 인프라를 구축하고 데이터를 실시간 동기 복제(Active-Active)하여 RTO를 0에 가깝게 유지하는 센터는 무엇인가?",
+    "answer": "미러 사이트",
+    "explanation": "미러 사이트(Mirror Site)는 구축 비용이 가장 비싸지만 무중단 즉각 복구가 가능합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "미러 사이트",
+      "Mirror Site",
+      "RTO 0"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-dr"
+  },
+  {
+    "id": "EXP_IS_019",
+    "subject": "정보시스템구축관리",
+    "category": "재해 복구",
+    "type": "SHORT_ANSWER",
+    "question": "재해 복구 센터 유형 중 주 센터와 동일한 하드웨어를 갖추고 대기(Active-Standby)하면서 수 시간 이내에 서비스를 복구 가능한 센터는 무엇인가?",
+    "answer": "핫 사이트",
+    "explanation": "핫 사이트(Hot Site)는 상시 대기 상태로 수 시간 이내에 전환 가능합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "핫 사이트",
+      "Hot Site",
+      "수시간복구"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-dr"
+  },
+  {
+    "id": "EXP_IS_020",
+    "subject": "정보시스템구축관리",
+    "category": "재해 복구",
+    "type": "SHORT_ANSWER",
+    "question": "재해 복구 센터 유형 중 전산실 공간, 전력 등 최소한의 필수 기반 시설만 갖추고 재해 발생 시 장비를 반입하여 복구하는 비용이 가장 저렴한 센터는 무엇인가?",
+    "answer": "콜드 사이트",
+    "explanation": "콜드 사이트(Cold Site)는 장비와 소프트웨어를 재해 후 설치하므로 복구에 수주~수개월이 소요됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "콜드 사이트",
+      "Cold Site",
+      "최저비용"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-dr"
+  },
+  {
+    "id": "EXP_IS_021",
+    "subject": "정보시스템구축관리",
+    "category": "스토리지 시스템",
+    "type": "SHORT_ANSWER",
+    "question": "서버와 저장 장치(디스크)를 전용 케이블(SATA, SAS 등)로 직접 1:1 연결하는 가장 전통적인 직접 연결 저장 장치 방식의 약칭은 무엇인가?",
+    "answer": "DAS",
+    "explanation": "DAS(Direct Attached Storage)는 속도가 빠르지만 다른 서버와 스토리지 공유가 불가능합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DAS",
+      "Direct Attached Storage",
+      "직접연결"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-storage"
+  },
+  {
+    "id": "EXP_IS_022",
+    "subject": "정보시스템구축관리",
+    "category": "스토리지 시스템",
+    "type": "SHORT_ANSWER",
+    "question": "기존의 일반 이더넷 LAN 네트워크를 통해 여러 서버들이 TCP/IP로 파일 단위(NFS, CIFS) 데이터 공유를 수행하는 네트워크 연결 스토리지의 약칭은 무엇인가?",
+    "answer": "NAS",
+    "explanation": "NAS(Network Attached Storage)는 파일 레벨 스토리지 공유를 지원합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "NAS",
+      "Network Attached Storage",
+      "이더넷파일공유"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-storage"
+  },
+  {
+    "id": "EXP_IS_023",
+    "subject": "정보시스템구축관리",
+    "category": "스토리지 시스템",
+    "type": "SHORT_ANSWER",
+    "question": "광채널(Fibre Channel) 스위치를 사용한 초고속 전용 네트워크망을 구성하여 서버들에 블록(Block) 단위 초고속 I/O를 제공하는 스토리지 영역 네트워크의 약칭은 무엇인가?",
+    "answer": "SAN",
+    "explanation": "SAN(Storage Area Network)은 전용 광채널 망을 통해 블록 스토리지 공유를 지원합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SAN",
+      "Storage Area Network",
+      "광채널"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-storage"
+  },
+  {
+    "id": "EXP_IS_024",
+    "subject": "정보시스템구축관리",
+    "category": "스토리지 시스템",
+    "type": "SHORT_ANSWER",
+    "question": "RAID 레벨 중 데이터를 여러 디스크에 연속적으로 분산 기록하는 스트라이핑(Striping)을 사용해 읽기/쓰기 속도는 극대화되지만 결함 허용(내고장성)이 전혀 없는 레벨은 무엇인가?",
+    "answer": "RAID 0",
+    "explanation": "RAID 0은 디스크 하나만 고장 나도 전체 데이터가 유실됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "RAID 0",
+      "스트라이핑",
+      "결함허용없음"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-storage"
+  },
+  {
+    "id": "EXP_IS_025",
+    "subject": "정보시스템구축관리",
+    "category": "스토리지 시스템",
+    "type": "SHORT_ANSWER",
+    "question": "RAID 레벨 중 동일한 데이터를 2개 이상의 디스크에 완벽히 복제하여 기록하는 미러링(Mirroring) 방식을 사용하여 안정성은 높지만 유효 디스크 용량이 50%로 줄어드는 레벨은 무엇인가?",
+    "answer": "RAID 1",
+    "explanation": "RAID 1은 한 디스크가 파손되어도 다른 디스크로 무중단 서비스를 제공합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "RAID 1",
+      "미러링",
+      "용량50%"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-storage"
+  },
+  {
+    "id": "EXP_IS_026",
+    "subject": "정보시스템구축관리",
+    "category": "스토리지 시스템",
+    "type": "SHORT_ANSWER",
+    "question": "RAID 레벨 중 최소 3개 이상의 디스크가 필요하며, 패리티(Parity) 정보를 모든 디스크에 분산 저장하여 1개의 디스크 고장 시 복구 가능한 가장 널리 쓰이는 레벨은 무엇인가?",
+    "answer": "RAID 5",
+    "explanation": "RAID 5는 분산 패리티를 사용하여 성능과 가용성을 균형 있게 충족합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "RAID 5",
+      "분산패리티",
+      "최소3개디스크"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-storage"
+  },
+  {
+    "id": "EXP_IS_027",
+    "subject": "정보시스템구축관리",
+    "category": "스토리지 시스템",
+    "type": "SHORT_ANSWER",
+    "question": "RAID 5의 안정성을 한층 강화하여 서로 다른 2개의 분산 패리티를 유지함으로써 동시에 2개의 디스크가 고장 나더라도 데이터를 복구할 수 있는 레벨은 무엇인가?",
+    "answer": "RAID 6",
+    "explanation": "RAID 6는 듀얼 패리티를 적용하여 최소 4개의 디스크가 필요합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "RAID 6",
+      "듀얼패리티",
+      "동시2개고장극복"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-storage"
+  },
+  {
+    "id": "EXP_IS_028",
+    "subject": "정보시스템구축관리",
+    "category": "IT 서비스 관리",
+    "type": "SHORT_ANSWER",
+    "question": "서비스 제공자와 고객 간에 제공될 서비스의 품질 수준(가동률, 응답 시간, 장애 복구 시간 등)을 정량적으로 명시하고 위반 시 보상 기준을 정의한 계약서는 무엇인가?",
+    "answer": "SLA",
+    "explanation": "SLA(Service Level Agreement, 서비스 수준 협약서)는 IT 서비스 품질의 기준이 됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SLA",
+      "Service Level Agreement",
+      "서비스수준협약"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-itsm"
+  },
+  {
+    "id": "EXP_IS_030",
+    "subject": "정보시스템구축관리",
+    "category": "IT 서비스 관리",
+    "type": "SHORT_ANSWER",
+    "question": "ITIL 프로세스 중 시스템에 비정상적인 장애나 서비스 중단(인시던트)이 발생했을 때 가장 우선적으로 서비스의 빠른 정상화를 목표로 처리하는 프로세스는 무엇인가?",
+    "answer": "인시던트 관리",
+    "explanation": "인시던트 관리(Incident Management)는 근본 원인 규명보다 \"신속한 서비스 복구\"가 최우선 목표입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "인시던트 관리",
+      "Incident Management",
+      "신속복구"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-itsm"
+  },
+  {
+    "id": "EXP_IS_031",
+    "subject": "정보시스템구축관리",
+    "category": "IT 서비스 관리",
+    "type": "SHORT_ANSWER",
+    "question": "ITIL 프로세스 중 반복적으로 발생하는 인시던트들의 근본적인 기저 원인(Root Cause)을 규명하고 이를 영구 제거하여 재발을 방지하는 프로세스는 무엇인가?",
+    "answer": "문제 관리",
+    "explanation": "문제 관리(Problem Management)는 인시던트의 근본 원인을 분석하여 영구 조치합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "문제 관리",
+      "Problem Management",
+      "근본원인제거"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-itsm"
+  },
+  {
+    "id": "EXP_IS_032",
+    "subject": "정보시스템구축관리",
+    "category": "비즈니스 연속성",
+    "type": "SHORT_ANSWER",
+    "question": "재난이나 재해 발생 시 비즈니스의 핵심 핵심 기능을 신속히 복구하고 업무를 지속하기 위해 수립하는 종합적인 비즈니스 연속성 계획의 약칭은 무엇인가?",
+    "answer": "BCP",
+    "explanation": "BCP(Business Continuity Planning)는 재해 발생 시 기업 비즈니스를 지속하기 위한 종합 계획입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "BCP",
+      "Business Continuity Planning",
+      "업무연속성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-dr"
+  },
+  {
+    "id": "EXP_IS_033",
+    "subject": "정보시스템구축관리",
+    "category": "비즈니스 연속성",
+    "type": "SHORT_ANSWER",
+    "question": "BCP 수립 단계 중 재난 발생 시 특정 업무의 중단이 기업의 재무, 법적, 운영 측면에 미칠 손실 규모와 핵심 업무의 우선순위를 정량/정성 평가하는 분석 기법의 약칭은 무엇인가?",
+    "answer": "BIA",
+    "explanation": "BIA(Business Impact Analysis, 업무 영향 분석)는 RTO와 RPO를 결정하는 기초 분석 단계입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "BIA",
+      "Business Impact Analysis",
+      "업무영향분석"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-dr"
+  },
+  {
+    "id": "EXP_IS_034",
+    "subject": "정보시스템구축관리",
+    "category": "인프라 가상화",
+    "type": "SHORT_ANSWER",
+    "question": "인프라 자원을 프로그래밍 코드(설정 파일)로 정의하고 버전 관리하여 서버 배포와 설정을 완전 자동화하는 개념의 약칭은 무엇인가?",
+    "answer": "IaC",
+    "explanation": "IaC(Infrastructure as Code, 코드형 인프라)는 테라폼(Terraform)이나 앤서블(Ansible)을 통해 인프라를 코드로 프로비저닝합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "IaC",
+      "Infrastructure as Code",
+      "코드형인프라"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-infra"
+  },
+  {
+    "id": "EXP_IS_035",
+    "subject": "정보시스템구축관리",
+    "category": "인프라 가상화",
+    "type": "SHORT_ANSWER",
+    "question": "호스트 운영체제 위에 하이퍼바이저와 게스트 OS 없이 OS 커널을 공유하며 프로세스를 격리 실행하는 리눅스 컨테이너 기반 오픈소스 가상화 플랫폼은 무엇인가?",
+    "answer": "도커",
+    "explanation": "도커(Docker)는 컨테이너 기술로 실행 환경을 이미지화하여 가볍고 빠르게 배포합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "도커",
+      "Docker",
+      "컨테이너"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-infra"
+  },
+  {
+    "id": "EXP_IS_036",
+    "subject": "정보시스템구축관리",
+    "category": "인프라 가상화",
+    "type": "SHORT_ANSWER",
+    "question": "대규모 컨테이너들의 배포, 자동 확장(오토스케일링), 로드 밸런싱, 롤백을 총괄 관리해주는 대표적인 컨테이너 오케스트레이션 도구는 무엇인가?",
+    "answer": "쿠버네티스",
+    "explanation": "쿠버네티스(Kubernetes, K8s)는 구글이 오픈소스로 공개한 컨테이너 오케스트레이션 표준 플랫폼입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "쿠버네티스",
+      "Kubernetes",
+      "K8s",
+      "오케스트레이션"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-infra"
+  },
+  {
+    "id": "EXP_IS_037",
+    "subject": "정보시스템구축관리",
+    "category": "소프트웨어 테스팅",
+    "type": "SHORT_ANSWER",
+    "question": "테스트 설계 기법 중 소프트웨어에 결함이 발생할 가능성이 가장 높은 경계값(최솟값 직전, 최솟값, 최댓값, 최댓값 직후 등)을 집중적으로 테스트 케이스로 추출하는 기법은 무엇인가?",
+    "answer": "경계값 분석",
+    "explanation": "경계값 분석(Boundary Value Analysis)은 동등 분할과 함께 대표적인 블랙박스 테스트 기법입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "경계값 분석",
+      "Boundary Value",
+      "블랙박스테스트"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-testing"
+  },
+  {
+    "id": "EXP_IS_038",
+    "subject": "정보시스템구축관리",
+    "category": "소프트웨어 테스팅",
+    "type": "SHORT_ANSWER",
+    "question": "프로그램의 소스코드 내부 구조를 들여다보지 않고 외부 명세서만을 바탕으로 입력 값에 따른 올바른 출력이 나오는지 검증하는 테스트 방식은 무엇인가?",
+    "answer": "블랙박스 테스트",
+    "explanation": "블랙박스 테스트(Black-box Test)는 기능 명세를 검증하며 동등 분할, 경계값 분석, 원인-결과 그래프 등이 있습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "블랙박스 테스트",
+      "Black-box Test",
+      "명세기반"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-testing"
+  },
+  {
+    "id": "EXP_IS_039",
+    "subject": "정보시스템구축관리",
+    "category": "소프트웨어 테스팅",
+    "type": "SHORT_ANSWER",
+    "question": "프로그램의 원시 소스코드 로직과 제어 흐름 구조를 직접 분석하여 모든 실행 경로가 올바르게 수행되는지 검증하는 테스트 방식은 무엇인가?",
+    "answer": "화이트박스 테스트",
+    "explanation": "화이트박스 테스트(White-box Test)는 구문, 분기, 조건, 경로 커버리지 등을 측정합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "화이트박스 테스트",
+      "White-box Test",
+      "구조기반"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-testing"
+  },
+  {
+    "id": "EXP_IS_040",
+    "subject": "정보시스템구축관리",
+    "category": "소프트웨어 테스팅",
+    "type": "SHORT_ANSWER",
+    "question": "화이트박스 테스트 커버리지 중 소스코드 내의 모든 실행 가능한 문장(구문)들이 최소 한 번은 실행되도록 설계하는 가장 기본적인 커버리지는 무엇인가?",
+    "answer": "구문 커버리지",
+    "explanation": "구문 커버리지(Statement Coverage, 라인 커버리지)는 모든 실행 명령문을 1회 이상 통과하는지 검증합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "구문 커버리지",
+      "Statement Coverage",
+      "문장커버리지"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-testing"
+  },
+  {
+    "id": "EXP_IS_041",
+    "subject": "정보시스템구축관리",
+    "category": "소프트웨어 테스팅",
+    "type": "SHORT_ANSWER",
+    "question": "화이트박스 테스트 커버리지 중 프로그램 내의 모든 조건문(if문 등)의 결과가 참(True)과 거짓(False)을 최소 한 번씩은 모두 수행하도록 보장하는 커버리지는 무엇인가?",
+    "answer": "분기 커버리지",
+    "explanation": "분기 커버리지(Branch Coverage, 결정 커버리지)는 조건문 전체의 참/거짓 분기를 1회 이상 실행합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "분기 커버리지",
+      "Branch Coverage",
+      "결정커버리지"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-testing"
+  },
+  {
+    "id": "EXP_IS_042",
+    "subject": "정보시스템구축관리",
+    "category": "소프트웨어 테스팅",
+    "type": "SHORT_ANSWER",
+    "question": "조건문 전체의 결과와 무관하게, 조건문 내부를 구성하는 개별 단일 조건식(예: A > 0) 각각이 독립적으로 참과 거짓을 최소 한 번씩 갖도록 설계하는 커버리지는 무엇인가?",
+    "answer": "조건 커버리지",
+    "explanation": "조건 커버리지(Condition Coverage)는 개별 조건식의 참/거짓만을 만족하면 되므로 전체 분기가 참/거짓을 만족하지 못할 수 있습니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "조건 커버리지",
+      "Condition Coverage",
+      "개별조건식"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-testing"
+  },
+  {
+    "id": "EXP_IS_043",
+    "subject": "정보시스템구축관리",
+    "category": "소프트웨어 테스팅",
+    "type": "SHORT_ANSWER",
+    "question": "복합 조건식에서 각 개별 조건식이 전체 결정 결과에 독립적으로 영향을 미치는지를 검증하여 항공/철도 등 최고 안전성이 요구되는 시스템에 쓰이는 커버리지의 약칭은 무엇인가?",
+    "answer": "MC/DC",
+    "explanation": "MC/DC(Modified Condition/Decision Coverage)는 조건/결정 커버리지를 보완하여 N+1개의 테스트 케이스로 높은 신뢰성을 달성합니다.",
+    "difficulty": "HARD",
+    "keywords": [
+      "MC/DC",
+      "Modified Condition",
+      "항공기소프트웨어"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-testing"
+  },
+  {
+    "id": "EXP_IS_044",
+    "subject": "정보시스템구축관리",
+    "category": "소프트웨어 테스팅",
+    "type": "SHORT_ANSWER",
+    "question": "테스트 오라클(Test Oracle) 종류 중 모든 가능한 입력 값에 대해 100% 완벽한 기대 결과를 사전에 모두 알고 있는 특수한 상황에 적용하는 오라클은 무엇인가?",
+    "answer": "참 오라클",
+    "explanation": "참 오라클(True Oracle)은 모든 입력에 대해 정답을 정확히 산출하는 오라클입니다. 일부 샘플만 검증하는 것은 샘플링 오라클입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "참 오라클",
+      "True Oracle",
+      "완벽한결과"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-testing"
+  },
+  {
+    "id": "EXP_IS_045",
+    "subject": "정보시스템구축관리",
+    "category": "소프트웨어 테스팅",
+    "type": "SHORT_ANSWER",
+    "question": "테스트 오라클 종류 중 특정 주요 몇 개의 입력 값들에 대해서만 정답을 확인하고, 나머지는 추정치로 판단하는 오라클은 무엇인가?",
+    "answer": "샘플링 오라클",
+    "explanation": "샘플링 오라클(Sampling Oracle)은 대표 샘플 테스트 케이스들만 완전 검증합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "샘플링 오라클",
+      "Sampling Oracle",
+      "일부검증"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-testing"
+  },
+  {
+    "id": "EXP_IS_046",
+    "subject": "정보시스템구축관리",
+    "category": "소프트웨어 테스팅",
+    "type": "SHORT_ANSWER",
+    "question": "하향식 통합 테스트(Top-down Test) 수행 시 아직 개발되지 않은 하위 모듈의 역할을 흉내 내어 호출 결과를 반환해주는 가상 임시 모듈을 무엇이라 하는가?",
+    "answer": "스텁",
+    "explanation": "스텁(Stub)은 하향식 테스트에서 하위 모듈의 대역으로 쓰입니다. 상향식 테스트에서 상위 모듈 역할을 하는 것은 드라이버(Driver)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "스텁",
+      "Stub",
+      "하향식테스트"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-testing"
+  },
+  {
+    "id": "EXP_IS_047",
+    "subject": "정보시스템구축관리",
+    "category": "소프트웨어 테스팅",
+    "type": "SHORT_ANSWER",
+    "question": "상향식 통합 테스트(Bottom-up Test) 수행 시 이미 개발된 최하위 모듈들을 시험 구동하기 위해 상위 호출자 역할을 흉내 내는 가상 제어 소프트웨어를 무엇이라 하는가?",
+    "answer": "테스트 드라이버",
+    "explanation": "테스트 드라이버(Test Driver)는 상향식 통합 시 데이터를 전달하고 하위 모듈의 출력을 수신하는 상위 제어 모듈입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "테스트 드라이버",
+      "Driver",
+      "상향식테스트"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-testing"
+  },
+  {
+    "id": "EXP_IS_048",
+    "subject": "정보시스템구축관리",
+    "category": "소프트웨어 테스팅",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어에 버그 수정이나 기능 추가 등 소스코드 변경이 발생했을 때, 기존에 잘 동작하던 기능에 새로운 결함(사이드 이펙트)이 생기지 않았는지 재검증하는 테스트는 무엇인가?",
+    "answer": "회귀 테스트",
+    "explanation": "회귀 테스트(Regression Test)는 코드 수정 후 기존 기능의 퇴보를 방지하기 위해 수행하는 재시험입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "회귀 테스트",
+      "Regression Test",
+      "사이드이펙트방지"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-testing"
+  },
+  {
+    "id": "EXP_IS_049",
+    "subject": "정보시스템구축관리",
+    "category": "소프트웨어 테스팅",
+    "type": "SHORT_ANSWER",
+    "question": "테스트의 기본 원칙 중 동일한 테스트 케이스로 반복 테스트를 수행하면 더 이상 새로운 결함을 찾아낼 수 없으므로 케이스를 지속적으로 갱신해야 한다는 원칙은 무엇인가?",
+    "answer": "살충제 패러독스",
+    "explanation": "살충제 패러독스(Pesticide Paradox)는 테스트 케이스를 정기적으로 개선하고 리뷰해야 함을 강조합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "살충제 패러독스",
+      "Pesticide Paradox",
+      "테스트원칙"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-testing"
+  },
+  {
+    "id": "EXP_IS_050",
+    "subject": "정보시스템구축관리",
+    "category": "소프트웨어 테스팅",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 결함의 80%는 전체 시스템의 특정 20% 모듈에 집중되어 발생한다는 파레토 법칙에 기반한 테스트 원칙은 무엇인가?",
+    "answer": "결함 집중",
+    "explanation": "결함 집중(Defect Clustering) 원칙은 복잡도가 높고 핵심 로직이 위치한 일부 모듈에 결함이 집중된다는 원리입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "결함 집중",
+      "Defect Clustering",
+      "파레토법칙"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-is-testing"
+  },
+  {
+    "id": "EXP_NET_001",
+    "subject": "신기술/보안",
+    "category": "네트워크 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "논리적인 IP 주소를 컴퓨터 네트워크 카드의 물리적인 하드웨어 MAC 주소로 변환해 주는 프로토콜의 약칭은 무엇인가?",
+    "answer": "ARP",
+    "explanation": "ARP(Address Resolution Protocol)는 브로드캐스트 질의를 통해 상대방의 MAC 주소를 알아냅니다. 반대로 MAC으로 IP를 찾는 것은 RARP입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ARP",
+      "Address Resolution Protocol",
+      "MAC주소변환"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-protocols"
+  },
+  {
+    "id": "EXP_NET_002",
+    "subject": "신기술/보안",
+    "category": "네트워크 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "하드디스크가 없는 디스크리스 컴퓨터가 부팅 시 자신의 MAC 주소를 이용해 서버로부터 IP 주소를 요청할 때 사용하는 역주소 변환 프로토콜의 약칭은 무엇인가?",
+    "answer": "RARP",
+    "explanation": "RARP(Reverse ARP)는 물리 주소를 IP 주소로 매핑합니다. 현대에는 DHCP와 BOOTP로 대체되었습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "RARP",
+      "Reverse ARP",
+      "역주소변환"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-protocols"
+  },
+  {
+    "id": "EXP_NET_003",
+    "subject": "신기술/보안",
+    "category": "네트워크 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "IP 프로토콜의 비신뢰적인 데이터그램 전송을 보완하여 네트워크 에러 보고 및 전송 상태 진단(Ping, Traceroute)에 사용되는 프로토콜의 약칭은 무엇인가?",
+    "answer": "ICMP",
+    "explanation": "ICMP(Internet Control Message Protocol)는 에러 메시지(도달 불가, 시간 초과 등)를 발신지 IP로 전송합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ICMP",
+      "Internet Control Message Protocol",
+      "Ping"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-protocols"
+  },
+  {
+    "id": "EXP_NET_004",
+    "subject": "신기술/보안",
+    "category": "네트워크 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "IP 멀티캐스트 호스트가 자신이 속한 멀티캐스트 그룹의 가입, 유지, 탈퇴 정보를 인접한 라우터에 알리기 위해 사용하는 프로토콜의 약칭은 무엇인가?",
+    "answer": "IGMP",
+    "explanation": "IGMP(Internet Group Management Protocol)는 멀티캐스트 수신 그룹을 관리하는 네트워크 계층 프로토콜입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "IGMP",
+      "Internet Group Management Protocol",
+      "멀티캐스트그룹"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-protocols"
+  },
+  {
+    "id": "EXP_NET_005",
+    "subject": "신기술/보안",
+    "category": "네트워크 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "네트워크 상의 클라이언트 PC들에게 IP 주소, 서브넷 마스크, 기본 게이트웨이, DNS 주소를 동적으로 자동 할당해주는 프로토콜의 약칭은 무엇인가?",
+    "answer": "DHCP",
+    "explanation": "DHCP(Dynamic Host Configuration Protocol)는 DORA(Discover-Offer-Request-Ack) 과정을 거쳐 IP를 대여합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DHCP",
+      "Dynamic Host Configuration Protocol",
+      "IP자동할당"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-protocols"
+  },
+  {
+    "id": "EXP_NET_006",
+    "subject": "신기술/보안",
+    "category": "라우팅 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "내부 게이트웨이 라우팅 프로토콜(IGP) 중 벨만-포드 거리 벡터 알고리즘을 사용하며, 최대 홉 수(Hop Count)가 15로 제한되는 프로토콜의 약칭은 무엇인가?",
+    "answer": "RIP",
+    "explanation": "RIP(Routing Information Protocol)는 소규모망에 적합하며 16홉은 도달 불가능(Infinity)으로 판단합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "RIP",
+      "Routing Information Protocol",
+      "15홉제한"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-routing"
+  },
+  {
+    "id": "EXP_NET_008",
+    "subject": "신기술/보안",
+    "category": "라우팅 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "서로 다른 자율 시스템(AS, Autonomous System) 간에 경로 벡터(Path Vector) 알고리즘을 사용하여 인터넷 백본 라우팅을 수행하는 외부 게이트웨이 프로토콜의 약칭은 무엇인가?",
+    "answer": "BGP",
+    "explanation": "BGP(Border Gateway Protocol)는 ISP 간의 상호 연결에 사용되는 인터넷 표준 EGP 라우팅 프로토콜입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "BGP",
+      "Border Gateway Protocol",
+      "AS간라우팅"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-routing"
+  },
+  {
+    "id": "EXP_NET_009",
+    "subject": "신기술/보안",
+    "category": "전송 제어 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "TCP 연결을 수립하기 위해 클라이언트와 서버가 주고받는 3단계 핸드셰이크의 플래그 순서는 SYN → (       ) → ACK 이다. 괄호에 들어갈 플래그는 무엇인가?",
+    "answer": "SYN+ACK",
+    "explanation": "TCP 3-way Handshake 순서는 1단계: SYN, 2단계: SYN+ACK, 3단계: ACK 순으로 상호 연결을 확립합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SYN+ACK",
+      "3-way Handshake",
+      "TCP연결"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-tcp"
+  },
+  {
+    "id": "EXP_NET_010",
+    "subject": "신기술/보안",
+    "category": "전송 제어 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "TCP 통신에서 이미 수립된 연결을 안전하게 종료(해제)하기 위해 양측이 주고받는 핸드셰이크는 몇 번(몇 way)으로 이루어지는가?",
+    "answer": "4-way Handshake",
+    "explanation": "TCP 연결 해제는 FIN → ACK → FIN → ACK 총 4단계(4-way Handshake)를 거쳐 양방향 세션을 모두 안전하게 종료합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "4-way Handshake",
+      "TCP연결해제",
+      "FIN"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-tcp"
+  },
+  {
+    "id": "EXP_NET_011",
+    "subject": "신기술/보안",
+    "category": "전송 제어 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "TCP 흐름 제어(Flow Control) 기법 중 수신 측의 수신 버퍼 여유 공간 크기에 맞춰 송신 측이 한 번에 보낼 수 있는 데이터 패킷의 범위를 동적으로 조절하는 기법은 무엇인가?",
+    "answer": "슬라이딩 윈도우",
+    "explanation": "슬라이딩 윈도우(Sliding Window)는 ACK를 일일이 기다리지 않고 윈도우 크기만큼 패킷을 연속 전송하여 통신 효율을 극대화합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "슬라이딩 윈도우",
+      "Sliding Window",
+      "흐름제어"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-tcp"
+  },
+  {
+    "id": "EXP_NET_012",
+    "subject": "신기술/보안",
+    "category": "전송 제어 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "TCP 혼잡 제어(Congestion Control) 알고리즘 중 네트워크의 혼잡을 피하기 위해 송신 윈도우 크기를 1부터 시작하여 ACK가 올 때마다 2배씩 지수적으로 증가시키는 기법은 무엇인가?",
+    "answer": "Slow Start",
+    "explanation": "느린 시작(Slow Start)은 혼잡 임계치(ssthresh)에 도달할 때까지 지수 함수적으로 윈도우를 키웁니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "Slow Start",
+      "느린시작",
+      "혼잡제어"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-tcp"
+  },
+  {
+    "id": "EXP_NET_013",
+    "subject": "신기술/보안",
+    "category": "IP 주소 체계",
+    "type": "SHORT_ANSWER",
+    "question": "IPv4 주소는 몇 비트 길이로 구성되어 있는가?",
+    "answer": "32비트",
+    "explanation": "IPv4는 8비트씩 4개 옥텟, 총 32비트로 표현됩니다. IPv6는 128비트입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "32비트",
+      "IPv4길이",
+      "IP주소"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-ip"
+  },
+  {
+    "id": "EXP_NET_015",
+    "subject": "신기술/보안",
+    "category": "IP 주소 체계",
+    "type": "SHORT_ANSWER",
+    "question": "IPv6 주소 전송 방식 중 IPv4의 브로드캐스트(Broadcast) 방식을 완전히 대체하여 네트워크 부하를 줄이기 위해 사용하는 전송 방식은 무엇인가?",
+    "answer": "멀티캐스트",
+    "explanation": "IPv6에는 브로드캐스트가 없으며, 유니캐스트, 멀티캐스트(Multicast), 애니캐스트(Anycast) 3가지만 존재합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "멀티캐스트",
+      "Multicast",
+      "IPv6전송방식"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-ip"
+  },
+  {
+    "id": "EXP_NET_016",
+    "subject": "신기술/보안",
+    "category": "IP 주소 체계",
+    "type": "SHORT_ANSWER",
+    "question": "IPv6의 3대 전송 방식 중 단일 송신자와 가장 가까운 위치에 있는 단일 수신자 인터페이스(1:1 중 가장 가까운 노드)로 패킷을 전송하는 방식은 무엇인가?",
+    "answer": "애니캐스트",
+    "explanation": "애니캐스트(Anycast)는 동일 주소를 가진 노드들 중 라우팅 거리상 가장 가까운 노드로 데이터를 전송합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "애니캐스트",
+      "Anycast",
+      "가장가까운노드"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-ip"
+  },
+  {
+    "id": "EXP_NET_017",
+    "subject": "신기술/보안",
+    "category": "서브넷팅 계산",
+    "type": "SHORT_ANSWER",
+    "question": "IPv4 C클래스 네트워크(서브넷 마스크: 255.255.255.0, /24)에서 1개의 서브넷 내에 실제로 단말 PC들에 할당 가능한 유효 호스트 IP 주소의 최대 개수는 몇 개인가?",
+    "answer": "254",
+    "explanation": "호스트 비트가 8비트이므로 총 256개(2^8) 중 네트워크 대표 주소(0번)와 브로드캐스트 주소(255번) 2개를 제외한 254개입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "254",
+      "서브넷호스트수",
+      "C클래스"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-subnet"
+  },
+  {
+    "id": "EXP_NET_018",
+    "subject": "신기술/보안",
+    "category": "서브넷팅 계산",
+    "type": "SHORT_ANSWER",
+    "question": "IP 주소 192.168.1.0/26 대역에서 서브넷 마스크를 10진수로 표기했을 때 마지막 4번째 옥텟의 값은 얼마인가?",
+    "answer": "192",
+    "explanation": "/26은 상위 26비트가 1입니다. 4번째 옥텟은 상위 2비트가 1이므로 128 + 64 = 192입니다 (255.255.255.192).",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "192",
+      "서브넷마스크",
+      "/26"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-subnet"
+  },
+  {
+    "id": "EXP_NET_019",
+    "subject": "신기술/보안",
+    "category": "서브넷팅 계산",
+    "type": "SHORT_ANSWER",
+    "question": "어떤 서브넷의 네트워크 주소가 192.168.10.0/26 일 때, 이 서브넷 내부에서 사용 가능한 호스트 IP의 최대 개수는 몇 개인가?",
+    "answer": "62",
+    "explanation": "호스트 비트는 32 - 26 = 6비트이므로 2^6 = 64개에서 네트워크(0)와 브로드캐스트(63) 2개를 빼면 62개입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "62",
+      "유효호스트수",
+      "/26서브넷팅"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-subnet"
+  },
+  {
+    "id": "EXP_NET_020",
+    "subject": "신기술/보안",
+    "category": "네트워크 장비",
+    "type": "SHORT_ANSWER",
+    "question": "OSI 7계층 중 2계층(데이터링크 계층)에서 동작하며 수신된 프레임의 목적지 MAC 주소를 학습하여 해당 포트로만 스위칭해주는 대표적인 네트워크 장비는 무엇인가?",
+    "answer": "L2 스위치",
+    "explanation": "L2 스위치(Switch)는 MAC 주소 테이블을 바탕으로 하드웨어 기반 고속 프레임 포워딩을 수행합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "L2 스위치",
+      "Switch",
+      "데이터링크장비"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-devices"
+  },
+  {
+    "id": "EXP_NET_021",
+    "subject": "신기술/보안",
+    "category": "네트워크 장비",
+    "type": "SHORT_ANSWER",
+    "question": "OSI 7계층 중 3계층(네트워크 계층)에서 동작하며 서로 다른 네트워크 간에 패킷을 최적의 경로로 전송해주는 라우팅 장비는 무엇인가?",
+    "answer": "라우터",
+    "explanation": "라우터(Router, L3 장비)는 IP 헤더를 분석하여 라우팅 테이블을 기반으로 패킷을 목적지로 전달합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "라우터",
+      "Router",
+      "L3장비"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-devices"
+  },
+  {
+    "id": "EXP_NET_022",
+    "subject": "신기술/보안",
+    "category": "네트워크 장비",
+    "type": "SHORT_ANSWER",
+    "question": "전송 계층(L4)의 TCP/UDP 포트 번호를 분석하여 웹 서버나 애플리케이션 서버들에 트래픽 부하를 분산(Load Balancing)시켜주는 장비는 무엇인가?",
+    "answer": "L4 스위치",
+    "explanation": "L4 스위치는 IP와 포트 번호를 기반으로 서버 팜(Server Farm)의 부하 분산과 헬스 체크를 수행합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "L4 스위치",
+      "로드밸런서",
+      "부하분산"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-devices"
+  },
+  {
+    "id": "EXP_NET_023",
+    "subject": "신기술/보안",
+    "category": "네트워크 주소 변환",
+    "type": "SHORT_ANSWER",
+    "question": "공인 IP 주소 고갈 문제를 해결하고 사내망 보안을 위해 사설 IP 주소를 공인 IP 주소로 상호 변환해주는 기술의 약칭은 무엇인가?",
+    "answer": "NAT",
+    "explanation": "NAT(Network Address Translation)는 사설 IP를 외부 인터넷용 공인 IP로 변환합니다. 포트 번호까지 변환하는 기술은 NAPT(PAT)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "NAT",
+      "Network Address Translation",
+      "IP변환"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-protocols"
+  },
+  {
+    "id": "EXP_NET_024",
+    "subject": "신기술/보안",
+    "category": "네트워크 주소 체계",
+    "type": "SHORT_ANSWER",
+    "question": "컴퓨터가 자기 자신을 가리키는 루프백(Loopback) IP 주소로, \"localhost\"와 대응되는 표준 IPv4 주소는 무엇인가?",
+    "answer": "127.0.0.1",
+    "explanation": "127.0.0.1은 로컬 호스트 테스트용 루프백 주소입니다. IPv6의 루프백 주소는 ::1 입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "127.0.0.1",
+      "루프백주소",
+      "localhost"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-ip"
+  },
+  {
+    "id": "EXP_NET_025",
+    "subject": "신기술/보안",
+    "category": "도메인 네임 시스템",
+    "type": "SHORT_ANSWER",
+    "question": "사람이 이해하기 쉬운 문자형 도메인 이름(예: www.naver.com)을 컴퓨터가 통신할 수 있는 숫자형 IP 주소로 변환해주는 시스템의 약칭은 무엇인가?",
+    "answer": "DNS",
+    "explanation": "DNS(Domain Name System)는 전 세계 분산 계층 데이터베이스를 통해 도메인 질의를 IP 주소로 매핑합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DNS",
+      "Domain Name System",
+      "도메인변환"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-protocols"
+  },
+  {
+    "id": "EXP_NET_026",
+    "subject": "신기술/보안",
+    "category": "응용 계층 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "인터넷 전자우편(E-Mail)을 클라이언트가 작성하여 메일 서버로 발송(송신)하거나 서버 간에 메일을 중계할 때 사용하는 프로토콜의 약칭은 무엇인가?",
+    "answer": "SMTP",
+    "explanation": "SMTP(Simple Mail Transfer Protocol, 기본 25번 포트)는 메일 발송용 프로토콜입니다. 메일을 서버에서 읽어올 때는 POP3나 IMAP을 씁니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SMTP",
+      "Simple Mail Transfer Protocol",
+      "메일발송"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-protocols"
+  },
+  {
+    "id": "EXP_NET_027",
+    "subject": "신기술/보안",
+    "category": "응용 계층 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "메일 서버에 도착한 전자우편을 사용자의 클라이언트로 다운로드하여 가져올 때 사용하는 프로토콜로, 메일을 가져온 후 서버에서 삭제하는 것이 기본 설정인 프로토콜의 약칭은 무엇인가?",
+    "answer": "POP3",
+    "explanation": "POP3(Post Office Protocol v3, 110번 포트)는 메일을 로컬 PC로 다운로드합니다. 서버에 보관하고 동기화하는 것은 IMAP(143번 포트)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "POP3",
+      "Post Office Protocol",
+      "메일수신"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-protocols"
+  },
+  {
+    "id": "EXP_NET_028",
+    "subject": "신기술/보안",
+    "category": "응용 계층 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "원격 서버에 안전하게 접속하기 위해 기존의 보안에 취약한 Telnet(평문 전송)을 대체하여 모든 패킷을 강력히 암호화하는 원격 터미널 접속 프로토콜의 약칭은 무엇인가?",
+    "answer": "SSH",
+    "explanation": "SSH(Secure Shell, 기본 22번 포트)는 공개키 기반 암호화를 적용하여 원격 쉘과 파일 전송(SFTP)을 안전하게 지원합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SSH",
+      "Secure Shell",
+      "원격접속"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-protocols"
+  },
+  {
+    "id": "EXP_NET_029",
+    "subject": "신기술/보안",
+    "category": "네트워크 관리 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "네트워크 상의 라우터, 스위치, 서버 등의 장비 상태와 트래픽 정보를 모니터링하고 원격 관리하기 위해 사용하는 표준 네트워크 관리 프로토콜의 약칭은 무엇인가?",
+    "answer": "SNMP",
+    "explanation": "SNMP(Simple Network Management Protocol)는 MIB(관리정보베이스)와 에이전트를 통해 네트워크 자원을 감시합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SNMP",
+      "Simple Network Management Protocol",
+      "네트워크관리"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-protocols"
+  },
+  {
+    "id": "EXP_NET_030",
+    "subject": "신기술/보안",
+    "category": "전송 계층 비교",
+    "type": "SHORT_ANSWER",
+    "question": "전송 계층 프로토콜 중 TCP와 비교했을 때 연결 설정 절차(Handshake)가 없고 수신 확인(ACK)을 하지 않아 오버헤드가 적고 실시간 방송에 적합한 비연결형 프로토콜의 약칭은 무엇인가?",
+    "answer": "UDP",
+    "explanation": "UDP(User Datagram Protocol)는 신뢰성보다 전송 속도와 실시간성이 중요한 DNS, 스트리밍, 온라인 게임 등에 널리 쓰입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "UDP",
+      "User Datagram Protocol",
+      "비연결형"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-tcp"
+  },
+  {
+    "id": "EXP_NET_031",
+    "subject": "신기술/보안",
+    "category": "네트워크 가상화",
+    "type": "SHORT_ANSWER",
+    "question": "물리적인 하나의 LAN 스위치 네트워크를 여러 개의 서로 격리된 논리적인 브로드캐스트 도메인으로 분할하여 보안과 대역폭을 최적화하는 가상 근거리 통신망의 약칭은 무엇인가?",
+    "answer": "VLAN",
+    "explanation": "VLAN(Virtual LAN)은 물리적 위치와 무관하게 부서별로 네트워크를 논리적으로 분리합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "VLAN",
+      "Virtual LAN",
+      "가상LAN"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-devices"
+  },
+  {
+    "id": "EXP_NET_032",
+    "subject": "신기술/보안",
+    "category": "네트워크 토폴로지",
+    "type": "SHORT_ANSWER",
+    "question": "네트워크 토폴로지 구조 중 중앙에 허브(스위치)가 위치하고 모든 노드가 1:1로 포인트 투 포인트 연결된 별 모양의 구조로, 설치는 쉽지만 중앙 장비 고장 시 전체가 마비되는 형태는 무엇인가?",
+    "answer": "성형 토폴로지",
+    "explanation": "성형(Star, 성형 구조) 토폴로지는 현대 이더넷 LAN의 표준 물리 구조입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "성형 토폴로지",
+      "Star Topology",
+      "중앙집중형"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-topology"
+  },
+  {
+    "id": "EXP_NET_033",
+    "subject": "신기술/보안",
+    "category": "네트워크 토폴로지",
+    "type": "SHORT_ANSWER",
+    "question": "모든 네트워크 노드들이 서로 1:1로 모두 직접 연결되어 장애 내구성(신뢰성)은 최고이지만 케이블 설치 비용과 포트 소요가 가장 큰 그물망 구조는 무엇인가?",
+    "answer": "망형 토폴로지",
+    "explanation": "망형(Mesh Topology)은 n(n-1)/2개의 링크가 필요하며 군사용이나 핵심 백본망에 쓰입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "망형 토폴로지",
+      "Mesh Topology",
+      "그물망구조"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-topology"
+  },
+  {
+    "id": "EXP_NET_034",
+    "subject": "신기술/보안",
+    "category": "무선 네트워크 기술",
+    "type": "SHORT_ANSWER",
+    "question": "근거리 무선 통신 기술 중 10cm 이내의 매우 가까운 거리에서 비접촉식으로 단말 간 데이터를 교환하여 교통카드나 모바일 간편결제에 활용되는 기술의 약칭은 무엇인가?",
+    "answer": "NFC",
+    "explanation": "NFC(Near Field Communication)는 13.56MHz 주파수를 이용하는 차세대 비접촉 통신 규격입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "NFC",
+      "Near Field Communication",
+      "근거리무선통신"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-wireless"
+  },
+  {
+    "id": "EXP_NET_035",
+    "subject": "신기술/보안",
+    "category": "무선 네트워크 기술",
+    "type": "SHORT_ANSWER",
+    "question": "사물인터넷(IoT) 센서 네트워크를 위해 저전력, 저가격, 저속 통신을 목표로 설계된 IEEE 802.15.4 표준 기반의 근거리 무선 메쉬 네트워크 기술은 무엇인가?",
+    "answer": "지그비",
+    "explanation": "지그비(ZigBee)는 스마트 홈, 센서 네트워크 등 배터리 수명이 중요한 초소형 IoT 기기에 최적화되어 있습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "지그비",
+      "ZigBee",
+      "저전력센서네트워크"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-wireless"
+  },
+  {
+    "id": "EXP_NET_037",
+    "subject": "신기술/보안",
+    "category": "소프트웨어 정의 네트워크",
+    "type": "SHORT_ANSWER",
+    "question": "SDN 환경에서 중앙의 SDN 컨트롤러와 물리적 스위치(데이터 평면) 장비 간에 통신하며 흐름 제어 테이블을 전송하는 대표적인 표준 통신 프로토콜의 이름은 무엇인가?",
+    "answer": "OpenFlow",
+    "explanation": "오픈플로우(OpenFlow)는 SDN 구현의 핵심 사우스바운드(Southbound) 표준 인터페이스 프로토콜입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "OpenFlow",
+      "오픈플로우",
+      "SDN표준프로토콜"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-sdn"
+  },
+  {
+    "id": "EXP_NET_038",
+    "subject": "신기술/보안",
+    "category": "라우팅 알고리즘",
+    "type": "SHORT_ANSWER",
+    "question": "거리 벡터(Distance Vector) 라우팅 알고리즘의 기초가 되며, 인접 노드 간의 거리 정보를 주기적으로 교환하여 최단 거리를 갱신하는 대표적인 알고리즘의 이름은 무엇인가?",
+    "answer": "벨만 포드",
+    "explanation": "벨만-포드(Bellman-Ford) 알고리즘은 음수 가중치 간선도 처리할 수 있으며 RIP 프로토콜의 근간이 됩니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "벨만 포드",
+      "Bellman-Ford",
+      "거리벡터"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-routing"
+  },
+  {
+    "id": "EXP_NET_039",
+    "subject": "신기술/보안",
+    "category": "다중화 기술",
+    "type": "SHORT_ANSWER",
+    "question": "광섬유 통신 회선 하나에 서로 다른 파장(색상)을 가진 여러 개의 광신호를 묶어 동시에 다중 전송함으로써 전송 대역폭을 극대화하는 광 다중화 기술의 약칭은 무엇인가?",
+    "answer": "WDM",
+    "explanation": "WDM(Wavelength Division Multiplexing, 파장 분할 다중화)은 단일 광섬유의 전송 용량을 획기적으로 확장합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "WDM",
+      "Wavelength Division Multiplexing",
+      "파장분할다중화"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-physical"
+  },
+  {
+    "id": "EXP_NET_040",
+    "subject": "신기술/보안",
+    "category": "통신 회선 제어",
+    "type": "SHORT_ANSWER",
+    "question": "데이터 통신망에서 송수신 측 사이에 전용 통신 경로를 물리적으로 수립한 후 데이터를 교환하며, 연결 동안 대역폭이 독점되는 교환 방식은 회선 교환 방식인가 패킷 교환 방식인가?",
+    "answer": "회선 교환 방식",
+    "explanation": "회선 교환(Circuit Switching, 예: 전통 전화망)은 경로를 독점합니다. 데이터를 일정 크기 블록(패킷)으로 나누어 공유 회선으로 보내는 것은 패킷 교환 방식입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "회선 교환 방식",
+      "Circuit Switching",
+      "전용경로"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-switching"
+  },
+  {
+    "id": "EXP_NET_041",
+    "subject": "신기술/보안",
+    "category": "전송 에러 검출",
+    "type": "SHORT_ANSWER",
+    "question": "네트워크 프레임 전송 시 집단 오류(Burst Error)를 고속으로 검출하기 위해 다항식(Polynomial) 연산 코드를 프레임 끝부분(FCS)에 붙여 검사하는 에러 검출 기법의 약칭은 무엇인가?",
+    "answer": "CRC",
+    "explanation": "CRC(Cyclic Redundancy Check, 순환 중복 검사)는 이더넷 2계층 FCS 필드에서 에러 검출용으로 사용됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CRC",
+      "Cyclic Redundancy Check",
+      "순환중복검사"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-datalink"
+  },
+  {
+    "id": "EXP_NET_042",
+    "subject": "신기술/보안",
+    "category": "전송 에러 제어",
+    "type": "SHORT_ANSWER",
+    "question": "수신 측이 데이터 전송 오류를 검출하는 것뿐만 아니라, 1비트의 에러가 발생했을 때 재전송 요청 없이 수신 측 스스로 직접 에러 위치를 찾아 정정할 수 있는 코드는 무엇인가?",
+    "answer": "해밍 코드",
+    "explanation": "해밍 코드(Hamming Code)는 패리티 비트를 추가하여 1비트 오류 자동 정정(ECC)을 제공합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "해밍 코드",
+      "Hamming Code",
+      "오류정정코드"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-datalink"
+  },
+  {
+    "id": "EXP_NET_043",
+    "subject": "신기술/보안",
+    "category": "네트워크 보안 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "원격 네트워크 컴퓨터 간에 전용 암호화 터널을 수립하여 공용 인터넷망을 마치 사설 전용선처럼 안전하게 이용할 수 있도록 해주는 가상 사설망의 약칭은 무엇인가?",
+    "answer": "VPN",
+    "explanation": "VPN(Virtual Private Network)은 IPsec이나 SSL/TLS 프로토콜을 사용해 안전한 가상 터널링을 구현합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "VPN",
+      "Virtual Private Network",
+      "가상사설망"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-vpn"
+  },
+  {
+    "id": "EXP_NET_044",
+    "subject": "신기술/보안",
+    "category": "이더넷 충돌 제어",
+    "type": "SHORT_ANSWER",
+    "question": "유선 유선 이더넷(IEEE 802.3)에서 공유 매체 접근 시 회선을 감지(Carrier Sense)하고 데이터 충돌(Collision)이 발생하면 임의 시간 대기 후 재전송하는 다중 접속 방식의 약칭은 무엇인가?",
+    "answer": "CSMA/CD",
+    "explanation": "CSMA/CD(Carrier Sense Multiple Access with Collision Detection)는 충돌 검출 방식입니다. 무선 LAN(802.11)에서 충돌을 회피하는 것은 CSMA/CA입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CSMA/CD",
+      "충돌검출",
+      "이더넷접근제어"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-datalink"
+  },
+  {
+    "id": "EXP_NET_045",
+    "subject": "신기술/보안",
+    "category": "무선 LAN 충돌 제어",
+    "type": "SHORT_ANSWER",
+    "question": "무선 LAN(Wi-Fi, IEEE 802.11) 환경에서 무선 매체의 특성상 충돌 검출이 불가능하여 RTS/CTS 프레임을 교환하고 충돌을 사전에 회피(Collision Avoidance)하는 접속 방식의 약칭은 무엇인가?",
+    "answer": "CSMA/CA",
+    "explanation": "CSMA/CA는 무선 환경에서 충돌을 사전에 회피합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CSMA/CA",
+      "충돌회피",
+      "무선LAN접근제어"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-wireless"
+  },
+  {
+    "id": "EXP_NET_046",
+    "subject": "신기술/보안",
+    "category": "사설 IP 대역",
+    "type": "SHORT_ANSWER",
+    "question": "RFC 1918에 정의된 IPv4 사설 IP 대역 중 192.168.0.0 ~ 192.168.255.255 대역에 해당하는 네트워크 클래스는 A, B, C 중 어느 클래스인가?",
+    "answer": "C클래스",
+    "explanation": "10.0.0.0/8은 A클래스, 172.16.0.0/12는 B클래스, 192.168.0.0/16은 C클래스 사설 IP 대역입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "C클래스",
+      "사설IP대역",
+      "192.168"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-ip"
+  },
+  {
+    "id": "EXP_NET_047",
+    "subject": "신기술/보안",
+    "category": "네트워크 서비스",
+    "type": "SHORT_ANSWER",
+    "question": "네트워크 상에 분산되어 있는 컴퓨터와 서버들의 시스템 시계를 정확한 원자 시계 기준 시간에 맞춰 밀리초 단위로 동기화하는 네트워크 시간 프로토콜의 약칭은 무엇인가?",
+    "answer": "NTP",
+    "explanation": "NTP(Network Time Protocol, UDP 123번 포트)는 분산 시스템의 타임스탬프와 로그 동기화에 필수적입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "NTP",
+      "Network Time Protocol",
+      "시간동기화"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-protocols"
+  },
+  {
+    "id": "EXP_NET_048",
+    "subject": "신기술/보안",
+    "category": "네트워크 보안",
+    "type": "SHORT_ANSWER",
+    "question": "네트워크에 접속을 시도하는 모든 사용자 단말(PC, 모바일)의 백신 설치 여부, OS 패치 상태 등을 사전에 검증하여 정책 위반 기기의 내부망 접근을 차단하는 기술의 약칭은 무엇인가?",
+    "answer": "NAC",
+    "explanation": "NAC(Network Access Control, 네트워크 접근 제어)는 내부망 보안 위협을 사전 차단합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "NAC",
+      "Network Access Control",
+      "단말보안검증"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-security"
+  },
+  {
+    "id": "EXP_NET_049",
+    "subject": "신기술/보안",
+    "category": "응용 계층 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "인터넷에서 대용량 파일을 고속으로 업로드하고 다운로드하기 위해 제어 포트(21번)와 데이터 전송 포트(20번) 2개의 채널을 분리 운영하는 프로토콜의 약칭은 무엇인가?",
+    "answer": "FTP",
+    "explanation": "FTP(File Transfer Protocol)는 명령 제어용 연결(21번)과 실제 파일 전송용 연결(20번)을 분리하여 사용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "FTP",
+      "File Transfer Protocol",
+      "21번포트"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-protocols"
+  },
+  {
+    "id": "EXP_NET_050",
+    "subject": "신기술/보안",
+    "category": "IP 주소 체계",
+    "type": "SHORT_ANSWER",
+    "question": "IPv4 주소 클래스 중 특정 그룹에 속한 다수의 호스트들에게 동시에 패킷을 전달하기 위한 멀티캐스트(Multicast) 전용 주소 대역(224.0.0.0 ~ 239.255.255.255)으로 할당된 클래스는 무엇인가?",
+    "answer": "D클래스",
+    "explanation": "A, B, C클래스는 유니캐스트, D클래스는 멀티캐스트, E클래스는 연구 및 실험용 예약 주소입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "D클래스",
+      "멀티캐스트대역",
+      "IPv4클래스"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-net-ip"
+  },
+  {
+    "id": "EXP_SEC1_001",
+    "subject": "신기술/보안",
+    "category": "블록 암호 모드",
+    "type": "SHORT_ANSWER",
+    "question": "블록 암호 운영 모드 중 평문 블록들을 각각 독립적으로 동일한 비밀키로 암호화하여 동일한 평문 블록이 항상 동일한 암호문 블록을 생성하므로 패턴 노출에 가장 취약한 모드는 무엇인가?",
+    "answer": "ECB",
+    "explanation": "ECB(Electronic Codebook, 전자 코드북) 모드는 블록 간의 연쇄가 없어 가장 단순하지만 보안성이 매우 취약합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ECB",
+      "Electronic Codebook",
+      "블록암호모드"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-modes"
+  },
+  {
+    "id": "EXP_SEC1_002",
+    "subject": "신기술/보안",
+    "category": "블록 암호 모드",
+    "type": "SHORT_ANSWER",
+    "question": "블록 암호 운영 모드 중 이전 암호문 블록과 현재 평문 블록을 XOR 연산한 후 암호화하며, 첫 번째 평문 블록 암호화를 위해 고유한 초기화 벡터(IV)를 반드시 사용하는 모드는 무엇인가?",
+    "answer": "CBC",
+    "explanation": "CBC(Cipher Block Chaining, 암호 블록 연쇄) 모드는 평문 패턴을 완벽히 은폐하며 가장 널리 쓰이는 표준 모드입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CBC",
+      "Cipher Block Chaining",
+      "초기화벡터"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-modes"
+  },
+  {
+    "id": "EXP_SEC1_003",
+    "subject": "신기술/보안",
+    "category": "블록 암호 모드",
+    "type": "SHORT_ANSWER",
+    "question": "블록 암호 모드 중 1씩 증가하는 고유한 카운터(Counter) 값을 블록 암호기로 암호화한 키 스트림을 평문과 XOR 연산하여 병렬 암호화/복호화가 가능한 고속 모드는 무엇인가?",
+    "answer": "CTR",
+    "explanation": "CTR(Counter, 카운터) 모드는 블록 암호를 스트림 암호처럼 구동하며 멀티코어 환경에서 병렬 처리가 가능합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "CTR",
+      "Counter",
+      "병렬암호화"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-modes"
+  },
+  {
+    "id": "EXP_SEC1_004",
+    "subject": "신기술/보안",
+    "category": "블록 암호 모드",
+    "type": "SHORT_ANSWER",
+    "question": "블록 암호 모드 중 암호기의 출력(Output) 값을 다음 단계 암호기의 입력으로 직접 피드백하여 전송 채널 상의 1비트 오류가 후속 암호 블록으로 전파되지 않는 모드는 무엇인가?",
+    "answer": "OFB",
+    "explanation": "OFB(Output Feedback, 출력 피드백) 모드는 에러 전파(Error Propagation)가 발생하지 않는 특징이 있습니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "OFB",
+      "Output Feedback",
+      "에러전파없음"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-modes"
+  },
+  {
+    "id": "EXP_SEC1_005",
+    "subject": "신기술/보안",
+    "category": "대칭키 암호",
+    "type": "SHORT_ANSWER",
+    "question": "미국 표준국(NIST)의 구 표준 블록 암호화 알고리즘으로 64비트 평문 블록을 56비트 유효 키를 사용해 16라운드 Feistel 구조로 암호화하는 알고리즘은 무엇인가?",
+    "answer": "DES",
+    "explanation": "DES(Data Encryption Standard)는 56비트의 짧은 키 길이로 인해 현재는 전수 조사(Brute Force) 공격에 취약하여 사용이 권장되지 않습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DES",
+      "Data Encryption Standard",
+      "56비트키"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-ciphers"
+  },
+  {
+    "id": "EXP_SEC1_006",
+    "subject": "신기술/보안",
+    "category": "대칭키 암호",
+    "type": "SHORT_ANSWER",
+    "question": "DES의 취약한 키 길이를 보완하기 위해 2개 또는 3개의 서로 다른 키를 사용하여 \"암호화 → 복호화 → 암호화(EDE)\" 과정을 3번 반복 적용하는 알고리즘은 무엇인가?",
+    "answer": "3DES",
+    "explanation": "Triple DES(3DES)는 기존 DES 하드웨어를 재활용하면서 보안성을 높인 과도기적 알고리즘입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "3DES",
+      "Triple DES",
+      "EDE방식"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-ciphers"
+  },
+  {
+    "id": "EXP_SEC1_008",
+    "subject": "신기술/보안",
+    "category": "대칭키 암호",
+    "type": "SHORT_ANSWER",
+    "question": "한국인터넷진흥원(KISA)이 전자상거래와 공공 보안을 위해 개발한 국내 표준 블록 암호 알고리즘으로, 128비트 블록 크기와 16라운드 Feistel 구조를 사용하는 것은 무엇인가?",
+    "answer": "SEED",
+    "explanation": "SEED는 대한민국의 국가 표준 대칭키 블록 암호 알고리즘입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SEED",
+      "KISA",
+      "국내표준암호"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-ciphers"
+  },
+  {
+    "id": "EXP_SEC1_009",
+    "subject": "신기술/보안",
+    "category": "대칭키 암호",
+    "type": "SHORT_ANSWER",
+    "question": "국가정보원과 국가보안기술연구소(NSRI)가 주도하여 개발한 128비트 블록 크기의 국가 표준 암호로, AES와 동일한 SPN(치환-순열망) 구조를 채택한 국내 알고리즘은 무엇인가?",
+    "answer": "ARIA",
+    "explanation": "ARIA(Academy Research Institute Agency)는 경량 하드웨어 및 범용 프로세서에서 고속 동작하는 대한민국 표준 암호입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ARIA",
+      "국정원암호",
+      "SPN구조"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-ciphers"
+  },
+  {
+    "id": "EXP_SEC1_010",
+    "subject": "신기술/보안",
+    "category": "대칭키 암호",
+    "type": "SHORT_ANSWER",
+    "question": "초소형 사물인터넷(IoT) 기기, RFID 태그, 스마트카드 등 자원이 극도로 제한된 환경을 위해 개발된 64비트 블록 크기의 초경량 블록 암호 알고리즘은 무엇인가?",
+    "answer": "HIGHT",
+    "explanation": "HIGHT(HIGh security and lightweigHT)는 저전력 초경량 환경을 위한 한국 표준 암호입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "HIGHT",
+      "초경량암호",
+      "RFID암호"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-ciphers"
+  },
+  {
+    "id": "EXP_SEC1_012",
+    "subject": "신기술/보안",
+    "category": "비대칭키 암호",
+    "type": "SHORT_ANSWER",
+    "question": "타원곡선 상의 이산대수 문제에 기반하여 RSA보다 훨씬 짧은 키 길이(256비트가 RSA 3072비트 수준)로 동일한 보안 강도를 제공하여 모바일 기기에 최적화된 공개키 암호는 무엇인가?",
+    "answer": "ECC",
+    "explanation": "ECC(Elliptic Curve Cryptography)는 적은 연산량과 짧은 키 길이로 스마트폰 및 IoT 암호화의 핵심 기술입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ECC",
+      "Elliptic Curve",
+      "타원곡선암호"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-ciphers"
+  },
+  {
+    "id": "EXP_SEC1_013",
+    "subject": "신기술/보안",
+    "category": "비대칭키 암호",
+    "type": "SHORT_ANSWER",
+    "question": "공개된 안전하지 않은 통신 채널 상에서 사전 비밀 공유 없이 두 사용자가 안전하게 동일한 대칭 비밀키를 공유할 수 있도록 고안된 최초의 비밀키 교환 프로토콜은 무엇인가?",
+    "answer": "디피 헬만",
+    "explanation": "디피-헬만(Diffie-Hellman) 키 교환 알고리즘은 이산대수 문제에 기반하지만, 상호 인증 기능이 없어 중간자 공격(MITM)에 취약합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "디피 헬만",
+      "Diffie-Hellman",
+      "키교환프로토콜"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-ciphers"
+  },
+  {
+    "id": "EXP_SEC1_015",
+    "subject": "신기술/보안",
+    "category": "해시 함수 보안",
+    "type": "SHORT_ANSWER",
+    "question": "사전에 미리 계산해 둔 대규모의 해시값 역추적 조회표(레인보우 테이블)를 무력화하기 위해, 사용자의 패스워드 원문에 임의의 난수 문자열을 덧붙여 해싱하는 기법은 무엇인가?",
+    "answer": "솔트",
+    "explanation": "솔트(Salt, 솔팅)는 동일한 패스워드라도 서로 다른 다이제스트가 생성되도록 만들어 무차별 대입 공격을 차단합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "솔트",
+      "Salt",
+      "레인보우테이블방어"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-hash"
+  },
+  {
+    "id": "EXP_SEC1_016",
+    "subject": "신기술/보안",
+    "category": "보안 통제 모델",
+    "type": "SHORT_ANSWER",
+    "question": "군사적 기밀성을 보장하기 위해 고안된 보안 모델로, 자신의 보안 등급보다 높은 문서는 읽을 수 없고(No Read Up) 낮은 문서에는 쓸 수 없는(No Write Down) 모델은 무엇인가?",
+    "answer": "벨 라파듈라",
+    "explanation": "벨-라파듈라(BLP, Bell-LaPadula) 모델은 기밀성(Confidentiality) 유지가 최우선 목표입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "벨 라파듈라",
+      "BLP",
+      "기밀성모델",
+      "No Read Up"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-models"
+  },
+  {
+    "id": "EXP_SEC1_018",
+    "subject": "신기술/보안",
+    "category": "보안 통제 모델",
+    "type": "SHORT_ANSWER",
+    "question": "금융이나 전자상거래 같은 상업적 환경을 위해 고안된 무결성 모델로, 직무 분리(Separation of Duties)와 감사 추적을 바탕으로 허가된 절차를 통해서만 데이터를 변환시키는 모델은 무엇인가?",
+    "answer": "클락 윌슨",
+    "explanation": "클락-윌슨(Clark-Wilson) 모델은 CDI, UDI, TP(변환절차), IVP(검증절차)를 통해 데이터의 변조를 막는 상업용 무결성 모델입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "클락 윌슨",
+      "Clark-Wilson",
+      "직무분리",
+      "상업무결성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-models"
+  },
+  {
+    "id": "EXP_SEC1_020",
+    "subject": "신기술/보안",
+    "category": "접근 통제 정책",
+    "type": "SHORT_ANSWER",
+    "question": "관리자나 시스템이 설정한 보안 등급(Secret, Top Secret 등)과 주체의 인가 등급을 중앙에서 비교하여 규칙 기반으로 접근을 강제 통제하는 방식의 약칭은 무엇인가?",
+    "answer": "MAC",
+    "explanation": "MAC(Mandatory Access Control, 강제적 접근 통제)는 보안 관리자만 권한을 설정할 수 있어 군사/정부 시스템에 쓰입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "MAC",
+      "Mandatory Access Control",
+      "강제적접근통제"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-access"
+  },
+  {
+    "id": "EXP_SEC1_021",
+    "subject": "신기술/보안",
+    "category": "접근 통제 정책",
+    "type": "SHORT_ANSWER",
+    "question": "사용자 개인에게 직접 권한을 주지 않고, 조직 내에서 사용자가 맡은 역할(Role)에 권한을 매핑한 후 사용자에게 해당 역할을 배정하는 접근 통제 방식의 약칭은 무엇인가?",
+    "answer": "RBAC",
+    "explanation": "RBAC(Role-Based Access Control, 역할 기반 접근 통제)는 인사 이동이 잦은 기업 환경에서 권한 관리가 매우 효율적입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "RBAC",
+      "Role-Based Access Control",
+      "역할기반"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-access"
+  },
+  {
+    "id": "EXP_SEC1_022",
+    "subject": "신기술/보안",
+    "category": "접근 통제 정책",
+    "type": "SHORT_ANSWER",
+    "question": "주체의 속성, 객체의 속성, 환경 조건(시간, 위치, 디바이스 상태 등)을 동적으로 결합하여 세분화된 보안 정책을 적용하는 속성 기반 접근 통제의 약칭은 무엇인가?",
+    "answer": "ABAC",
+    "explanation": "ABAC(Attribute-Based Access Control)는 XACML 표준을 기반으로 상황 인지형 동적 접근 제어를 제공합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "ABAC",
+      "Attribute-Based Access Control",
+      "속성기반"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-access"
+  },
+  {
+    "id": "EXP_SEC1_023",
+    "subject": "신기술/보안",
+    "category": "정보보안 3대 요소",
+    "type": "SHORT_ANSWER",
+    "question": "인가되지 않은 사용자가 정보 시스템의 자원이나 데이터 내용을 도청하거나 열람할 수 없도록 보장하는 정보보안의 기본 원칙은 무엇인가?",
+    "answer": "기밀성",
+    "explanation": "기밀성(Confidentiality)은 암호화와 접근 통제를 통해 비인가자의 정보 노출을 방지합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "기밀성",
+      "Confidentiality",
+      "보안3요소"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-cia"
+  },
+  {
+    "id": "EXP_SEC1_025",
+    "subject": "신기술/보안",
+    "category": "정보보안 3대 요소",
+    "type": "SHORT_ANSWER",
+    "question": "인가된 적법한 사용자가 필요한 시점에 방해받지 않고 언제든지 정보 시스템과 자원을 즉시 이용할 수 있도록 보장하는 보안 원칙은 무엇인가?",
+    "answer": "가용성",
+    "explanation": "가용성(Availability)은 DoS/DDoS 방어, 이중화, 백업 등을 통해 시스템이 지속 가동되도록 보장합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "가용성",
+      "Availability",
+      "시스템상시가동"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-cia"
+  },
+  {
+    "id": "EXP_SEC1_026",
+    "subject": "신기술/보안",
+    "category": "전자 서명",
+    "type": "SHORT_ANSWER",
+    "question": "송신자가 데이터를 전송했거나 승인한 사실을 나중에 거짓으로 발뺌(부인)할 수 없도록 전자서명 등으로 증명하는 정보보안 속성은 무엇인가?",
+    "answer": "부인 방지",
+    "explanation": "부인 방지(Non-repudiation)는 송신자의 개인키로 서명하여 송신 사실과 수신 사실을 법적으로 증명합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "부인 방지",
+      "Non-repudiation",
+      "전자서명"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-pki"
+  },
+  {
+    "id": "EXP_SEC1_027",
+    "subject": "신기술/보안",
+    "category": "전자 서명",
+    "type": "SHORT_ANSWER",
+    "question": "전자서명 생성 시 송신자는 원본 문서의 해시값을 자신의 어떤 키(공개키 / 개인키)로 암호화하여 서명 값을 만들어내는가?",
+    "answer": "개인키",
+    "explanation": "전자서명은 송신자의 비밀 개인키(Private Key)로 암호화하고, 수신자는 송신자의 공개키(Public Key)로 복호화하여 서명을 검증합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "개인키",
+      "Private Key",
+      "전자서명생성"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-pki"
+  },
+  {
+    "id": "EXP_SEC1_028",
+    "subject": "신기술/보안",
+    "category": "공개키 기반 구조",
+    "type": "SHORT_ANSWER",
+    "question": "공개키의 신뢰성을 보증하기 위해 공인인증기관(CA)이 발행하는 디지털 공개키 인증서의 세계 표준 규격 명칭은 무엇인가?",
+    "answer": "X.509",
+    "explanation": "X.509 표준 인증서는 버전, 일련번호, 서명 알고리즘, 발행자, 유효기간, 주체 공개키 정보 등을 담고 있습니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "X.509",
+      "인증서표준",
+      "PKI"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-pki"
+  },
+  {
+    "id": "EXP_SEC1_029",
+    "subject": "신기술/보안",
+    "category": "공개키 기반 구조",
+    "type": "SHORT_ANSWER",
+    "question": "유효기간이 만료되기 전에 개인키 유출이나 신분 변경 등으로 인해 효력이 상실된 인증서들의 목록을 담고 있는 인증서 폐기 목록의 약칭은 무엇인가?",
+    "answer": "CRL",
+    "explanation": "CRL(Certificate Revocation List)은 인증기관이 주기적으로 배포하는 폐기된 인증서 목록입니다. 실시간 조회를 위한 온라인 프로토콜은 OCSP입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CRL",
+      "Certificate Revocation List",
+      "인증서폐기목록"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-pki"
+  },
+  {
+    "id": "EXP_SEC1_030",
+    "subject": "신기술/보안",
+    "category": "공개키 기반 구조",
+    "type": "SHORT_ANSWER",
+    "question": "인증서 폐기 목록(CRL)을 매번 다운로드받는 오버헤드를 없애고, 특정 인증서의 유효/폐기 상태를 인증 서버에 실시간으로 질의하여 확인하는 온라인 프로토콜의 약칭은 무엇인가?",
+    "answer": "OCSP",
+    "explanation": "OCSP(Online Certificate Status Protocol)는 실시간으로 개별 인증서의 유효성을 경량 질의/응답합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "OCSP",
+      "Online Certificate Status",
+      "실시간인증서검증"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-pki"
+  },
+  {
+    "id": "EXP_SEC1_031",
+    "subject": "신기술/보안",
+    "category": "사용자 인증",
+    "type": "SHORT_ANSWER",
+    "question": "한 번의 시스템 로그인 성공으로 연동된 다른 모든 웹 사이트와 애플리케이션 서비스들을 추가 인증 없이 자동으로 이용할 수 있게 해주는 통합 인증 기술의 약칭은 무엇인가?",
+    "answer": "SSO",
+    "explanation": "SSO(Single Sign-On)는 중앙 인증 서버(CAS 등)를 두어 사용자의 편의성과 계정 관리 효율을 극대화합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SSO",
+      "Single Sign-On",
+      "통합인증"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-auth"
+  },
+  {
+    "id": "EXP_SEC1_032",
+    "subject": "신기술/보안",
+    "category": "사용자 인증",
+    "type": "SHORT_ANSWER",
+    "question": "사용자가 자신의 비밀번호를 제3자 앱에 직접 노출하지 않고, 구글이나 카카오 등 인증 제공자로부터 인가 토큰(Access Token)을 발급받아 자원 접근 권한을 위임하는 개방형 인가 표준은 무엇인가?",
+    "answer": "OAuth",
+    "explanation": "OAuth 2.0(Open Authorization)은 안전한 API 권한 위임을 위한 표준 프레임워크입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "OAuth",
+      "Open Authorization",
+      "권한위임"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-auth"
+  },
+  {
+    "id": "EXP_SEC1_033",
+    "subject": "신기술/보안",
+    "category": "인증 토큰",
+    "type": "SHORT_ANSWER",
+    "question": "헤더(Header), 내용(Payload), 서명(Signature) 3개 영역이 점(.)으로 구분되어 JSON 형식으로 클레임 정보를 안전하게 전달하는 경량 웹 토큰 표준의 약칭은 무엇인가?",
+    "answer": "JWT",
+    "explanation": "JWT(JSON Web Token)는 자체 완결적(Self-contained) 토큰으로 세션 저장소 없이 토큰 자체 서명 검증만으로 무상태 인증을 구현합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "JWT",
+      "JSON Web Token",
+      "웹토큰"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-auth"
+  },
+  {
+    "id": "EXP_SEC1_034",
+    "subject": "신기술/보안",
+    "category": "다중 요소 인증",
+    "type": "SHORT_ANSWER",
+    "question": "지식 기반(비밀번호), 소지 기반(스마트폰/OTP), 생체 기반(지문/홍채) 중 서로 다른 2가지 이상의 독립된 인증 요소를 결합하여 보안을 강화하는 인증 방식의 약칭은 무엇인가?",
+    "answer": "MFA",
+    "explanation": "MFA(Multi-Factor Authentication, 다중 요소 인증)는 단일 인증 수단 침해로 인한 계정 탈취를 방지합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "MFA",
+      "Multi-Factor Authentication",
+      "다중요소인증"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-auth"
+  },
+  {
+    "id": "EXP_SEC1_035",
+    "subject": "신기술/보안",
+    "category": "인증 기술",
+    "type": "SHORT_ANSWER",
+    "question": "매번 로그인할 때마다 고정되지 않은 무작위 6자리 일회용 비밀번호를 동적으로 생성하여 재사용 공격(Replay Attack)을 원천 차단하는 인증 기술의 약칭은 무엇인가?",
+    "answer": "OTP",
+    "explanation": "OTP(One Time Password)는 시간 동기 방식(TOTP)이나 이벤트 카운터 방식(HOTP)으로 매회 일회용 비밀번호를 만듭니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "OTP",
+      "One Time Password",
+      "일회용비밀번호"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-auth"
+  },
+  {
+    "id": "EXP_SEC1_036",
+    "subject": "신기술/보안",
+    "category": "패스워드 크래킹",
+    "type": "SHORT_ANSWER",
+    "question": "사전에 등재된 단어 목록(사전 파일)들을 프로그램으로 순차 대입하여 취약한 패스워드를 알아내는 고전적인 공격 기법은 무엇인가?",
+    "answer": "사전 공격",
+    "explanation": "사전 공격(Dictionary Attack)은 무차별 대입 공격보다 시도 횟수를 대폭 줄여 빈출 단어 위주로 빠르게 크랙합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "사전 공격",
+      "Dictionary Attack",
+      "패스워드크래킹"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-attacks"
+  },
+  {
+    "id": "EXP_SEC1_037",
+    "subject": "신기술/보안",
+    "category": "패스워드 크래킹",
+    "type": "SHORT_ANSWER",
+    "question": "가능한 모든 문자들의 조합(영문, 숫자, 특수문자 전체)을 하나씩 빠짐없이 끝까지 대입하여 비밀번호를 찾아내는 가장 단순하지만 확실한 공격 기법은 무엇인가?",
+    "answer": "무차별 대입 공격",
+    "explanation": "무차별 대입 공격(Brute Force Attack)은 시간과 연산 자원만 충분하다면 원리상 100% 해독 가능한 공격입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "무차별 대입 공격",
+      "Brute Force",
+      "전수조사공격"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-attacks"
+  },
+  {
+    "id": "EXP_SEC1_038",
+    "subject": "신기술/보안",
+    "category": "키 분배 메커니즘",
+    "type": "SHORT_ANSWER",
+    "question": "대칭키 분배 센터(KDC) 방식을 기반으로 티켓(Ticket) 개념을 도입하여 안전하지 않은 분산 네트워크 환경에서 상호 인증을 제공하는 대표 인증 프로토콜은 무엇인가?",
+    "answer": "커버로스",
+    "explanation": "커버로스(Kerberos)는 TGT(티켓 발급 티켓)와 세션 티켓을 사용해 비밀번호의 평문 전송 없이 안전하게 클라이언트-서버 인증을 수행합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "커버로스",
+      "Kerberos",
+      "티켓기반인증"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-auth"
+  },
+  {
+    "id": "EXP_SEC1_039",
+    "subject": "신기술/보안",
+    "category": "보안 통제",
+    "type": "SHORT_ANSWER",
+    "question": "데이터베이스 암호화 방식 중 데이터베이스 엔진 내부의 트리거(Trigger)나 사용자 정의 함수 패키지를 통해 암/복호화를 수행하는 방식을 무엇이라 하는가?",
+    "answer": "Plug-in 방식",
+    "explanation": "플러그인(Plug-in) 방식은 DB 서버 내부에 모듈을 설치해 애플리케이션의 수정 없이 암호화를 적용합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "Plug-in 방식",
+      "플러그인방식",
+      "DB암호화"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-dbsec"
+  },
+  {
+    "id": "EXP_SEC1_040",
+    "subject": "신기술/보안",
+    "category": "보안 통제",
+    "type": "SHORT_ANSWER",
+    "question": "데이터베이스 암호화 방식 중 애플리케이션 서버 소스코드 레벨에서 API 라이브러리를 직접 호출하여 암호화된 데이터를 DB로 전송하는 방식은 무엇인가?",
+    "answer": "API 방식",
+    "explanation": "API 방식은 애플리케이션 서버에서 암/복호화가 이루어지므로 DB 서버에 부하를 주지 않고 통신 구간도 안전하지만 소스 수정이 필요합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "API 방식",
+      "DB암호화",
+      "애플리케이션암호화"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-dbsec"
+  },
+  {
+    "id": "EXP_SEC1_041",
+    "subject": "신기술/보안",
+    "category": "보안 통제",
+    "type": "SHORT_ANSWER",
+    "question": "데이터베이스 암호화 방식 중 DBMS 커널 내부에서 데이터 파일이 디스크에 저장될 때 자동으로 투명하게 암호화하고 읽을 때 복호화하는 TDE 기술의 전체 명칭은 무엇인가?",
+    "answer": "투명한 데이터 암호화",
+    "explanation": "TDE(Transparent Data Encryption)는 애플리케이션과 쿼리의 수정 없이 저장 데이터(Data at Rest)를 자동 암호화합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "투명한 데이터 암호화",
+      "TDE",
+      "Transparent Data Encryption"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-dbsec"
+  },
+  {
+    "id": "EXP_SEC1_042",
+    "subject": "신기술/보안",
+    "category": "개인정보 보호",
+    "type": "SHORT_ANSWER",
+    "question": "주민등록번호나 신용카드 번호 같은 민감한 원본 데이터를 고유한 난수 형태의 토큰(Token) 값으로 치환하여 보관함으로써 유출 시 피해를 방지하는 보안 기술은 무엇인가?",
+    "answer": "토큰화",
+    "explanation": "토큰화(Tokenization)는 원본 데이터 대신 수학적 연관성이 없는 토큰을 사용하여 보안 위험을 분리합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "토큰화",
+      "Tokenization",
+      "개인정보보호"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-privacy"
+  },
+  {
+    "id": "EXP_SEC1_043",
+    "subject": "신기술/보안",
+    "category": "개인정보 보호",
+    "type": "SHORT_ANSWER",
+    "question": "특정 개인의 데이터를 마스킹, 가명처리, 범주화 등의 방법으로 가공하여 더 이상 특정 개인을 알아볼 수 없도록 조치하는 과정을 무엇이라 하는가?",
+    "answer": "비식별화",
+    "explanation": "비식별화(De-identification)는 데이터의 활용성을 보장하면서 개인 프라이버시 침해를 예방하는 기법입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "비식별화",
+      "De-identification",
+      "가명정보"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-privacy"
+  },
+  {
+    "id": "EXP_SEC1_044",
+    "subject": "신기술/보안",
+    "category": "개인정보 보호",
+    "type": "SHORT_ANSWER",
+    "question": "프라이버시 보호 모델 중 데이터셋 내에서 특정 개인과 동일한 준식별자(나이, 성별, 지역 등) 속성 값을 가진 사람이 최소 k명 이상 존재하도록 익명화하는 모델은 무엇인가?",
+    "answer": "k-익명성",
+    "explanation": "k-익명성(k-Anonymity)은 재식별 위험을 1/k 이하로 낮춥니다. 동질성 공격을 막기 위해 다양성을 보장하는 것은 l-다양성입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "k-익명성",
+      "k-Anonymity",
+      "비식별화모델"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-privacy"
+  },
+  {
+    "id": "EXP_SEC1_045",
+    "subject": "신기술/보안",
+    "category": "개인정보 보호",
+    "type": "SHORT_ANSWER",
+    "question": "k-익명성 모델에서 동질적인 민감 정보가 집중되는 결함(동질성 공격)을 방지하기 위해, 동등 클래스 내의 민감한 속성 값들의 종류가 최소 l개 이상 다양하도록 보장하는 모델은 무엇인가?",
+    "answer": "l-다양성",
+    "explanation": "l-다양성(l-Diversity)은 k-익명성의 취약점을 보완하여 정보 누출을 방지합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "l-다양성",
+      "l-Diversity",
+      "동질성공격방어"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-privacy"
+  },
+  {
+    "id": "EXP_SEC1_046",
+    "subject": "신기술/보안",
+    "category": "정보보호 관리체계",
+    "type": "SHORT_ANSWER",
+    "question": "기업의 주요 정보 자산과 개인정보를 안전하게 보호하기 위해 과학기술정보통신부와 개인정보보호위원회가 공동 운영하는 한국의 종합 정보보호 인증 제도의 약칭은 무엇인가?",
+    "answer": "ISMS-P",
+    "explanation": "ISMS-P는 정보보호 관리체계(ISMS)와 개인정보보호 관리체계(PIMS)를 통합한 국가 인증 제도입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ISMS-P",
+      "정보보호관리체계",
+      "인증제도"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-isms"
+  },
+  {
+    "id": "EXP_SEC1_047",
+    "subject": "신기술/보안",
+    "category": "정보보호 평가 기준",
+    "type": "SHORT_ANSWER",
+    "question": "국가마다 서로 다른 정보보호 시스템의 보안 평가 기준을 상호 인정하기 위해 제정한 다국적 국제 공통 평가 기준(ISO/IEC 15408)의 약칭은 무엇인가?",
+    "answer": "CC",
+    "explanation": "CC(Common Criteria, 공통평가기준)는 EAL1부터 EAL7까지 7등급의 평가 보증 등급을 규정합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CC",
+      "Common Criteria",
+      "공통평가기준"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-cc"
+  },
+  {
+    "id": "EXP_SEC1_048",
+    "subject": "신기술/보안",
+    "category": "정보보호 평가 기준",
+    "type": "SHORT_ANSWER",
+    "question": "CC(공통평가기준) 인증에서 평가 대상이 되는 정보보호 시스템 제품 또는 보안 소프트웨어를 가리키는 용어의 약칭은 무엇인가?",
+    "answer": "TOE",
+    "explanation": "TOE(Target of Evaluation, 평가 대상 제품)는 CC 인증 평가의 실제 대상체를 뜻합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "TOE",
+      "Target of Evaluation",
+      "평가대상제품"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-cc"
+  },
+  {
+    "id": "EXP_SEC1_049",
+    "subject": "신기술/보안",
+    "category": "정보보호 평가 기준",
+    "type": "SHORT_ANSWER",
+    "question": "CC 인증에서 특정 제품군(예: 방화벽 제품군)이 충족해야 하는 표준적인 보안 요구사항들을 정의해 둔 표준 문서를 무엇이라 하는가?",
+    "answer": "보호 프로파일",
+    "explanation": "보호 프로파일(PP, Protection Profile)은 소비자가 요구하는 공통 보안 명세서입니다. 특정 제조사 제품의 상세 보안 사양서는 보안 목표명세서(ST)입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "보호 프로파일",
+      "Protection Profile",
+      "PP"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-cc"
+  },
+  {
+    "id": "EXP_SEC1_050",
+    "subject": "신기술/보안",
+    "category": "보안 철학",
+    "type": "SHORT_ANSWER",
+    "question": "\"아무것도 신뢰하지 말고 항상 모든 접근을 검증하라(Never Trust, Always Verify)\"는 철학 아래 내부망 접근자라도 매번 엄격한 인증과 권한을 검증하는 차세대 보안 모델은 무엇인가?",
+    "answer": "제로 트러스트",
+    "explanation": "제로 트러스트(Zero Trust)는 경계 기반 보안의 한계를 극복하고 최소 권한 원칙과 지속적 검증을 적용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "제로 트러스트",
+      "Zero Trust",
+      "Always Verify"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-zerotrust"
+  },
+  {
+    "id": "EXP_SEC2_001",
+    "subject": "신기술/보안",
+    "category": "웹 취약점 방어",
+    "type": "SHORT_ANSWER",
+    "question": "SQL Injection 공격을 원천 방지하기 위해 사용자 입력을 동적 문자열 결합 대신 쿼리 구조를 미리 컴파일하고 바인딩 변수(?)를 사용하는 데이터베이스 프로그래밍 객체는 무엇인가?",
+    "answer": "PreparedStatement",
+    "explanation": "PreparedStatement(바인딩 쿼리)는 사용자 입력을 단순 데이터 리터럴로만 취급하여 SQL 문법 구조가 변조되는 것을 차단합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "PreparedStatement",
+      "SQL인젝션방어",
+      "바인딩변수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-webvuln"
+  },
+  {
+    "id": "EXP_SEC2_002",
+    "subject": "신기술/보안",
+    "category": "웹 취약점",
+    "type": "SHORT_ANSWER",
+    "question": "XSS 공격 유형 중 공격자가 악의적인 스크립트를 게시판이나 댓글 등 웹 애플리케이션 데이터베이스에 영구 저장시켜 불특정 다수의 방문자 브라우저에서 실행되게 만드는 공격은 무엇인가?",
+    "answer": "Stored XSS",
+    "explanation": "저장형 XSS(Stored XSS)는 스크립트가 DB에 저장되어 지속적으로 다수의 사용자 세션 쿠키를 탈취합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Stored XSS",
+      "저장형XSS",
+      "게시판스크립트"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-webvuln"
+  },
+  {
+    "id": "EXP_SEC2_003",
+    "subject": "신기술/보안",
+    "category": "웹 취약점",
+    "type": "SHORT_ANSWER",
+    "question": "XSS 공격 유형 중 악성 스크립트가 포함된 피싱 URL 링크를 피해자가 클릭했을 때 서버의 검색 결과 화면 등을 통해 즉시 브라우저로 반사되어 실행되는 공격은 무엇인가?",
+    "answer": "Reflected XSS",
+    "explanation": "반사형 XSS(Reflected XSS)는 서버 DB에 저장되지 않고 요청 파라미터가 응답 화면에 그대로 노출될 때 발생합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Reflected XSS",
+      "반사형XSS",
+      "피싱링크"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-webvuln"
+  },
+  {
+    "id": "EXP_SEC2_004",
+    "subject": "신기술/보안",
+    "category": "웹 취약점 방어",
+    "type": "SHORT_ANSWER",
+    "question": "웹 브라우저에서 스크립트(JavaScript)가 document.cookie를 통해 세션 쿠키에 직접 접근하지 못하도록 차단하여 XSS 쿠키 탈취를 방지하는 쿠키 보안 플래그는 무엇인가?",
+    "answer": "HttpOnly",
+    "explanation": "HttpOnly 플래그가 설정된 쿠키는 HTTP 통신으로만 전송되며 자바스크립트 브라우저 API로는 읽을 수 없습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "HttpOnly",
+      "쿠키보안플래그",
+      "XSS방어"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-webvuln"
+  },
+  {
+    "id": "EXP_SEC2_005",
+    "subject": "신기술/보안",
+    "category": "웹 취약점 방어",
+    "type": "SHORT_ANSWER",
+    "question": "XSS 방어를 위해 사용자가 입력한 HTML 특수문자(<, >, &, \", ' 등)를 안전한 문자 엔티티(&lt;, &gt; 등)로 변환하는 기법을 무엇이라 하는가?",
+    "answer": "HTML 엔티티 치환",
+    "explanation": "HTML 인코딩(치환)은 브라우저가 스크립트 태그를 실행 코드로 해석하지 않고 단순 텍스트로 렌더링하게 만듭니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "HTML 엔티티 치환",
+      "HTML인코딩",
+      "특수문자치환"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-webvuln"
+  },
+  {
+    "id": "EXP_SEC2_007",
+    "subject": "신기술/보안",
+    "category": "웹 취약점 방어",
+    "type": "SHORT_ANSWER",
+    "question": "CSRF 공격을 방어하기 위해 매 폼(Form) 요청마다 서버가 생성한 예측 불가능한 고유 난수 값을 세션과 폼 데이터에 일치시키도록 검증하는 방어 수단은 무엇인가?",
+    "answer": "CSRF 토큰",
+    "explanation": "CSRF 토큰은 공격자가 외부 사이트에서 피해자 브라우저로 위조 요청을 보내더라도 토큰 값을 알 수 없어 서버에서 거절됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CSRF 토큰",
+      "CSRF방어",
+      "난수토큰"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-webvuln"
+  },
+  {
+    "id": "EXP_SEC2_008",
+    "subject": "신기술/보안",
+    "category": "웹 취약점 방어",
+    "type": "SHORT_ANSWER",
+    "question": "웹 브라우저의 보안 정책 중 어떤 출처(도메인, 프로토콜, 포트)에서 불러온 문서나 스크립트가 다른 출처의 리소스와 상호작용하는 것을 기본적으로 격리 제한하는 정책의 약칭은 무엇인가?",
+    "answer": "SOP",
+    "explanation": "SOP(Same-Origin Policy, 동일 출처 정책)는 출처가 다른 리소스 접근을 차단합니다. 필요한 경우 CORS를 통해 허용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SOP",
+      "Same-Origin Policy",
+      "동일출처정책"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-webvuln"
+  },
+  {
+    "id": "EXP_SEC2_009",
+    "subject": "신기술/보안",
+    "category": "웹 브라우저 통신",
+    "type": "SHORT_ANSWER",
+    "question": "SOP 정책의 제약을 넘어 다른 출처(도메인)의 리소스를 안전하게 요청할 수 있도록 추가 HTTP 헤더를 사용하여 서버가 권한을 허용하는 메커니즘의 약칭은 무엇인가?",
+    "answer": "CORS",
+    "explanation": "CORS(Cross-Origin Resource Sharing, 교차 출처 리소스 공유)는 Access-Control-Allow-Origin 헤더로 교차 요청을 허용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CORS",
+      "Cross-Origin Resource Sharing",
+      "교차출처공유"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-webvuln"
+  },
+  {
+    "id": "EXP_SEC2_010",
+    "subject": "신기술/보안",
+    "category": "메모리 보안 공격",
+    "type": "SHORT_ANSWER",
+    "question": "C언어 등에서 메모리 버퍼의 크기를 초과하여 데이터를 입력함으로써 함수의 반환 주소(Return Address)를 덮어써서 공격자의 쉘코드를 실행시키는 공격은 무엇인가?",
+    "answer": "버퍼 오버플로우",
+    "explanation": "버퍼 오버플로우(Buffer Overflow)는 경계 검사(Boundary Check)를 수행하지 않는 함수(strcpy, gets 등)를 사용할 때 발생합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "버퍼 오버플로우",
+      "Buffer Overflow",
+      "반환주소변조"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-sysvuln"
+  },
+  {
+    "id": "EXP_SEC2_011",
+    "subject": "신기술/보안",
+    "category": "메모리 보호 기법",
+    "type": "SHORT_ANSWER",
+    "question": "프로그램이 실행될 때마다 스택, 힙, 공유 라이브러리가 적재되는 메모리 시작 주소를 무작위로 변경하여 공격자가 쉘코드 주소를 예측하지 못하게 방어하는 기술의 약칭은 무엇인가?",
+    "answer": "ASLR",
+    "explanation": "ASLR(Address Space Layout Randomization)은 메모리 주소 무작위화로 버퍼 오버플로우 공격을 무력화합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ASLR",
+      "Address Space Layout Randomization",
+      "메모리주소무작위화"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-sysvuln"
+  },
+  {
+    "id": "EXP_SEC2_012",
+    "subject": "신기술/보안",
+    "category": "메모리 보호 기법",
+    "type": "SHORT_ANSWER",
+    "question": "버퍼 오버플로우 방어를 위해 스택의 지역 변수와 반환 주소 사이에 무작위 카나리(Canary) 값을 삽입하고 함수 종료 시 카나리 변조를 검사하는 보호 기술은 무엇인가?",
+    "answer": "스택 가드",
+    "explanation": "스택 가드(StackGuard, 스택 카나리)는 카나리 값이 손상되면 시스템을 강제 종료하여 공격 코드 실행을 막습니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "스택 가드",
+      "StackGuard",
+      "스택카나리"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-sysvuln"
+  },
+  {
+    "id": "EXP_SEC2_013",
+    "subject": "신기술/보안",
+    "category": "메모리 보호 기법",
+    "type": "SHORT_ANSWER",
+    "question": "스택이나 힙 같은 데이터 저장 전용 메모리 영역에 실행(Execute) 권한을 박탈하여 해당 영역에 주입된 악성 코드가 실행되지 못하도록 차단하는 하드웨어/OS 보호 기술의 약칭은 무엇인가?",
+    "answer": "DEP",
+    "explanation": "DEP(Data Execution Prevention, 데이터 실행 방지 / NX bit)는 데이터 영역을 실행 불가능(No-Execute) 상태로 만듭니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DEP",
+      "Data Execution Prevention",
+      "NX bit"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-sysvuln"
+  },
+  {
+    "id": "EXP_SEC2_014",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "type": "SHORT_ANSWER",
+    "question": "printf() 함수 등에 사용자 입력 문자열을 포맷 스트링 파라미터 없이 직접 넘겼을 때(%x, %s 등을 악용), 메모리 내용을 무단 조회하거나 변조할 수 있는 취약점은 무엇인가?",
+    "answer": "포맷 스트링 공격",
+    "explanation": "포맷 스트링 취약점(Format String Vulnerability)은 printf(\"%s\", input) 대신 printf(input)을 사용했을 때 발생합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "포맷 스트링 공격",
+      "Format String",
+      "printf취약점"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-sysvuln"
+  },
+  {
+    "id": "EXP_SEC2_015",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "type": "SHORT_ANSWER",
+    "question": "자원(파일, 메모리 등)의 접근 권한을 확인하는 시점(Check)과 실제로 자원을 사용하는 시점(Use) 사이의 시간차를 노려 공격자가 심볼릭 링크를 바꿔치기하는 취약점의 약칭은 무엇인가?",
+    "answer": "TOCTOU",
+    "explanation": "TOCTOU(Time of Check to Time of Use)는 레이스 컨디션(경쟁 상태)을 악용한 대표적인 권한 우회 취약점입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "TOCTOU",
+      "Time of Check to Time of Use",
+      "경쟁상태취약점"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-sysvuln"
+  },
+  {
+    "id": "EXP_SEC2_016",
+    "subject": "신기술/보안",
+    "category": "DoS 공격",
+    "type": "SHORT_ANSWER",
+    "question": "TCP 연결 수립 과정에서 SYN 패킷을 대량으로 서버에 전송한 뒤 마지막 ACK를 보내지 않고 대기하여 서버의 백로그 큐(Backlog Queue)를 고갈시키는 서비스 거부 공격은 무엇인가?",
+    "answer": "SYN Flooding",
+    "explanation": "SYN Flooding은 서버의 하프 오픈(Half-Open) 연결 자원을 고갈시키며 SYN Cookie 기법으로 방어합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SYN Flooding",
+      "TCP연결지연",
+      "백로그큐고갈"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-dos"
+  },
+  {
+    "id": "EXP_SEC2_017",
+    "subject": "신기술/보안",
+    "category": "DoS 공격",
+    "type": "SHORT_ANSWER",
+    "question": "공격자가 패킷의 출발지 IP 주소를 피해자 서버의 IP로 위조한 후, 다이렉트 브로드캐스트 주소로 대량의 ICMP Echo Request를 전송하여 네트워크 내의 모든 호스트가 피해자에게 동시에 응답(Reply)을 쏟아붓게 만드는 DoS 공격은 무엇인가?",
+    "answer": "스머프",
+    "explanation": "스머핑(Smurfing)은 ICMP 증폭 공격으로 라우터에서 다이렉트 브로드캐스트 차단을 통해 방어합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "스머프",
+      "Smurf",
+      "ICMP증폭공격"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-dos"
+  },
+  {
+    "id": "EXP_SEC2_018",
+    "subject": "신기술/보안",
+    "category": "DoS 공격",
+    "type": "SHORT_ANSWER",
+    "question": "규격 허용 최대 크기(65,535 바이트)를 초과하는 거대한 ICMP 패킷을 수많은 작은 조각(Fragment)으로 분할 전송하여 수신 측이 이를 재조합하는 과정에서 버퍼 오버플로우와 다운을 유발하는 공격은 무엇인가?",
+    "answer": "Ping of Death",
+    "explanation": "Ping of Death(죽음의 핑)는 거대 ICMP 패킷의 재조합 취약점을 악용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Ping of Death",
+      "죽음의핑",
+      "거대패킷공격"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-dos"
+  },
+  {
+    "id": "EXP_SEC2_019",
+    "subject": "신기술/보안",
+    "category": "DoS 공격",
+    "type": "SHORT_ANSWER",
+    "question": "IP 패킷 분할(Fragmentation) 시 오프셋(Fragment Offset) 값들을 의도적으로 서로 중복(Overlap)되거나 빈틈이 생기도록 조작하여 수신 시스템이 패킷 재조합 시 크래시(블루스크린)를 일으키게 하는 공격은 무엇인가?",
+    "answer": "티어드롭",
+    "explanation": "티어드롭(Teardrop) 공격은 패킷 조각 오프셋 조작으로 인한 수신 측 OS 재조합 알고리즘의 결함을 노립니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "티어드롭",
+      "Teardrop",
+      "오프셋조작공격"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-dos"
+  },
+  {
+    "id": "EXP_SEC2_020",
+    "subject": "신기술/보안",
+    "category": "DoS 공격",
+    "type": "SHORT_ANSWER",
+    "question": "패킷의 출발지 IP 주소와 포트 번호를 피해자의 대상 서버 IP 주소 및 포트 번호와 완벽히 똑같이 조작하여, 수신 서버가 자기 자신에게 계속 무한 응답 루프를 돌게 만드는 DoS 공격은 무엇인가?",
+    "answer": "랜드 어택",
+    "explanation": "랜드 어택(Land Attack)은 출발지와 목적지가 동일한 패킷을 드롭(차단)하도록 필터링하여 방어합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "랜드 어택",
+      "Land Attack",
+      "출발지목적지동일"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-dos"
+  },
+  {
+    "id": "EXP_SEC2_021",
+    "subject": "신기술/보안",
+    "category": "DoS 공격",
+    "type": "SHORT_ANSWER",
+    "question": "HTTP 헤더의 끝을 알리는 빈 줄(\\r\\n\\r\\n)을 고의로 전송하지 않고, 극소량의 가짜 헤더를 비정상적으로 느린 속도로 지속 전송하여 웹 서버의 동시 연결 커넥션을 모두 고갈시키는 공격은 무엇인가?",
+    "answer": "슬로로리스",
+    "explanation": "슬로로리스(Slowloris)는 저대역폭 애플리케이션 계층 DoS 공격으로 웹 서버의 Keep-Alive 연결 제한으로 대응합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "슬로로리스",
+      "Slowloris",
+      "헤더지연공격"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-dos"
+  },
+  {
+    "id": "EXP_SEC2_022",
+    "subject": "신기술/보안",
+    "category": "스푸핑 공격",
+    "type": "SHORT_ANSWER",
+    "question": "동일 로컬 네트워크(LAN) 상에서 위조된 ARP 응답 패킷을 지속적으로 희생자에게 전송하여 희생자의 ARP 캐시 테이블의 게이트웨이 MAC 주소를 공격자의 MAC 주소로 변조하는 공격은 무엇인가?",
+    "answer": "ARP 스푸핑",
+    "explanation": "ARP 스푸핑(ARP Spoofing)은 중간자(MITM) 공격의 기반이 되며 정적 ARP(Static ARP) 테이블 설정으로 방어합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ARP 스푸핑",
+      "ARP Spoofing",
+      "MAC주소변조"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-spoofing"
+  },
+  {
+    "id": "EXP_SEC2_023",
+    "subject": "신기술/보안",
+    "category": "네트워크 도청",
+    "type": "SHORT_ANSWER",
+    "question": "네트워크 인터페이스 카드(NIC)를 수신 주소와 무관하게 모든 패킷을 무차별 수신하는 무차별(Promiscuous) 모드로 설정하여 네트워크를 통과하는 평문 패킷(비밀번호 등)을 몰래 도청하는 공격은 무엇인가?",
+    "answer": "스니핑",
+    "explanation": "스니핑(Sniffing)은 수동적 도청 공격으로 데이터 전송 구간 암호화(HTTPS, SSH)로 방어합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "스니핑",
+      "Sniffing",
+      "무차별모드도청"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-sniffing"
+  },
+  {
+    "id": "EXP_SEC2_024",
+    "subject": "신기술/보안",
+    "category": "세션 탈취",
+    "type": "SHORT_ANSWER",
+    "question": "TCP 통신에서 클라이언트와 서버 간에 정상적으로 수립된 연결 세션의 시퀀스 번호(Sequence Number)를 도청 및 예측하여 통신 흐름을 가로채고 세션 제어권을 탈취하는 공격은 무엇인가?",
+    "answer": "세션 하이재킹",
+    "explanation": "TCP 세션 하이재킹은 시퀀스 번호 동기화를 깨뜨리고 공격자가 정상 사용자로 위장하여 명령을 실행합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "세션 하이재킹",
+      "Session Hijacking",
+      "시퀀스번호탈취"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-hijacking"
+  },
+  {
+    "id": "EXP_SEC2_025",
+    "subject": "신기술/보안",
+    "category": "지능형 위협",
+    "type": "SHORT_ANSWER",
+    "question": "특정 대상 기업이나 국가 기관을 사전에 명확히 타깃으로 설정하고 장기간에 걸쳐 소셜 엔지니어링, 제로데이 취약점 등 다양한 기법을 동원해 은밀히 잠복하여 정보를 빼내는 공격의 약칭은 무엇인가?",
+    "answer": "APT",
+    "explanation": "APT(Advanced Persistent Threat, 지능형 지속 위협)는 지속적이고 은밀한 다단계 침투를 특징으로 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "APT",
+      "Advanced Persistent Threat",
+      "지능형지속위협"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-apt"
+  },
+  {
+    "id": "EXP_SEC2_026",
+    "subject": "신기술/보안",
+    "category": "지능형 위협",
+    "type": "SHORT_ANSWER",
+    "question": "표적 공격 대상이 자주 방문하는 웹 사이트를 사전에 해킹하여 악성코드를 심어둔 뒤, 대상자가 해당 사이트에 접속할 때 브라우저 취약점을 이용해 감염시키는 공격 기법은 무엇인가?",
+    "answer": "워터링 홀",
+    "explanation": "워터링 홀(Watering Hole)은 맹수가 물웅덩이에 매복하듯 타깃이 즐겨 찾는 사이트를 감염 통로로 악용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "워터링 홀",
+      "Watering Hole",
+      "표적매복공격"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-apt"
+  },
+  {
+    "id": "EXP_SEC2_027",
+    "subject": "신기술/보안",
+    "category": "보안 취약점",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 제조사나 개발자가 취약점의 존재를 인지하여 공식 보안 패치를 출시하기도 전에 공격자가 이를 악용하여 감행하는 보안 공격은 무엇인가?",
+    "answer": "제로데이 공격",
+    "explanation": "제로데이 공격(Zero-Day Attack)은 방어 대책이 없는 상태에서 기습 공격하므로 차단이 매우 어렵습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "제로데이 공격",
+      "Zero-Day",
+      "패치이전공격"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-apt"
+  },
+  {
+    "id": "EXP_SEC2_028",
+    "subject": "신기술/보안",
+    "category": "악성 소프트웨어",
+    "type": "SHORT_ANSWER",
+    "question": "피해자 컴퓨터 시스템의 주요 파일들을 강력한 알고리즘으로 암호화하여 접근할 수 없게 인질로 잡은 뒤, 복호화 키를 제공하는 대가로 비트코인 등 금전을 요구하는 악성코드는 무엇인가?",
+    "answer": "랜섬웨어",
+    "explanation": "랜섬웨어(Ransomware)는 몸값(Ransom)과 소프트웨어의 합성어로 중요 파일 암호화를 수행합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "랜섬웨어",
+      "Ransomware",
+      "파일암호화악성코드"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-malware"
+  },
+  {
+    "id": "EXP_SEC2_029",
+    "subject": "신기술/보안",
+    "category": "보안 솔루션",
+    "type": "SHORT_ANSWER",
+    "question": "일반 네트워크 방화벽과 달리 웹 트래픽(HTTP/HTTPS)을 패킷 레벨뿐만 아니라 애플리케이션 계층(L7)까지 심층 분석하여 SQL Injection, XSS 등을 전문 차단하는 웹 전용 방화벽의 약칭은 무엇인가?",
+    "answer": "WAF",
+    "explanation": "WAF(Web Application Firewall)는 웹 애플리케이션 특화 공격을 실시간 탐지/차단합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "WAF",
+      "Web Application Firewall",
+      "웹방화벽"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-solutions"
+  },
+  {
+    "id": "EXP_SEC2_030",
+    "subject": "신기술/보안",
+    "category": "보안 솔루션",
+    "type": "SHORT_ANSWER",
+    "question": "네트워크에 침입하는 이상 트래픽이나 공격 징후를 실시간으로 탐지할 뿐만 아니라, 방화벽 규칙을 동적 연동하여 즉각 패킷을 능동적으로 차단하는 침입 차단 시스템의 약칭은 무엇인가?",
+    "answer": "IPS",
+    "explanation": "IPS(Intrusion Prevention System, 침입 방지 시스템)는 단순 모니터링/경고에 그치는 IDS(침입 탐지 시스템)와 달리 능동적 차단을 수행합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "IPS",
+      "Intrusion Prevention System",
+      "침입차단시스템"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-solutions"
+  },
+  {
+    "id": "EXP_SEC2_031",
+    "subject": "신기술/보안",
+    "category": "보안 솔루션",
+    "type": "SHORT_ANSWER",
+    "question": "사내 PC에서 기업의 핵심 기밀 문서나 고객 개인정보가 이메일, 메신저, USB 출력 등을 통해 외부로 무단 유출되는 것을 감시하고 원천 차단하는 데이터 유출 방지 솔루션의 약칭은 무엇인가?",
+    "answer": "DLP",
+    "explanation": "DLP(Data Loss Prevention)는 내부자에 의한 정보 유출을 모니터링하고 통제합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DLP",
+      "Data Loss Prevention",
+      "정보유출방지"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-solutions"
+  },
+  {
+    "id": "EXP_SEC2_032",
+    "subject": "신기술/보안",
+    "category": "보안 솔루션",
+    "type": "SHORT_ANSWER",
+    "question": "방화벽, IDS/IPS, 웹서버, 엔드포인트 등 사내의 모든 보안 장비와 시스템 로그를 실시간 빅데이터로 중앙 수집하여 상관 분석하고 위협을 조기 경보하는 통합 보안 관제 시스템의 약칭은 무엇인가?",
+    "answer": "SIEM",
+    "explanation": "SIEM(Security Information and Event Management)은 이기종 로그의 상관관계 분석을 수행합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SIEM",
+      "통합보안관제",
+      "로그상관분석"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-solutions"
+  },
+  {
+    "id": "EXP_SEC2_033",
+    "subject": "신기술/보안",
+    "category": "보안 속임수",
+    "type": "SHORT_ANSWER",
+    "question": "공격자를 유인하기 위해 일부러 취약하게 구성해 둔 가상의 덫 시스템으로, 해커의 공격 패턴, 도구, 행위를 분석하고 내부 핵심 자원을 보호하는 유인 시스템의 이름은 무엇인가?",
+    "answer": "허니팟",
+    "explanation": "허니팟(Honeypot)은 꿀단지처럼 공격자를 유혹하여 침해 기법을 수집하는 디코이(Decoy) 시스템입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "허니팟",
+      "Honeypot",
+      "유인시스템"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-solutions"
+  },
+  {
+    "id": "EXP_SEC2_034",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 개발 보안(시큐어 코딩) 3단계 중 개발된 소스코드의 실행 없이 규칙 기반 정적 분석 도구(SonarQube 등)를 이용해 보안 약점을 찾아내는 점검 방식은 무엇인가?",
+    "answer": "정적 분석",
+    "explanation": "정적 분석(Static Analysis, SAST)은 코드 실행 없이 잠재 결함을 전수 검사합니다. 실행 중에 점검하는 것은 동적 분석(DAST)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "정적 분석",
+      "Static Analysis",
+      "SAST"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-securecoding"
+  },
+  {
+    "id": "EXP_SEC2_035",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 실행 중에 실제 다양한 모의 해킹 페이로드와 악의적인 입력을 전송하여 취약점을 점검하는 동적 애플리케이션 보안 테스트의 약칭은 무엇인가?",
+    "answer": "DAST",
+    "explanation": "DAST(Dynamic Application Security Testing)는 런타임 환경에서 시스템의 실제 취약성을 점검합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "DAST",
+      "동적분석",
+      "모의해킹"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-securecoding"
+  },
+  {
+    "id": "EXP_SEC2_036",
+    "subject": "신기술/보안",
+    "category": "클라우드 컴퓨팅",
+    "type": "SHORT_ANSWER",
+    "question": "클라우드 서비스 모델 중 가상 서버, 스토리지, 가상 네트워크 등 순수 물리적 하드웨어 인프라 자원만을 사용자에게 대여해주는 서비스 모델의 약칭은 무엇인가?",
+    "answer": "IaaS",
+    "explanation": "IaaS(Infrastructure as a Service, 예: AWS EC2)는 OS 설치부터 미들웨어 구성을 사용자가 직접 관리합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "IaaS",
+      "Infrastructure as a Service",
+      "클라우드모델"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-cloud"
+  },
+  {
+    "id": "EXP_SEC2_038",
+    "subject": "신기술/보안",
+    "category": "클라우드 컴퓨팅",
+    "type": "SHORT_ANSWER",
+    "question": "클라우드 서비스 모델 중 완성된 완성형 소프트웨어 애플리케이션을 인터넷 웹 브라우저를 통해 구독 방식으로 최종 사용자에게 완제품으로 제공하는 서비스 모델의 약칭은 무엇인가?",
+    "answer": "SaaS",
+    "explanation": "SaaS(Software as a Service, 예: 구글 독스, 노션)는 인스톨 없이 웹에서 즉시 사용하는 완성형 소프트웨어입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SaaS",
+      "Software as a Service",
+      "소프트웨어구독"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-cloud"
+  },
+  {
+    "id": "EXP_SEC2_039",
+    "subject": "신기술/보안",
+    "category": "클라우드 네이티브",
+    "type": "SHORT_ANSWER",
+    "question": "개발자가 서버의 프로비저닝이나 OS 패치 등을 전혀 관리할 필요 없이, 이벤트 발생 시에만 함수(Function) 단위로 코드가 실행되고 실행 시간만큼만 과금되는 클라우드 컴퓨팅 모델은 무엇인가?",
+    "answer": "서버리스",
+    "explanation": "서버리스(Serverless, FaaS, 예: AWS Lambda)는 유휴 상태에서는 비용이 발생하지 않고 이벤트 주도형으로 동작합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "서버리스",
+      "Serverless",
+      "FaaS",
+      "Lambda"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-cloud"
+  },
+  {
+    "id": "EXP_SEC2_040",
+    "subject": "신기술/보안",
+    "category": "IT 신기술",
+    "type": "SHORT_ANSWER",
+    "question": "데이터가 발생하는 센서나 사용자 단말 장치(스마트폰, 공장 센서)와 물리적으로 가까운 위치의 엣지(Edge) 서버에서 데이터를 분산 실시간 처리하는 컴퓨팅 기술은 무엇인가?",
+    "answer": "엣지 컴퓨팅",
+    "explanation": "엣지 컴퓨팅(Edge Computing)은 중앙 클라우드로 데이터를 전송하는 대기 시간(Latency)과 네트워크 대역폭 부담을 줄여 자율주행, 스마트팩토리에 쓰입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "엣지 컴퓨팅",
+      "Edge Computing",
+      "실시간분산처리"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-trends"
+  },
+  {
+    "id": "EXP_SEC2_041",
+    "subject": "신기술/보안",
+    "category": "블록체인 기술",
+    "type": "SHORT_ANSWER",
+    "question": "블록체인 분산 원장에서 제3의 신뢰 중개자(은행, 공증인 등) 없이도 미리 합의된 계약 조건이 충족되면 프로그램 코드가 자동으로 계약을 집행하는 기능을 무엇이라 하는가?",
+    "answer": "스마트 계약",
+    "explanation": "스마트 계약(Smart Contract, 이더리움 가상머신 EVM)은 위변조가 불가능한 블록체인 코드에 의해 강제 집행됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "스마트 계약",
+      "Smart Contract",
+      "블록체인계약"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-trends"
+  },
+  {
+    "id": "EXP_SEC2_042",
+    "subject": "신기술/보안",
+    "category": "블록체인 합의 알고리즘",
+    "type": "SHORT_ANSWER",
+    "question": "블록체인 합의 알고리즘 중 컴퓨터의 고성능 연산 능력을 투입하여 목표 난이도의 암호화 해시값을 가장 먼저 찾아내는 작업(채굴)을 통해 블록 생성 권한을 얻는 방식의 약칭은 무엇인가?",
+    "answer": "PoW",
+    "explanation": "PoW(Proof of Work, 작업 증명)는 막대한 전력 소모가 단점입니다. 코인 지분량에 비례해 권한을 주는 것은 PoS(Proof of Stake, 지분 증명)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "PoW",
+      "Proof of Work",
+      "작업증명"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-trends"
+  },
+  {
+    "id": "EXP_SEC2_043",
+    "subject": "신기술/보안",
+    "category": "시스템 보안 취약점",
+    "type": "SHORT_ANSWER",
+    "question": "관리자나 개발자가 유지보수 및 디버깅 편의를 위해 시스템 인증 절차를 우회할 수 있도록 고의로 숨겨둔 비밀 통로 또는 침해 사고 후 재침투를 위해 남겨둔 통로는 무엇인가?",
+    "answer": "백도어",
+    "explanation": "백도어(Backdoor, 트랩도어)는 정상 인증 없이 시스템 관리자 권한을 획득할 수 있는 치명적 보안 위협입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "백도어",
+      "Backdoor",
+      "트랩도어"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-sysvuln"
+  },
+  {
+    "id": "EXP_SEC2_044",
+    "subject": "신기술/보안",
+    "category": "소프트웨어 보안 공학",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 개발(Dev)과 운영(Ops)의 협업 문화에 개발 초기 단계부터 보안(Sec)을 통합하여 자동화된 보안 검증을 상시 수행하는 개발 패러다임은 무엇인가?",
+    "answer": "DevSecOps",
+    "explanation": "DevSecOps는 보안을 개발 마지막 단계가 아닌 전 생명주기에 걸쳐 조기 적용(Shift-Left)합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DevSecOps",
+      "보안통합",
+      "Shift-Left"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-securecoding"
+  },
+  {
+    "id": "EXP_SEC2_045",
+    "subject": "신기술/보안",
+    "category": "웹 취약점",
+    "type": "SHORT_ANSWER",
+    "question": "웹 브라우저의 주소창 URL이나 즐겨찾기를 정교하게 변조하거나 DNS 호스트 파일을 조작하여 피해자가 정상 주소를 입력하더라도 가짜 파밍 사이트로 강제 유인하는 금융 사기 수법은 무엇인가?",
+    "answer": "파밍",
+    "explanation": "파밍(Pharming)은 DNS 스푸핑이나 hosts 파일 변조를 이용해 정상 URL 입력 시에도 가짜 피싱 사이트로 납치합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "파밍",
+      "Pharming",
+      "DNS변조사기"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-fraud"
+  },
+  {
+    "id": "EXP_SEC2_046",
+    "subject": "신기술/보안",
+    "category": "사회공학 공격",
+    "type": "SHORT_ANSWER",
+    "question": "문자메시지(SMS) 내에 악성 URL 링크를 첨부하여 전송하고 사용자가 클릭 시 소액결제를 유도하거나 악성 앱을 자동 다운로드시키는 사기 공격은 무엇인가?",
+    "answer": "스미싱",
+    "explanation": "스미싱(Smishing)은 SMS와 피싱(Phishing)의 합성어로 모바일 금융 피해의 주범입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "스미싱",
+      "Smishing",
+      "SMS사기"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-fraud"
+  },
+  {
+    "id": "EXP_SEC2_047",
+    "subject": "신기술/보안",
+    "category": "취약점 관리",
+    "type": "SHORT_ANSWER",
+    "question": "미국 MITRE 사가 관리하며 공개적으로 알려진 소프트웨어 보안 취약점들에 부여하는 표준화된 고유 식별 번호 체계(예: CVE-2024-1234)의 약칭은 무엇인가?",
+    "answer": "CVE",
+    "explanation": "CVE(Common Vulnerabilities and Exposures)는 전 세계 취약점 정보를 공유하고 추적하기 위한 표준 식별자입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "CVE",
+      "Common Vulnerabilities and Exposures",
+      "취약점식별자"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-vulnmgmt"
+  },
+  {
+    "id": "EXP_SEC2_048",
+    "subject": "신기술/보안",
+    "category": "취약점 심각도 평가",
+    "type": "SHORT_ANSWER",
+    "question": "발견된 소프트웨어 취약점의 위험도와 심각성을 기본 점수, 시간 점수, 환경 점수를 종합하여 0.0 ~ 10.0의 표준 점수로 계량화하는 범용 취약점 평가 시스템의 약칭은 무엇인가?",
+    "answer": "CVSS",
+    "explanation": "CVSS(Common Vulnerability Scoring System)는 취약점의 파급력을 객관적 수치로 표준 평가합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "CVSS",
+      "Common Vulnerability Scoring System",
+      "취약점점수"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-vulnmgmt"
+  },
+  {
+    "id": "EXP_SEC2_049",
+    "subject": "신기술/보안",
+    "category": "클라우드 보안",
+    "type": "SHORT_ANSWER",
+    "question": "클라우드 책임 공유 모델(Shared Responsibility Model)에서 IaaS를 이용할 때, 운영체제(OS) 패치 및 애플리케이션 보안 설정의 책임 주체는 클라우드 제공업체인가 고객(사용자)인가?",
+    "answer": "고객",
+    "explanation": "IaaS에서 클라우드 제공사는 물리 인프라와 하이퍼바이저만 책임지며, 게스트 OS, 런타임, 애플리케이션의 보안 책임은 전적으로 고객에게 있습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "고객",
+      "책임공유모델",
+      "IaaS책임"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-cloud"
+  },
+  {
+    "id": "EXP_SEC2_050",
+    "subject": "신기술/보안",
+    "category": "암호화폐 및 핀테크",
+    "type": "SHORT_ANSWER",
+    "question": "블록체인의 블록 헤더에 저장되는 값으로, 블록 내의 모든 트랜잭션(거래)들의 해시값을 2개씩 짝지어 상위로 해싱해 올라가며 최종적으로 도출된 단 하나의 루트 해시값을 무엇이라 하는가?",
+    "answer": "머클 루트",
+    "explanation": "머클 루트(Merkle Root, 머클 트리)는 단 하나의 루트 해시만으로 수천 건의 거래 데이터 무결성을 초고속 검증합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "머클 루트",
+      "Merkle Root",
+      "머클트리"
+    ],
+    "source": "VERIFIED_CORE",
+    "chapterId": "ch-sec-trends"
   }
 ];
