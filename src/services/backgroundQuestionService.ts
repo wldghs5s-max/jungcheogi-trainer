@@ -615,6 +615,10 @@ class BackgroundQuestionService {
 
     for (let round = 0; round < MAX_MEMO_BATCH_ATTEMPTS; round++) {
       let processed = false;
+      let roundSaved = 0;
+      const bulk = target >= MEMO_BULK_TARGET;
+      const maxConsecutive = bulk ? 4 : 2;
+
       for (const batch of job.batches) {
         if (this.cancelRequested) break;
         if (this.pauseRequested) break;
@@ -628,7 +632,6 @@ class BackgroundQuestionService {
         this.notify();
 
         const remaining = Math.max(0, target - savedCountFromJob(job));
-        const bulk = target >= MEMO_BULK_TARGET;
         const result = await generateOneBatch(
           QuestionRepository.getAll(),
           existingStems,
@@ -667,6 +670,7 @@ class BackgroundQuestionService {
               existingStems.add(normalizeStem(question.question));
             }
           }
+          roundSaved += savedIds.length;
 
           triggerHaptic.selection();
           this.showToast(
@@ -676,8 +680,15 @@ class BackgroundQuestionService {
           batch.status = "PENDING";
           batch.attemptCount = (batch.attemptCount || 0) + 1;
           batch.error = result.error || "이번 묶음은 넣지 못했습니다.";
-          consecutiveEmpty += 1;
-          if (consecutiveEmpty >= 2) {
+          const isDedupe = Boolean(
+            result.error &&
+              (result.error.includes("비슷한 문제") ||
+                result.error.includes("겹쳐")),
+          );
+          if (!isDedupe) {
+            consecutiveEmpty += 1;
+          }
+          if (consecutiveEmpty >= maxConsecutive) {
             break;
           }
         }
@@ -686,7 +697,10 @@ class BackgroundQuestionService {
         this.notify();
       }
 
-      if (this.cancelRequested || this.pauseRequested || consecutiveEmpty >= 2) {
+      if (roundSaved > 0) {
+        consecutiveEmpty = 0;
+      }
+      if (this.cancelRequested || this.pauseRequested || consecutiveEmpty >= maxConsecutive) {
         break;
       }
       if (savedCountFromJob(job) >= target) break;

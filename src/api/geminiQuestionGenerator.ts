@@ -327,7 +327,7 @@ function relatedAvoidItems(
       item.category === seed.chapter ||
       item.subCategory === seed.topic,
   );
-  if (chapterHits.length > 0) return chapterHits.slice(0, 12);
+  if (chapterHits.length > 0) return chapterHits.slice(0, 4);
 
   const topic = seed.topic.replace(/\s+/g, "");
   return sameSubject
@@ -335,7 +335,7 @@ function relatedAvoidItems(
       const hay = `${item.question}${item.keywords.join("")}${item.category}${item.subCategory || ""}`;
       return hay.includes(seed.topic) || hay.replace(/\s+/g, "").includes(topic);
     })
-    .slice(0, 10);
+    .slice(0, 3);
 }
 
 export function buildPrompt(
@@ -356,7 +356,7 @@ export function buildPrompt(
         items
           .map(
             (item) =>
-              `- 지문: ${item.question.slice(0, 70)}\n  정답: ${formatAvoidAnswer(item.answer)}`,
+              `- 지문: ${item.question.slice(0, 50)}\n  정답: ${formatAvoidAnswer(item.answer)}`,
           )
           .join("\n") || "(없음)";
       return `[${seed.chapter} / ${seed.topic}]\n${lines}`;
@@ -427,7 +427,12 @@ export async function generateOneBatch(
   existingStems: Set<string>,
   seeds: MemoTopicSeed[],
   batchId: string,
-  options?: { models?: string[]; maxRetries?: number; signal?: AbortSignal },
+  options?: {
+    models?: string[];
+    maxRetries?: number;
+    signal?: AbortSignal;
+    timeoutMs?: number;
+  },
 ): Promise<{ questions: Question[]; error?: string; aborted?: boolean }> {
   const result = await GeminiService.generateText(
     buildPrompt(existingQuestions, seeds),
@@ -439,6 +444,7 @@ export async function generateOneBatch(
       maxRetries: options?.maxRetries ?? 1,
       retryDelayMs: MEMO_RETRY_DELAY_MS,
       signal: options?.signal,
+      timeoutMs: options?.timeoutMs ?? 60000,
       extraConfig: {
         responseMimeType: "application/json",
         responseSchema: MEMO_RESPONSE_SCHEMA,

@@ -45,7 +45,7 @@ export const BULK_GENERATOR_MODELS = [
 /** 3.8 Flash는 minimal을 거절하고 low/medium/high만 받는다. 다른 3.x는 minimal이 가장 가볍다. */
 export const GEMINI_THINKING_LEVEL = "minimal";
 export const GEMINI_38_THINKING_LEVEL = "low";
-export const GEMINI_REQUEST_TIMEOUT_MS = 25000;
+export const GEMINI_REQUEST_TIMEOUT_MS = 60000;
 
 export function thinkingLevelForModel(model: string): string {
   return /gemini-3\.8/i.test(model)
@@ -635,6 +635,7 @@ async function generateContent(
   extraConfig: Record<string, unknown> = {},
   fetchFn: typeof fetch = fetch,
   signal?: AbortSignal,
+  timeoutMs: number = GEMINI_REQUEST_TIMEOUT_MS,
 ): Promise<{
   text: string | null;
   error?: GeminiRequestError;
@@ -648,7 +649,7 @@ async function generateContent(
   const url = isLegacyKey
     ? `${GEMINI_BASE}/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(cleanKey)}`
     : `${GEMINI_BASE}/models/${encodeURIComponent(model)}:generateContent`;
-  const timeout = attachTimeout(signal, GEMINI_REQUEST_TIMEOUT_MS);
+  const timeout = attachTimeout(signal, timeoutMs);
 
   try {
     const response = await fetchFn(url, {
@@ -678,19 +679,6 @@ async function generateContent(
               finishReason === "MAX_TOKENS"
                 ? "출력이 생각(thinking) 토큰에 밀려 비었습니다."
                 : "응답 본문이 비어 있습니다.",
-            model,
-          },
-        };
-      }
-      if (
-        finishReason === "MAX_TOKENS" &&
-        extraConfig.responseMimeType === "application/json"
-      ) {
-        return {
-          text: null,
-          error: {
-            status: 0,
-            message: "JSON 출력이 잘려 이번 묶음을 쓰지 못했습니다.",
             model,
           },
         };
@@ -745,6 +733,7 @@ export interface RetryExecutionOptions {
   maxRetries?: number;
   retryDelayMs?: number;
   signal?: AbortSignal;
+  timeoutMs?: number;
   onAttempt?: (attemptInfo: {
     model: string;
     attempt: number;
@@ -880,6 +869,7 @@ export class GeminiService {
             options?.extraConfig,
             fetchFn,
             signal,
+            options?.timeoutMs ?? GEMINI_REQUEST_TIMEOUT_MS,
           );
 
           if (result.aborted || signal?.aborted) {
@@ -1172,6 +1162,7 @@ export class GeminiService {
       maxRetries?: number;
       retryDelayMs?: number;
       signal?: AbortSignal;
+      timeoutMs?: number;
       extraConfig?: Record<string, unknown>;
     },
   ): Promise<
@@ -1207,6 +1198,7 @@ export class GeminiService {
       maxRetries: options?.maxRetries,
       retryDelayMs: options?.retryDelayMs,
       signal: options?.signal,
+      timeoutMs: options?.timeoutMs,
     });
 
     if (result.ok) {
