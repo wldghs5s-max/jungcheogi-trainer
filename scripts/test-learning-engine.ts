@@ -405,14 +405,13 @@ async function runLearningEngineTests() {
   // M-02: 10개 생성 중 3개 중복 탈락 시 7개 저장 및 남은 수 3개 일치 검증
   const testJob: MemoGenerationJob = {
     jobId: 'test-m02-job',
-    mode: 'TARGET',
     targetCount: 10,
     batchSize: 5,
     totalBatches: 2,
-    status: 'RUNNING',
+    status: 'IN_PROGRESS',
     batches: [
-      { batchIndex: 0, requestedCount: 5, status: 'PENDING' },
-      { batchIndex: 1, requestedCount: 5, status: 'PENDING' },
+      { batchIndex: 0, seeds: [], savedQuestionIds: [], status: 'PENDING' },
+      { batchIndex: 1, seeds: [], savedQuestionIds: [], status: 'PENDING' },
     ],
     createdAt: Date.now(),
     updatedAt: Date.now(),
