@@ -1,6 +1,7 @@
 import { Question } from '../types/question';
 import { GeminiService } from '../api/geminiService';
 import { checkAnswer, formatAnswerDisplay } from '../utils/quiz';
+import { AttemptRepository } from '../repositories/attemptRepository';
 
 export type VerifierVerdict =
   | 'USER_WRONG'
@@ -122,7 +123,7 @@ export class AIVerifierService {
         risk: options.mockResult.risk || 'NONE',
         isSuspect: options.mockResult.verdict === 'QUESTION_SUSPECT' || options.mockResult.verdict === 'USER_CORRECT',
       };
-      this.recordLog(question.id, res);
+      await this.recordLog(question.id, res);
       return res;
     }
 
@@ -180,7 +181,7 @@ export class AIVerifierService {
         isSuspect,
       };
 
-      this.recordLog(question.id, result);
+      await this.recordLog(question.id, result);
       return result;
     } catch (err: any) {
       return this.createUncertainResult(
@@ -241,7 +242,7 @@ export class AIVerifierService {
     };
   }
 
-  private static recordLog(questionId: string, result: VerificationResult) {
+  private static async recordLog(questionId: string, result: VerificationResult): Promise<void> {
     if (result.isSuspect || result.verdict === 'AMBIGUOUS') {
       VERIFICATION_LOGS.unshift({
         questionId,
@@ -253,6 +254,10 @@ export class AIVerifierService {
         reason: result.reason,
         timestamp: new Date().toISOString(),
       });
+      // QUESTION_SUSPECT 또는 USER_CORRECT (채점 의심) 격리: 오답 통계/약점 점수 누적 차단
+      if (result.isSuspect) {
+        await AttemptRepository.markAttemptSuspect(questionId, result.reason);
+      }
     }
   }
 }

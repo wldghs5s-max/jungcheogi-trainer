@@ -47,9 +47,9 @@ export function normalizeAnswer(ans: string): string {
   text = text.replace(/[→⇒]/g, "->");
   text = text.replace(/[▶▷＞≫]/g, "");
 
-  // 순수 기호나 연산자(예: ->, &, *, ::, ==, !=, ++ 등)인 경우 기호를 파괴하지 않고 보존
+  // 순수 기호나 연산자(예: ->, &, *, ::, ==, !=, ++, ., <=, >= 등)인 경우 기호를 파괴하지 않고 보존
   const noSpace = text.replace(/\s+/g, "");
-  if (/^[->&*+=<!?:;~^%|/[\]()#]+$/.test(noSpace)) {
+  if (/^[->&*+=<!?:;~^%|/[\]()#.]+$/.test(noSpace)) {
     return noSpace.toUpperCase();
   }
 

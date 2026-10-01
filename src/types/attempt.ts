@@ -1,4 +1,4 @@
-﻿/** 틀린 이유: 답을 썼지만 틀림(헷갈림) vs 몰라서 포기 */
+/** 틀린 이유: 답을 썼지만 틀림(헷갈림) vs 몰라서 포기 */
 export type MissType = "WRONG" | "UNKNOWN";
 
 export interface QuizAttempt {
@@ -15,6 +15,9 @@ export interface QuizAttempt {
   solutionRevealed?: boolean;
   answeredAt: string; // ISO String
   syncStatus?: "PENDING" | "SYNCED" | "FAILED";
+  /** AI 검증에서 문제 오류(QUESTION_SUSPECT) 또는 채점 의심(GRADING_SUSPECT)으로 판정된 건 */
+  isSuspect?: boolean;
+  suspectReason?: string;
 }
 
 export function isUnknownAttempt(attempt: QuizAttempt): boolean {

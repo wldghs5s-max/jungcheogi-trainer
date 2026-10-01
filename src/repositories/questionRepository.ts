@@ -342,17 +342,17 @@ export class QuestionRepository {
       }
     };
 
-    // 1순위: NEW (한 번도 풀지 않은 문제) - 기본 5문항 중 최소 3문항 할당
+    // 1순위: NEW (한 번도 풀지 않은 문제) - 기본 5문항 중 최소 3문항(60%) 할당
     const targetNew = Math.min(count, Math.max(3, Math.ceil(count * 0.6)));
     const newPool = availablePool.filter((q) => unsolvedSet.has(q.id));
     takeFromPool(newPool, targetNew);
 
     // 2순위: WEAK / 최근 오답 문제
-    const targetWeak = Math.min(count - selectedMap.size, 2);
     const weakPool = availablePool.filter(
       (q) => !unsolvedSet.has(q.id) && (weakSet.has(q.id) || weakCatSet.has(q.category)),
     );
-    takeFromPool(weakPool, targetWeak);
+    const initialWeakTarget = Math.min(count - selectedMap.size, selectedMap.size > 0 ? 2 : count);
+    takeFromPool(weakPool, initialWeakTarget);
 
     // 3순위: DUE (복습 주기 도래 문제)
     if (selectedMap.size < count) {
@@ -360,6 +360,11 @@ export class QuestionRepository {
         (q) => !unsolvedSet.has(q.id) && !weakSet.has(q.id) && dueSet.has(q.id),
       );
       takeFromPool(duePool, count - selectedMap.size);
+    }
+
+    // 3.5순위: 여전히 슬롯이 남았다면, 남은 WEAK 풀에서 추가 배정 (GENERAL/MASTERED 전 취약 보강)
+    if (selectedMap.size < count) {
+      takeFromPool(weakPool, count - selectedMap.size);
     }
 
     // 4순위: 일반 문제 (마스터된 문제 제외)

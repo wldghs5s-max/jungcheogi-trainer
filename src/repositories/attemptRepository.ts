@@ -34,6 +34,32 @@ export class AttemptRepository {
   }
 
   /**
+   * AI 검증기 또는 튜터에서 오류 의심(QUESTION_SUSPECT / GRADING_SUSPECT)으로 판정된
+   * 문제의 풀이 이력을 찾아 suspect로 마킹하여 오답 집계 및 약점 점수에서 격리합니다.
+   */
+  static async markAttemptSuspect(questionId: string, reason?: string): Promise<void> {
+    const run = this.writeQueue.then(async () => {
+      const attempts = await this.getAllAttempts();
+      let updated = false;
+      for (const att of attempts) {
+        if (att.questionId === questionId && !att.isCorrect) {
+          att.isSuspect = true;
+          if (reason) att.suspectReason = reason;
+          updated = true;
+        }
+      }
+      if (updated) {
+        await LocalStorage.setItem(STORAGE_KEYS.QUIZ_ATTEMPTS, attempts);
+      }
+    });
+    this.writeQueue = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    return run;
+  }
+
+  /**
    * 모든 풀이 이력을 불러옵니다.
    */
   static async getAllAttempts(): Promise<QuizAttempt[]> {
@@ -74,6 +100,11 @@ export class AttemptRepository {
 
     // attempts는 최신순(unshift)으로 정렬되어 있으므로 첫 번째 만나는 것이 최근 결과임
     for (const att of attempts) {
+      // AI 검증으로 격리된 오류 의심(SUSPECT) 문제는 오답 통계 및 약점 점수에서 완전 배제
+      if (att.isSuspect) {
+        continue;
+      }
+
       const existing = map.get(att.questionId);
       if (!existing) {
         map.set(att.questionId, {

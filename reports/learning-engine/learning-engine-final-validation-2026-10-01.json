@@ -1,0 +1,116 @@
+{
+  "validationDate": "2026-10-01",
+  "appVersion": "1.6.0",
+  "totalBankQuestions": 900,
+  "selectionSimulation": {
+    "totalRounds": 5000,
+    "questionsPerRound": 5,
+    "totalQuestionsTested": 25000,
+    "statistics": {
+      "newAverage": 3.0,
+      "newPercentage": 60.0,
+      "weakAverage": 2.0,
+      "weakPercentage": 40.0,
+      "dueAverage": 0.0,
+      "duePercentage": 0.0,
+      "generalAverage": 0.0,
+      "generalPercentage": 0.0,
+      "masteredAverage": 0.0,
+      "masteredPercentage": 0.0,
+      "recentCooldownOverlapRate": 0.0
+    },
+    "scenarios": {
+      "scenarioA_manyNew": {
+        "status": "PASS",
+        "description": "NEW 문항 300개 상황에서 5문항 중 최소 3문항 이상 NEW 배정 및 MASTERED 0개 섞임 보장"
+      },
+      "scenarioB_threeNew": {
+        "status": "PASS",
+        "description": "NEW 문항이 정확히 3개일 때 3개 전량 소진 후 나머지 2문항은 WEAK/DUE에서 우선 선별"
+      },
+      "scenarioC_zeroNew": {
+        "status": "PASS",
+        "description": "NEW 문항이 0개일 때 WEAK/DUE로 5문항 전량 우선 충원 (GENERAL/MASTERED 배제)"
+      },
+      "scenarioD_recentCooldown": {
+        "status": "PASS",
+        "description": "최근 10문항 쿨다운이 적용되어 다음 일반 5문항 세션에 즉각 재출현 0건 (100% 배제)"
+      }
+    }
+  },
+  "cooldownPolicy": {
+    "generalQuiz": "최근 2개 세션(10문항) 쿨다운 윈도우 적용하여 일반 5문항 풀에서 완전 배제",
+    "retryQuiz": "cooldown 무시하고 방금 푼 세션 Q1~Q5 대상 및 순서 100% 동일 보존 (preserveOrder: true)",
+    "wrongReview": "사용자가 오답노트에서 명시적으로 복습 요청한 문항은 cooldown보다 복습 요청을 우선하여 100% 즉시 출제",
+    "newQuestions": "한 번도 풀지 않은 NEW 문항은 이력이 없으므로 쿨다운 충돌 없이 60% 이상 우선 출제"
+  },
+  "gradingEngine": {
+    "arrowOperatorCase": {
+      "submitted": "->",
+      "expected": "->",
+      "result": "CORRECT",
+      "unicodeSubmitted": "→",
+      "unicodeResult": "CORRECT"
+    },
+    "symbolNormalization": [
+      "->", "→", "⇒", "*", "&", "++", "--", "==", "!=", ">=", "<=", ".", "::"
+    ],
+    "synonymGroups": [
+      ["->", "화살표연산자", "포인터멤버접근", "포인터멤버접근연산자"],
+      ["&", "주소연산자", "앰퍼샌드"],
+      ["*", "포인터연산자", "역참조연산자", "애스터리스크"],
+      ["2NF", "제2정규형"],
+      ["3NF", "제3정규형"]
+    ],
+    "nonRegressionMatrix": {
+      "2NF_vs_3NF": "REJECT (오답 분리 보장)",
+      "codeTrace_tokenBoundary": "REJECT ('1 23' != '12 3')",
+      "codeTrace_caseSensitivity": "REJECT ('ABC' != 'abc')"
+    },
+    "realBankCases": {
+      "EXP_PR_007": { "stem": "C언어 구조체 포인터 멤버 접근", "answer": "->", "graded": "CORRECT" },
+      "EXP_PR_004": { "stem": "C언어 주소 연산자", "answer": "&", "graded": "CORRECT" },
+      "EXP_PR_038": { "stem": "Python 세트 교집합 연산자", "answer": "&", "graded": "CORRECT" },
+      "EXP_PR_034": { "stem": "Python 슬라이싱 역순", "answer": "[::-1]", "graded": "CORRECT" }
+    }
+  },
+  "aiTutorVerification": {
+    "defaultCallIndependent": true,
+    "storedAnswerTrust": "저장 정답 및 기존 해설을 진실로 신뢰하지 않고 문제/코드만으로 독립 정답 선도출 강제",
+    "explanationTrust": "기존 해설 맹신 금지 및 오류 감지 시 왜곡된 기존 해설 노출 차단",
+    "verdictHandling": {
+      "QUESTION_SUSPECT": "문제/정답 불일치 시 safeExplanation 전환 + AttemptRepository.markAttemptSuspect로 오답 통계/약점 점수 누적 차단",
+      "USER_CORRECT": "타당한 수험생 답안 인정 안내 + 약점 누적 취소",
+      "VERIFICATION_UNCERTAIN": "단서 부족 또는 불확실 시 추가 확인 안내문 제공",
+      "apiErrorFallback": "네트워크/서버 오류 시 AI 검증 완료로 단정하지 않고 미완료 안내문 표기"
+    }
+  },
+  "realEndToEnd": {
+    "normalProblem": {
+      "id": "EXP_PR_007",
+      "subject": "프로그래밍언어활용 > C언어",
+      "question": "C언어 구조체 포인터 변수를 통해 해당 구조체의 멤버 변수에 접근할 때 사용하는 화살표 모양의 멤버 접근 연산자 기호",
+      "userAnswer": "->",
+      "localGrading": "CORRECT",
+      "aiVerifierVerdict": "USER_CORRECT",
+      "explanationShown": "구조체 포인터 멤버 접근 시 '->' 연산자를 사용합니다."
+    },
+    "suspectProblem": {
+      "id": "EXP_SUSPECT_01",
+      "subject": "소프트웨어설계 > 요구사항확인",
+      "question": "시간의 흐름에 따른 객체들의 동적 행위를 표현하는 럼바우 모델링 기법",
+      "userAnswer": "동적 모델링",
+      "localGrading": "WRONG (모의 오채점)",
+      "aiVerifierVerdict": "QUESTION_SUSPECT",
+      "explanationShown": "⚠️ [채점 재검토 안내] 이 문제는 문제 지문 또는 제시된 코드와 저장된 정답 간에 모순이 감지되어 재검토 대상으로 분류되었습니다.",
+      "attemptIsolated": true,
+      "wrongSummaryIncluded": false
+    }
+  },
+  "dataIntegrity": {
+    "totalQuestionsBefore": 900,
+    "totalQuestionsAfter": 900,
+    "unauthorizedModifications": 0,
+    "newQuestionsCreated": 0
+  }
+}

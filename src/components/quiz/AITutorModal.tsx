@@ -32,6 +32,9 @@ import { Question } from "../../types/question";
 import { triggerHaptic } from "../../utils/haptics";
 import { COLORS } from "../../utils/theme";
 import { parseTutorMarkdownLine } from "../../utils/textFormatter";
+import { AttemptRepository } from "../../repositories/attemptRepository";
+import { VERIFICATION_LOGS } from "../../services/aiVerifierService";
+import { formatAnswerDisplay } from "../../utils/quiz";
 
 interface AITutorModalProps {
   visible: boolean;
@@ -303,6 +306,31 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
         return;
       }
 
+      const isSuspect =
+        result.includes("재검토") ||
+        result.includes("QUESTION_SUSPECT") ||
+        result.includes("문제 오류") ||
+        result.includes("오류/재검토") ||
+        result.includes("정답 인정") ||
+        result.includes("GRADING_SUSPECT");
+
+      if (isSuspect) {
+        void AttemptRepository.markAttemptSuspect(
+          targetQuestionId,
+          "AI 튜터 독립 검증에서 문제 오류 또는 채점 재검토 소견 감지",
+        );
+        VERIFICATION_LOGS.unshift({
+          questionId: targetQuestionId,
+          userAnswer: Array.isArray(userAnswer) ? userAnswer.join(", ") : String(userAnswer || ""),
+          storedAnswer: formatAnswerDisplay(question.answer),
+          verdict: result.includes("정답 인정") ? "USER_CORRECT" : "QUESTION_SUSPECT",
+          confidence: "HIGH",
+          independentAnswer: "AI 튜터 분석 답변 참조",
+          reason: result.slice(0, 150),
+          timestamp: new Date().toISOString(),
+        });
+      }
+
       setMessages((prev) => {
         if (activeQuestionIdRef.current !== targetQuestionId) return prev;
         const next = prev.map((msg) =>
@@ -324,10 +352,13 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
         return;
       }
       console.warn("[AITutorModal] askTutorStream error:", err);
-      // 에러 발생 시 텍스트가 없는 플레이스홀더 정리
+      const errorNotice =
+        "⚠️ AI 튜터 서버 연결이 원활하지 않습니다. (네트워크/서버 문제로 정밀 검증이 완료되지 못했습니다)";
       setMessages((prev) =>
-        prev.filter(
-          (msg) => msg.id !== tutorId || msg.text.trim().length > 0,
+        prev.map((msg) =>
+          msg.id === tutorId
+            ? { ...msg, text: msg.text.trim().length > 0 ? msg.text : errorNotice }
+            : msg,
         ),
       );
     } finally {
