@@ -659,11 +659,16 @@ class BackgroundQuestionService {
             0,
             remaining || result.questions.length,
           );
+          const prevIds = new Set(QuestionRepository.getAll().map((item) => item.id));
           await QuestionRepository.appendCachedQuestions(questions);
+          const currentAll = QuestionRepository.getAll();
+          const newlyAddedIds = questions
+            .map((item) => item.id)
+            .filter((id) => !prevIds.has(id) && currentAll.some((item) => item.id === id));
           const savedIds = recordBatchSaveResult(
             batch,
-            questions.map((item) => item.id),
-            new Set(QuestionRepository.existingIds(questions.map((item) => item.id))),
+            newlyAddedIds,
+            new Set(newlyAddedIds),
           );
           for (const question of questions) {
             if (savedIds.includes(question.id)) {

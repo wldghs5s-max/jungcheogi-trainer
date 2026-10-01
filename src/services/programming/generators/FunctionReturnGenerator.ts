@@ -13,7 +13,7 @@ export class FunctionReturnGenerator extends BaseGenerator {
 
   generate(context: GenerationContext): GeneratedProgrammingQuestion {
     const rng = this.createRng(context.seed);
-    const lang = context.targetLanguage || this.pickOne(this.supportedLanguages, rng);
+    const lang = this.resolveLanguage(context, rng);
     const difficulty = context.targetDifficulty || this.pickOne(this.supportedDifficulties, rng);
     const qType: ProgrammingQuestionType =
       context.targetType && this.supportedTypes.includes(context.targetType)

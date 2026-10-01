@@ -16,7 +16,7 @@ export class LoopOutputGenerator extends BaseGenerator {
 
   generate(context: GenerationContext): GeneratedProgrammingQuestion {
     const rng = this.createRng(context.seed);
-    const lang = context.targetLanguage || this.pickOne(this.supportedLanguages, rng);
+    const lang = this.resolveLanguage(context, rng);
     const difficulty = context.targetDifficulty || this.pickOne(this.supportedDifficulties, rng);
     const qType = context.targetType || (rng() > 0.3 ? 'CODE_OUTPUT' : 'ITERATION_COUNT');
 

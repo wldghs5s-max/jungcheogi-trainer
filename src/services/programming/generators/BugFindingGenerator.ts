@@ -17,7 +17,7 @@ export class BugFindingGenerator extends BaseGenerator {
 
   generate(context: GenerationContext): GeneratedProgrammingQuestion {
     const rng = this.createRng(context.seed);
-    const lang = context.targetLanguage || this.pickOne(this.supportedLanguages, rng);
+    const lang = this.resolveLanguage(context, rng);
     const difficulty = context.targetDifficulty || this.pickOne(this.supportedDifficulties, rng);
 
     // 버그 유형: Python은 SWITCH_FALLTHROUGH가 없으므로 OFF_BY_ONE 전용 처리

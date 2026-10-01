@@ -17,7 +17,7 @@ export class BlankCompletionGenerator extends BaseGenerator {
 
   generate(context: GenerationContext): GeneratedProgrammingQuestion {
     const rng = this.createRng(context.seed);
-    const lang = context.targetLanguage || this.pickOne(this.supportedLanguages, rng);
+    const lang = this.resolveLanguage(context, rng);
     const difficulty = context.targetDifficulty || this.pickOne(this.supportedDifficulties, rng);
 
     // 언어별 유효 모드 선정: PTR_ASSIGN은 포인터가 존재하는 C 언어 전용

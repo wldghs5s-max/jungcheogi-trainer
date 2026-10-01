@@ -191,13 +191,14 @@ export class ProgrammingEngine {
       }
     }
 
-    // 모든 시도 실패 시 검색된 풀 내의 첫 번째 생성기(또는 안전 기본값)로 폴백
+    // 모든 시도 실패 시 검색된 풀 내의 첫 번째 생성기(또는 안전 기본값)로 폴백 (C-01 언어 가드)
     if (!bestCandidate) {
       const fallbackGen =
-        available[0] ||
         (context.targetLanguage
-          ? GeneratorRegistry.find({ language: context.targetLanguage })[0]
-          : GeneratorRegistry.get('LoopOutputGenerator')) ||
+          ? available.find((g) => g.supportedLanguages.includes(context.targetLanguage!)) ||
+            GeneratorRegistry.find({ language: context.targetLanguage })[0]
+          : available[0]) ||
+        GeneratorRegistry.get('LoopOutputGenerator') ||
         GeneratorRegistry.getAll()[0];
 
       if (!fallbackGen) {
@@ -277,6 +278,11 @@ export class ProgrammingEngine {
       let targetLanguage: CodeLanguage | undefined = undefined;
       if (i === 0 && gen.supportedLanguages.includes('C')) targetLanguage = 'C';
       if (i === 1 && gen.supportedLanguages.includes('JAVA')) targetLanguage = 'JAVA';
+
+      // C-01 언어 가드: targetLanguage가 명시된 경우 지원 여부를 엄격히 재확인
+      if (targetLanguage && !gen.supportedLanguages.includes(targetLanguage)) {
+        targetLanguage = undefined;
+      }
 
       const question = gen.generate({
         seed,

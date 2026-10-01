@@ -59,6 +59,17 @@ export abstract class BaseGenerator implements IProgrammingQuestionGenerator {
   }
 
   /**
+   * 요청된 언어가 생성기에서 지원되는지 안전하게 검증하고 결정합니다 (C-01 언어 가드).
+   * 미지원 언어가 요청된 경우 안전하게 지원 언어 풀 내에서 선별합니다.
+   */
+  protected resolveLanguage(context: GenerationContext, rng: () => number): CodeLanguage {
+    if (context.targetLanguage && this.supportedLanguages.includes(context.targetLanguage)) {
+      return context.targetLanguage;
+    }
+    return this.pickOne(this.supportedLanguages, rng);
+  }
+
+  /**
    * 생성된 데이터로 GeneratedProgrammingQuestion 객체를 완성하고 자동 검증을 수행합니다.
    */
   protected finalizeQuestion(params: {

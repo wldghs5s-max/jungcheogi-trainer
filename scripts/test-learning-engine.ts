@@ -11,6 +11,10 @@ import {
 } from '../src/services/aiVerifierService';
 import { Question } from '../src/types/question';
 import { QuizAttempt } from '../src/types/attempt';
+import { ProgrammingEngine } from '../src/services/programming/programmingEngine';
+import { GeneratorRegistry } from '../src/services/programming/registry';
+import { MemoGenerationJob } from '../src/types/generationJob';
+import { savedCountFromJob, remainingFromJob } from '../src/services/memoJobService';
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -275,8 +279,9 @@ async function runLearningEngineTests() {
   };
 
   const verifyPrompt = buildVerificationPrompt(testQ, '기능 모델링');
-  assert(verifyPrompt.includes('무조건 진실로 신뢰하지 마세요'), '프롬프트: 저장 정답 맹신 금지 지침 포함');
-  assert(verifyPrompt.includes('독립적 정답'), '프롬프트: 독립 정답 선도출 지침 포함');
+  assert(!verifyPrompt.includes('저장된 정답:'), 'H-01 프롬프트: 앵커링 방지를 위해 저장 정답 미포함 (Blind)');
+  assert(!verifyPrompt.includes('기존 해설'), 'H-01 프롬프트: 왜곡 방지를 위해 기존 해설 미포함 (Blind)');
+  assert(verifyPrompt.includes('독립 정답'), 'H-01 프롬프트: 독립 정답 도출 지침 포함');
 
   // Case 1: USER_WRONG (정상 오답) -> 원래 해설 유지, suspect 아님
   const resWrong = await AIVerifierService.verifyGrading(testQ, '기능 모델링', {
@@ -312,6 +317,26 @@ async function runLearningEngineTests() {
   assert(resSuspect.verdict === 'QUESTION_SUSPECT', 'Case 2: QUESTION_SUSPECT 판정');
   assert(resSuspect.isSuspect === true, 'Case 2: isSuspect = true');
   assert(resSuspect.safeExplanation.includes('[채점 재검토 안내]'), 'Case 2: 안전 재검토 안내문 전환');
+
+  // Case 2b: H-01 로컬 자동 비교 검증 (independentAnswer vs storedAnswer)
+  const resSuspectLocal = await AIVerifierService.verifyGrading(testQ, '동적 모델링', {
+    mockResult: {
+      independentAnswer: '다른독립답안', // 저장정답(동적 모델링)과 불일치
+      confidence: 'HIGH',
+      reason: 'AI 독립 분석 결과 저장 정답과 충돌 감지',
+    },
+  });
+  assert(resSuspectLocal.verdict === 'QUESTION_SUSPECT', 'H-01: AI 독립답과 저장정답 불일치 시 로컬 앱이 QUESTION_SUSPECT 자동 판정');
+
+  // Case 2c: H-01 AI 확신도 LOW 시 로컬 자동 VERIFICATION_UNCERTAIN 판정
+  const resUncertainLocal = await AIVerifierService.verifyGrading(testQ, '기능 모델링', {
+    mockResult: {
+      independentAnswer: '불확실답안',
+      confidence: 'LOW',
+      reason: '문제 단서 부족',
+    },
+  });
+  assert(resUncertainLocal.verdict === 'VERIFICATION_UNCERTAIN', 'H-01: AI 확신도 LOW 시 로컬 앱이 VERIFICATION_UNCERTAIN 자동 판정');
 
   // AttemptRepository에서 SUSPECT 격리 확인
   const wrongSummaries = await AttemptRepository.getWrongQuestionSummaries();
@@ -351,6 +376,56 @@ async function runLearningEngineTests() {
       resApiFail.safeExplanation.includes('실시간 재검토가 일시 지연'),
     'Case 5: AI가 검증했다고 왜곡하지 않고 미완료 상태 안내',
   );
+
+  // ==========================================================
+  // C-01 및 M-02 단위 검증
+  // ==========================================================
+  console.log('\n--- 4.2 C-01 언어 가드 및 M-02 카운트 정밀 검증 ---');
+  // C-01: generateBundleSync가 생성기의 지원 언어 범위를 항상 준수하는지 검증
+  const syncBundle = ProgrammingEngine.generateBundleSync(6);
+  assert(syncBundle.length === 6, 'C-01: ProgrammingEngine.generateBundleSync 6문항 정상 생성');
+  const allGens = GeneratorRegistry.getAll();
+  for (let i = 0; i < syncBundle.length; i++) {
+    const q = syncBundle[i];
+    const gen = allGens[i % allGens.length];
+    assert(
+      gen.supportedLanguages.includes(q.programmingLanguage),
+      `C-01: 생성기 ${gen.id} 결과 언어(${q.programmingLanguage})가 지원 언어 목록에 엄격히 포함됨`,
+    );
+  }
+
+  // C-01: 생성기에 미지원 언어를 강제 전달했을 때도 resolveLanguage에 의해 지원 언어 중 하나로 안전 보정되는지 확인
+  const loopGen = GeneratorRegistry.get('LoopOutputGenerator')!;
+  const invalidLangResult = loopGen.generate({ targetLanguage: 'SQL' as any });
+  assert(
+    loopGen.supportedLanguages.includes(invalidLangResult.programmingLanguage),
+    `C-01: 미지원 언어(SQL) 강제 요청 시 LoopOutputGenerator가 지원 언어(${invalidLangResult.programmingLanguage})로 안전 폴백`,
+  );
+
+  // M-02: 10개 생성 중 3개 중복 탈락 시 7개 저장 및 남은 수 3개 일치 검증
+  const testJob: MemoGenerationJob = {
+    jobId: 'test-m02-job',
+    mode: 'TARGET',
+    targetCount: 10,
+    batchSize: 5,
+    totalBatches: 2,
+    status: 'RUNNING',
+    batches: [
+      { batchIndex: 0, requestedCount: 5, status: 'PENDING' },
+      { batchIndex: 1, requestedCount: 5, status: 'PENDING' },
+    ],
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  };
+  const simulatedSavedIds = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7'];
+  testJob.batches[0].savedQuestionIds = simulatedSavedIds.slice(0, 4);
+  testJob.batches[0].status = 'COMPLETED';
+  testJob.batches[1].savedQuestionIds = simulatedSavedIds.slice(4, 7);
+  testJob.batches[1].status = 'COMPLETED';
+  const savedTotal = savedCountFromJob(testJob);
+  const remaining = remainingFromJob(testJob);
+  assert(savedTotal === 7, `M-02: 실제 저장된 개수 일치 (7개, 실제: ${savedTotal})`);
+  assert(remaining === 3, `M-02: 남은 목표치 정확히 3개 (실제: ${remaining})`);
 
   // ==========================================================
   // 5. 실제 문제 2건 End-to-End 전체 흐름 검증
@@ -394,3 +469,4 @@ runLearningEngineTests().catch((err) => {
   console.error('검증 테스트 실패:', err);
   process.exit(1);
 });
+

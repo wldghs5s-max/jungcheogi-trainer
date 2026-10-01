@@ -114,6 +114,8 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
   const latestTutorOffsetRef = useRef(0);
   const pendingAnswerScrollIdRef = useRef<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const pendingTutorIdRef = useRef<string | null>(null);
+  const pendingUserIdRef = useRef<string | null>(null);
   const activeQuestionIdRef = useRef<string>(question.id);
   activeQuestionIdRef.current = question.id;
   const isUnknown = missType === "UNKNOWN";
@@ -131,6 +133,8 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
     }
+    pendingTutorIdRef.current = null;
+    pendingUserIdRef.current = null;
 
     didAutoAskRef.current = false;
     latestTutorOffsetRef.current = 0;
@@ -226,11 +230,15 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
     if (!promptText.trim()) return;
     triggerHaptic.selection();
 
-    // 이전 진행 중이던 요청이 있으면 즉시 중단 (Race condition 차단)
+    // 이전 진행 중이던 미완료 요청이 있으면 즉시 중단 및 잔류 placeholder 선별 정리 (H-02)
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
     }
+    const previousPendingTutorId = pendingTutorIdRef.current;
+    const previousPendingUserId = pendingUserIdRef.current;
+    pendingTutorIdRef.current = null;
+    pendingUserIdRef.current = null;
 
     const controller = new AbortController();
     abortControllerRef.current = controller;
@@ -243,9 +251,9 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
       text: userText,
     };
 
-    // 이전 대화 히스토리 (현재 질문 이전까지의 히스토리)
+    // 이전 대화 히스토리 (현재 질문 이전까지의 히스토리 중 내용이 있는 것만 전달)
     const chatHistory: TutorChatMessageItem[] = messages
-      .filter((m) => m.text.trim().length > 0)
+      .filter((m) => m.text.trim().length > 0 && m.id !== previousPendingTutorId && m.id !== previousPendingUserId)
       .map((m) => ({
         role: m.role === "user" ? "user" : "model",
         text: m.text,
@@ -258,8 +266,27 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
       text: "",
     };
 
+    pendingTutorIdRef.current = tutorId;
+    pendingUserIdRef.current = userMessage.id;
     pendingAnswerScrollIdRef.current = tutorId;
-    setMessages((prev) => [...prev, userMessage, tutorPlaceholder]);
+
+    setMessages((prev) => {
+      let filtered = prev;
+      // 미완료 상태로 중단된 이전 요청의 placeholder 선별 제거 (완료된 메시지는 보존)
+      if (previousPendingTutorId) {
+        filtered = filtered.filter(
+          (msg) =>
+            msg.id !== previousPendingTutorId &&
+            (previousPendingUserId ? msg.id !== previousPendingUserId : true),
+        );
+      }
+      // 혹시 남아있을 수 있는 빈 튜터 버블 일괄 제거
+      filtered = filtered.filter(
+        (msg) => !(msg.role === "tutor" && !msg.text.trim()),
+      );
+      return [...filtered, userMessage, tutorPlaceholder];
+    });
+
     setLoading(true);
     scrollToLatest();
 
@@ -275,12 +302,13 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
         (accumulatedText) => {
           if (
             controller.signal.aborted ||
-            activeQuestionIdRef.current !== targetQuestionId
+            activeQuestionIdRef.current !== targetQuestionId ||
+            pendingTutorIdRef.current !== tutorId
           ) {
             return;
           }
           setMessages((prev) => {
-            if (activeQuestionIdRef.current !== targetQuestionId) return prev;
+            if (activeQuestionIdRef.current !== targetQuestionId || pendingTutorIdRef.current !== tutorId) return prev;
             return prev.map((msg) =>
               msg.id === tutorId ? { ...msg, text: accumulatedText } : msg,
             );
@@ -295,7 +323,8 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
       // 모달이 닫혔거나, 요청이 취소되었거나, 다른 문제로 이동했으면 상태 갱신 무시
       if (
         controller.signal.aborted ||
-        activeQuestionIdRef.current !== targetQuestionId
+        activeQuestionIdRef.current !== targetQuestionId ||
+        pendingTutorIdRef.current !== tutorId
       ) {
         return;
       }
@@ -303,6 +332,8 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
       if (!result || !result.trim()) {
         // 결과가 비어있는 경우 플레이스홀더 정리
         setMessages((prev) => prev.filter((msg) => msg.id !== tutorId));
+        pendingTutorIdRef.current = null;
+        pendingUserIdRef.current = null;
         return;
       }
 
@@ -331,6 +362,9 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
         });
       }
 
+      pendingTutorIdRef.current = null;
+      pendingUserIdRef.current = null;
+
       setMessages((prev) => {
         if (activeQuestionIdRef.current !== targetQuestionId) return prev;
         const next = prev.map((msg) =>
@@ -344,13 +378,17 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
     } catch (err: unknown) {
       if (
         controller.signal.aborted ||
-        (err instanceof Error && err.name === "AbortError")
+        (err instanceof Error && err.name === "AbortError") ||
+        pendingTutorIdRef.current !== tutorId
       ) {
         return;
       }
       if (activeQuestionIdRef.current !== targetQuestionId) {
         return;
       }
+      pendingTutorIdRef.current = null;
+      pendingUserIdRef.current = null;
+
       console.warn("[AITutorModal] askTutorStream error:", err);
       const errorNotice =
         "⚠️ AI 튜터 서버 연결이 원활하지 않습니다. (네트워크/서버 문제로 정밀 검증이 완료되지 못했습니다)";

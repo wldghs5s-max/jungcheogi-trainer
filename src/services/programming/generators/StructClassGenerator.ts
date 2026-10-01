@@ -13,7 +13,7 @@ export class StructClassGenerator extends BaseGenerator {
 
   generate(context: GenerationContext): GeneratedProgrammingQuestion {
     const rng = this.createRng(context.seed);
-    const lang = context.targetLanguage || (rng() > 0.4 ? 'JAVA' : 'PYTHON');
+    const lang = this.resolveLanguage(context, rng);
     const difficulty = context.targetDifficulty || this.pickOne(this.supportedDifficulties, rng);
 
     // 모드: STATIC_SHARE (Java static 변수 공유), POLYMORPHISM (상속과 오버라이딩), PYTHON_CLASS
