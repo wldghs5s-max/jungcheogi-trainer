@@ -1,9 +1,9 @@
 import { Question } from '../../types/question';
 
 /**
- * 실기 암기 과목 보충 및 표준 기출 문제 은행.
- * 총 724문항 (정제 및 품질 검증 완료).
- * 오프라인 환경에서도 즉시 100% 동작합니다.
+ * 2026 정보처리기사 실기 출제기준 완벽 대비 핵심 문제 은행.
+ * 총 874문항 (실기 12대 공식 영역 및 공백 전수 보강 완료).
+ * 100% 오프라인 동작 및 모바일 반복 학습 최적화.
  */
 export const MEMORIZATION_BANK: Question[] = [
   {
@@ -13520,5 +13520,3129 @@ export const MEMORIZATION_BANK: Question[] = [
     ],
     "source": "VERIFIED_CORE",
     "chapterId": "ch-sec-trends"
+  },
+  {
+    "id": "EXP26_PKG_001",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "디지털 저작권 관리(DRM)",
+    "type": "SHORT_ANSWER",
+    "question": "디지털 저작권 관리(DRM)의 구성요소 중, 라이선스를 발급하고 암호화된 콘텐츠의 사용 권한과 이용 규칙을 통제 및 관리하는 핵심 서버 기관을 무엇이라 하는가?",
+    "answer": [
+      "클리어링하우스",
+      "Clearinghouse"
+    ],
+    "explanation": "클리어링하우스(Clearinghouse)는 DRM 시스템에서 사용자의 권한을 확인하고 디지털 콘텐츠의 복호화 키 및 라이선스를 발급·관리하는 핵심 기관입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "DRM",
+      "클리어링하우스",
+      "Clearinghouse",
+      "라이선스"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_002",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "디지털 저작권 관리(DRM)",
+    "type": "SHORT_ANSWER",
+    "question": "DRM 구성요소 중 사용자의 단말 장치(PC, 스마트폰 등)에 설치되어, 인가된 사용자만이 라이선스 규칙에 따라 콘텐츠를 복호화하고 재생할 수 있도록 통제하는 프로그램을 무엇이라 하는가?",
+    "answer": [
+      "DRM 컨트롤러",
+      "DRM Controller",
+      "컨트롤러"
+    ],
+    "explanation": "DRM 컨트롤러(Controller)는 사용자 단말에서 라이선스 정보에 따라 암호화된 콘텐츠를 복호화하고 안전한 재생 및 복제 방지를 수행하는 소프트웨어 모듈입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "DRM",
+      "DRM 컨트롤러",
+      "단말"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_003",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "저작권 보호 기술",
+    "type": "SHORT_ANSWER",
+    "question": "디지털 콘텐츠에 눈에 띄지 않게 저작권자의 서명이나 고유 정보를 삽입하는 기술로, 불법 배포된 파일에서 원본 소유자를 증명하기 위해 쓰이는 기술과, 구매자의 식별 정보를 삽입하여 불법 유포 경로를 추적하는 기술을 [워터마킹 / 핑거프린팅] 순서대로 각각 쓰시오.",
+    "answer": [
+      "워터마킹, 핑거프린팅",
+      "디지털 워터마킹, 핑거프린팅"
+    ],
+    "explanation": "워터마킹(Watermarking)은 제작자(저작권자)의 정보를 은닉하여 소유권을 증명하고, 핑거프린팅(Fingerprinting)은 구매자/사용자의 정보를 은닉하여 불법 유포자를 추적합니다.",
+    "difficulty": "HARD",
+    "keywords": [
+      "워터마킹",
+      "핑거프린팅",
+      "저작권보호"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_004",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "보안 역공학 방지",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 프로그램의 실행 코드를 위변조하려는 행위를 감지하고, 변조가 감지되면 실행을 즉시 중단하거나 코드를 스스로 파괴하여 소프트웨어를 보호하는 보안 방어 기술을 무엇이라 하는가?",
+    "answer": [
+      "탬퍼 프루핑",
+      "Tamper Proofing",
+      "템퍼 프루핑"
+    ],
+    "explanation": "탬퍼 프루핑(Tamper Proofing)은 실행 바이너리의 무결성을 검증하여 역공학, 디버깅, 코드 패치 등의 불법 위변조 행위를 무력화하는 기술입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "탬퍼 프루핑",
+      "Tamper Proofing",
+      "위변조방지"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_005",
+    "subject": "소프트웨어설계",
+    "category": "오픈소스 라이선스",
+    "subCategory": "라이선스 특성 비교",
+    "type": "SHORT_ANSWER",
+    "question": "자유 소프트웨어 재단(FSF)에서 제정한 대표적인 카피레프트(Copyleft) 라이선스로, 이 라이선스가 적용된 코드를 수정하거나 결합하여 배포할 경우 파생 저작물의 소스코드도 반드시 동일한 라이선스로 공개해야 하는 라이선스는 무엇인가?",
+    "answer": [
+      "GPL",
+      "General Public License",
+      "GNU GPL"
+    ],
+    "explanation": "GPL(General Public License)은 엄격한 전염성(Viral) 카피레프트 라이선스로, 파생 소프트웨어 배포 시 반드시 전체 소스코드를 공개해야 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "GPL",
+      "오픈소스",
+      "카피레프트",
+      "FSF"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_006",
+    "subject": "소프트웨어설계",
+    "category": "오픈소스 라이선스",
+    "subCategory": "라이선스 특성 비교",
+    "type": "SHORT_ANSWER",
+    "question": "GPL의 엄격한 소스코드 공개 의무를 완화하여, 해당 라이브러리를 단순 링크(동적/정적 링크)하여 개발한 응용 프로그램은 소스코드를 공개하지 않아도 되도록 허용한 오픈소스 라이선스는 무엇인가?",
+    "answer": [
+      "LGPL",
+      "Lesser General Public License",
+      "GNU LGPL"
+    ],
+    "explanation": "LGPL(Lesser GPL)은 라이브러리 자체를 수정했을 때만 수정 코드를 공개하고, 단순히 링크하여 사용하는 독점 상용 소프트웨어의 소스코드는 비공개로 유지할 수 있습니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "LGPL",
+      "라이브러리링크",
+      "오픈소스"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_007",
+    "subject": "소프트웨어설계",
+    "category": "오픈소스 라이선스",
+    "subCategory": "라이선스 고지 의무",
+    "type": "SHORT_ANSWER",
+    "question": "아파치 소프트웨어 재단에서 만든 라이선스로, 소스코드 공개 의무는 없으나 재배포 시 저작권 고지, 라이선스 사본 포함, 특허권 부여 명시, 수정 사항 안내를 요구하는 라이선스는 무엇인가?",
+    "answer": [
+      "Apache",
+      "Apache License",
+      "아파치 라이선스",
+      "Apache 2.0"
+    ],
+    "explanation": "Apache 라이선스(특히 Apache 2.0)는 상용 소프트웨어에 소스 공개 의무 없이 자유롭게 활용할 수 있으나, 저작권/특허권/수정사항 고지 의무를 가집니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Apache",
+      "아파치",
+      "오픈소스라이선스"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_008",
+    "subject": "소프트웨어설계",
+    "category": "오픈소스 라이선스",
+    "subCategory": "라이선스 특성 비교",
+    "type": "SHORT_ANSWER",
+    "question": "매사추세츠 공과대학교에서 개발된 라이선스로, 소프트웨어의 무상 이용, 수정, 배포 및 상용화가 자유로우며 저작권 고지문과 면책 조항만 포함하면 소스코드 공개 의무가 전혀 없는 대표적인 퍼미시브 라이선스는 무엇인가?",
+    "answer": [
+      "MIT",
+      "MIT License",
+      "MIT 라이선스"
+    ],
+    "explanation": "MIT 라이선스는 매우 관대한(Permissive) 오픈소스 라이선스로, 저작권 및 면책 조항 고지만 유지하면 상용 판매나 소스 비공개 배포가 완전 자유롭습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "MIT",
+      "MIT라이선스",
+      "오픈소스"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_009",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 빌드/배포",
+    "subCategory": "빌드 자동화 도구",
+    "type": "SHORT_ANSWER",
+    "question": "자바 진영의 빌드 자동화 도구 중, XML 기반의 설정 파일(build.xml)을 사용하며 태스크(Task) 기반의 절차적 스크립트 작성 방식으로 유연하지만 의존성 자동 관리 기능이 약한 고전적인 도구는 무엇인가?",
+    "answer": [
+      "Ant",
+      "Apache Ant",
+      "앤트"
+    ],
+    "explanation": "Apache Ant는 XML 기반의 절차적 빌드 도구로 규칙이 정해져 있지 않고 자유로우나, 외부 라이브러리 의존성 자동 해결 기능이 부족하여 이후 Maven으로 발전했습니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "Ant",
+      "build.xml",
+      "빌드도구"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_010",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 빌드/배포",
+    "subCategory": "빌드 자동화 도구",
+    "type": "SHORT_ANSWER",
+    "question": "프로젝트 객체 모델(POM) 개념을 도입하여 중앙 저장소를 통한 의존성 자동 관리와 표준 프로젝트 생명주기(Lifecycle)를 제공하며, 설정 파일로 pom.xml을 사용하는 아파치 빌드 도구는 무엇인가?",
+    "answer": [
+      "Maven",
+      "Apache Maven",
+      "메이븐"
+    ],
+    "explanation": "Maven은 pom.xml에 선언된 라이브러리 및 플러그인을 원격 저장소에서 자동으로 다운로드하고 빌드/테스트/패키징 표준 생명주기를 관리합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Maven",
+      "메이븐",
+      "pom.xml",
+      "POM"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_011",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 빌드/배포",
+    "subCategory": "빌드 자동화 도구",
+    "type": "SHORT_ANSWER",
+    "question": "Ant의 유연성과 Maven의 의존성 관리 장점을 결합한 빌드 도구로, Groovy 또는 Kotlin 기반의 DSL(Domain Specific Language) 스크립트를 사용하고 안드로이드 공식 빌드 시스템으로 채택된 도구는 무엇인가?",
+    "answer": [
+      "Gradle",
+      "그래들"
+    ],
+    "explanation": "Gradle(그래들)은 build.gradle 파일을 통해 직관적인 스크립팅이 가능하며, 빌드 캐시 및 증분 빌드(Incremental Build)를 지원하여 Maven보다 월등히 빠릅니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Gradle",
+      "그래들",
+      "Groovy",
+      "Kotlin",
+      "DSL"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_012",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "배포 문서화",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 제품의 신규 버전이 배포될 때, 고객과 사용자에게 배포 날짜, 버전 번호, 신규 추가 기능, 버그 수정 내역, 알려진 문제점 등을 체계적으로 기록하여 전달하는 공식 문서를 무엇이라 하는가?",
+    "answer": [
+      "릴리즈 노트",
+      "Release Notes",
+      "릴리스 노트"
+    ],
+    "explanation": "릴리즈 노트(Release Notes)는 소프트웨어 릴리즈 주기마다 릴리즈 정보, 요구사항 변경, 결함 수정, 개선 사항 등을 명시한 핵심 사용자 문서입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "릴리즈 노트",
+      "Release Notes",
+      "배포문서"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_013",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "패키징 포맷 비교",
+    "type": "SHORT_ANSWER",
+    "question": "자바(Java) 애플리케이션의 패키징 확장자 중, 웹 애플리케이션 서비스에 필요한 서블릿(Servlet), JSP, XML 설정(web.xml) 및 정적 웹 리소스를 포함하여 WAS에 단독 배포할 수 있는 압축 아카이브 포맷은 무엇인가?",
+    "answer": [
+      "WAR",
+      "Web Application Archive"
+    ],
+    "explanation": "WAR(Web Application Archive)는 서블릿 및 JSP 기반 웹 애플리케이션의 표준 배포 패키지 포맷입니다. (일반 자바 클래스 라이브러리는 JAR)",
+    "difficulty": "EASY",
+    "keywords": [
+      "WAR",
+      "JAR",
+      "패키징",
+      "아카이브"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_014",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "패키징 프로세스",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 패키징 작업의 순서 중 다음 빈칸에 들어갈 올바른 단계를 쓰시오: [ 기능 식별 → 모듈화 → 빌드 도구 설정 → (    ) → 배포본 구성 및 패키징 ]",
+    "answer": [
+      "빌드 및 테스트",
+      "빌드/테스트",
+      "빌드",
+      "컴파일 및 테스트"
+    ],
+    "explanation": "제품 소프트웨어 패키징 프로세스는 기능 식별 → 모듈화 → 빌드 도구 설정 → 빌드 및 테스트 수행 → 최종 배포본 패키징 및 릴리즈 노트 작성 순으로 진행됩니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "패키징순서",
+      "빌드",
+      "테스트"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_015",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "디지털 저작권 관리(DRM)",
+    "type": "SHORT_ANSWER",
+    "question": "DRM 기술에서 저작권 원본 콘텐츠(오디오, 비디오, 문서, SW)를 암호화하고 메타데이터(저작권 식별자, 배포 규칙 등)를 결합하여 배포 가능한 보안 규격 파일로 생성하는 소프트웨어 도구를 무엇이라 하는가?",
+    "answer": [
+      "패키저",
+      "Packager",
+      "DRM 패키저"
+    ],
+    "explanation": "DRM 패키저(Packager)는 콘텐츠 제공자가 원본 콘텐츠를 인코딩 및 암호화하여 보안 헤더와 라이선스 통제 메타데이터를 결합시키는 구성요소입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "패키저",
+      "Packager",
+      "DRM"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_016",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "디지털 저작권 관리(DRM)",
+    "type": "SHORT_ANSWER",
+    "question": "암호화된 DRM 콘텐츠와 해당 콘텐츠를 복호화할 수 있는 보안 라이선스를 안전하게 격리 보관하고 무단 외부 유출을 방지하기 위해 생성되는 보안 영역을 무엇이라 하는가?",
+    "answer": [
+      "보안 컨테이너",
+      "Security Container"
+    ],
+    "explanation": "보안 컨테이너(Security Container)는 불법 복제나 가로채기로부터 보호하기 위해 암호화된 콘텐츠 및 관련 제어 정보를 담는 안전한 보호 상자입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "보안 컨테이너",
+      "Security Container",
+      "DRM"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_017",
+    "subject": "소프트웨어설계",
+    "category": "오픈소스 라이선스",
+    "subCategory": "라이선스 고지 의무",
+    "type": "SHORT_ANSWER",
+    "question": "버클리 캘리포니아 대학에서 발표한 오픈소스 라이선스로, 소스코드 공개 의무가 없고 상용 소프트웨어 결합이 자유로우나 초기 버전의 광고 조항(광고 시 명시)이 존재했던 대표적인 퍼미시브 라이선스는 무엇인가?",
+    "answer": [
+      "BSD",
+      "BSD License",
+      "BSD 라이선스"
+    ],
+    "explanation": "BSD 라이선스는 수정본 배포 시 소스코드 공개 의무가 없는 자유로운 라이선스입니다. (현대 개정판에서는 광고 조항이 삭제됨)",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "BSD",
+      "버클리",
+      "오픈소스"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_018",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "릴리즈 노트 작성 항목",
+    "type": "SHORT_ANSWER",
+    "question": "릴리즈 노트 작성 항목 중, 버그를 수정하기 전에 해당 결함이 발생하는 환경과 오류 발생 과정을 순서대로 재현할 수 있도록 기술하는 항목을 무엇이라 하는가?",
+    "answer": [
+      "재현 단계",
+      "재현 절차",
+      "Steps to Reproduce"
+    ],
+    "explanation": "릴리즈 노트의 문제 재현 단계(Steps to Reproduce)는 어떤 절차를 거쳤을 때 버그가 발생했는지 명확히 기록하여 수정 여부를 검증할 수 있도록 돕습니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "릴리즈노트",
+      "재현단계",
+      "결함"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_019",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "버전 관리 및 배포",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 버전 관리에서 [주 버전(Major).부 버전(Minor).패치 버전(Patch)] 체계를 따를 때, 기존 버전과 호환되지 않는 큰 기능 변경이나 API 수정이 발생했을 때 올려야 하는 버전 위치의 명칭은 무엇인가?",
+    "answer": [
+      "메이저",
+      "Major",
+      "주 버전"
+    ],
+    "explanation": "시맨틱 버저닝(Semantic Versioning)에서 하위 호환성이 깨지는 변경은 Major, 하위 호환 기능을 추가할 때는 Minor, 버그 수정은 Patch 버전을 올립니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "메이저",
+      "시맨틱버저닝",
+      "Major"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_020",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 빌드/배포",
+    "subCategory": "CI/CD 지속적 통합 및 배포",
+    "type": "SHORT_ANSWER",
+    "question": "개발자들이 작성한 코드를 중앙 공유 저장소에 매일 빈번하게 통합(Merge)하고, 자동화된 빌드와 단위 테스트를 수행하여 통합 과정의 오류를 조기에 발견하는 소프트웨어 공학 실천법의 약어는 무엇인가?",
+    "answer": [
+      "CI",
+      "지속적 통합",
+      "Continuous Integration"
+    ],
+    "explanation": "CI(Continuous Integration, 지속적 통합)는 자동화된 빌드와 테스트를 통해 코드 충돌과 결함을 조기에 발견하는 현대적인 개발 실천 방식입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CI",
+      "지속적 통합",
+      "빌드자동화"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_021",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 빌드/배포",
+    "subCategory": "CI/CD 지속적 통합 및 배포",
+    "type": "SHORT_ANSWER",
+    "question": "CI 단계를 통과하여 빌드 및 검증된 소프트웨어를 스테이징 환경 또는 실제 프로덕션(운영) 환경에 사람의 개입 없이 자동으로 배포하는 기법의 약어는 무엇인가?",
+    "answer": [
+      "CD",
+      "지속적 배포",
+      "Continuous Deployment",
+      "Continuous Delivery"
+    ],
+    "explanation": "CD(Continuous Delivery / Continuous Deployment)는 검증된 패키지를 테스트베드 또는 실서버에 자동화된 파이프라인으로 안전하게 배포하는 방식입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CD",
+      "지속적 배포",
+      "Continuous Deployment"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_022",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "보안 역공학 방지",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어의 컴파일된 바이너리나 바이트코드를 리버스 엔지니어링 도구(디컴파일러 등)로 분석하기 어렵도록 변수명, 클래스명을 무의미한 문자로 바꾸고 제어 흐름을 복잡하게 꼬는 기법을 무엇이라 하는가?",
+    "answer": [
+      "코드 난독화",
+      "난독화",
+      "Obfuscation",
+      "코드 난독화 도구"
+    ],
+    "explanation": "코드 난독화(Code Obfuscation)는 프로그램의 실행 로직 기능은 동일하게 유지하면서 코드의 가독성을 극단적으로 떨어뜨려 지적 재산권 유출을 막는 기술입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "코드 난독화",
+      "난독화",
+      "Obfuscation"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_023",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "패키징 산출물",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 설치 시 사용자가 프로그램을 손쉽게 설치할 수 있도록 설치 경로 지정, 바탕화면 바로가기 생성, 레지스트리 등록 등의 일련의 설치 작업을 자동화해 주는 도구를 무엇이라 하는가?",
+    "answer": [
+      "인스톨러",
+      "설치 프로그램",
+      "Installer"
+    ],
+    "explanation": "인스톨러(Installer)는 패키징된 소프트웨어를 대상 사용자의 시스템 환경에 맞게 자동 전개 및 구성해 주는 패키징 배포 도구입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "인스톨러",
+      "Installer",
+      "설치프로그램"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_024",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "배포 환경 격리",
+    "type": "SHORT_ANSWER",
+    "question": "배포 과정에서 애플리케이션과 이를 실행하는 데 필요한 런타임 환경, 라이브러리, 시스템 도구를 하나의 이미지로 패키징하여 호스트 OS 커널을 공유하며 프로세스 수준에서 격리 실행하는 경량화 기술은 무엇인가?",
+    "answer": [
+      "컨테이너",
+      "Container",
+      "도커 컨테이너"
+    ],
+    "explanation": "컨테이너(Container, e.g. Docker)는 하이퍼바이저 가상머신(VM)보다 훨씬 가볍고 시작 시간이 빠르며 일관된 패키징 및 배포 환경을 보장합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "컨테이너",
+      "Container",
+      "패키징배포"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_PKG_025",
+    "subject": "소프트웨어설계",
+    "category": "제품소프트웨어 패키징",
+    "subCategory": "릴리즈 노트 작성 항목",
+    "type": "SHORT_ANSWER",
+    "question": "릴리즈 노트 작성 항목 중, 해당 버전에서 아직 해결되지 않아 향후 업데이트에서 수정 예정이며 사용자가 주의해야 할 버그나 기능적 제약사항을 기재하는 항목의 명칭은 무엇인가?",
+    "answer": [
+      "알려진 문제점",
+      "Known Issues",
+      "알려진 문제"
+    ],
+    "explanation": "알려진 문제점(Known Issues)은 소프트웨어 배포 시점에 파악되었으나 릴리즈 일정 등으로 인해 해결하지 못한 잔여 결함과 회피 방법(Workaround)을 명시합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "알려진 문제점",
+      "Known Issues",
+      "릴리즈노트"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_003",
+    "subject": "데이터베이스구축",
+    "category": "고급 SQL 작성",
+    "subCategory": "윈도우 함수",
+    "type": "SHORT_ANSWER",
+    "question": "SQL 윈도우 함수 중, 현재 행을 기준으로 지정된 오프셋만큼 이전 행의 컬럼 값을 가져오는 함수를 쓰시오. (예: 바로 앞 이전 달 매출액 조회)",
+    "answer": [
+      "LAG",
+      "LAG()"
+    ],
+    "explanation": "LAG()는 현재 행보다 앞에 위치한 행의 데이터를 참조하는 함수이며, 반대로 이후 행을 참조하는 함수는 LEAD()입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "LAG",
+      "윈도우함수",
+      "이전행"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_004",
+    "subject": "데이터베이스구축",
+    "category": "고급 SQL 작성",
+    "subCategory": "윈도우 함수",
+    "type": "SHORT_ANSWER",
+    "question": "SQL 윈도우 함수 중, 현재 행을 기준으로 다음 행(이후 위치한 행)의 데이터를 조회할 때 사용하는 함수는 무엇인가?",
+    "answer": [
+      "LEAD",
+      "LEAD()"
+    ],
+    "explanation": "LEAD() 함수는 현재 행의 뒤에 있는 N번째 행의 값을 읽어올 때 사용합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "LEAD",
+      "윈도우함수",
+      "다음행"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_008",
+    "subject": "데이터베이스구축",
+    "category": "절차형 SQL",
+    "subCategory": "PL/SQL 기본 구조",
+    "type": "SHORT_ANSWER",
+    "question": "오라클 PL/SQL 블록의 3대 구성 섹션 중, 프로시저 내부에서 사용할 변수, 상수, 커서(Cursor)를 선언하는 선택적 시작 섹션의 키워드는 무엇인가?",
+    "answer": [
+      "DECLARE",
+      "DECLARE절"
+    ],
+    "explanation": "PL/SQL 블록은 선언부(DECLARE), 실행부(BEGIN ~ END), 예외처리부(EXCEPTION)로 구성됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DECLARE",
+      "PL/SQL",
+      "선언부"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_009",
+    "subject": "데이터베이스구축",
+    "category": "절차형 SQL",
+    "subCategory": "PL/SQL 커서(Cursor)",
+    "type": "SHORT_ANSWER",
+    "question": "복수 개의 행을 반환하는 SELECT 쿼리의 결과 집합을 한 행씩 순차적으로 읽어와 처리하기 위한 PL/SQL 커서(Cursor)의 생명주기 4단계를 순서대로 쓰시오. [선언 → (    ) → 패치 → (    )]",
+    "answer": [
+      "오픈, 클로즈",
+      "OPEN, CLOSE",
+      "열기, 닫기"
+    ],
+    "explanation": "명시적 커서 제어 4단계는 DECLARE(선언) → OPEN(열기/실행) → FETCH(한 행 읽기) → CLOSE(닫기/자원해제)입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "커서",
+      "OPEN",
+      "CLOSE",
+      "FETCH"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_010",
+    "subject": "데이터베이스구축",
+    "category": "절차형 SQL",
+    "subCategory": "PL/SQL 커서 속성",
+    "type": "SHORT_ANSWER",
+    "question": "PL/SQL 커서에서 FETCH 문을 수행했을 때 더 이상 읽어올 행(Row)이 존재하지 않으면 TRUE를 반환하는 커서 상태 속성의 키워드는 무엇인가?",
+    "answer": [
+      "%NOTFOUND",
+      "NOTFOUND"
+    ],
+    "explanation": "%NOTFOUND 속성은 커서에서 마지막 FETCH 결과 반환된 행이 없을 때 TRUE가 되어 루프 탈출 조건(EXIT WHEN 커서명%NOTFOUND)으로 사용됩니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "%NOTFOUND",
+      "커서속성",
+      "FETCH"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_011",
+    "subject": "데이터베이스구축",
+    "category": "절차형 SQL",
+    "subCategory": "PL/SQL 커서 속성",
+    "type": "SHORT_ANSWER",
+    "question": "PL/SQL 커서나 SQL 문 실행 후, 지금까지 성공적으로 FETCH 되었거나 DML에 의해 영향을 받은 행의 총 개수를 반환하는 커서 속성은 무엇인가?",
+    "answer": [
+      "%ROWCOUNT",
+      "ROWCOUNT"
+    ],
+    "explanation": "%ROWCOUNT는 현재까지 읽어들인 행의 수 또는 INSERT/UPDATE/DELETE로 수정된 레코드 수를 반환합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "%ROWCOUNT",
+      "커서속성",
+      "행수"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_012",
+    "subject": "데이터베이스구축",
+    "category": "절차형 SQL",
+    "subCategory": "트리거(Trigger)",
+    "type": "SHORT_ANSWER",
+    "question": "특정 테이블에 INSERT, UPDATE, DELETE 등의 이벤트가 발생할 때 실행되는 트리거 중, 변경되는 각 데이터 행마다 개별적으로 한 번씩 실행되도록 지정하는 SQL 절은 무엇인가?",
+    "answer": [
+      "FOR EACH ROW"
+    ],
+    "explanation": "FOR EACH ROW 절을 지정하면 문장 단위가 아닌 영향을 받는 행 단위로 트리거가 실행되는 행 트리거(Row Trigger)가 됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "FOR EACH ROW",
+      "행트리거",
+      "트리거"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_013",
+    "subject": "데이터베이스구축",
+    "category": "절차형 SQL",
+    "subCategory": "트리거(Trigger)",
+    "type": "SHORT_ANSWER",
+    "question": "행 트리거(FOR EACH ROW)에서 INSERT 또는 UPDATE 문에 의해 새롭게 입력되거나 수정되어 들어오는 컬럼의 변경 후 값을 참조할 때 사용하는 가상 콜론 변수는 무엇인가?",
+    "answer": [
+      ":NEW",
+      "NEW"
+    ],
+    "explanation": "행 트리거에서 :NEW는 새로 갱신될 값을 가리키고, :OLD는 변경 이전의 기존 값을 가리킵니다. (DELETE 문에서는 :OLD만 유효)",
+    "difficulty": "EASY",
+    "keywords": [
+      ":NEW",
+      "NEW",
+      "트리거변수"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_014",
+    "subject": "데이터베이스구축",
+    "category": "절차형 SQL",
+    "subCategory": "객체 비교",
+    "type": "SHORT_ANSWER",
+    "question": "데이터베이스 절차형 객체 중, 저장 프로시저(Stored Procedure)와 달리 실행 후 단 하나의 결과를 반드시 RETURN 문을 통해 반환해야 하며, 일반 SELECT 쿼리문 내부에서도 호출 가능한 객체는 무엇인가?",
+    "answer": [
+      "사용자 정의 함수",
+      "사용자 정의 함수(User-Defined Function)",
+      "Function"
+    ],
+    "explanation": "사용자 정의 함수(User Defined Function)는 수식이나 표현식의 일부로 사용되며 단일 값을 반드시 RETURN해야 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "사용자 정의 함수",
+      "Function",
+      "RETURN"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_015",
+    "subject": "데이터베이스구축",
+    "category": "SQL 최적화",
+    "subCategory": "옵티마이저(Optimizer)",
+    "type": "SHORT_ANSWER",
+    "question": "DBMS 옵티마이저의 두 가지 유형 중, 테이블 통계 정보나 데이터 분포를 고려하지 않고 미리 정해진 우선순위 규칙에 따라 실행 계획을 세우는 방식을 무엇이라 하는가?",
+    "answer": [
+      "RBO",
+      "규칙 기반 옵티마이저",
+      "Rule Based Optimizer"
+    ],
+    "explanation": "RBO(Rule-Based Optimizer, 규칙 기반 옵티마이저)는 인덱스 유무, 연산자 종류 등의 고정된 15개 우선순위 룰에 따라 경로를 결정합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "RBO",
+      "규칙 기반 옵티마이저",
+      "옵티마이저"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_016",
+    "subject": "데이터베이스구축",
+    "category": "SQL 최적화",
+    "subCategory": "옵티마이저(Optimizer)",
+    "type": "SHORT_ANSWER",
+    "question": "테이블 및 인덱스의 레코드 수, 블록 수, 카디널리티 등 카탈로그 통계 정보를 바탕으로 쿼리 수행에 필요한 비용(CPU 및 I/O)을 예측하여 최적의 실행 계획을 선택하는 현대적인 옵티마이저는 무엇인가?",
+    "answer": [
+      "CBO",
+      "비용 기반 옵티마이저",
+      "Cost Based Optimizer"
+    ],
+    "explanation": "CBO(Cost-Based Optimizer, 비용 기반 옵티마이저)는 데이터 카탈로그 통계 정보를 기반으로 가장 적은 소요 비용이 드는 실행 계획을 선택합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CBO",
+      "비용 기반 옵티마이저",
+      "옵티마이저"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_017",
+    "subject": "데이터베이스구축",
+    "category": "SQL 최적화",
+    "subCategory": "인덱스 스캔 방식",
+    "type": "SHORT_ANSWER",
+    "question": "인덱스 리프 블록에서 특정 검색 조건에 해당하는 시작점부터 종료점까지만 수평적으로 탐색하여 조건에 맞는 행만 효율적으로 읽어내는 가장 대표적인 인덱스 검색 방식은 무엇인가?",
+    "answer": [
+      "Index Range Scan",
+      "인덱스 범위 스캔",
+      "인덱스 레인지 스캔"
+    ],
+    "explanation": "Index Range Scan은 루트 블록에서 수직 탐색 후 리프 블록에서 필요한 범위만큼만 스캔하는 표준적인 인덱스 스캔 방식입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "Index Range Scan",
+      "인덱스범위스캔",
+      "인덱스스캔"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_018",
+    "subject": "데이터베이스구축",
+    "category": "SQL 최적화",
+    "subCategory": "인덱스 스캔 방식",
+    "type": "SHORT_ANSWER",
+    "question": "테이블의 전체 데이터를 인덱스를 거치지 않고 처음부터 끝까지 모든 블록을 순차적으로 읽어내는 스캔 방식을 무엇이라 하는가? (대용량 배치 작업이나 테이블 데이터 대부분을 읽을 때 유리)",
+    "answer": [
+      "Full Table Scan",
+      "테이블 전체 스캔",
+      "Table Full Scan"
+    ],
+    "explanation": "Full Table Scan(테이블 풀 스캔)은 인덱스를 타지 않고 데이터 세그먼트의 전체 블록을 멀티블록 I/O로 빠르게 읽는 방식입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Full Table Scan",
+      "테이블풀스캔",
+      "FTS"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_021",
+    "subject": "데이터베이스구축",
+    "category": "기본 SQL 작성",
+    "subCategory": "테이블 제약조건",
+    "type": "SHORT_ANSWER",
+    "question": "테이블 생성(CREATE TABLE) 시 특정 컬럼에 입력되는 값이 정의된 논리적 조건식(예: 나이 >= 19)을 반드시 만족해야 하도록 제한하는 무결성 제약조건 키워드는 무엇인가?",
+    "answer": [
+      "CHECK",
+      "CHECK 제약조건"
+    ],
+    "explanation": "CHECK 제약조건은 데이터 입력/수정 시 특정 컬럼 값이 도메인 유효 범위에 속하는지 조건식으로 검증합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CHECK",
+      "제약조건",
+      "도메인무결성"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_022",
+    "subject": "데이터베이스구축",
+    "category": "고급 SQL 작성",
+    "subCategory": "상관 서브쿼리",
+    "type": "SHORT_ANSWER",
+    "question": "서브쿼리가 메인쿼리의 컬럼 값을 참조하여 실행되고, 메인쿼리의 각 행마다 서브쿼리가 반복 수행되는 상호 의존적인 형태의 서브쿼리를 무엇이라 하는가?",
+    "answer": [
+      "상관 서브쿼리",
+      "상호 연관 서브쿼리",
+      "Correlated Subquery"
+    ],
+    "explanation": "상관 서브쿼리(Correlated Subquery)는 서브쿼리 내부에서 메인쿼리의 별칭(Alias)을 참조하여 행 단위로 계산을 반복합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "상관 서브쿼리",
+      "Correlated Subquery",
+      "서브쿼리"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_023",
+    "subject": "데이터베이스구축",
+    "category": "SQL 최적화",
+    "subCategory": "힌트(Hint)",
+    "type": "SHORT_ANSWER",
+    "question": "개발자가 SQL 쿼리문 안에 특수 주석(/*+ ... */) 형태로 작성하여, 옵티마이저의 기본 실행 계획 대신 특정 인덱스 사용이나 조인 방식을 강제로 유도하는 명령을 무엇이라 하는가?",
+    "answer": [
+      "힌트",
+      "옵티마이저 힌트",
+      "Hint"
+    ],
+    "explanation": "힌트(Hint)는 SQL 문 내부에 작성되어 옵티마이저에게 강제로 실행 경로(인덱스 지정, 풀테이블 스캔, 조인 순서 등)를 지시합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "힌트",
+      "Hint",
+      "옵티마이저힌트"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_024",
+    "subject": "데이터베이스구축",
+    "category": "기본 SQL 작성",
+    "subCategory": "테이블 데이터 삭제",
+    "type": "SHORT_ANSWER",
+    "question": "테이블의 모든 데이터를 삭제할 때, DELETE 문과 달리 트랜잭션 로그를 남기지 않고 즉시 공간을 반환하며 롤백(ROLLBACK)이 불가능한 DDL 명령어는 무엇인가?",
+    "answer": [
+      "TRUNCATE",
+      "TRUNCATE TABLE"
+    ],
+    "explanation": "TRUNCATE는 DDL 명령어로 테이블 구조는 남긴 채 모든 행을 일괄 삭제하며, 시스템 로그 기록을 최소화하여 성능이 매우 빠릅니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "TRUNCATE",
+      "DELETE비교",
+      "DDL"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SQL_025",
+    "subject": "데이터베이스구축",
+    "category": "SQL 최적화",
+    "subCategory": "실행 계획(Execution Plan)",
+    "type": "SHORT_ANSWER",
+    "question": "옵티마이저가 사용자가 작성한 SQL 문을 실행하기 위해 수립한 처리 경로(테이블 접근 순서, 인덱스 사용, 조인 기법 등)를 시각적으로 확인하기 위해 실행하는 데이터베이스 명령어를 쓰시오.",
+    "answer": [
+      "EXPLAIN PLAN",
+      "EXPLAIN"
+    ],
+    "explanation": "EXPLAIN PLAN 문은 옵티마이저가 생성한 실행 계획을 PLAN_TABLE 등에 기록하여 성능 튜닝 시 조회할 수 있게 합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "EXPLAIN PLAN",
+      "실행계획",
+      "SQL튜닝"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_001",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 설계 및 연계",
+    "subCategory": "연계 데이터 표준",
+    "type": "SHORT_ANSWER",
+    "question": "송수신 시스템 간 데이터 교환 시, 속성-값 쌍(Key-Value Pair)과 배열 자료형으로 구성되어 XML보다 구문 분석(Parsing)이 빠르고 데이터 용량이 작은 경량 텍스트 교환 포맷은 무엇인가?",
+    "answer": [
+      "JSON",
+      "JavaScript Object Notation"
+    ],
+    "explanation": "JSON은 자바스크립트 객체 표기법에서 파생된 경량 텍스트 포맷으로, 사람이 읽기 쉽고 웹 API 통신에서 사실상 표준으로 사용됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "JSON",
+      "연계데이터",
+      "경량데이터"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_002",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 설계 및 연계",
+    "subCategory": "연계 데이터 표준",
+    "type": "SHORT_ANSWER",
+    "question": "W3C에서 개발한 다목적 마크업 언어로, 사용자가 새로운 태그를 임의로 정의할 수 있으며 데이터와 그 구조를 동시에 설명할 수 있는 표준 교환 포맷은 무엇인가?",
+    "answer": [
+      "XML",
+      "Extensible Markup Language"
+    ],
+    "explanation": "XML은 확장 가능한 마크업 언어로, 플랫폼 독립적인 데이터 기술과 전자문서 표준화(SOAP, SVG 등)에 널리 활용됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "XML",
+      "마크업언어",
+      "연계데이터"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_003",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 설계 및 연계",
+    "subCategory": "연계 데이터 표준",
+    "type": "SHORT_ANSWER",
+    "question": "구성 설정(Configuration) 파일이나 CI/CD 파이프라인 명세에 주로 쓰이며, 괄호 대신 공백 들여쓰기(Indentation)를 사용하여 가독성을 극대화한 사람이 읽기 쉬운 데이터 직렬화 언어는 무엇인가?",
+    "answer": [
+      "YAML",
+      "YML"
+    ],
+    "explanation": "YAML(YAML Ain't Markup Language)은 XML과 JSON에 비해 작성과 판독이 직관적이어서 쿠버네티스(k8s), Docker Compose, GitHub Actions 설정 파일에 광범위하게 쓰입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "YAML",
+      "들여쓰기",
+      "데이터직렬화"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_004",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 검증",
+    "subCategory": "인터페이스 테스트 자동화 도구",
+    "type": "SHORT_ANSWER",
+    "question": "다양한 환경(OS, 네트워크 장비 등)에서 분산된 테스트를 수행하기 위해 서비스 데몬 형태로 실행되며, 컴포넌트 간의 분산 테스트 및 재사용을 지원하는 서비스 지향 테스트 프레임워크는 무엇인가?",
+    "answer": [
+      "STAF"
+    ],
+    "explanation": "STAF(Software Testing Automation Framework)는 분산 환경에서 테스트 수행 및 제어를 데몬 기반으로 통합 지원하는 자동화 프레임워크입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "STAF",
+      "테스트자동화",
+      "분산테스트"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_005",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 검증",
+    "subCategory": "인터페이스 테스트 자동화 도구",
+    "type": "SHORT_ANSWER",
+    "question": "웹 기반의 위키(Wiki) 인터페이스를 활용하여, 비기술자인 고객이나 업무 분석가가 테이블(Table) 형태로 작성한 인수 조건을 그대로 자동화 테스트 케이스로 실행해 주는 도구는 무엇인가?",
+    "answer": [
+      "FitNesse"
+    ],
+    "explanation": "FitNesse(핏네스)는 웹 기반 위키 페이지의 표(Table) 형식을 테스트 스크립트로 직접 변환하여 실행하는 인수 테스트 자동화 도구입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "FitNesse",
+      "위키",
+      "인수테스트"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_006",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 검증",
+    "subCategory": "인터페이스 테스트 자동화 도구",
+    "type": "SHORT_ANSWER",
+    "question": "FitNesse의 장점(테스트 협업)과 STAF의 장점(서비스 데몬 기반 분산 환경 지원)을 결합하여 네이버(NHN)에서 오픈소스로 개발한 통합 테스트 프레임워크는 무엇인가?",
+    "answer": [
+      "NTAF"
+    ],
+    "explanation": "NTAF(NHN Test Automation Framework)는 FitNesse와 STAF를 결합하여 웹 환경과 분산 환경 테스트를 모두 만족하도록 개발된 프레임워크입니다.",
+    "difficulty": "HARD",
+    "keywords": [
+      "NTAF",
+      "STAF",
+      "FitNesse"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_007",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 성능 및 모니터링",
+    "subCategory": "APM 도구",
+    "type": "SHORT_ANSWER",
+    "question": "운영 중인 애플리케이션의 성능 병목 지점, 리소스 사용률(CPU/메모리), 트랜잭션 응답 시간, 장애 로그 등을 실시간으로 모니터링하고 분석하는 성능 관리 도구의 영문 약어는 무엇인가?",
+    "answer": [
+      "APM",
+      "Application Performance Monitoring",
+      "Application Performance Management"
+    ],
+    "explanation": "APM(Application Performance Management / Monitoring, 예: 제니퍼, 스카우터, 와탭)은 시스템 장애 예방과 성능 튜닝에 필수적인 도구입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "APM",
+      "애플리케이션성능관리",
+      "모니터링"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_009",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 보안",
+    "subCategory": "IPSec 동작 모드",
+    "type": "SHORT_ANSWER",
+    "question": "IPSec의 두 가지 동작 모드 중, 원본 IP 패킷 전체(헤더 포함)를 암호화하고 새로운 New IP 헤더를 덧붙여 라우터 간 VPN 터널 구축에 주로 사용되는 모드는 무엇인가?",
+    "answer": [
+      "터널 모드",
+      "Tunnel Mode",
+      "터널모드"
+    ],
+    "explanation": "IPSec 터널 모드는 원본 IP 패킷 전체를 캡슐화하여 게이트웨이(방화벽/VPN) 간 통신에 쓰이며, 종단 호스트 간 통신에서 페이로드만 암호화하는 것은 전송 모드(Transport Mode)입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "터널 모드",
+      "Tunnel Mode",
+      "IPSec"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_010",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 보안",
+    "subCategory": "전송 계층 보안",
+    "type": "SHORT_ANSWER",
+    "question": "전송 계층과 응용 계층 사이에서 안전한 암호화 통신을 제공하기 위해 넷스케이프가 개발한 SSL(Secure Sockets Layer)을 IETF에서 표준화하여 발전시킨 프로토콜의 약어는 무엇인가?",
+    "answer": [
+      "TLS",
+      "Transport Layer Security"
+    ],
+    "explanation": "TLS(Transport Layer Security)는 웹(HTTPS), 메일(SMTPS) 등의 데이터 기밀성과 데이터 무결성을 제공하는 국제 표준 보안 프로토콜입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "TLS",
+      "SSL",
+      "전송계층보안"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_011",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 설계 및 연계",
+    "subCategory": "연계 메커니즘",
+    "type": "SHORT_ANSWER",
+    "question": "송신 시스템의 데이터베이스에서 수신 시스템의 원격 데이터베이스에 직접 접속하여 데이터를 조회하거나 조작할 수 있도록 DBMS 자체에서 제공하는 원격 연결 객체를 무엇이라 하는가?",
+    "answer": [
+      "DB Link",
+      "데이터베이스 링크",
+      "DB 링크"
+    ],
+    "explanation": "DB Link(데이터베이스 링크)는 DBMS 간에 네트워크를 통해 원격 테이블에 직접 접근(예: SELECT * FROM emp@remote_db)할 수 있도록 제공하는 메커니즘입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DB Link",
+      "DB링크",
+      "데이터베이스링크"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_012",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 설계 및 연계",
+    "subCategory": "연계 메커니즘",
+    "type": "SHORT_ANSWER",
+    "question": "송신 시스템의 데이터베이스와 수신 시스템의 데이터베이스 사이의 데이터 불일치를 방지하고, 송신 테이블의 변경(INSERT/UPDATE/DELETE) 사항을 실시간 또는 주기적으로 상대 DB 테이블에 복제해 주는 객체 기법은 무엇인가?",
+    "answer": [
+      "DB 연결",
+      "DB Connection Pool",
+      "DB 복제",
+      "DB 커넥션"
+    ],
+    "explanation": "데이터베이스 연결 및 연계 테이블 복제(Replication/Trigger 기반)는 배치 또는 실시간 데이터 동기화에 사용됩니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "DB연계",
+      "데이터동기화"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_013",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 설계 및 연계",
+    "subCategory": "연계 메커니즘",
+    "type": "SHORT_ANSWER",
+    "question": "웹 브라우저와 웹 서버 간의 비동기적 데이터 교환 기술로, 전체 페이지를 새로고침하지 않고도 백그라운드에서 서버와 JSON/XML 데이터를 주고받아 화면 일부분만을 갱신할 수 있는 기술의 약어는 무엇인가?",
+    "answer": [
+      "AJAX",
+      "Asynchronous JavaScript and XML"
+    ],
+    "explanation": "AJAX(비동기 자바스크립트와 XML)는 XMLHttpRequest 또는 Fetch API를 사용하여 끊김 없는 부드러운 웹 사용자 인터페이스를 제공합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "AJAX",
+      "비동기통신",
+      "웹인터페이스"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_014",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 설계 및 연계",
+    "subCategory": "웹 서비스 표준",
+    "type": "SHORT_ANSWER",
+    "question": "SOAP 기반 웹 서비스에서 제공하는 서비스의 구체적인 내용(메서드명, 매개변수, 반환값 타입, 네트워크 통신 프로토콜 및 엔드포인트 URL)을 XML 형식으로 기술한 인터페이스 명세 문서는 무엇인가?",
+    "answer": [
+      "WSDL",
+      "Web Services Description Language"
+    ],
+    "explanation": "WSDL은 웹 서비스가 어떤 기능을 제공하고 어떻게 호출해야 하는지 기술하는 표준 기술서이며, UDDI 등록소에 등록되어 검색됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "WSDL",
+      "웹서비스",
+      "SOAP"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_015",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 설계 및 연계",
+    "subCategory": "웹 서비스 표준",
+    "type": "SHORT_ANSWER",
+    "question": "전 세계의 비즈니스 및 웹 서비스 제공자들이 자신들의 WSDL 명세서를 등록하여 누구나 검색하고 공유할 수 있도록 해주는 XML 기반의 공개 등록소(디렉터리 서비스)는 무엇인가?",
+    "answer": [
+      "UDDI",
+      "Universal Description, Discovery and Integration"
+    ],
+    "explanation": "UDDI는 웹 서비스의 전화번호부와 같은 역할을 하는 범용 등록소 규격입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "UDDI",
+      "웹서비스등록소",
+      "디렉터리"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_018",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 설계 및 연계",
+    "subCategory": "인터페이스 명세서",
+    "type": "SHORT_ANSWER",
+    "question": "송수신 시스템 간의 연계 방식을 정의할 때, 정해진 바이트 크기(고정 길이)나 구분자(Delimiter)를 기준으로 데이터 필드를 연속하여 일렬로 주고받는 정형화된 데이터 통신 단위를 무엇이라 하는가?",
+    "answer": [
+      "전문",
+      "전문 인터페이스",
+      "전문(Telegram)"
+    ],
+    "explanation": "전문(Telegram) 방식은 금융권 및 공공기관 레거시 시스템에서 고속 대용량 거래 데이터 처리를 위해 주로 사용하는 고정 길이(Fixed Length) 또는 가변 길이 데이터 규격입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "전문",
+      "전문인터페이스",
+      "고정길이"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_019",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 오류 처리",
+    "subCategory": "예외 및 로깅",
+    "type": "SHORT_ANSWER",
+    "question": "시스템 연계 중 네트워크 단절이나 대상 시스템 장애로 인해 전송이 실패했을 때, 데이터를 즉시 폐기하지 않고 보관했다가 일정 주기로 재전송을 시도하는 메커니즘을 무엇이라 하는가?",
+    "answer": [
+      "재전송 메커니즘",
+      "재시도",
+      "재전송",
+      "Retry"
+    ],
+    "explanation": "재전송(Retry) 메커니즘은 일시적인 네트워크 순단이나 부하 상황에서 인터페이스 트랜잭션의 신뢰성과 데이터 유실 방지를 위해 필수적입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "재전송",
+      "Retry",
+      "장애처리"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_020",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 성능",
+    "subCategory": "성능 지표",
+    "type": "SHORT_ANSWER",
+    "question": "인터페이스 및 시스템 성능 측정 지표 중, 초당 시스템이 처리할 수 있는 트랜잭션(요청)의 건수를 나타내는 핵심 단위의 약어는 무엇인가?",
+    "answer": [
+      "TPS",
+      "Transactions Per Second"
+    ],
+    "explanation": "TPS(Transactions Per Second)는 시스템의 처리량(Throughput)을 나타내는 가장 대표적인 성능 지표입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "TPS",
+      "처리량",
+      "성능지표"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_021",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 보안",
+    "subCategory": "보안 통신 프로토콜",
+    "type": "SHORT_ANSWER",
+    "question": "기존의 텔넷(Telnet)이나 rlogin 등의 평문 전송 원격 접속 방식을 대체하기 위해, 강력한 공개키 암호화 기반으로 안전한 원격 쉘 명령 및 포트 포워딩을 제공하는 프로토콜은 무엇인가?",
+    "answer": [
+      "SSH",
+      "Secure Shell"
+    ],
+    "explanation": "SSH(Secure Shell, 포트 22)는 원격 서버 관리 시 패킷 스니핑을 방지하기 위한 표준 암호화 프로토콜입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "SSH",
+      "원격접속",
+      "보안쉘"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_022",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 설계",
+    "subCategory": "인터페이스 요구사항 분석",
+    "type": "SHORT_ANSWER",
+    "question": "개발할 시스템과 외부 시스템 간의 데이터 흐름 및 경계를 한눈에 파악하기 위해, 전체 시스템을 하나의 단일 프로세스로 두고 외부 엔티티(Entity)와의 입출력 데이터 흐름만을 표현한 DFD 최상위 다이어그램을 무엇이라 하는가?",
+    "answer": [
+      "기본 시스템 모델",
+      "배경도",
+      "Context Diagram"
+    ],
+    "explanation": "배경도(Context Diagram)는 DFD Level 0으로서 시스템 전체를 단일 프로세스로 나타내어 시스템의 외부 경계와 입출력을 정의합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "배경도",
+      "Context Diagram",
+      "DFD"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_023",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 검증",
+    "subCategory": "웹 UI 자동화 테스트 도구",
+    "type": "SHORT_ANSWER",
+    "question": "다양한 웹 브라우저(크롬, 파이어폭스, 엣지 등) 상에서 사용자의 클릭, 입력, 화면 이동 동작을 스크립트로 기록하고 재생하여 웹 애플리케이션의 엔드투엔드(E2E) 인터페이스를 자동 검증하는 오픈소스 도구는 무엇인가?",
+    "answer": [
+      "셀레니움",
+      "Selenium"
+    ],
+    "explanation": "Selenium(셀레니움)은 웹 브라우저를 직접 제어하여 크로스 브라우징 및 인터페이스 회귀 테스트를 자동화하는 대표적인 도구입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "셀레니움",
+      "Selenium",
+      "E2E테스트"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_024",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 보안",
+    "subCategory": "API 인증 및 인가",
+    "type": "SHORT_ANSWER",
+    "question": "제3자 애플리케이션(서드파티 앱)에 사용자의 비밀번호를 노출하지 않고도 특정 리소스에 대한 접근 권한(토큰 기반)을 안전하게 위임하고 인가하기 위한 개방형 표준 프로토콜은 무엇인가?",
+    "answer": [
+      "OAuth",
+      "OAuth 2.0",
+      "오스"
+    ],
+    "explanation": "OAuth(특히 OAuth 2.0)는 구글/카카오 로그인 연동 등 현대 모바일 및 웹 서비스의 API 인가 표준입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "OAuth",
+      "토큰인가",
+      "API보안"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_INT_025",
+    "subject": "소프트웨어설계",
+    "category": "인터페이스 설계 및 연계",
+    "subCategory": "연계 방식 분류",
+    "type": "SHORT_ANSWER",
+    "question": "송신 시스템에서 요청을 보낸 후 수신 시스템으로부터 응답이 올 때까지 대기하지 않고 즉시 다음 작업을 진행하며, 메시지 큐(MQ)를 활용하여 시스템 간 결합도를 최소화하는 통신 방식을 무엇이라 하는가?",
+    "answer": [
+      "비동기 방식",
+      "비동기 통신",
+      "비동기식",
+      "Asynchronous"
+    ],
+    "explanation": "비동기(Asynchronous) 통신은 송수신자 간의 시간적 결합도를 분리하여 처리량과 응답성을 극대화합니다. (대기하는 방식은 동기 방식)",
+    "difficulty": "EASY",
+    "keywords": [
+      "비동기 방식",
+      "비동기통신",
+      "메시지큐"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_001",
+    "subject": "데이터베이스구축",
+    "category": "데이터 전환 및 이관",
+    "subCategory": "ETL 프로세스",
+    "type": "SHORT_ANSWER",
+    "question": "원천 시스템(Source)의 데이터베이스나 파일로부터 필요한 데이터를 추출하고, 목적 시스템의 형식에 맞게 변환 및 정제한 후 데이터 웨어하우스나 목적 DB에 적재하는 일련의 과정을 나타내는 영문 3글자 약어는 무엇인가?",
+    "answer": [
+      "ETL",
+      "Extract, Transform, Load"
+    ],
+    "explanation": "ETL(Extract, Transform, Load)은 데이터 이관, 데이터 웨어하우스 구축 및 데이터 레이크 적재의 핵심 프로세스입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ETL",
+      "데이터추출",
+      "데이터변환",
+      "데이터적재"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_002",
+    "subject": "데이터베이스구축",
+    "category": "데이터 전환 및 이관",
+    "subCategory": "데이터 전환 절차",
+    "type": "SHORT_ANSWER",
+    "question": "데이터 전환 절차 중 원천 시스템의 테이블 및 컬럼과 목적 시스템의 테이블 및 컬럼 간의 1:1, 1:N, N:M 대응 관계 및 변환 규칙을 상세하게 기술한 설계 문서를 무엇이라 하는가?",
+    "answer": [
+      "데이터 매핑 정의서",
+      "데이터 매핑",
+      "매핑 정의서",
+      "Mapping Specification"
+    ],
+    "explanation": "데이터 매핑 정의서는 원천 데이터가 목적지 데이터의 어떤 컬럼으로 어떤 변환 로직(타입 변환, 코드 매핑 등)을 거쳐 들어가는지 명시한 필수 산출물입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "데이터매핑",
+      "매핑정의서",
+      "데이터전환"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_003",
+    "subject": "데이터베이스구축",
+    "category": "데이터 전환 및 이관",
+    "subCategory": "데이터 정제",
+    "type": "SHORT_ANSWER",
+    "question": "원천 데이터에 존재하는 결측치, 이상치, 오탈자, 형식 불일치, 중복 데이터 등의 오류를 식별하고 수정하여 데이터의 정확성과 일관성을 확보하는 일련의 품질 개선 작업을 무엇이라 하는가?",
+    "answer": [
+      "데이터 정제",
+      "데이터 클렌징",
+      "Data Cleansing"
+    ],
+    "explanation": "데이터 정제(Data Cleansing)는 변환 및 적재 전에 데이터의 오류를 정제하여 이관 실패를 예방하고 데이터 품질을 확보합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "데이터 정제",
+      "데이터 클렌징",
+      "Data Cleansing"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_004",
+    "subject": "데이터베이스구축",
+    "category": "데이터 전환 및 이관",
+    "subCategory": "데이터 전환 검증",
+    "type": "SHORT_ANSWER",
+    "question": "데이터 전환 완료 후, 원천 데이터의 건수와 목적 시스템에 적재된 데이터의 총 건수(Count) 및 주요 금액/수량의 합계(Sum), 해시값(Checksum)을 대조하여 데이터 유실이 없는지 확인하는 검증 방식을 무엇이라 하는가?",
+    "answer": [
+      "로그 검증",
+      "정합성 검증",
+      "데이터 정합성 검증",
+      "건수 검증"
+    ],
+    "explanation": "데이터 전환 정합성 검증은 전환 전후의 총 건수, 집계 합계(Sum/Hash), 로그 대조를 통해 완벽한 이관 여부를 판정합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "데이터정합성",
+      "로그검증",
+      "데이터검증"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_005",
+    "subject": "정보시스템구축관리",
+    "category": "서버 프로그램 구현",
+    "subCategory": "배치 프로그램 특성",
+    "type": "SHORT_ANSWER",
+    "question": "배치(Batch) 프로그램이 반드시 만족해야 하는 5대 필수 요건 중, 대용량의 데이터를 처리하는 도중 예기치 않은 오류나 시스템 중단이 발생하더라도 중복 실행이나 유실 없이 정상 복구될 수 있어야 함을 의미하는 특성은 무엇인가?",
+    "answer": [
+      "견고성",
+      "Robustness",
+      "안정성"
+    ],
+    "explanation": "배치 프로그램의 필수 5대 요건은 대용량 데이터, 자동화, 견고성(오류 발생 시 대처), 신뢰성/안정성(오류 없는 추적), 성능입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "견고성",
+      "배치프로그램",
+      "배치5대요건"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_006",
+    "subject": "정보시스템구축관리",
+    "category": "서버 프로그램 구현",
+    "subCategory": "배치 스케줄러",
+    "type": "SHORT_ANSWER",
+    "question": "유닉스 및 리눅스 운영체제에서 백그라운드 데몬(crond)으로 동작하며, 분, 시, 일, 월, 요일의 5가지 시간 필드 표현식을 사용하여 주기적인 배치 작업 실행을 자동 예약해 주는 도구는 무엇인가?",
+    "answer": [
+      "크론",
+      "Cron",
+      "crontab"
+    ],
+    "explanation": "cron(크론)은 crontab 설정 파일을 통해 특정 시간/주기마다 쉘 스크립트나 명령어를 자동 실행해 주는 표준 작업 스케줄러입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "크론",
+      "Cron",
+      "crontab",
+      "배치스케줄러"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_007",
+    "subject": "정보시스템구축관리",
+    "category": "서버 프로그램 구현",
+    "subCategory": "배치 스케줄러",
+    "type": "SHORT_ANSWER",
+    "question": "자바(Java) 엔터프라이즈 환경에서 정교한 작업 스케줄링을 지원하며, Job, Trigger, Scheduler 인터페이스를 기반으로 다중 서버 간 클러스터링 및 실패 복구(Failover) 기능을 제공하는 대표적인 오픈소스 스케줄러 프레임워크는 무엇인가?",
+    "answer": [
+      "쿼츠",
+      "Quartz",
+      "Quartz 스케줄러"
+    ],
+    "explanation": "Quartz는 스프링 프레임워크 등과 손쉽게 연동되는 자바 표준 배치/작업 스케줄러 라이브러리입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "Quartz",
+      "쿼츠",
+      "자바스케줄러"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_008",
+    "subject": "정보시스템구축관리",
+    "category": "서버 프로그램 구현",
+    "subCategory": "계층형 아키텍처 객체",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 계층 간(예: 컨트롤러와 서비스, 클라이언트와 서버)에 데이터를 전달하기 위해 사용되는 객체로, 별도의 비즈니스 로직 없이 속성(필드)과 그에 대한 Getter/Setter 메소드만을 포함하는 순수 데이터 전달용 객체는 무엇인가?",
+    "answer": [
+      "DTO",
+      "Data Transfer Object"
+    ],
+    "explanation": "DTO(Data Transfer Object)는 프로세스 간 네트워크 호출 횟수를 줄이기 위해 여러 데이터를 하나로 묶어 전송하는 객체입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DTO",
+      "Data Transfer Object",
+      "데이터전달객체"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_009",
+    "subject": "정보시스템구축관리",
+    "category": "서버 프로그램 구현",
+    "subCategory": "계층형 아키텍처 객체",
+    "type": "SHORT_ANSWER",
+    "question": "DTO와 유사하게 데이터를 담고 있으나, 특정 비즈니스 값을 나타내며 한 번 생성되면 내부 상태가 절대 변하지 않는 불변성(Immutability)을 가지며 속성 값들이 모두 같으면 동일한 객체로 취급되는 객체는 무엇인가?",
+    "answer": [
+      "VO",
+      "Value Object"
+    ],
+    "explanation": "VO(Value Object)는 값 자체를 표현하는 객체로, Setter가 제공되지 않는 불변(Immutable) 객체이며 equals()와 hashCode()를 재정의하여 값 동등성을 비교합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "VO",
+      "Value Object",
+      "불변객체"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_010",
+    "subject": "정보시스템구축관리",
+    "category": "서버 프로그램 구현",
+    "subCategory": "계층형 아키텍처 객체",
+    "type": "SHORT_ANSWER",
+    "question": "데이터베이스에 접근하여 데이터의 삽입, 조회, 수정, 삭제(CRUD) 작업을 전담 수행하는 객체로, 비즈니스 로직과 데이터 접근 로직을 분리하기 위해 사용하는 객체 패턴의 약어는 무엇인가?",
+    "answer": [
+      "DAO",
+      "Data Access Object"
+    ],
+    "explanation": "DAO(Data Access Object)는 데이터베이스 커넥션 관리 및 SQL 실행을 캡슐화하여 서비스 계층이 저수준 데이터베이스 API에 종속되지 않도록 분리합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DAO",
+      "Data Access Object",
+      "데이터접근객체"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_011",
+    "subject": "정보시스템구축관리",
+    "category": "개발환경 구축",
+    "subCategory": "서버 인프라 역할 분리",
+    "type": "SHORT_ANSWER",
+    "question": "클라이언트의 HTTP 요청을 직접 받아 정적 콘텐츠(HTML, CSS, 이미지 파일)를 고속으로 전달하고, 동적 처리가 필요한 요청은 뒤단의 WAS로 전달(프록시)하는 서버(예: Apache HTTP Server, Nginx)를 무엇이라 하는가?",
+    "answer": [
+      "웹 서버",
+      "Web Server",
+      "WS"
+    ],
+    "explanation": "웹 서버(Web Server)는 정적 리소스 응답과 로드밸런싱/리버스 프록시를 전담하여 WAS의 연산 부담을 줄여줍니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "웹 서버",
+      "Web Server",
+      "정적콘텐츠"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_012",
+    "subject": "정보시스템구축관리",
+    "category": "개발환경 구축",
+    "subCategory": "서버 인프라 역할 분리",
+    "type": "SHORT_ANSWER",
+    "question": "웹 서버로부터 동적 요청을 전달받아 서블릿(Servlet), JSP, 비즈니스 로직, 데이터베이스 연동 및 트랜잭션 관리 등을 수행하는 서버 프로그램(예: Apache Tomcat, WebLogic, Jeus)을 무엇이라 하는가?",
+    "answer": [
+      "WAS",
+      "웹 애플리케이션 서버",
+      "Web Application Server"
+    ],
+    "explanation": "WAS(Web Application Server)는 웹 컨테이너(서블릿 컨테이너)를 내장하여 동적 비즈니스 연산 및 DB 처리를 수행합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "WAS",
+      "Web Application Server",
+      "웹애플리케이션서버"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_013",
+    "subject": "정보시스템구축관리",
+    "category": "개발환경 구축",
+    "subCategory": "형상관리(SCM)",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 개발 과정에서 소스코드, 설계 문서, 라이브러리 등의 모든 변경 사항을 체계적으로 추적하고 통제하는 활동으로, 식별 → (    ) → 감사 → 기록의 4가지 주요 활동으로 구성되는 관리를 무엇이라 하는가?",
+    "answer": [
+      "형상 통제",
+      "통제",
+      "형상통제",
+      "Configuration Control"
+    ],
+    "explanation": "소프트웨어 형상관리 4대 활동은 형상 식별 → 형상 통제(변경 승인 및 반영) → 형상 감사(무결성 공식 검증) → 형상 기록/보고입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "형상통제",
+      "형상관리",
+      "SCM"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_014",
+    "subject": "정보시스템구축관리",
+    "category": "개발환경 구축",
+    "subCategory": "형상관리 도구 유형",
+    "type": "SHORT_ANSWER",
+    "question": "형상관리 도구의 유형 중, 중앙 서버에 모든 소스코드가 저장되어 개발자들은 중앙 서버에 접속하여 체크아웃/커밋을 수행해야 하며 네트워크 연결이 끊기면 버전 관리가 불가능한 클라이언트/서버 방식의 대표 도구는 무엇인가?",
+    "answer": [
+      "SVN",
+      "서브버전",
+      "Subversion"
+    ],
+    "explanation": "SVN(Apache Subversion)은 중앙 집중형 클라이언트/서버 형상관리 도구입니다. (로컬 저장소를 갖는 것은 Git 등 분산형 도구)",
+    "difficulty": "EASY",
+    "keywords": [
+      "SVN",
+      "Subversion",
+      "중앙집중형"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_015",
+    "subject": "정보시스템구축관리",
+    "category": "개발환경 구축",
+    "subCategory": "형상관리 도구 유형",
+    "type": "SHORT_ANSWER",
+    "question": "리눅스 토발즈가 개발한 분산 버전 관리 시스템(DVCS)으로, 개발자마다 전체 프로젝트 히스토리가 담긴 로컬 저장소를 복제(Clone)하여 오프라인에서도 완전한 커밋과 브랜치 작업이 가능한 도구는 무엇인가?",
+    "answer": [
+      "Git",
+      "깃"
+    ],
+    "explanation": "Git은 분산 버전 관리 시스템으로 빠른 브랜칭, 오프라인 작업, P2P 동기화가 가능합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Git",
+      "깃",
+      "분산버전관리"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_016",
+    "subject": "데이터베이스구축",
+    "category": "데이터 전환 및 이관",
+    "subCategory": "ETL 프로세스 변형",
+    "type": "SHORT_ANSWER",
+    "question": "빅데이터 클라우드 환경에서 대용량 데이터를 처리할 때, 데이터 추출(Extract) 후 별도의 중간 서버에서 변환하지 않고 먼저 대상 데이터 레이크/웨어하우스에 원본 그대로 적재(Load)한 후 분산 엔진의 컴퓨팅 파워로 목적지 내부에서 직접 변환(Transform)을 수행하는 데이터 파이프라인 아키텍처는 무엇인가?",
+    "answer": [
+      "ELT",
+      "Extract, Load, Transform"
+    ],
+    "explanation": "ELT는 클라우드 데이터 웨어하우스(Snowflake, BigQuery 등)의 막강한 병렬 처리 성능을 활용하기 위해 ETL의 변환과 적재 순서를 바꾼 현대적 패턴입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "ELT",
+      "데이터파이프라인",
+      "빅데이터적재"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_017",
+    "subject": "정보시스템구축관리",
+    "category": "서버 프로그램 구현",
+    "subCategory": "스프링 프레임워크 핵심",
+    "type": "SHORT_ANSWER",
+    "question": "객체가 자신이 사용할 의존 객체를 직접 new 생성자로 생성하지 않고, 외부 컨테이너(IoC 컨테이너)로부터 생성된 인스턴스를 주입받아 객체 간의 결합도를 낮추는 객체지향 디자인 원칙의 약어는 무엇인가?",
+    "answer": [
+      "DI",
+      "의존성 주입",
+      "Dependency Injection"
+    ],
+    "explanation": "DI(Dependency Injection, 의존성 주입)는 스프링의 핵심 철학으로 모듈 간의 결합도를 느슨하게 하고 단위 테스트를 용이하게 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "DI",
+      "의존성주입",
+      "스프링"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_018",
+    "subject": "정보시스템구축관리",
+    "category": "서버 프로그램 구현",
+    "subCategory": "스프링 프레임워크 핵심",
+    "type": "SHORT_ANSWER",
+    "question": "로깅, 보안, 트랜잭션 관리와 같이 애플리케이션의 여러 모듈에 공통적으로 나타나는 횡단 관심사(Cross-Cutting Concerns)를 핵심 비즈니스 로직과 분리하여 모듈화하는 프로그래밍 패러다임의 약어는 무엇인가?",
+    "answer": [
+      "AOP",
+      "관점 지향 프로그래밍",
+      "Aspect Oriented Programming"
+    ],
+    "explanation": "AOP(Aspect Oriented Programming, 관점 지향 프로그래밍)는 공통 횡단 기능을 별도의 Aspect로 분리하여 코드 중복을 제거합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "AOP",
+      "관점지향",
+      "횡단관심사"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_019",
+    "subject": "정보시스템구축관리",
+    "category": "서버 프로그램 구현",
+    "subCategory": "ORM 프레임워크",
+    "type": "SHORT_ANSWER",
+    "question": "관계형 데이터베이스의 테이블과 객체지향 프로그래밍 언어의 클래스 간의 불일치(패러다임 불일치)를 해결하기 위해, 객체와 관계형 테이블을 자동으로 매핑해 주는 기술의 약어는 무엇인가?",
+    "answer": [
+      "ORM",
+      "Object Relational Mapping",
+      "객체 관계 매핑"
+    ],
+    "explanation": "ORM(Object-Relational Mapping, 예: JPA, 하이버네이트)은 개발자가 SQL을 직접 작성하지 않고 객체 모델 중심으로 DB를 다룰 수 있게 해줍니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "ORM",
+      "JPA",
+      "객체관계매핑"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_020",
+    "subject": "정보시스템구축관리",
+    "category": "개발환경 구축",
+    "subCategory": "IDE 도구",
+    "type": "SHORT_ANSWER",
+    "question": "코드 편집기, 컴파일러, 디버거, 그래픽 사용자 인터페이스(GUI) 빌더 등 소프트웨어 개발에 필요한 다양한 도구들을 하나의 통합된 프로그램 안에서 제공하는 소프트웨어 환경의 영문 약어는 무엇인가?",
+    "answer": [
+      "IDE",
+      "통합 개발 환경",
+      "Integrated Development Environment"
+    ],
+    "explanation": "IDE(Integrated Development Environment, 예: Eclipse, IntelliJ, VS Code)는 소프트웨어 개발 생산성을 극대화하는 통합 개발 도구입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "IDE",
+      "통합개발환경",
+      "개발도구"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_021",
+    "subject": "데이터베이스구축",
+    "category": "데이터 전환 및 이관",
+    "subCategory": "데이터 이관 전략",
+    "type": "SHORT_ANSWER",
+    "question": "기존 시스템을 일시적으로 전면 중단(다운타임)시킨 상태에서 주말이나 야간의 정해진 시간 동안 전체 데이터를 일괄 전환하는 방식으로, 구조가 단순하고 비용이 적게 들지만 전환 실패 시 리스크가 큰 이관 전략은 무엇인가?",
+    "answer": [
+      "빅뱅 방식",
+      "빅뱅 전환",
+      "Big Bang"
+    ],
+    "explanation": "빅뱅(Big Bang) 전환 방식은 시스템 전체를 한 번에 전환하는 방식으로 소규모 시스템에 적합하며 다운타임이 발생합니다. (반대는 단계적 전환 방식)",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "빅뱅 방식",
+      "Big Bang",
+      "데이터전환전략"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_022",
+    "subject": "데이터베이스구축",
+    "category": "데이터 전환 및 이관",
+    "subCategory": "데이터 이관 전략",
+    "type": "SHORT_ANSWER",
+    "question": "기존 시스템과 신규 시스템을 일정 기간 동안 동시에 병행 운영하면서, 업무 영역이나 모듈별로 데이터를 점진적으로 전환하여 리스크를 최소화하지만 유지비용이 많이 드는 이관 전략은 무엇인가?",
+    "answer": [
+      "단계적 전환",
+      "단계적 방식",
+      "점진적 전환"
+    ],
+    "explanation": "단계적 전환 방식(Phased Approach)은 대규모 미션 크리티컬 시스템에서 무중단 전환과 위험 분산을 위해 채택됩니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "단계적 전환",
+      "점진적 전환",
+      "데이터이관"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_023",
+    "subject": "정보시스템구축관리",
+    "category": "서버 프로그램 구현",
+    "subCategory": "배치 프로그램 특성",
+    "type": "SHORT_ANSWER",
+    "question": "배치(Batch) 프로그램의 5대 요건 중, 사용자의 개입(사용자 입력 대기 등) 없이 정해진 시각이나 조건에 따라 시스템 스스로 자동으로 시작되고 완료되어야 함을 뜻하는 요건은 무엇인가?",
+    "answer": [
+      "자동화",
+      "Automation"
+    ],
+    "explanation": "배치 프로그램은 심야 시간대나 정기 스케줄에 사람의 수작업 개입 없이 무인 실행되어야 하므로 자동화가 필수입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "자동화",
+      "Automation",
+      "배치요건"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_DEV_024",
+    "subject": "정보시스템구축관리",
+    "category": "개발환경 구축",
+    "subCategory": "형상관리(SCM)",
+    "type": "SHORT_ANSWER",
+    "question": "형상관리의 기준이 되는 시점으로, 소프트웨어 개발 생명주기의 특정 단계(요구분석, 설계 등)가 공식적으로 검토되고 승인되어 이후의 변경을 엄격히 통제하기 위한 기준선을 무엇이라 하는가?",
+    "answer": [
+      "기준선",
+      "베이스라인",
+      "Baseline"
+    ],
+    "explanation": "베이스라인(Baseline, 기준선)은 공식적으로 승인된 형상 항목들의 집합으로, 변경 제어 위원회(CCB)의 공식 승인을 통해서만 변경될 수 있습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "베이스라인",
+      "기준선",
+      "Baseline",
+      "형상관리"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_001",
+    "subject": "소프트웨어설계",
+    "category": "현행 시스템 분석",
+    "subCategory": "분석 대상 및 고려사항",
+    "type": "SHORT_ANSWER",
+    "question": "신규 시스템을 개발하기 전 현행 시스템의 운영체제(OS)를 분석할 때 검토해야 하는 주요 고려사항 중, 장기간 시스템 운영 시 패치 및 정기 업그레이드 지원, 오픈소스 커뮤니티나 벤더사의 지원 가능 여부를 평가하는 항목은 무엇인가?",
+    "answer": [
+      "기술 지원",
+      "기술지원",
+      "기술 지원 여부"
+    ],
+    "explanation": "운영체제 및 DBMS 도입 분석 시 핵심 고려사항은 신뢰도(가용성), 성능, 기술 지원, 구축 및 라이선스 비용, 주변 기기 지원 여부입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "기술지원",
+      "운영체제분석",
+      "현행시스템분석"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_002",
+    "subject": "소프트웨어설계",
+    "category": "현행 시스템 분석",
+    "subCategory": "분석 절차",
+    "type": "SHORT_ANSWER",
+    "question": "현행 시스템 파악 절차는 총 3단계로 진행된다. 1단계(시스템 구성, 기능, 인터페이스 파악)와 3단계(하드웨어 및 네트워크 구성 파악) 사이의 [2단계]에서 파악해야 하는 대상 2가지는 무엇인가?",
+    "answer": [
+      "아키텍처, 소프트웨어",
+      "아키텍처 및 소프트웨어",
+      "아키텍처, 소프트웨어 구성"
+    ],
+    "explanation": "현행 시스템 파악 절차는 1단계(시스템 구성/기능/인터페이스) → 2단계(아키텍처/소프트웨어 구성) → 3단계(하드웨어/네트워크 구성) 순입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "현행시스템절차",
+      "아키텍처",
+      "소프트웨어구성"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_003",
+    "subject": "소프트웨어설계",
+    "category": "현행 시스템 분석",
+    "subCategory": "DBMS 분석 고려사항",
+    "type": "SHORT_ANSWER",
+    "question": "현행 시스템의 DBMS 분석 시, 24시간 365일 무중단 서비스가 요구되는 환경에서 장애 발생 시 백업 및 이중화(Clustering)를 통해 서비스 다운타임을 최소화할 수 있는 능력을 평가하는 핵심 지표는 무엇인가?",
+    "answer": [
+      "가용성",
+      "신뢰도",
+      "가용성(Availability)"
+    ],
+    "explanation": "DBMS 분석의 가용성(Availability/신뢰도)은 고가용성(HA, High Availability) 솔루션 및 데이터 복제 기능을 평가합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "가용성",
+      "신뢰도",
+      "DBMS분석"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_004",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "UI 설계 도구 비교",
+    "type": "SHORT_ANSWER",
+    "question": "기획 초기 단계에서 페이지의 세부 디자인(색상, 폰트, 그래픽)을 배제하고, 레이아웃과 정보의 뼈대(구조)만을 선과 박스로 간단히 스케치하여 화면 구성을 협의하는 도구를 무엇이라 하는가?",
+    "answer": [
+      "와이어프레임",
+      "Wireframe"
+    ],
+    "explanation": "와이어프레임(Wireframe)은 시각적 그래픽 요소를 최소화하고 화면의 정보 구조와 레이아웃 골격만을 빠르게 기획하는 도구입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "와이어프레임",
+      "Wireframe",
+      "UI레이아웃"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_005",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "UI 설계 도구 비교",
+    "type": "SHORT_ANSWER",
+    "question": "와이어프레임보다 발전하여 실제 완성될 화면과 동일하게 색상, 타이포그래피, 로고, 아이콘 등의 시각적 그래픽 디자인을 정적으로 완성한 정적 결과물을 무엇이라 하는가? (동작/인터랙션은 포함되지 않음)",
+    "answer": [
+      "목업",
+      "Mockup",
+      "목업(Mockup)"
+    ],
+    "explanation": "목업(Mockup)은 실제 제품의 시각적 형태를 충실하게 보여주는 정적인 비기능적 디자인 산출물입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "목업",
+      "Mockup",
+      "UI디자인"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_006",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "UI 설계 도구 비교",
+    "type": "SHORT_ANSWER",
+    "question": "와이어프레임 화면 레이아웃과 함께 각 UI 컴포넌트의 기능 정의, 이벤트 처리 방식, 화면 간 전환 흐름, 예외 처리 로직을 개발자가 구현할 수 있도록 상세히 명세한 최종 기획 산출물은 무엇인가?",
+    "answer": [
+      "스토리보드",
+      "Storyboard"
+    ],
+    "explanation": "스토리보드(Storyboard)는 디자이너와 개발자가 화면을 보고 그대로 구현할 수 있도록 화면 설계와 기능 명세를 완전하게 결합한 문서입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "스토리보드",
+      "Storyboard",
+      "기능명세"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_007",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "UI 설계 도구 비교",
+    "type": "SHORT_ANSWER",
+    "question": "정적 화면에 버튼 클릭, 화면 전환, 애니메이션 등의 인터랙션을 실제로 적용하여 사용자가 직접 조작하고 사용성을 검증해 볼 수 있도록 동적으로 제작된 시제품을 무엇이라 하는가?",
+    "answer": [
+      "프로토타입",
+      "Prototype"
+    ],
+    "explanation": "프로토타입(Prototype)은 사용자와 이해관계자가 실제 앱처럼 인터랙션을 테스트하고 피드백을 신속히 얻기 위해 제작되는 동적 모델입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "프로토타입",
+      "Prototype",
+      "인터랙션"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_010",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "UI 설계 4대 원칙",
+    "type": "SHORT_ANSWER",
+    "question": "UI 설계 4대 원칙 중, 사용자의 다양한 개인적 요구사항을 수용할 수 있고, 사용자가 실수(오작동)를 저지르더라도 이를 되돌리거나(Undo) 오류를 쉽게 복구할 수 있도록 최대한 지원해야 한다는 원칙은 무엇인가?",
+    "answer": [
+      "유연성",
+      "Flexibility"
+    ],
+    "explanation": "유연성(Flexibility)은 사용자의 인터랙션 취향을 포용하고 사용자의 실수를 안전하게 방어 및 복구해 주는 원칙입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "유연성",
+      "UI4대원칙",
+      "Flexibility"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_011",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "UI 설계 4대 원칙",
+    "type": "SHORT_ANSWER",
+    "question": "UI 설계 4대 원칙 중, 사용자가 처음 접하는 복잡한 시스템이라 할지라도 누구나 쉽고 빠르게 사용 방법을 익힐 수 있도록 설계해야 함을 의미하는 원칙은 무엇인가?",
+    "answer": [
+      "학습성",
+      "Learnability"
+    ],
+    "explanation": "학습성(Learnability)은 사용자가 사용법을 쉽게 배울 수 있도록 표준화된 규칙과 가이드를 제공해야 한다는 원칙입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "학습성",
+      "UI4대원칙",
+      "Learnability"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_012",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "사용자 모델링",
+    "type": "SHORT_ANSWER",
+    "question": "사용자 중심 디자인(UCD)에서 실제 사용자의 인터뷰와 행동 패턴 데이터를 기반으로, 시스템을 사용할 대표적인 전형적 가상 인물을 설정하여 목표와 요구를 구체화하는 기법을 무엇이라 하는가?",
+    "answer": [
+      "페르소나",
+      "Persona",
+      "페르소나 기법"
+    ],
+    "explanation": "페르소나(Persona)는 목표 사용자의 인구통계학적 특성, 동기, 고충(Pain Point)을 가진 가상의 인격체를 만들어 디자인의 방향성을 잡는 기법입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "페르소나",
+      "Persona",
+      "사용자중심디자인"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_013",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "사용성 평가",
+    "type": "SHORT_ANSWER",
+    "question": "사용성 전문가들이 야콥 닐슨(Jakob Nielsen)이 정립한 10가지 사용성 원칙(가이드라인)을 기준으로 시스템의 UI를 직접 점검하고 발견된 문제점을 평가하는 사용성 평가 기법은 무엇인가?",
+    "answer": [
+      "휴리스틱 평가",
+      "휴리스틱",
+      "Heuristic Evaluation"
+    ],
+    "explanation": "휴리스틱 평가(Heuristic Evaluation)는 적은 수의 전문가가 정형화된 사용성 원칙 체크리스트를 기반으로 UI의 결함을 빠르게 찾아내는 정성적 평가법입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "휴리스틱 평가",
+      "Heuristic Evaluation",
+      "사용성평가"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_014",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "웹 표준 및 접근성",
+    "type": "SHORT_ANSWER",
+    "question": "시각 장애인, 지체 장애인, 고령자 등 신체적·환경적 제약이 있는 사용자라도 비장애인과 동등하게 웹 사이트의 모든 정보에 접근하고 이용할 수 있도록 보장하는 개념을 무엇이라 하는가?",
+    "answer": [
+      "웹 접근성",
+      "Web Accessibility"
+    ],
+    "explanation": "웹 접근성(Web Accessibility)은 스크린 리더 지원(대체 텍스트 제공), 키보드만으로 조작 가능, 깜빡임 방지 등의 지침을 준수하는 것을 의미합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "웹 접근성",
+      "Web Accessibility",
+      "장애인접근성"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_015",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "웹 표준 및 접근성",
+    "type": "SHORT_ANSWER",
+    "question": "HTML 문서에서 이미지 태그(<img>)에 시각 장애인을 위한 스크린 리더 프로그램이 해당 이미지의 내용을 음성으로 읽어줄 수 있도록 작성해야 하는 필수 속성의 이름은 무엇인가?",
+    "answer": [
+      "alt",
+      "alt 속성"
+    ],
+    "explanation": "alt(Alternative text) 속성은 이미지를 볼 수 없는 사용자와 이미지 로딩 실패 시 표시할 대체 텍스트를 제공합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "alt",
+      "대체텍스트",
+      "웹접근성"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_016",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "UI 인터랙션 패턴",
+    "type": "SHORT_ANSWER",
+    "question": "웹 및 모바일 화면에서 기존 배경 페이지를 어둡게 처리하여 비활성화시키고, 최상단에 팝업창을 띄워 사용자가 해당 창을 닫거나 응답하기 전에는 기존 화면과 상호작용할 수 없도록 강제하는 대화상자 형태는 무엇인가?",
+    "answer": [
+      "모달",
+      "모달창",
+      "Modal",
+      "Modal Dialog"
+    ],
+    "explanation": "모달(Modal) 창은 사용자의 즉각적인 확인이나 중요한 입력을 요구할 때 배경과의 상호작용을 차단합니다. (배경을 조작할 수 있는 것은 모달리스/Modeless)",
+    "difficulty": "EASY",
+    "keywords": [
+      "모달",
+      "Modal",
+      "대화상자"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_017",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "내비게이션 구조",
+    "type": "SHORT_ANSWER",
+    "question": "전자상거래 사이트 등 복잡한 계층 구조를 가진 웹사이트에서 [ 홈 > 대분류 > 중분류 > 현재 상품명 ]과 같이 현재 페이지의 위치 경로를 시각적으로 보여주어 상위 경로로 쉽게 이동할 수 있게 해주는 내비게이션 요소를 무엇이라 하는가?",
+    "answer": [
+      "브레드크럼",
+      "Breadcrumb",
+      "브레드크럼즈"
+    ],
+    "explanation": "브레드크럼(Breadcrumb, 빵부스러기)은 헨젤과 그레텔 동화에서 유래한 내비게이션 UI로 사이트 내 위치 파악을 돕습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "브레드크럼",
+      "Breadcrumb",
+      "내비게이션"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_018",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "반응형 웹 디자인",
+    "type": "SHORT_ANSWER",
+    "question": "하나의 웹 소스코드로 데스크톱 PC, 태블릿, 스마트폰 등 다양한 기기의 화면 크기(해상도)에 맞추어 레이아웃과 폰트 크기가 자동으로 유연하게 변환되도록 구현하는 웹 디자인 기법은 무엇인가?",
+    "answer": [
+      "반응형 웹",
+      "반응형 웹 디자인",
+      "Responsive Web"
+    ],
+    "explanation": "반응형 웹(Responsive Web)은 CSS 미디어 쿼리(Media Query)와 유동형 그리드(Fluid Grid)를 기반으로 다중 디바이스를 지원합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "반응형 웹",
+      "Responsive Web",
+      "미디어쿼리"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_019",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "UI 설계 스타일",
+    "type": "SHORT_ANSWER",
+    "question": "과거 스마트폰 초기에 실제 아날로그 사물(가죽 수첩, 책장, 계산기 질감)의 외형과 질감을 사실적으로 모사하여 디지털 인터페이스에 표현했던 시각 디자인 기법은 무엇인가?",
+    "answer": [
+      "스큐어모피즘",
+      "Skeuomorphism",
+      "스큐어모피즘(Skeuomorphism)"
+    ],
+    "explanation": "스큐어모피즘(Skeuomorphism)은 현실 사물의 질감을 모방하여 직관성을 높였으나, 점차 미니멀한 플랫 디자인(Flat Design)과 머티리얼 디자인으로 진화했습니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "스큐어모피즘",
+      "Skeuomorphism",
+      "플랫디자인"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_UI_020",
+    "subject": "소프트웨어설계",
+    "category": "화면 설계",
+    "subCategory": "UI 인터랙션 설계 원칙",
+    "type": "SHORT_ANSWER",
+    "question": "사용자가 UI 버튼을 클릭하거나 폼을 제출했을 때, 시스템이 현재 요청을 처리 중임을 시각적/청각적으로 즉각 알려주어야 한다는 인터랙션 설계 원칙을 무엇이라 하는가?",
+    "answer": [
+      "피드백",
+      "피드백 제공",
+      "시스템 피드백",
+      "Feedback"
+    ],
+    "explanation": "피드백(Feedback)은 사용자의 입력에 대해 로딩 스피너, 프로그레스 바, 사운드 등으로 시스템의 상태 변화를 인지시켜 불안감을 해소합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "피드백",
+      "Feedback",
+      "인터랙션원칙"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_001",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "SQL 인젝션 방어",
+    "type": "SHORT_ANSWER",
+    "question": "동적 SQL 생성 시 사용자 입력값으로 인한 SQL 삽입(SQL Injection) 공격을 원천 차단하기 위해, SQL 문장을 미리 데이터베이스에 컴파일해 두고 사용자 입력값을 위치 지정자(?)에 파라미터(바인드 변수)로만 안전하게 매핑하는 자바 인터페이스 객체는 무엇인가?",
+    "answer": [
+      "PreparedStatement",
+      "프리페어드 스테이트먼트"
+    ],
+    "explanation": "PreparedStatement는 쿼리 구조를 사전에 컴파일하여 사용자 입력 문자열이 SQL 명령어나 연산자로 해석되는 것을 완벽히 방어합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "PreparedStatement",
+      "바인드변수",
+      "SQL인젝션방어"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_002",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "크로스 사이트 스크립팅 방어",
+    "type": "SHORT_ANSWER",
+    "question": "XSS(Cross Site Scripting) 공격을 방지하기 위해 웹 브라우저가 스크립트 코드로 해석할 수 있는 위험한 특수문자(<, >, &, \", ' 등)를 &lt;, &gt;, &amp;, &quot;와 같은 안전한 대체 문자로 변환하는 보안 처리 기법을 무엇이라 하는가?",
+    "answer": [
+      "HTML 치환",
+      "HTML 엔티티 변환",
+      "HTML 인코딩",
+      "HTML 이스케이프"
+    ],
+    "explanation": "HTML Entity Encoding(HTML 치환/인코딩)은 사용자가 입력한 악의적인 자바스크립트 태그가 브라우저에서 실행되지 않고 단순 텍스트로 안전하게 렌더링되도록 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "HTML 치환",
+      "HTML 인코딩",
+      "XSS방어"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_003",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "사이트 간 요청 위조 방어",
+    "type": "SHORT_ANSWER",
+    "question": "CSRF(Cross Site Request Forgery) 공격을 방어하기 위해, 사용자의 정상 요청 시 서버가 매 세션 또는 폼 요청마다 예측 불가능한 임의의 고유 난수 값을 생성하여 폼에 은닉(hidden) 필드로 심고, 요청 시 제출된 값과 세션 값을 비교 검증하는 보안 토큰 기법은 무엇인가?",
+    "answer": [
+      "CSRF 토큰",
+      "CSRF Token",
+      "안티 CSRF 토큰"
+    ],
+    "explanation": "CSRF 토큰은 공격자가 외부 피싱 사이트에서 피해자의 권한으로 변조된 위조 요청을 보내더라도 토큰 값을 알 수 없어 서버에서 차단되도록 방어합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "CSRF 토큰",
+      "CSRF방어",
+      "보안토큰"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_004",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "시간 및 상태 취약점",
+    "type": "SHORT_ANSWER",
+    "question": "자원을 검사하는 시점(Time of Check)과 해당 자원을 실제로 사용하는 시점(Time of Use) 사이에 시간 차이가 발생하여, 공격자가 권한 검사 통과 후 실제 접근 전 사이에 파일 심볼릭 링크나 내용을 바꿔치기하는 취약점을 뜻하는 영문 약어는 무엇인가?",
+    "answer": [
+      "TOCTOU",
+      "Time of Check to Time of Use"
+    ],
+    "explanation": "TOCTOU는 멀티스레드나 파일 I/O 환경에서 동기화 락(Lock) 없이 검사 시점과 사용 시점 사이에 발생하는 대표적인 레이스 컨디션 취약점입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "TOCTOU",
+      "경쟁상태",
+      "시간상태취약점"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_005",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "메모리 보안 취약점",
+    "type": "SHORT_ANSWER",
+    "question": "C언어에서 메모리 동적 할당(malloc) 후 free() 함수로 반환된 메모리 포인터를 해제한 뒤에도 NULL로 초기화하지 않고 계속 참조하거나 재사용할 때 발생하는 치명적인 메모리 보안 취약점의 영문 명칭은 무엇인가?",
+    "answer": [
+      "Use-After-Free",
+      "UAF",
+      "해제된 메모리 재참조"
+    ],
+    "explanation": "UAF(Use After Free) 취약점은 해제된 힙 메모리 영역에 공격자가 악의적인 코드를 덮어씌워 임의 코드 실행 권한을 획득하게 만듭니다.",
+    "difficulty": "HARD",
+    "keywords": [
+      "Use-After-Free",
+      "UAF",
+      "메모리취약점"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_006",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "메모리 보안 취약점",
+    "type": "SHORT_ANSWER",
+    "question": "C언어의 문자열 복사 함수 중 버퍼 오버플로우 취약점을 유발하는 보안상 위험한 strcpy(), strcat() 대신, 복사할 최대 버퍼 크기(N)를 세 번째 인자로 명시하여 메모리 경계를 넘지 않도록 제한하는 안전한 함수는 무엇인가?",
+    "answer": [
+      "strncpy",
+      "strncpy()"
+    ],
+    "explanation": "strncpy() 및 strncat()은 지정한 바이트 수(n)만큼만 복사하여 할당된 대상 버퍼를 초과하는 스택 버퍼 오버플로우를 예방합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "strncpy",
+      "버퍼오버플로우방어",
+      "안전한문자열함수"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_007",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "코드 오류 취약점",
+    "type": "SHORT_ANSWER",
+    "question": "객체가 메모리상에 생성되지 않았거나 참조 대상이 존재하지 않는 포인터 변수(null)의 메소드나 멤버 필드에 접근하려 할 때 발생하며, 비정상적인 프로그램 강제 종료를 유발하는 대표적인 예외(Exception) 결함은 무엇인가?",
+    "answer": [
+      "Null Pointer 역참조",
+      "Null Pointer Dereference",
+      "널 포인터 역참조",
+      "NullPointerException"
+    ],
+    "explanation": "Null Pointer 역참조는 객체 사용 전 null 체크(if (obj != null))를 누락했을 때 발생하며 서비스 거부(DoS) 상태를 유발합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "Null Pointer 역참조",
+      "NullPointerException",
+      "코드오류"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_008",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "입력데이터 검증",
+    "type": "SHORT_ANSWER",
+    "question": "printf(str); 과 같이 검증되지 않은 외부 사용자 입력 문자열을 포맷 제어 문자 지정 없이 출력 함수의 첫 번째 인자로 직접 전달했을 때, %x, %n 등의 변환 지정자를 악용하여 메모리 내용을 유출하거나 변조하는 공격은 무엇인가?",
+    "answer": [
+      "포맷 스트링 공격",
+      "포맷 스트링 취약점",
+      "Format String Attack"
+    ],
+    "explanation": "포맷 스트링(Format String) 취약점은 printf(\"%s\", str); 처럼 포맷 지정자를 명시하지 않고 사용자 입력을 포맷 스트링 자체로 사용할 때 발생합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "포맷 스트링",
+      "Format String",
+      "printf"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_009",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "보안 기능",
+    "type": "SHORT_ANSWER",
+    "question": "비밀번호를 일방향 해시 함수로 암호화할 때, 레인보우 테이블(Rainbow Table)을 이용한 역추적 사전 공격을 무력화하기 위해 원본 비밀번호에 임의의 고유한 난수 문자열을 덧붙여 해싱하는 기법을 무엇이라 하는가?",
+    "answer": [
+      "솔트",
+      "솔팅",
+      "Salt",
+      "Salting"
+    ],
+    "explanation": "솔트(Salt)는 해시 생성 전 비밀번호 뒤에 무작위 문자열을 붙여 동일한 비밀번호라도 완전히 다른 해시값이 생성되도록 보장합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "솔트",
+      "솔팅",
+      "Salt",
+      "레인보우테이블방어"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_010",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "자원 관리",
+    "type": "SHORT_ANSWER",
+    "question": "파일, 데이터베이스 커넥션, 네트워크 소켓 등의 시스템 자원을 열어 사용한 후 예외 발생이나 프로그램 종료 시 명시적으로 close()하여 시스템 자원의 고갈을 방지하지 못했을 때 발생하는 결함은 무엇인가?",
+    "answer": [
+      "자원 누수",
+      "메모리 누수",
+      "자원 누출",
+      "Resource Leak"
+    ],
+    "explanation": "자원 누수(Resource Leak)는 파일 핸들이나 DB 커넥션 풀을 반환하지 않아 시스템 자원이 점진적으로 고갈되는 결함으로, try-with-resources나 finally 블록으로 방어합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "자원 누수",
+      "Resource Leak",
+      "메모리누수"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_011",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "입력데이터 검증",
+    "type": "SHORT_ANSWER",
+    "question": "웹 파일 다운로드 기능에서 사용자 입력 경로에 [ ../ ] 또는 [ ..\\ ]와 같은 상위 디렉터리 이동 특수문자를 삽입하여 웹 루트 경로를 벗어나 서버의 민감한 시스템 파일(/etc/passwd 등)을 무단 조회하는 공격은 무엇인가?",
+    "answer": [
+      "경로 조작",
+      "경로 순회",
+      "디렉터리 순회",
+      "Path Traversal",
+      "Directory Traversal"
+    ],
+    "explanation": "경로 순회(Directory Traversal / Path Traversal)는 파일 경로에 상위 디렉터리 참조 문자(../)를 필터링하지 않았을 때 서버의 임의 파일을 열람당하는 취약점입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "경로 조작",
+      "경로 순회",
+      "디렉터리순회",
+      "Path Traversal"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_012",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "메모리 보안 취약점",
+    "type": "SHORT_ANSWER",
+    "question": "정수형 변수에 할당 가능한 최댓값을 초과하는 연산 결과를 저장하려 할 때, 비트 부호가 반전되어 매우 작은 음수 값이 되거나 최소 한계값으로 순환(Wrap around)되어 메모리 할당 크기 검증을 우회하게 만드는 결함은 무엇인가?",
+    "answer": [
+      "정수 오버플로우",
+      "Integer Overflow"
+    ],
+    "explanation": "정수 오버플로우(Integer Overflow)는 큰 양수가 음수로 변하거나 0에 가까운 값으로 축소되어 버퍼 크기 검사를 무력화시킵니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "정수 오버플로우",
+      "Integer Overflow",
+      "메모리결함"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_013",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "보안 기능",
+    "type": "SHORT_ANSWER",
+    "question": "암호화 키, 세션 ID, 비밀번호 솔트 생성 시 표준 `java.util.Random`처럼 시드값이 예측 가능한 의사난수 대신, 운영체제의 엔트로피 풀을 사용하여 암호학적으로 예측 불가능한 안전한 난수를 생성하는 자바 클래스는 무엇인가?",
+    "answer": [
+      "SecureRandom"
+    ],
+    "explanation": "시큐어 코딩에서는 시퀀스가 쉽게 추측되는 일반 난수 발생기 대신 암호학적으로 안전한 SecureRandom 클래스를 사용할 것을 의무화합니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "SecureRandom",
+      "안전한난수",
+      "난수발생기"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_014",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "에러 처리 취약점",
+    "type": "SHORT_ANSWER",
+    "question": "서버 애플리케이션에서 예외나 에러가 발생했을 때, 에러 로그와 스택 트레이스(Stack Trace), 데이터베이스 쿼리 에러 메시지를 사용자의 웹 브라우저 화면에 그대로 노출함으로써 내부 시스템 구조와 DB 테이블 정보를 공격자에게 노출시키는 취약점은 무엇인가?",
+    "answer": [
+      "오류 메시지 정보 노출",
+      "정보 노출",
+      "오류 정보 노출"
+    ],
+    "explanation": "오류 메시지를 통해 DB 구조, 프레임워크 버전, 파일 절대 경로가 노출되면 2차 공격의 빌미가 되므로 사용자에게는 일반적인 안내 페이지를 보여주어야 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "오류 메시지 정보 노출",
+      "스택트레이스",
+      "에러처리"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_015",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "보안 기능",
+    "type": "SHORT_ANSWER",
+    "question": "소스코드 내부에 데이터베이스 접속 비밀번호나 암호화 대칭키 값을 직접 평문 문자열 상수로 하드코딩(Hardcoding)해 두었을 때, 소스코드 유출 시 전체 시스템이 장악당하는 취약점을 방지하기 위한 안전한 키 관리 방식은 무엇인가?",
+    "answer": [
+      "환경 변수",
+      "환경 변수 설정",
+      "외부 설정 파일",
+      "키 관리 시스템"
+    ],
+    "explanation": "패스워드와 시크릿 키는 소스코드에 하드코딩하지 않고 환경 변수(Environment Variables)나 암호화된 외부 설정 파일/KMS에 분리 보관해야 합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "환경 변수",
+      "하드코딩방지",
+      "키관리"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_016",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "캡슐화 취약점",
+    "type": "SHORT_ANSWER",
+    "question": "객체지향 설계에서 클래스 내부의 중요한 멤버 변수를 private으로 선언하더라도, 외부에서 호출하는 Getter 메소드가 객체 내부의 가변 배열(Array) 참조값을 그대로 반환할 때 외부에서 배열 내용을 직접 변조할 수 있는 취약점을 방어하기 위한 안전한 반환 기법은 무엇인가?",
+    "answer": [
+      "방어적 복사",
+      "복사본 반환",
+      "Defensive Copy"
+    ],
+    "explanation": "방어적 복사(Defensive Copying)는 내부 가변 객체를 외부에 전달할 때 원본 참조가 아닌 clone()이나 새로운 복사본을 만들어 반환하는 시큐어 코딩 기법입니다.",
+    "difficulty": "HARD",
+    "keywords": [
+      "방어적 복사",
+      "Defensive Copy",
+      "캡슐화"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_017",
+    "subject": "신기술/보안",
+    "category": "SW개발 보안 설계",
+    "subCategory": "보안 메커니즘",
+    "type": "SHORT_ANSWER",
+    "question": "사용자 또는 주체(Subject)가 정보 시스템에 자신이라고 주장하는 식별자(ID)를 제시하고, 암호나 생체 정보를 통해 본인이 맞는지 그 신원을 증명하는 보안 통제 단계를 무엇이라 하는가?",
+    "answer": [
+      "인증",
+      "Authentication",
+      "사용자 인증"
+    ],
+    "explanation": "인증(Authentication)은 신원 확인 단계이며, 인증된 사용자에게 자원에 대한 접근 권한을 부여하는 단계는 인가(Authorization)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "인증",
+      "Authentication",
+      "보안3A"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_018",
+    "subject": "신기술/보안",
+    "category": "SW개발 보안 설계",
+    "subCategory": "보안 메커니즘",
+    "type": "SHORT_ANSWER",
+    "question": "인증된 주체가 시스템의 특정 파일이나 디렉터리, 기능 등 보호된 리소스에 대해 접근할 수 있는 권한이 있는지 확인하고 실행 허가를 내리는 보안 통제 단계를 무엇이라 하는가?",
+    "answer": [
+      "인가",
+      "권한 부여",
+      "Authorization"
+    ],
+    "explanation": "인가(Authorization)는 특정 자원에 대한 접근 권한 부여 단계로, 접근통제 정책(DAC, MAC, RBAC 등)에 따라 결정됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "인가",
+      "Authorization",
+      "권한부여"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_019",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "입력데이터 검증",
+    "type": "SHORT_ANSWER",
+    "question": "서버 측 입력값 검증 방식 중, 위험한 문자나 금지어 목록을 정의하여 차단하는 블랙리스트(Blacklist) 방식에 비해, 허용 가능한 안전한 문자 형식과 길이 규칙만을 명시하여 그 외의 모든 입력을 거부하는 훨씬 안전한 검증 방식은 무엇인가?",
+    "answer": [
+      "화이트리스트",
+      "화이트리스트 방식",
+      "Whitelist"
+    ],
+    "explanation": "화이트리스트(Whitelist) 검증은 새로운 우회 공격 패턴이 등장하더라도 허용 규칙 이외의 모든 값을 차단하므로 시큐어 코딩의 기본 권장 사항입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "화이트리스트",
+      "Whitelist",
+      "입력값검증"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_SEC_020",
+    "subject": "신기술/보안",
+    "category": "시큐어 코딩",
+    "subCategory": "세션 관리",
+    "type": "SHORT_ANSWER",
+    "question": "웹 브라우저의 쿠키(Cookie) 탈취를 방지하기 위해 설정하는 보안 플래그 중, 자바스크립트의 `document.cookie` 객체를 통한 쿠키 접근을 원천 차단하여 XSS 공격에 의한 세션 하이재킹을 방어하는 플래그 속성은 무엇인가?",
+    "answer": [
+      "HttpOnly",
+      "HttpOnly 플래그"
+    ],
+    "explanation": "HttpOnly 쿠키 플래그는 브라우저 스크립트의 접근을 막아 쿠키 유출을 방어하며, 암호화 전송(HTTPS)을 강제하는 것은 Secure 플래그입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "HttpOnly",
+      "쿠키보안",
+      "세션하이재킹방어"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_001",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 테스트 관리",
+    "subCategory": "화이트박스 테스트 커버리지",
+    "type": "SHORT_ANSWER",
+    "question": "화이트박스 테스트의 구조적 커버리지 중, 프로그램 내의 모든 개별 조건식의 참(True)/거짓(False) 결과와 무관하게, 전체 복합 조건식의 결과(결정 포인트)가 최소한 한 번씩 참과 거짓을 모두 수행하도록 보장하는 커버리지는 무엇인가?",
+    "answer": [
+      "결정 커버리지",
+      "분기 커버리지",
+      "Decision Coverage",
+      "Branch Coverage"
+    ],
+    "explanation": "결정 커버리지(분기 커버리지)는 프로그램의 모든 조건문 분기 경로(True/False 방향)를 최소 한 번씩 실행합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "결정 커버리지",
+      "분기 커버리지",
+      "구조적커버리지"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_002",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 테스트 관리",
+    "subCategory": "화이트박스 테스트 커버리지",
+    "type": "SHORT_ANSWER",
+    "question": "복합 조건식 전체의 결과와는 별개로, 조건식 내부에 포함된 각각의 개별 조건식(개별 명제)들이 독립적으로 최소한 한 번씩 참(True)과 거짓(False)의 결과를 갖도록 테스트 케이스를 설계하는 커버리지는 무엇인가?",
+    "answer": [
+      "조건 커버리지",
+      "Condition Coverage"
+    ],
+    "explanation": "조건 커버리지(Condition Coverage)는 전체 결과와 무관하게 각 내부 개별 조건식이 참/거짓을 만족하는지 검증합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "조건 커버리지",
+      "개별조건식",
+      "화이트박스테스트"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_003",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 테스트 관리",
+    "subCategory": "화이트박스 테스트 커버리지",
+    "type": "SHORT_ANSWER",
+    "question": "결정 커버리지와 조건 커버리지를 모두 만족하면서, 각 개별 조건식이 전체 복합 조건식의 결과에 독립적인 영향을 미치도록 설계하여 항공/국방 등 고신뢰성 임베디드 시스템에서 필수로 요구하는 커버리지의 약어는 무엇인가?",
+    "answer": [
+      "MC/DC",
+      "MCDC",
+      "변경 조건/결정 커버리지"
+    ],
+    "explanation": "MC/DC(Modified Condition/Decision Coverage)는 개별 조건식이 다른 조건식에 영향받지 않고 전체 결정을 변경할 수 있음을 검증하는 최고 수준의 커버리지입니다.",
+    "difficulty": "HARD",
+    "keywords": [
+      "MC/DC",
+      "MCDC",
+      "변경조건결정커버리지"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_005",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 테스트 관리",
+    "subCategory": "블랙박스 테스트 기법",
+    "type": "SHORT_ANSWER",
+    "question": "오류가 입력값의 중간보다 입력 조건의 최소값, 최대값, 경계 부근에서 집중적으로 발생한다는 점에 착안하여, 유효 범위의 바로 안쪽 값, 경계값, 바로 바깥쪽 값을 테스트 데이터로 선택하는 기법은 무엇인가?",
+    "answer": [
+      "경계값 분석",
+      "경계값 분석 기법",
+      "Boundary Value Analysis"
+    ],
+    "explanation": "경계값 분석(Boundary Value Analysis)은 등호 오류(<=, <)와 같은 오프바이원(Off-by-one) 결함을 찾아내는 가장 효과적인 블랙박스 기법입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "경계값 분석",
+      "Boundary Value Analysis",
+      "경계값"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_006",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 테스트 관리",
+    "subCategory": "경험 기반 테스트 기법",
+    "type": "SHORT_ANSWER",
+    "question": "사전에 정형화된 테스트 케이스 문서를 작성하지 않고, 테스터의 직관과 경험에 기반하여 테스트 대상을 탐색하면서 동시에 테스트를 설계하고 실행하며 결함을 찾아내는 경험 기반 기법은 무엇인가?",
+    "answer": [
+      "탐색적 테스팅",
+      "탐색적 테스트",
+      "Exploratory Testing"
+    ],
+    "explanation": "탐색적 테스팅(Exploratory Testing)은 테스트 계획, 설계, 실행이 동시에 순환적으로 이루어지며 시간 제약이 있을 때 매우 유용합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "탐색적 테스팅",
+      "Exploratory Testing",
+      "경험기반테스트"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_007",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 성능 개선",
+    "subCategory": "리팩터링",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어의 외부 동작(기능과 결과)은 전혀 변경하지 않으면서, 내부 코드의 가독성을 높이고 복잡도를 낮추어 유지보수성을 향상시키는 코드 구조 개선 활동을 무엇이라 하는가?",
+    "answer": [
+      "리팩터링",
+      "Refactoring",
+      "리팩토링"
+    ],
+    "explanation": "리팩터링(Refactoring)은 결함을 수정하거나 새로운 기능을 추가하는 것이 아니라, 클린 코드를 위해 코드의 가독성과 설계를 개선하는 작업입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "리팩터링",
+      "Refactoring",
+      "코드개선"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_008",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 성능 개선",
+    "subCategory": "코드 스멜(Code Smell)",
+    "type": "SHORT_ANSWER",
+    "question": "마틴 파울러가 정의한 용어로, 당장 버그를 일으키지는 않지만 미래에 결함이나 유지보수 저하를 초래할 가능성이 높은 나쁜 냄새가 나는 잠재적 코드 결함 증상을 무엇이라 하는가?",
+    "answer": [
+      "코드 스멜",
+      "Code Smell"
+    ],
+    "explanation": "코드 스멜(Code Smell)에는 중복 코드, 장황한 메소드(Long Method), 거대 클래스(Large Class), 산탄총 수술(Shotgun Surgery) 등이 있습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "코드 스멜",
+      "Code Smell",
+      "나쁜냄새"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_009",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 성능 개선",
+    "subCategory": "코드 스멜 증상",
+    "type": "SHORT_ANSWER",
+    "question": "하나의 요구사항이나 작은 변경 사항이 발생했을 때, 여러 개의 클래스나 모듈에 걸쳐 자잘한 수정 작업을 동시에 수행해야 하는 코드 스멜 증상을 무엇이라 하는가?",
+    "answer": [
+      "산탄총 수술",
+      "산탄총 수술(Shotgun Surgery)",
+      "Shotgun Surgery"
+    ],
+    "explanation": "산탄총 수술(Shotgun Surgery)은 변경이 발생할 때 수많은 곳을 흩어져 수정해야 하는 응집도 부족 증상입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "산탄총 수술",
+      "Shotgun Surgery",
+      "코드스멜"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_010",
+    "subject": "소프트웨어설계",
+    "category": "요구사항 확인 및 모델링",
+    "subCategory": "UML 관계",
+    "type": "SHORT_ANSWER",
+    "question": "UML 관계 중 전체(Whole)와 부분(Part)의 관계를 나타내며, 전체 객체가 소멸하더라도 부분 객체는 독립적으로 생존할 수 있는 약한 결합 형태의 포함 관계는 무엇인가?",
+    "answer": [
+      "집약 관계",
+      "집약",
+      "집합 관계",
+      "Aggregation"
+    ],
+    "explanation": "집약 관계(Aggregation)는 빈 마름모(◇)로 표현되며, 전체 객체와 부분 객체가 독립적인 생명주기를 갖습니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "집약 관계",
+      "Aggregation",
+      "UML관계"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_011",
+    "subject": "소프트웨어설계",
+    "category": "요구사항 확인 및 모델링",
+    "subCategory": "UML 관계",
+    "type": "SHORT_ANSWER",
+    "question": "UML 관계 중 전체 객체와 부분 객체의 생명주기가 완전히 일치하여, 전체 객체가 소멸하면 부분 객체도 함께 소멸하는 강한 결합 형태의 포함 관계는 무엇인가?",
+    "answer": [
+      "합성 관계",
+      "합성",
+      "Composition"
+    ],
+    "explanation": "합성 관계(Composition)는 채워진 마름모(◆)로 표현되며, 부분 객체가 전체 객체에 종속되어 생명주기를 같이합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "합성 관계",
+      "Composition",
+      "UML관계"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_012",
+    "subject": "소프트웨어설계",
+    "category": "요구사항 확인 및 모델링",
+    "subCategory": "UML 관계",
+    "type": "SHORT_ANSWER",
+    "question": "UML 관계 중 하위 사물이 상위 사물의 특징(속성과 메서드)을 물려받아 구체화하는 관계로, 객체지향의 상속(Inheritance) 개념을 표현하는 관계는 무엇인가?",
+    "answer": [
+      "일반화 관계",
+      "일반화",
+      "Generalization"
+    ],
+    "explanation": "일반화 관계(Generalization)는 실선과 속이 빈 삼각형 화살표(▷)로 표시하며 \"is-a\" 상속 관계를 나타냅니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "일반화 관계",
+      "Generalization",
+      "상속관계"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_013",
+    "subject": "소프트웨어설계",
+    "category": "요구사항 확인 및 모델링",
+    "subCategory": "UML 관계",
+    "type": "SHORT_ANSWER",
+    "question": "사물이 할 수 있는 행동(인터페이스)을 선언하고, 다른 사물이 그 선언된 행동을 실제로 구현(Implements)하여 완결하는 관계를 무엇이라 하는가?",
+    "answer": [
+      "실체화 관계",
+      "실체화",
+      "Realization"
+    ],
+    "explanation": "실체화 관계(Realization)는 점선과 속이 빈 삼각형 화살표(▷)로 표시하며 인터페이스와 구현 클래스 간의 관계입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "실체화 관계",
+      "Realization",
+      "인터페이스구현"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_014",
+    "subject": "소프트웨어설계",
+    "category": "요구사항 확인 및 모델링",
+    "subCategory": "UML 다이어그램 분류",
+    "type": "SHORT_ANSWER",
+    "question": "UML 다이어그램을 구조적(정적) 다이어그램과 행위적(동적) 다이어그램으로 나눌 때, 시스템의 컴포넌트 간 물리적 배치와 실행 하드웨어 노드(서버, 네트워크 장비) 구성을 표현하는 정적 다이어그램은 무엇인가?",
+    "answer": [
+      "배치 다이어그램",
+      "배치",
+      "Deployment Diagram"
+    ],
+    "explanation": "배치 다이어그램(Deployment Diagram)은 소프트웨어 모듈이 실제 어떤 물리적 컴퓨터(노드)에 할당되어 실행되는지 보여줍니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "배치 다이어그램",
+      "Deployment Diagram",
+      "물리적배치"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_015",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 테스트 관리",
+    "subCategory": "테스트 시각",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 개발이 완료된 후, 개발자의 시각에서 명세서대로 올바르게 구현되었는지 점검하는 검증(Verification)과 대조적으로, 사용자(고객)의 시각에서 올바른 소프트웨어가 구축되었는지(사용자 요구 만족)를 평가하는 개념을 무엇이라 하는가?",
+    "answer": [
+      "확인",
+      "Validation"
+    ],
+    "explanation": "검증(Verification)은 \"규격서대로 잘 만들었는가(Are we building the product right?)\"이고, 확인(Validation)은 \"고객이 원하는 진짜 소프트웨어를 만들었는가(Are we building the right product?)\"입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "확인",
+      "Validation",
+      "검증과확인"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_016",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 테스트 관리",
+    "subCategory": "테스트 오라클",
+    "type": "SHORT_ANSWER",
+    "question": "테스트 결과가 참인지 거짓인지를 판단하기 위해 사전에 정의된 참값을 제공하는 테스트 오라클 중, 모든 입력값에 대하여 기대하는 결과를 100% 완벽히 계산해 주는 가장 이상적인 오라클은 무엇인가?",
+    "answer": [
+      "참 오라클",
+      "True Oracle"
+    ],
+    "explanation": "참 오라클(True Oracle)은 모든 입력에 대한 정답을 생성할 수 있는 오라클로, 주로 항공/미션 크리티컬 시스템에 적용됩니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "참 오라클",
+      "True Oracle",
+      "테스트오라클"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_017",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 테스트 관리",
+    "subCategory": "테스트 오라클",
+    "type": "SHORT_ANSWER",
+    "question": "모든 입력에 대한 결과를 산출할 수 없어 특정 주요 입력값(특수값, 경계값 등)에 대해서만 정확한 결과를 확인하고 나머지는 추정하는 실용적인 오라클은 무엇인가?",
+    "answer": [
+      "샘플링 오라클",
+      "Sampling Oracle"
+    ],
+    "explanation": "샘플링 오라클(Sampling Oracle)은 전수 검사가 불가능할 때 대표적인 표본 입력값에 대해서만 결과를 검증하는 오라클입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "샘플링 오라클",
+      "Sampling Oracle",
+      "테스트오라클"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_018",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 테스트 관리",
+    "subCategory": "테스트 하네스 구성요소",
+    "type": "SHORT_ANSWER",
+    "question": "상향식 통합 테스트에서 하위 모듈은 이미 구현되어 있으나 상위 모듈이 아직 개발되지 않았을 때, 하위 모듈을 호출하고 매개변수를 전달하여 결과를 확인하기 위해 임시로 작성하는 상위 가상 모듈은 무엇인가?",
+    "answer": [
+      "테스트 드라이버",
+      "드라이버",
+      "Test Driver"
+    ],
+    "explanation": "테스트 드라이버(Test Driver)는 상위 모듈 역할을 대행하는 테스트 도구이며, 반대로 하위 모듈 역할을 대행하는 것은 테스트 스텁(Test Stub)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "테스트 드라이버",
+      "Test Driver",
+      "상향식통합"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_019",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 성능 개선",
+    "subCategory": "클린 코드 원칙",
+    "type": "SHORT_ANSWER",
+    "question": "클린 코드(Clean Code) 작성 원칙 중, 코드 내부에 중복된 로직이나 동일한 표현식을 제거하고 공통 메소드로 추출하여 중복을 없애야 한다는 원칙은 무엇인가?",
+    "answer": [
+      "중복 최소화",
+      "중복 배제",
+      "중복의 최소화"
+    ],
+    "explanation": "클린 코드의 5대 원칙은 가독성, 단순성, 의존성 배제, 중복 최소화, 추상화입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "중복 최소화",
+      "클린코드",
+      "중복배제"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_020",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 성능 개선",
+    "subCategory": "소스코드 품질 분석 도구",
+    "type": "SHORT_ANSWER",
+    "question": "소스코드를 직접 실행하지 않고 코딩 표준 준수 여부, 잠재적 결함, 보안 취약점, 복잡도 등을 소스코드 텍스트 구조 분석을 통해 검사하는 분석 도구(예: SonarQube, PMD, Checkstyle)를 무엇이라 하는가?",
+    "answer": [
+      "정적 분석 도구",
+      "정적 분석",
+      "정적 테스팅 도구",
+      "Static Analysis"
+    ],
+    "explanation": "정적 분석 도구(Static Code Analysis)는 컴파일이나 실행 없이 소스코드를 파싱하여 버그와 보안 결함을 조기에 검출합니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "정적 분석 도구",
+      "SonarQube",
+      "정적분석"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_021",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 테스트 관리",
+    "subCategory": "테스트 시각 및 인수 테스트",
+    "type": "SHORT_ANSWER",
+    "question": "인수 테스트(Acceptance Test)의 두 가지 유형 중, 개발사 내부의 통제된 환경에서 실제 사용자가 개발자와 함께 참여하여 소프트웨어를 테스트하는 기법을 무엇이라 하는가?",
+    "answer": [
+      "알파 테스트",
+      "Alpha Test"
+    ],
+    "explanation": "알파 테스트는 개발자의 통제 하에 내부에서 수행되고, 실제 통제되지 않은 고객 환경에서 다수의 사용자가 테스트하는 것은 베타 테스트(Beta Test)입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "알파 테스트",
+      "Alpha Test",
+      "인수테스트"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_022",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 테스트 관리",
+    "subCategory": "테스트 결함 관리",
+    "type": "SHORT_ANSWER",
+    "question": "발견된 결함이 시스템의 핵심 기능을 전면 마비시키거나 데이터 유실을 초래하는지, 아니면 단순한 UI 오탈자인지와 같이 결함이 시스템에 미치는 영향의 치명적 정도를 나타내는 척도는 무엇인가?",
+    "answer": [
+      "결함 심각도",
+      "심각도",
+      "Severity",
+      "결함 심각도(Severity)"
+    ],
+    "explanation": "결함 심각도(Severity)는 시스템 기능에 미치는 기술적 영향도이며, 결함을 얼마나 빨리 수정해야 하는지 비즈니스적 긴급도를 나타내는 것은 결함 우선순위(Priority)입니다.",
+    "difficulty": "MEDIUM",
+    "keywords": [
+      "결함 심각도",
+      "Severity",
+      "결함관리"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_024",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 테스트 관리",
+    "subCategory": "테스트 원리",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 테스트의 7대 원리 중, 동일한 테스트 케이스로 반복해서 테스트를 수행하면 더 이상 새로운 결함을 찾아낼 수 없으므로 주기적으로 테스트 케이스를 개선하고 변경해야 한다는 원리는 무엇인가?",
+    "answer": [
+      "살충제 패러독스",
+      "Pesticide Paradox"
+    ],
+    "explanation": "살충제 패러독스(Pesticide Paradox)는 곤충이 동일한 살충제에 내성을 갖듯이 기존 테스트 케이스에 결함이 적응되어 새로운 결함 검출력이 떨어지는 현상입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "살충제 패러독스",
+      "Pesticide Paradox",
+      "테스트원리"
+    ],
+    "source": "2026 실기 핵심 보강"
+  },
+  {
+    "id": "EXP26_TST_025",
+    "subject": "소프트웨어설계",
+    "category": "애플리케이션 테스트 관리",
+    "subCategory": "테스트 원리",
+    "type": "SHORT_ANSWER",
+    "question": "소프트웨어 테스트의 7대 원리 중, 대부분의 결함은 시스템 전체에 고르게 퍼져 있는 것이 아니라 소수의 특정 취약한 모듈(약 20%의 모듈)에 집중(약 80%의 결함)되어 발생한다는 원리는 무엇인가?",
+    "answer": [
+      "결함 집중",
+      "파레토 법칙",
+      "결함 집중(Defect Clustering)"
+    ],
+    "explanation": "결함 집중(Defect Clustering / 파레토 법칙)은 결함이 많이 발견된 특정 모듈에 더 많은 추가 결함이 숨겨져 있을 확률이 높다는 원리입니다.",
+    "difficulty": "EASY",
+    "keywords": [
+      "결함 집중",
+      "파레토 법칙",
+      "Defect Clustering"
+    ],
+    "source": "2026 실기 핵심 보강"
   }
 ];
