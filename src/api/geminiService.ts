@@ -247,20 +247,27 @@ ${userPrompt}
 `;
   }
 
-  // General or Wrong
+  const verificationRules = `
+[독립 정답 검증 및 오답 안전 지침 - 필수 준수]
+- [저장된 정답]이나 [기본 해설]을 맹신하지 말고, 먼저 [문제 지문]과 [코드]를 당신 자신의 전문 지식으로 직접 풀어 [독립 정답]을 도출하세요.
+- 만약 [저장된 정답]에 오류(지문과 정답 불일치, 오타, 코드 실행 결과 불일치)가 있다면, 수험생에게 잘못된 지식을 가르치지 말고 "이 문제는 저장된 정답에 오류/재검토가 필요한 문제입니다"라고 사실을 정확히 지적하세요.
+- 수험생의 답안이 올바른 정답 또는 타당한 동의어인데 오답 처리된 경우, "수험생이 작성한 답안도 정답으로 인정될 수 있는 타당한 표현입니다"라고 명시하세요.
+- 수험생의 답이 명백한 오답인 경우에만 수험생의 오개념을 친절하고 명쾌하게 교정해 주세요.`;
+
   if (history && history.length > 0) {
     return `당신은 대한민국 최고 수준의 정보처리기사 실기 전담 1:1 스타 강사이자 AI 수험 튜터입니다.
 수험생과 앞선 대화를 바탕으로 1:1 맞춤형 과외를 이어가고 있습니다.
 이전 대화 맥락을 정확히 기억하고, 수험생의 추가 질문에 대해 군더더기 없이 명쾌하고 핵심을 짚어 친절하게 설명해 주세요.
 ${formattingRules}
+${verificationRules}
 
 [문제 정보]
 - 과목/단원: ${chapterPath}
 - 문제 유형: ${question.type} (난이도: ${question.difficulty})
 - 문제 지문: ${question.question}
 ${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
-- 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
-- 기본 해설: ${question.explanation}
+- 저장된 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
+- 기본 해설(참고용): ${question.explanation}
 - 수험생이 작성한 답: ${userAnswer ? (Array.isArray(userAnswer) ? userAnswer.join(", ") : userAnswer) : "(미작성)"}
 ${historySection}
 [수험생의 추가 질문]
@@ -272,14 +279,15 @@ ${userPrompt}
 수험생의 눈높이에 맞춰 친절하고 논리정연하며, 실제 시험장에서 점수를 얻을 수 있는 명쾌한 답변을 제공하세요.
 인사말이나 군더더기 서론은 일절 생략하고, 곧바로 본론으로 들어가 각 항목별 핵심 위주로 명확하고 깔끔하게 작성하세요.
 ${formattingRules}
+${verificationRules}
 
 [문제 정보]
 - 과목/단원: ${chapterPath}
 - 문제 유형: ${question.type} (난이도: ${question.difficulty})
 - 문제 지문: ${question.question}
 ${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
-- 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
-- 기본 해설: ${question.explanation}
+- 저장된 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
+- 기본 해설(참고용): ${question.explanation}
 - 수험생이 작성한 답: ${userAnswer ? (Array.isArray(userAnswer) ? userAnswer.join(", ") : userAnswer) : "(미작성)"}
 
 [수험생의 질문]

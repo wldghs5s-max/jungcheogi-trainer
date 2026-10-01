@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 사용자 답안 문자열을 비교하기 좋은 형태로 정규화합니다.
  * 원문자(①)와 전각 숫자는 ASCII로 바꾸고, 약어 오채점을 막기 위해
  * 공백·기호를 제거한 뒤 대문자로 맞춥니다.
@@ -43,7 +43,17 @@ export function normalizeAnswer(ans: string): string {
     /[①-⑩⑴-⑸１-９０㉠-㉤]/g,
     (ch) => CIRCLED_CHAR_MAP[ch] || "",
   );
-  text = text.replace(/[→⇒▶▷＞≫]/g, "");
+  // 화살표 기호(→, ⇒)를 프로그래밍 화살표 연산자(->)로 통일
+  text = text.replace(/[→⇒]/g, "->");
+  text = text.replace(/[▶▷＞≫]/g, "");
+
+  // 순수 기호나 연산자(예: ->, &, *, ::, ==, !=, ++ 등)인 경우 기호를 파괴하지 않고 보존
+  const noSpace = text.replace(/\s+/g, "");
+  if (/^[->&*+=<!?:;~^%|/[\]()#]+$/.test(noSpace)) {
+    return noSpace.toUpperCase();
+  }
+
+  // 일반 단답형 텍스트: 문장부호 및 조사 제거
   text = text
     .replace(/[()[\]{}.,·\-_/'":;?`~!@#$%^&*+=<>]/g, "")
     .replace(/\s+/g, "");
@@ -137,6 +147,9 @@ const SYNONYM_GROUPS: string[][] = [
   ["MAC", "강제접근통제", "강제적접근통제"],
   ["AES", "고급암호화표준"],
   ["RSA", "라이베스트샤미어애들먼"],
+  ["->", "화살표연산자", "포인터멤버접근", "포인터멤버접근연산자"],
+  ["&", "주소연산자", "앰퍼샌드"],
+  ["*", "포인터연산자", "역참조연산자", "애스터리스크"],
 ];
 
 function expandForms(ans: string): string[] {
@@ -213,11 +226,12 @@ function codeOutputMatches(
   userAnswer: string,
   correctAnswer: string | string[],
 ): boolean {
-  const typed = normalizeCodeOutputAnswer(userAnswer);
+  const norm = (s: string) => normalizeCodeOutputAnswer(s).replace(/[→⇒]/g, "->");
+  const typed = norm(userAnswer);
   if (!typed) return false;
   const answers = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
   return answers.some(
-    (item) => normalizeCodeOutputAnswer(String(item || "")) === typed,
+    (item) => norm(String(item || "")) === typed,
   );
 }
 
@@ -234,17 +248,30 @@ export function checkAnswer(
     code?: string;
   } | null,
 ): boolean {
+  // 코드 실행 결과 판정인 경우: 토큰 경계 및 대소문자 보존 우선 적용
   if (isCodeOutputQuestion(question)) {
     if (Array.isArray(userAnswer)) {
       if (!Array.isArray(correctAnswer)) return false;
       if (userAnswer.length !== correctAnswer.length) return false;
       return userAnswer.every(
         (value, index) =>
-          normalizeCodeOutputAnswer(String(value || "")) ===
-          normalizeCodeOutputAnswer(String(correctAnswer[index] || "")),
+          normalizeCodeOutputAnswer(String(value || "")).replace(/[→⇒]/g, "->") ===
+          normalizeCodeOutputAnswer(String(correctAnswer[index] || "")).replace(/[→⇒]/g, "->"),
       );
     }
     return codeOutputMatches(userAnswer, correctAnswer);
+  }
+
+  // 1. 비-코드 질문: 순수 공백제거 및 기호 매핑 기반의 즉시 일치 검사
+  const arrowNorm = (s: string) => s.trim().replace(/\s+/g, "").replace(/[→⇒]/g, "->");
+  if (!Array.isArray(userAnswer)) {
+    const normU = arrowNorm(String(userAnswer || ""));
+    if (normU) {
+      const correctList = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
+      if (correctList.some((c) => arrowNorm(String(c || "")).toUpperCase() === normU.toUpperCase())) {
+        return true;
+      }
+    }
   }
 
   if (Array.isArray(userAnswer)) {

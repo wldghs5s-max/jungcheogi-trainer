@@ -35,6 +35,7 @@
     "test": "tsx scripts/self-test.ts",
     "test:programming": "tsx scripts/programming-engine-test.ts",
     "test:gemini": "tsx scripts/gemini-service-test.ts && tsx scripts/gemini-question-generator-test.ts",
+    "test:learning": "tsx scripts/test-learning-engine.ts",
     "typecheck": "tsc --noEmit"
   },
   "private": true

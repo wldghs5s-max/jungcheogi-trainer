@@ -1,4 +1,4 @@
-﻿import { create } from 'zustand';
+import { create } from 'zustand';
 import { AttemptRepository } from '../repositories/attemptRepository';
 import { MissType, QuizAttempt } from '../types/attempt';
 import { Question } from '../types/question';
@@ -22,7 +22,7 @@ interface QuizState {
   sessionEpoch: number;
 
   // Actions
-  startQuiz: (questions: Question[], title?: string) => void;
+  startQuiz: (questions: Question[], title?: string, options?: { preserveOrder?: boolean }) => void;
   selectAnswer: (ans: string) => void;
   revealHint: () => void;
   submitAnswer: () => Promise<QuizSubmitResult>;
@@ -53,9 +53,9 @@ export const useQuizStore = create<QuizState>((set, get) => ({
   sessionTitle: '문제 풀이',
   sessionEpoch: 0,
 
-  startQuiz: (questions, title = '문제 풀이') => {
+  startQuiz: (questions, title = '문제 풀이', options) => {
     set({
-      questions: shuffleArray(questions),
+      questions: options?.preserveOrder ? [...questions] : shuffleArray(questions),
       currentIndex: 0,
       selectedAnswer: '',
       isSubmitted: false,

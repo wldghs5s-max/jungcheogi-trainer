@@ -1,0 +1,103 @@
+{
+  "auditDate": "2026-10-01",
+  "engineVersion": "1.6.0",
+  "scope": "Learning Question Selection Frequency, Grading Safety & AI Verifier",
+  "summary": {
+    "totalActiveQuestions": 900,
+    "sessionSize": 5,
+    "selectionStrategy": "5-Tier Hierarchical Priority with Cooldown",
+    "cooldownWindow": 10,
+    "cooldownSessions": 2,
+    "preserveOrderOnRetry": true,
+    "gradingSymbolSupport": ["->", "→", "&", "*", "[::-1]"],
+    "nonRegressionGuaranteed": true,
+    "aiVerifierEnabled": true
+  },
+  "priorityHierarchy": [
+    {
+      "tier": 1,
+      "name": "NEW",
+      "description": "한 번도 풀지 않은 신규 문항",
+      "targetAllocation": "최소 60% (5문항 중 3문항 이상 우선 배정)"
+    },
+    {
+      "tier": 2,
+      "name": "WEAK",
+      "description": "최근 오답률이 높은 취약 문항",
+      "targetAllocation": "1~2문항 보충 배정"
+    },
+    {
+      "tier": 3,
+      "name": "DUE",
+      "description": "망각 곡선 복습 주기가 도래한 문항",
+      "targetAllocation": "남은 슬롯 우선 배정"
+    },
+    {
+      "tier": 4,
+      "name": "GENERAL",
+      "description": "일반 풀이 이력 문항 (MASTERED 제외)",
+      "targetAllocation": "슬롯 부족 시 배정"
+    },
+    {
+      "tier": 5,
+      "name": "MASTERED",
+      "description": "안정적으로 3회 이상 연속 정답한 문항",
+      "targetAllocation": "전체 풀이 고갈 시 최후순위 배정"
+    }
+  ],
+  "gradingEngineAudit": {
+    "symbolBugResolved": true,
+    "symbolBugRootCause": "normalizeAnswer의 무차별 특수기호 제거 정규식으로 인해 '->', '&', '*' 연산자가 빈 문자열로 수렴",
+    "fixMechanism": [
+      "isCodeOutputQuestion 우선 판정으로 코드 출력형의 대소문자 및 토큰 경계 엄격 보존",
+      "화살표 유니코드(→, ⇒)를 '->'로 표준화하는 arrowNorm 도입",
+      "순수 기호/연산자 단독 입력 시 기호 보존 분기 처리",
+      "SYNONYM_GROUPS에 연산자 및 한글 명칭 동의어 사전 등록"
+    ],
+    "regressionTests": {
+      "arrowOperatorExact": "PASS",
+      "arrowUnicodeSynonym": "PASS",
+      "koreanTermSynonym": "PASS",
+      "addressOperatorExact": "PASS",
+      "pointerOperatorExact": "PASS",
+      "normalizationDistinctRejection": "PASS (2NF != 3NF)",
+      "codeTraceTokenBoundary": "PASS ('1 23' != '12 3')",
+      "codeTraceCasePreserved": "PASS ('ABC' != 'abc')"
+    }
+  },
+  "aiVerifierAudit": {
+    "architecture": "독립 정답 도출형 판정 엔진 (AIVerifierService)",
+    "promptRule": "저장 정답 및 기존 해설을 맹신하지 않고 AI 독자 지식으로 먼저 푼 후 대조",
+    "verdictTypes": [
+      "USER_WRONG",
+      "USER_CORRECT",
+      "QUESTION_SUSPECT",
+      "AMBIGUOUS",
+      "VERIFICATION_UNCERTAIN"
+    ],
+    "safetyQuarantine": "QUESTION_SUSPECT 발생 시 왜곡된 기존 해설 노출을 차단하고 채점 재검토 안내문 자동 주입",
+    "uiIntegration": {
+      "modalBadge": "⚠️ AI 튜터 정답/채점 검토 의견 포함",
+      "quickChip": "⚖️ 정답/채점 오류 여부 독립 검증",
+      "visualFeedback": "Amber 테두리 및 경고 배너 렌더링"
+    }
+  },
+  "simulationResults": {
+    "scenarioA_newDominance": {
+      "status": "PASS",
+      "description": "NEW 문항이 풍부할 때 5문항 중 3문항 이상 신규 출제 달성"
+    },
+    "scenarioB_cooldownExclusion": {
+      "status": "PASS",
+      "description": "직전 2개 세션(10문항) 출제 문제가 다음 세션 풀에서 100% 배제됨"
+    },
+    "scenarioC_weakFallback": {
+      "status": "PASS",
+      "description": "NEW가 0개일 때 WEAK/DUE 문항이 최우선으로 선별되어 세션을 구성"
+    },
+    "scenarioD_retryOrderPreserved": {
+      "status": "PASS",
+      "description": "다시 풀기(preserveOrder: true) 실행 시 방금 푼 Q1~Q5 순서가 100% 동일 유지"
+    }
+  }
+}

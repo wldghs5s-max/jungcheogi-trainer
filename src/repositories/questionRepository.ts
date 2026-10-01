@@ -295,44 +295,90 @@ export class QuestionRepository {
   }
 
   /**
-   * 5분 퀵 퀴즈용 문제 추출 (기한 지난 복습 + 취약 단원 + 안 푼 문제)
+   * 5분 퀵 퀴즈용 문제 추출
+   * 우선순위:
+   * 1. NEW (한 번도 안 푼 문제) 최우선 할당 (최소 2~3개 보장)
+   * 2. WEAK (최근 오답 및 취약 문제) (1~2개)
+   * 3. DUE (복습 주기 도래 문제) / LEARNING
+   * 4. 일반 문제 (MASTERED 제외 풀)
+   * 5. MASTERED (이미 숙달된 문제는 후보 부족 시에만 후순위 배정)
+   * + 최근 1~2세션 출현 문제(recentQuestionIds) 쿨다운 배제
    */
   static getQuickQuizQuestions(
     count = 5,
     dueQuestionIds: string[] = [],
     weakCategories: string[] = [],
     unsolvedQuestionIds: string[] = [],
+    options?: {
+      recentQuestionIds?: string[];
+      weakQuestionIds?: string[];
+      masteredQuestionIds?: string[];
+    },
   ): Question[] {
     const all = this.getAll();
     const selectedMap = new Map<string, Question>();
-    const dueTarget = Math.round(count * 0.5);
-    const weakTarget = Math.round(count * 0.3);
 
-    const take = (pool: Question[], limit: number) => {
-      const shuffled = this.shuffle(pool.filter((q) => !selectedMap.has(q.id)));
+    // 1. 최근 출현 문제(쿨다운) 배제 풀 구성
+    const recentSet = new Set(options?.recentQuestionIds || []);
+    let availablePool = all.filter((q) => !recentSet.has(q.id));
+    if (availablePool.length < count) {
+      // 쿨다운 적용 시 풀이 부족한 극단적 경우에만 쿨다운 완화
+      availablePool = all;
+    }
+
+    const unsolvedSet = new Set(unsolvedQuestionIds);
+    const weakSet = new Set(options?.weakQuestionIds || []);
+    const dueSet = new Set(dueQuestionIds);
+    const weakCatSet = new Set(weakCategories);
+    const masteredSet = new Set(options?.masteredQuestionIds || []);
+
+    const takeFromPool = (pool: Question[], limit: number) => {
+      if (limit <= 0) return;
+      const candidates = pool.filter((q) => !selectedMap.has(q.id));
+      const shuffled = this.shuffle(candidates);
       const pickCount = Math.min(limit, shuffled.length);
       for (let i = 0; i < pickCount; i++) {
         selectedMap.set(shuffled[i].id, shuffled[i]);
       }
     };
 
-    take(
-      all.filter((q) => dueQuestionIds.includes(q.id)),
-      dueTarget,
-    );
-    take(
-      all.filter(
-        (q) => weakCategories.includes(q.category) && !selectedMap.has(q.id),
-      ),
-      weakTarget,
-    );
-    take(
-      all.filter((q) => unsolvedQuestionIds.includes(q.id)),
-      count - selectedMap.size,
-    );
-    take(all, count - selectedMap.size);
+    // 1순위: NEW (한 번도 풀지 않은 문제) - 기본 5문항 중 최소 3문항 할당
+    const targetNew = Math.min(count, Math.max(3, Math.ceil(count * 0.6)));
+    const newPool = availablePool.filter((q) => unsolvedSet.has(q.id));
+    takeFromPool(newPool, targetNew);
 
-    return Array.from(selectedMap.values());
+    // 2순위: WEAK / 최근 오답 문제
+    const targetWeak = Math.min(count - selectedMap.size, 2);
+    const weakPool = availablePool.filter(
+      (q) => !unsolvedSet.has(q.id) && (weakSet.has(q.id) || weakCatSet.has(q.category)),
+    );
+    takeFromPool(weakPool, targetWeak);
+
+    // 3순위: DUE (복습 주기 도래 문제)
+    if (selectedMap.size < count) {
+      const duePool = availablePool.filter(
+        (q) => !unsolvedSet.has(q.id) && !weakSet.has(q.id) && dueSet.has(q.id),
+      );
+      takeFromPool(duePool, count - selectedMap.size);
+    }
+
+    // 4순위: 일반 문제 (마스터된 문제 제외)
+    if (selectedMap.size < count) {
+      const generalPool = availablePool.filter(
+        (q) => !unsolvedSet.has(q.id) && !weakSet.has(q.id) && !dueSet.has(q.id) && !masteredSet.has(q.id),
+      );
+      takeFromPool(generalPool, count - selectedMap.size);
+    }
+
+    // 5순위: 마스터된 문제 및 전체 풀 보충 (후보 부족 시)
+    if (selectedMap.size < count) {
+      takeFromPool(availablePool, count - selectedMap.size);
+    }
+    if (selectedMap.size < count) {
+      takeFromPool(all, count - selectedMap.size);
+    }
+
+    return this.shuffle(Array.from(selectedMap.values()));
   }
 
   /**

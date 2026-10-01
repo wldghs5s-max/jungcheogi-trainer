@@ -152,9 +152,9 @@ function AppShell() {
     setMode("TABS");
   };
 
-  // 결과 화면 -> 재도전
+  // 결과 화면 -> 재도전 (방금 세션의 문제 목록과 순서를 그대로 유지)
   const handleRetryQuiz = () => {
-    startQuiz(questions, sessionTitle);
+    startQuiz(questions, sessionTitle, { preserveOrder: true });
     setMode("QUIZ");
   };
 

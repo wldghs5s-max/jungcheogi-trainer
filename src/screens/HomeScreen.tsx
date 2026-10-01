@@ -235,7 +235,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     }
   };
 
-  // 5분 퀵 퀴즈 시작 (5문제 조합)
+  // 5분 퀵 퀴즈 시작 (5문제 조합: NEW 최우선 + 최근 오답 + 쿨다운 배제)
   const handleStartQuickQuiz = async () => {
     const attempts = await AttemptRepository.getAllAttempts();
     const dueIds = getDueReviewQuestionIds(attempts, 20);
@@ -244,11 +244,31 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       (question) => question.id,
     );
     const weakCats = stats?.weakCategories.map((c) => c.category) || [];
+
+    // 최근 2개 세션(10문항) 출현 문제 추출 (쿨다운 대상)
+    const recentAttempts = await AttemptRepository.getRecentAttempts(10);
+    const recentQuestionIds = Array.from(new Set(recentAttempts.map((a) => a.questionId)));
+
+    // 취약 문제 및 마스터 문제 분류
+    const wrongSummaries = await AttemptRepository.getWrongQuestionSummaries();
+    const weakQuestionIds = wrongSummaries
+      .filter((s) => s.lastAttemptIsWrong || s.wrongAttempts >= s.correctAttempts)
+      .map((s) => s.questionId);
+
+    const masteredQuestionIds = wrongSummaries
+      .filter((s) => !s.lastAttemptIsWrong && s.correctAttempts >= 3 && s.wrongAttempts === 0)
+      .map((s) => s.questionId);
+
     const quickQuestions = QuestionRepository.getQuickQuizQuestions(
       5,
       dueIds,
       weakCats,
       unsolvedIds,
+      {
+        recentQuestionIds,
+        weakQuestionIds,
+        masteredQuestionIds,
+      },
     );
     onStartQuiz(quickQuestions, "지하철 5분 퀵 퀴즈");
   };

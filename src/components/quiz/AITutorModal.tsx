@@ -394,6 +394,12 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
             "제가 작성한 오답과 실제 정답을 비교하여, 제가 어떤 개념을 착각했는지와 출제자가 판 함정이 무엇인지 날카롭게 짚어주세요.",
         },
         {
+          id: "verify",
+          label: "⚖️ 정답/채점 오류 여부 독립 검증",
+          prompt:
+            "이 문제의 지문, 제시된 코드, 저장된 정답을 맹신하지 말고 직접 풀어보고, 혹시 문제 지문 오류나 채점 누락, 복수정답 가능성이 없는지 엄밀하게 독립 검증해 주세요.",
+        },
+        {
           id: "memorize",
           label: "🧠 실기 시험 1초 암기 공식",
           prompt:
@@ -531,30 +537,49 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
                       </View>
                     </View>
                   ) : msg.text.trim().length > 0 ? (
-                    <View
-                      key={msg.id}
-                      style={[
-                        styles.answerBox,
-                        {
-                          backgroundColor: theme.surfaceSecondary,
-                          borderColor: theme.accentLight,
-                        },
-                      ]}
-                      onLayout={(event) => {
-                        latestTutorOffsetRef.current =
-                          event.nativeEvent.layout.y;
-                        if (pendingAnswerScrollIdRef.current === msg.id) {
-                          pendingAnswerScrollIdRef.current = null;
-                          scrollToAnswerStart();
-                        }
-                      }}
-                    >
-                      {renderFormattedTutorText(
-                        msg.text,
-                        [styles.answerText, { color: theme.text }],
-                        [styles.answerText, { color: theme.text, fontWeight: "700" }],
-                      )}
-                    </View>
+                    (() => {
+                      const isSuspectNotice =
+                        msg.text.includes("재검토") ||
+                        msg.text.includes("문제 오류") ||
+                        msg.text.includes("오류/재검토") ||
+                        msg.text.includes("QUESTION_SUSPECT") ||
+                        msg.text.includes("정답 인정");
+                      return (
+                        <View
+                          key={msg.id}
+                          style={[
+                            styles.answerBox,
+                            {
+                              backgroundColor: theme.surfaceSecondary,
+                              borderColor: isSuspectNotice
+                                ? "#F59E0B"
+                                : theme.accentLight,
+                            },
+                          ]}
+                          onLayout={(event) => {
+                            latestTutorOffsetRef.current =
+                              event.nativeEvent.layout.y;
+                            if (pendingAnswerScrollIdRef.current === msg.id) {
+                              pendingAnswerScrollIdRef.current = null;
+                              scrollToAnswerStart();
+                            }
+                          }}
+                        >
+                          {isSuspectNotice && (
+                            <View style={styles.suspectBadge}>
+                              <Text style={styles.suspectBadgeText}>
+                                ⚠️ AI 튜터 정답/채점 검토 의견 포함
+                              </Text>
+                            </View>
+                          )}
+                          {renderFormattedTutorText(
+                            msg.text,
+                            [styles.answerText, { color: theme.text }],
+                            [styles.answerText, { color: theme.text, fontWeight: "700" }],
+                          )}
+                        </View>
+                      );
+                    })()
                   ) : null,
                 )
               )}
@@ -759,6 +784,21 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 1.5,
     marginBottom: 10,
+  },
+  suspectBadge: {
+    backgroundColor: "rgba(245, 158, 11, 0.15)",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "rgba(245, 158, 11, 0.4)",
+    alignSelf: "flex-start",
+  },
+  suspectBadgeText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#D97706",
   },
   jumpToAnswerBtn: {
     flexDirection: "row",
