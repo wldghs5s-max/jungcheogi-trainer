@@ -56,6 +56,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
     missType,
     hintUsed,
     sessionTitle,
+    sessionId,
     selectAnswer,
     revealHint,
     submitAnswer,
@@ -594,9 +595,16 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
         <AITutorModal
           visible={isTutorOpen}
           question={currentQuestion}
-          userAnswer={isUnknown ? undefined : selectedAnswer}
-          missType={missType}
+          userAnswer={
+            isSubmitted ? (isUnknown ? undefined : selectedAnswer) : undefined
+          }
+          missType={isSubmitted ? missType : null}
           autoAskChapter={autoAskChapter}
+          attemptId={
+            sessionId
+              ? `${sessionId}_${currentIndex}_${currentQuestion.id}`
+              : undefined
+          }
           onClose={() => {
             setIsTutorOpen(false);
             setAutoAskChapter(false);

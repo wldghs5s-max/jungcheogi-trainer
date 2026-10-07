@@ -20,26 +20,46 @@ export class TutorRepository {
     return stored || {};
   }
 
-  static async getThread(questionId: string): Promise<TutorThread | null> {
+  static async getThread(
+    questionId: string,
+    attemptId?: string,
+  ): Promise<TutorThread | null> {
     const all = await this.getAll();
+    if (attemptId) {
+      return all[`${questionId}::${attemptId}`] || null;
+    }
     return all[questionId] || null;
   }
 
   static async saveThread(
     questionId: string,
     messages: TutorChatMessage[],
+    attemptId?: string,
   ): Promise<void> {
     const all = await this.getAll();
+    const updatedAt = new Date().toISOString();
+
+    if (attemptId) {
+      all[`${questionId}::${attemptId}`] = {
+        questionId,
+        messages,
+        updatedAt,
+      };
+    }
+
+    // Always update questionId root key with the latest explanation for backward compatibility (e.g. WrongNoteScreen)
     all[questionId] = {
       questionId,
       messages,
-      updatedAt: new Date().toISOString(),
+      updatedAt,
     };
     await LocalStorage.setItem(STORAGE_KEYS.TUTOR_THREADS, all);
   }
 
   static async getQuestionIdsWithHistory(): Promise<string[]> {
     const all = await this.getAll();
-    return Object.keys(all).filter((id) => (all[id]?.messages.length || 0) > 0);
+    return Object.keys(all).filter(
+      (id) => !id.includes("::") && (all[id]?.messages.length || 0) > 0,
+    );
   }
 }

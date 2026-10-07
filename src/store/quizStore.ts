@@ -20,6 +20,7 @@ interface QuizState {
   sessionAttempts: QuizAttempt[];
   sessionTitle: string;
   sessionEpoch: number;
+  sessionId: string;
 
   // Actions
   startQuiz: (questions: Question[], title?: string, options?: { preserveOrder?: boolean }) => void;
@@ -52,8 +53,10 @@ export const useQuizStore = create<QuizState>((set, get) => ({
   sessionAttempts: [],
   sessionTitle: '문제 풀이',
   sessionEpoch: 0,
+  sessionId: '',
 
   startQuiz: (questions, title = '문제 풀이', options) => {
+    const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
     set({
       questions: options?.preserveOrder ? [...questions] : shuffleArray(questions),
       currentIndex: 0,
@@ -66,6 +69,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
       sessionAttempts: [],
       sessionTitle: title,
       sessionEpoch: get().sessionEpoch + 1,
+      sessionId: newSessionId,
     });
   },
 
@@ -223,6 +227,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
       hintUsed: false,
       sessionAttempts: [],
       sessionEpoch: get().sessionEpoch + 1,
+      sessionId: '',
     });
   },
 }));

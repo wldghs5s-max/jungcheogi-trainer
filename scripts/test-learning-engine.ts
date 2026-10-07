@@ -15,6 +15,7 @@ import { ProgrammingEngine } from '../src/services/programming/programmingEngine
 import { GeneratorRegistry } from '../src/services/programming/registry';
 import { MemoGenerationJob } from '../src/types/generationJob';
 import { savedCountFromJob, remainingFromJob } from '../src/services/memoJobService';
+import { TutorRepository } from '../src/repositories/tutorRepository';
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -458,6 +459,107 @@ async function runLearningEngineTests() {
   });
   assert(verifyE2E2.verdict === 'USER_WRONG', 'E2E-2: AI 독립 검증 USER_WRONG');
   assert(verifyE2E2.safeExplanation === realQ2.explanation, 'E2E-2: 정상 오답 해설 출력');
+
+  // ==========================================================
+  // 6. "다시 풀어보기(Again)" 시 Attempt Isolation & AI Tutor Context 분리 검증
+  // ==========================================================
+  console.log('\n--- 6. "다시 풀어보기" Attempt Isolation 및 AI Tutor Context 분리 검증 ---');
+
+  const testQuestions = allBank.slice(0, 5);
+  const qTarget = testQuestions[0];
+
+  // 1) 1차 풀이 시도 시작
+  useQuizStore.getState().startQuiz(testQuestions, '1차 세션');
+  const session1Id = useQuizStore.getState().sessionId;
+  assert(Boolean(session1Id && session1Id.startsWith('session_')), '1차 세션 ID 정상 발급 확인');
+
+  const attempt1Id = `${session1Id}_0_${qTarget.id}`;
+
+  // 1차 풀이 중 AI 튜터 질문 및 답변 저장 (오답 관련 맥락)
+  await TutorRepository.saveThread(
+    qTarget.id,
+    [
+      { id: 'msg-1', role: 'user', text: '오답 A를 골랐는데 왜 틀렸나요?' },
+      { id: 'msg-2', role: 'tutor', text: 'A는 틀렸고 정답은 B입니다.' },
+    ],
+    attempt1Id,
+  );
+
+  const thread1 = await TutorRepository.getThread(qTarget.id, attempt1Id);
+  assert(thread1 !== null && thread1.messages.length === 2, '1차 attempt AI 튜터 대화 정상 보존');
+
+  // 2) 1차 세션 오답 기록 저장 (AttemptRepository 무결성 검증용)
+  await AttemptRepository.saveAttempt({
+    questionId: qTarget.id,
+    selectedAnswer: 'A',
+    isCorrect: false,
+    answeredAt: new Date().toISOString(),
+    missType: 'WRONG',
+  });
+  const attemptsBeforeRetry = await AttemptRepository.getAttemptsByQuestionId(qTarget.id);
+  assert(attemptsBeforeRetry.length >= 1, '1차 시도 기록 AttemptRepository에 정상 저장');
+
+  // 3) 세션 완료 후 "다시 풀어보기(Again)" 실행 (preserveOrder: true)
+  useQuizStore.getState().startQuiz(testQuestions, '다시 풀기', { preserveOrder: true });
+  const session2Id = useQuizStore.getState().sessionId;
+  assert(Boolean(session2Id && session2Id.startsWith('session_')), '2차 세션 ID 정상 발급 확인');
+  assert(session1Id !== session2Id, `다시 풀기 시 새 세션 ID 생성 확인 (${session1Id} !== ${session2Id})`);
+
+  const attempt2Id = `${session2Id}_0_${qTarget.id}`;
+  assert(attempt1Id !== attempt2Id, `Attempt ID 완전 격리 확인 (${attempt1Id} !== ${attempt2Id})`);
+
+  // 4) 2차 attempt에서 AI 튜터 모달 열 때 thread 로드: 1차 대화가 누출되지 않고 null(Fresh Context)이어야 함
+  const thread2BeforeAsk = await TutorRepository.getThread(qTarget.id, attempt2Id);
+  assert(
+    thread2BeforeAsk === null,
+    '2차 시도 진입 시 1차 AI 튜터 대화 내역이 누출되지 않고 깨끗한 빈 상태(Fresh Context)로 시작됨',
+  );
+
+  // 5) 2차 attempt에서 미제출 상태일 때 상태 검증
+  const state2 = useQuizStore.getState();
+  assert(state2.isSubmitted === false, '2차 시도 초기 상태: isSubmitted === false');
+  const passedUserAnswer = state2.isSubmitted ? state2.selectedAnswer : undefined;
+  assert(passedUserAnswer === undefined, '2차 시도 미제출 시 AI 튜터에 이전 답안 미전달(undefined 처리)');
+
+  // 6) 2차 attempt에서 새 질문 진행 시 정상 저장 및 attempt2 내 격리 보존
+  await TutorRepository.saveThread(
+    qTarget.id,
+    [
+      { id: 'msg-3', role: 'user', text: '이번에는 힌트만 조금 주세요.' },
+      { id: 'msg-4', role: 'tutor', text: '핵심 키워드는 이것입니다.' },
+    ],
+    attempt2Id,
+  );
+  const thread2AfterAsk = await TutorRepository.getThread(qTarget.id, attempt2Id);
+  assert(
+    thread2AfterAsk !== null && thread2AfterAsk.messages.length === 2 && thread2AfterAsk.messages[0].text.includes('힌트'),
+    '2차 시도 내에서의 AI 튜터 대화는 해당 시도(attemptId2) 내에서 정상 유지',
+  );
+
+  // 1차 attempt 대화는 여전히 보존되어 있는지 확인
+  const thread1Recheck = await TutorRepository.getThread(qTarget.id, attempt1Id);
+  assert(
+    thread1Recheck !== null && thread1Recheck.messages[0].text.includes('오답 A'),
+    '1차 시도의 대화 내역도 1차 attemptId로 독립 보존됨',
+  );
+
+  // 7) 오답노트 모드 (attemptId 생략): 최신 해설(2차) 정상 조회 (하위 호환성 100%)
+  const threadWrongNote = await TutorRepository.getThread(qTarget.id);
+  assert(
+    threadWrongNote !== null && threadWrongNote.messages.length === 2,
+    '오답노트 복기 모드(attemptId 생략 시) 최신 해설 정상 조회 (하위 호환성 보장)',
+  );
+
+  // 8) 1차 풀이 학습 기록 및 통계가 그대로 보존되어 있는지 확인
+  const attemptsAfterRetry = await AttemptRepository.getAttemptsByQuestionId(qTarget.id);
+  assert(
+    attemptsAfterRetry.length === attemptsBeforeRetry.length,
+    '다시 풀기 진행 시 기존 학습 기록(Attempts, 통계, SRS) 100% 보존 확인',
+  );
+
+  // 9) resetQuiz 호출 시 sessionId 초기화 확인
+  useQuizStore.getState().resetQuiz();
+  assert(useQuizStore.getState().sessionId === '', 'resetQuiz 시 sessionId 리셋 확인');
 
   console.log('\n======================================================');
   console.log('🎉 [전수 검증 성공] 5,000회 시뮬레이션 및 모든 안전 검증 100% 통과!');

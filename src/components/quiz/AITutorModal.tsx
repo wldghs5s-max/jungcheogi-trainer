@@ -42,6 +42,7 @@ interface AITutorModalProps {
   userAnswer?: string | string[];
   missType?: "WRONG" | "UNKNOWN" | null;
   autoAskChapter?: boolean;
+  attemptId?: string;
   onClose: () => void;
 }
 
@@ -102,6 +103,7 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
   userAnswer,
   missType,
   autoAskChapter = false,
+  attemptId,
   onClose,
 }) => {
   const isDarkMode = useSettingsStore((state) => state.isDarkMode);
@@ -118,6 +120,8 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
   const pendingUserIdRef = useRef<string | null>(null);
   const activeQuestionIdRef = useRef<string>(question.id);
   activeQuestionIdRef.current = question.id;
+  const activeAttemptIdRef = useRef<string | undefined>(attemptId);
+  activeAttemptIdRef.current = attemptId;
   const isUnknown = missType === "UNKNOWN";
 
   const [promptInput, setPromptInput] = useState("");
@@ -152,7 +156,7 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
 
     let cancelled = false;
     (async () => {
-      const thread = await TutorRepository.getThread(question.id);
+      const thread = await TutorRepository.getThread(question.id, attemptId);
       if (cancelled) return;
       if (thread && thread.messages.length > 0) {
         setMessages(thread.messages);
@@ -172,7 +176,7 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
         abortControllerRef.current = null;
       }
     };
-  }, [visible, question.id]);
+  }, [visible, question.id, attemptId]);
 
   const scrollToLatest = () => {
     requestAnimationFrame(() => {
@@ -243,6 +247,7 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
     const controller = new AbortController();
     abortControllerRef.current = controller;
     const targetQuestionId = question.id;
+    const targetAttemptId = attemptId;
 
     const userText = (displayText ?? promptText).trim();
     const userMessage: TutorChatMessage = {
@@ -320,10 +325,11 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
         },
       );
 
-      // 모달이 닫혔거나, 요청이 취소되었거나, 다른 문제로 이동했으면 상태 갱신 무시
+      // 모달이 닫혔거나, 요청이 취소되었거나, 다른 문제/시도로 이동했으면 상태 갱신 무시
       if (
         controller.signal.aborted ||
         activeQuestionIdRef.current !== targetQuestionId ||
+        activeAttemptIdRef.current !== targetAttemptId ||
         pendingTutorIdRef.current !== tutorId
       ) {
         return;
@@ -366,11 +372,14 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
       pendingUserIdRef.current = null;
 
       setMessages((prev) => {
-        if (activeQuestionIdRef.current !== targetQuestionId) return prev;
+        if (
+          activeQuestionIdRef.current !== targetQuestionId ||
+          activeAttemptIdRef.current !== targetAttemptId
+        ) return prev;
         const next = prev.map((msg) =>
           msg.id === tutorId ? { ...msg, text: result } : msg,
         );
-        void TutorRepository.saveThread(targetQuestionId, next);
+        void TutorRepository.saveThread(targetQuestionId, next, targetAttemptId);
         return next;
       });
       setHasTutorAnswer(true);
@@ -383,7 +392,10 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
       ) {
         return;
       }
-      if (activeQuestionIdRef.current !== targetQuestionId) {
+      if (
+        activeQuestionIdRef.current !== targetQuestionId ||
+        activeAttemptIdRef.current !== targetAttemptId
+      ) {
         return;
       }
       pendingTutorIdRef.current = null;
@@ -402,7 +414,10 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
     } finally {
       if (abortControllerRef.current === controller) {
         abortControllerRef.current = null;
-        if (activeQuestionIdRef.current === targetQuestionId) {
+        if (
+          activeQuestionIdRef.current === targetQuestionId &&
+          activeAttemptIdRef.current === targetAttemptId
+        ) {
           setLoading(false);
         }
       }
