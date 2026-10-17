@@ -1,10 +1,12 @@
-﻿import { Question, Subject } from '../../types/question';
+import { Question, Subject } from '../../types/question';
 import { programmingQuestions } from './programming';
 import { databaseQuestions } from './database';
 import { softwareEngineeringQuestions } from './softwareEngineering';
 import { networkQuestions } from './network';
 import { securityQuestions } from './security';
 import { MEMORIZATION_BANK } from './memorizationBank';
+import { quickCalcQuestions } from './quickCalc';
+import { sqlPracticeQuestions } from './sqlPractice';
 
 export const ALL_QUESTIONS: Question[] = [
   ...programmingQuestions,
@@ -13,6 +15,8 @@ export const ALL_QUESTIONS: Question[] = [
   ...networkQuestions,
   ...securityQuestions,
   ...MEMORIZATION_BANK,
+  ...quickCalcQuestions,
+  ...sqlPracticeQuestions,
 ];
 
 export const SUBJECTS: Subject[] = [

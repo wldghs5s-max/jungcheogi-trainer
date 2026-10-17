@@ -273,8 +273,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     onStartQuiz(quickQuestions, "지하철 5분 퀵 퀴즈");
   };
 
-  // 안 푼 문제만 모아서 10문제 퀵 퀴즈 시작
-  const handleStartUnsolvedQuickQuiz = () => {
+  // 안 푼 문제만 모아서 10문제 퀵 퀴즈 시작 (계산 1~3개, SQL 1개, 일반 6~8개 밸런스 출제 + 쿨다운 적용)
+  const handleStartUnsolvedQuickQuiz = async () => {
     triggerHaptic.selection();
     const unsolved =
       QuestionRepository.getUnsolvedQuestions(attemptedQuestionIds);
@@ -285,7 +285,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       );
       return;
     }
-    const selected = QuestionRepository.shuffle(unsolved).slice(0, 10);
+
+    const recentAttempts = await AttemptRepository.getRecentAttempts(10);
+    const recentQuestionIds = Array.from(new Set(recentAttempts.map((a) => a.questionId)));
+
+    const selected = QuestionRepository.getUnsolved10QuickQuizQuestions(
+      attemptedQuestionIds,
+      { recentQuestionIds },
+    );
     onStartQuiz(selected, "안 푼 문제 10선 퀵 퀴즈");
   };
 

@@ -18,8 +18,24 @@ export function programmingQuestionKey(question: Question): string | null {
   return null;
 }
 
-function isProgrammingQuestion(question: Question): boolean {
+export function isProgrammingQuestion(question: Question): boolean {
   return question.subject === '프로그래밍언어활용' || !!question.code;
+}
+
+export function isQuickCalcQuestion(question: Question): boolean {
+  return (
+    question.practiceKind === 'QUICK_CALC' ||
+    (question.type === 'CODE_TRACE' && question.difficulty !== 'HARD')
+  );
+}
+
+export function isSqlQuestion(question: Question): boolean {
+  return (
+    question.practiceKind === 'SQL_PRACTICE' ||
+    question.type === 'SQL' ||
+    question.language === 'SQL' ||
+    question.category === 'SQL'
+  );
 }
 
 function questionDedupeKey(question: Question): string | null {
@@ -345,7 +361,43 @@ export class QuestionRepository {
     // 1순위: NEW (한 번도 풀지 않은 문제) - 기본 5문항 중 최소 3문항(60%) 할당
     const targetNew = Math.min(count, Math.max(3, Math.ceil(count * 0.6)));
     const newPool = availablePool.filter((q) => unsolvedSet.has(q.id));
-    takeFromPool(newPool, targetNew);
+
+    // 1순위 내부 믹스인: 암기 피로 방지를 위해 계산 1개, SQL 0~1개 우선 배정 (NEW 풀에 존재 시)
+    if (newPool.length > 0) {
+      const newCalcCandidates = newPool.filter(
+        (q) => !selectedMap.has(q.id) && isQuickCalcQuestion(q),
+      );
+      const newSqlCandidates = newPool.filter(
+        (q) => !selectedMap.has(q.id) && isSqlQuestion(q),
+      );
+
+      const calcQuota = targetNew >= 3 && newCalcCandidates.length > 0 ? 1 : 0;
+      const sqlQuota =
+        targetNew >= 4 && newSqlCandidates.length > 0
+          ? 1
+          : targetNew >= 3 && Math.random() < 0.5 && newSqlCandidates.length > 0
+          ? 1
+          : 0;
+
+      if (calcQuota > 0) {
+        takeFromPool(newCalcCandidates, calcQuota);
+      }
+      if (sqlQuota > 0) {
+        takeFromPool(newSqlCandidates, sqlQuota);
+      }
+
+      // 남은 NEW 슬롯은 일반(이론/암기) 문제로 우선 채우고, 부족 시 newPool 전체에서 보충
+      const remainingNew = targetNew - selectedMap.size;
+      if (remainingNew > 0) {
+        const generalNewCandidates = newPool.filter(
+          (q) => !isQuickCalcQuestion(q) && !isSqlQuestion(q),
+        );
+        takeFromPool(generalNewCandidates, remainingNew);
+        if (targetNew - selectedMap.size > 0) {
+          takeFromPool(newPool, targetNew - selectedMap.size);
+        }
+      }
+    }
 
     // 2순위: WEAK / 최근 오답 문제
     const weakPool = availablePool.filter(
@@ -377,12 +429,96 @@ export class QuestionRepository {
 
     // 5순위: 마스터된 문제 및 전체 풀 보충 (후보 부족 시)
     if (selectedMap.size < count) {
+      // 이미 계산/SQL 문제가 채워진 경우, 일반 문제(비계산/비SQL)로 우선 보충하여 불필요한 과다 출제 방지
+      const hasCalc = Array.from(selectedMap.values()).some(isQuickCalcQuestion);
+      const hasSql = Array.from(selectedMap.values()).some(isSqlQuestion);
+      if (hasCalc || hasSql) {
+        const nonMixed = availablePool.filter(
+          (q) => (!hasCalc || !isQuickCalcQuestion(q)) && (!hasSql || !isSqlQuestion(q)),
+        );
+        takeFromPool(nonMixed, count - selectedMap.size);
+      }
+    }
+    if (selectedMap.size < count) {
       takeFromPool(availablePool, count - selectedMap.size);
     }
     if (selectedMap.size < count) {
       takeFromPool(all, count - selectedMap.size);
     }
 
+    return this.shuffle(Array.from(selectedMap.values()));
+  }
+
+  /**
+   * 안 푼 문제 10선 퀵 퀴즈용 문제 추출
+   * 암기 피로 방지를 위해 필기구 없는 암산형 계산 문제(1~3개)와 SQL 실무 문제(1개)를
+   * 일반 암기/개념 문제와 밸런스 있게 믹스인하여 출제합니다.
+   */
+  static getUnsolved10QuickQuizQuestions(
+    attemptedQuestionIds: Set<string> | string[],
+    options?: {
+      recentQuestionIds?: string[];
+    },
+  ): Question[] {
+    const attemptedSet =
+      attemptedQuestionIds instanceof Set
+        ? attemptedQuestionIds
+        : new Set(attemptedQuestionIds);
+
+    const allUnsolved = this.getUnsolvedQuestions(attemptedSet);
+    if (allUnsolved.length === 0) {
+      return [];
+    }
+
+    // 1. 최근 출현 문제(쿨다운) 배제 풀 구성
+    const recentSet = new Set(options?.recentQuestionIds || []);
+    let pool = allUnsolved.filter((q) => !recentSet.has(q.id));
+    if (pool.length < 10) {
+      pool = allUnsolved;
+    }
+
+    if (pool.length <= 10) {
+      return this.shuffle(pool);
+    }
+
+    const selectedMap = new Map<string, Question>();
+
+    const pickFromList = (list: Question[], count: number) => {
+      if (count <= 0) return;
+      const candidates = list.filter((q) => !selectedMap.has(q.id));
+      const shuffled = this.shuffle(candidates);
+      const pickCount = Math.min(count, shuffled.length);
+      for (let i = 0; i < pickCount; i++) {
+        selectedMap.set(shuffled[i].id, shuffled[i]);
+      }
+    };
+
+    // 2. 카테고리별 후보군 분류
+    const calcCandidates = pool.filter((q) => isQuickCalcQuestion(q));
+    const sqlCandidates = pool.filter((q) => isSqlQuestion(q));
+    const generalCandidates = pool.filter(
+      (q) => !isQuickCalcQuestion(q) && !isSqlQuestion(q),
+    );
+
+    // 3. 목표 비율: 계산 1~3개, SQL 1개, 일반 6~8개
+    const desiredCalc = Math.floor(Math.random() * 3) + 1; // 1, 2, or 3
+    const desiredSql = 1;
+    const desiredGeneral = 10 - desiredCalc - desiredSql;
+
+    // 4. 슬롯 순차 할당
+    pickFromList(calcCandidates, desiredCalc);
+    pickFromList(sqlCandidates, desiredSql);
+    pickFromList(generalCandidates, desiredGeneral);
+
+    // 5. 풀 부족 시 남은 풀 및 전체 미풀이 풀에서 10문항 안전 보충
+    if (selectedMap.size < 10) {
+      pickFromList(pool, 10 - selectedMap.size);
+    }
+    if (selectedMap.size < 10) {
+      pickFromList(allUnsolved, 10 - selectedMap.size);
+    }
+
+    // 6. 문제가 문제 세션 중간중간 자연스럽게 배치되도록 최종 셔플
     return this.shuffle(Array.from(selectedMap.values()));
   }
 

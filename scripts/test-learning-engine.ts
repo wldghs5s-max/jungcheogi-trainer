@@ -1,5 +1,9 @@
 import { ALL_QUESTIONS } from '../src/data/questions';
-import { QuestionRepository } from '../src/repositories/questionRepository';
+import {
+  QuestionRepository,
+  isQuickCalcQuestion,
+  isSqlQuestion,
+} from '../src/repositories/questionRepository';
 import { AttemptRepository } from '../src/repositories/attemptRepository';
 import { checkAnswer, formatAnswerDisplay, normalizeAnswer } from '../src/utils/quiz';
 import { useQuizStore } from '../src/store/quizStore';
@@ -199,6 +203,68 @@ async function runLearningEngineTests() {
   assert(Number(avgNew) >= 3.0, `NEW 평균이 3.0(60%) 이상이어야 함 (실제: ${avgNew})`);
   assert(Number(recentOverlapRate) === 0, `최근 10문항 쿨다운 중복률이 0%여야 함 (실제: ${recentOverlapRate}%)`);
   assert(Number(avgMastered) === 0, `NEW와 WEAK가 충분할 때 MASTERED는 0이어야 함 (실제: ${avgMastered})`);
+
+  // ==========================================================
+  // 2.5 암산형 계산 문제 및 SQL 문제 출제 빈도 밸런스 검증
+  // ==========================================================
+  console.log('\n--- 2.5 암산형 계산 문제 및 SQL 문제 출제 빈도 밸런스 검증 ---');
+
+  // 1) 헬퍼 함수 판별 검증
+  const sampleCalc = allBank.find((q) => q.practiceKind === 'QUICK_CALC');
+  const sampleSql = allBank.find((q) => q.practiceKind === 'SQL_PRACTICE');
+  assert(Boolean(sampleCalc && isQuickCalcQuestion(sampleCalc)), 'QUICK_CALC 문제 isQuickCalcQuestion 참');
+  assert(Boolean(sampleSql && isSqlQuestion(sampleSql)), 'SQL_PRACTICE 문제 isSqlQuestion 참');
+
+  // 2) 안 푼 문제 10선 퀴즈: 계산 1~3개, SQL 1개 엄격 검증 (500회)
+  const TEST_ROUNDS_10 = 500;
+  let totalCalcIn10 = 0;
+  let totalSqlIn10 = 0;
+  for (let r = 0; r < TEST_ROUNDS_10; r++) {
+    const selected10 = QuestionRepository.getUnsolved10QuickQuizQuestions(new Set());
+    assert(selected10.length === 10, `10선 퀴즈 라운드 ${r}: 정확히 10문항 반환`);
+    const uniqueIds = new Set(selected10.map((q) => q.id));
+    assert(uniqueIds.size === 10, `10선 퀴즈 라운드 ${r}: 10문항 모두 고유 ID`);
+
+    const calcCount = selected10.filter((q) => isQuickCalcQuestion(q)).length;
+    const sqlCount = selected10.filter((q) => isSqlQuestion(q)).length;
+    assert(calcCount >= 1 && calcCount <= 3, `10선 퀴즈 라운드 ${r}: 계산 문제 1~3개 범위 준수 (실제: ${calcCount}개)`);
+    assert(sqlCount === 1, `10선 퀴즈 라운드 ${r}: SQL 문제 정확히 1개 출제 (실제: ${sqlCount}개)`);
+
+    totalCalcIn10 += calcCount;
+    totalSqlIn10 += sqlCount;
+  }
+  const avgCalc10 = (totalCalcIn10 / TEST_ROUNDS_10).toFixed(2);
+  const avgSql10 = (totalSqlIn10 / TEST_ROUNDS_10).toFixed(2);
+  console.log(`📊 [안 푼 문제 10선 퀴즈 500회 통계] 평균 계산: ${avgCalc10}개, 평균 SQL: ${avgSql10}개`);
+
+  // 10선 쿨다운 배제 검증
+  const recent10InTest = allBank.slice(0, 10).map((q) => q.id);
+  const selected10Cooldown = QuestionRepository.getUnsolved10QuickQuizQuestions(new Set(), {
+    recentQuestionIds: recent10InTest,
+  });
+  const cooldownOverlap10 = selected10Cooldown.filter((q) => recent10InTest.includes(q.id));
+  assert(cooldownOverlap10.length === 0, `10선 퀴즈: 최근 10문항 쿨다운 배제 완료 (중복: ${cooldownOverlap10.length}개)`);
+
+  // 3) 5분 퀵 퀴즈: 계산 1개, SQL 0~1개, NEW 3개 이상 유지 검증 (500회)
+  const TEST_ROUNDS_5 = 500;
+  let totalCalcIn5 = 0;
+  let totalSqlIn5 = 0;
+  const freshUnsolved = allBank.map((q) => q.id);
+  for (let r = 0; r < TEST_ROUNDS_5; r++) {
+    const selected5 = QuestionRepository.getQuickQuizQuestions(5, [], [], freshUnsolved);
+    assert(selected5.length === 5, `5선 퀴즈 라운드 ${r}: 정확히 5문항 반환`);
+    const calcCount5 = selected5.filter((q) => isQuickCalcQuestion(q)).length;
+    const sqlCount5 = selected5.filter((q) => isSqlQuestion(q)).length;
+
+    assert(calcCount5 === 1, `5선 퀴즈 라운드 ${r}: 계산 문제 정확히 1개 배정 (실제: ${calcCount5}개)`);
+    assert(sqlCount5 >= 0 && sqlCount5 <= 1, `5선 퀴즈 라운드 ${r}: SQL 문제 0~1개 배정 (실제: ${sqlCount5}개)`);
+
+    totalCalcIn5 += calcCount5;
+    totalSqlIn5 += sqlCount5;
+  }
+  const avgCalc5 = (totalCalcIn5 / TEST_ROUNDS_5).toFixed(2);
+  const avgSql5 = (totalSqlIn5 / TEST_ROUNDS_5).toFixed(2);
+  console.log(`📊 [5분 퀵 퀴즈 500회 통계] 평균 계산: ${avgCalc5}개, 평균 SQL: ${avgSql5}개`);
 
   // ==========================================================
   // 3. 채점: 기호 및 코드 정규화 전수 점검
@@ -490,8 +556,10 @@ async function runLearningEngineTests() {
 
   // 2) 1차 세션 오답 기록 저장 (AttemptRepository 무결성 검증용)
   await AttemptRepository.saveAttempt({
+    id: 'test-attempt-1',
     questionId: qTarget.id,
     selectedAnswer: 'A',
+    correctAnswer: qTarget.answer,
     isCorrect: false,
     answeredAt: new Date().toISOString(),
     missType: 'WRONG',
