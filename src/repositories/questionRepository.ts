@@ -1,8 +1,32 @@
-import { ALL_QUESTIONS } from '../data/questions';
-import { Question, Subject } from '../types/question';
+import {
+  ALL_QUESTIONS,
+  SECURITY_QUESTIONS,
+  isSecuritySubject,
+} from '../data/questions';
+import {
+  filterSecurityQuestionsByScope,
+  getSecurityChaptersBySubject,
+  getSecurityQuestionSourceKind,
+  isSecurity2027RevisionQuestion,
+  SecurityChapterNode,
+  SecurityQuestionScopeFilter,
+} from '../data/security';
+import {
+  CertificationType,
+  Question,
+  SecuritySubject,
+  Subject,
+} from '../types/question';
 import { LocalStorage, STORAGE_KEYS } from '../storage/localStorage';
 import { shuffleArray } from '../utils/quiz';
 import { findNearDuplicateMemo } from '../utils/memoDedupe';
+
+export function getQuestionCertification(question: Question): CertificationType {
+  if (question.certification === 'SECURITY' || isSecuritySubject(question.subject)) {
+    return 'SECURITY';
+  }
+  return 'JUNGCHEOGI';
+}
 
 export function generalQuestionStem(question: Question): string {
   return `${question.subject}:${question.question.replace(/\s+/g, '').toUpperCase()}`;
@@ -75,6 +99,9 @@ export function pickDuplicateCachedIds(
 }
 
 export class QuestionRepository {
+  private static readonly staticById = new Map(
+    [...ALL_QUESTIONS, ...SECURITY_QUESTIONS].map((question) => [question.id, question]),
+  );
   private static cachedServerQuestions: Question[] = [];
 
   private static async readCachedServerQuestions(): Promise<void> {
@@ -227,12 +254,18 @@ export class QuestionRepository {
   }
 
   /**
-   * 기본 정적 문제와 서버에서 다운로드된 신규 문제를 합친 전체 목록을 반환합니다.
+   * 자격증별 기본 정적 문제와 서버 캐시 문제를 합친 목록을 반환합니다.
+   * 기본값은 기존 호환성을 위해 'JUNGCHEOGI'(정보처리기사)입니다.
    */
-  static getAll(): Question[] {
+  static getAll(certification: CertificationType = 'JUNGCHEOGI'): Question[] {
+    const baseStatic =
+      certification === 'SECURITY' ? SECURITY_QUESTIONS : ALL_QUESTIONS;
+    const cachedForCert = this.cachedServerQuestions.filter(
+      (q) => getQuestionCertification(q) === certification,
+    );
     const seen = new Set<string>();
     const merged: Question[] = [];
-    for (const question of [...ALL_QUESTIONS, ...this.cachedServerQuestions]) {
+    for (const question of [...baseStatic, ...cachedForCert]) {
       if (seen.has(question.id)) continue;
       seen.add(question.id);
       merged.push(question);
@@ -241,37 +274,144 @@ export class QuestionRepository {
   }
 
   /**
-   * ID로 문제를 조회합니다.
+   * 모든 자격증의 문제를 합친 전체 목록을 반환합니다.
+   */
+  static getAllAcrossCertifications(): Question[] {
+    const seen = new Set<string>();
+    const merged: Question[] = [];
+    for (const question of [
+      ...ALL_QUESTIONS,
+      ...SECURITY_QUESTIONS,
+      ...this.cachedServerQuestions,
+    ]) {
+      if (seen.has(question.id)) continue;
+      seen.add(question.id);
+      merged.push(question);
+    }
+    return merged;
+  }
+
+  /**
+   * ID로 문제를 조회합니다 (자격증 무관 전체 풀에서 검색).
    */
   static getById(id: string): Question | undefined {
-    return this.getAll().find((q) => q.id === id);
+    return this.staticById.get(id) ?? this.cachedServerQuestions.find((q) => q.id === id);
   }
 
   /**
    * 과목별 문제를 조회합니다.
    */
-  static getBySubject(subject: Subject): Question[] {
-    return this.getAll().filter((q) => q.subject === subject);
+  static getBySubject(
+    subject: Subject,
+    certification?: CertificationType,
+  ): Question[] {
+    const targetCert: CertificationType =
+      certification ?? (isSecuritySubject(subject) ? 'SECURITY' : 'JUNGCHEOGI');
+    return this.getAll(targetCert).filter((q) => q.subject === subject);
   }
 
   /**
    * 단원/카테고리별 문제를 조회합니다.
    */
-  static getByCategory(category: string): Question[] {
-    return this.getAll().filter((q) => q.category === category);
+  static getByCategory(
+    category: string,
+    certification: CertificationType = 'JUNGCHEOGI',
+  ): Question[] {
+    return this.getAll(certification).filter((q) => q.category === category);
   }
 
-  static getExamYears(): number[] {
+  /**
+   * 정보보안기사 과목별 `챕터 → 세부 섹션` 트리를 조회합니다.
+   */
+  static getSecurityChapters(subject: SecuritySubject): SecurityChapterNode[] {
+    return getSecurityChaptersBySubject(subject);
+  }
+
+  /**
+   * 정보보안기사 `과목 → 챕터(전체) → 세부 섹션` 및 필터 모드(전체/실제 기출/2027 개정 대비)에 따른 문제를 조회합니다.
+   */
+  static getSecurityQuestionsByScope(
+    scope: SecurityQuestionScopeFilter,
+  ): Question[] {
+    return filterSecurityQuestionsByScope(this.getAll('SECURITY'), scope);
+  }
+
+  /**
+   * 정보보안기사 특정 범위(과목/챕터/섹션)의 풀 수 있는 문항 수 및 출처·기준별 문항 수를 계산합니다.
+   */
+  static getSecurityScopeCounts(
+    scope: Omit<SecurityQuestionScopeFilter, 'filterMode' | 'onlyUnsolved'>,
+    options?: {
+      filterMode?: SecurityQuestionScopeFilter['filterMode'];
+      onlyUnsolved?: boolean;
+      attemptedQuestionIds?: Set<string>;
+    },
+  ): {
+    availableCount: number;
+    totalAllCount: number;
+    unsolvedCount: number;
+    pastExamCount: number;
+    createdCount: number;
+    revised2027Count: number;
+  } {
+    const allInScope = this.getSecurityQuestionsByScope({
+      ...scope,
+      filterMode: 'ALL',
+      onlyUnsolved: false,
+    });
+    const activeFiltered = this.getSecurityQuestionsByScope({
+      ...scope,
+      filterMode: options?.filterMode ?? 'ALL',
+      onlyUnsolved: options?.onlyUnsolved ?? false,
+      attemptedQuestionIds: options?.attemptedQuestionIds,
+    });
+    const unsolvedInFilter = this.getSecurityQuestionsByScope({
+      ...scope,
+      filterMode: options?.filterMode ?? 'ALL',
+      onlyUnsolved: true,
+      attemptedQuestionIds: options?.attemptedQuestionIds,
+    });
+
+    let pastExamCount = 0;
+    let createdCount = 0;
+    let revised2027Count = 0;
+    for (const q of allInScope) {
+      if (getSecurityQuestionSourceKind(q) === 'PAST_EXAM') {
+        pastExamCount += 1;
+      } else {
+        createdCount += 1;
+      }
+      if (isSecurity2027RevisionQuestion(q)) {
+        revised2027Count += 1;
+      }
+    }
+
+    return {
+      availableCount: activeFiltered.length,
+      totalAllCount: allInScope.length,
+      unsolvedCount: unsolvedInFilter.length,
+      pastExamCount,
+      createdCount,
+      revised2027Count,
+    };
+  }
+
+  static getExamYears(
+    certification: CertificationType = 'JUNGCHEOGI',
+  ): number[] {
     const years = new Set<number>();
-    for (const question of this.getAll()) {
+    for (const question of this.getAll(certification)) {
       if (question.examYear) years.add(question.examYear);
     }
     return Array.from(years).sort((a, b) => b - a);
   }
 
-  static getExamRounds(year?: number): number[] {
+  static getExamRounds(
+    year?: number,
+    certification: CertificationType = 'JUNGCHEOGI',
+  ): number[] {
     const rounds = new Set<number>();
-    for (const question of this.getAll()) {
+    for (const question of this.getAll(certification)) {
       if (year && question.examYear !== year) continue;
       if (question.examRound) rounds.add(question.examRound);
     }
@@ -290,17 +430,30 @@ export class QuestionRepository {
     });
   }
 
-  static getByCategories(categories: string[], limit = 10): Question[] {
+  static getByCategories(
+    categories: string[],
+    limit = 10,
+    certification: CertificationType = 'JUNGCHEOGI',
+  ): Question[] {
     const unique = new Set(categories);
-    const matched = this.getAll().filter((q) => unique.has(q.category));
+    const matched = this.getAll(certification).filter((q) =>
+      unique.has(q.category),
+    );
     return this.shuffle(matched).slice(0, limit);
   }
 
   /**
    * 여러 ID에 해당하는 문제를 순서대로 조회합니다. (오답노트, 북마크 등)
+   * certification이 지정된 경우 해당 자격증 문제만 필터링합니다.
    */
-  static getByIds(ids: string[]): Question[] {
-    const map = new Map(this.getAll().map((q) => [q.id, q]));
+  static getByIds(
+    ids: string[],
+    certification?: CertificationType,
+  ): Question[] {
+    const source = certification
+      ? this.getAll(certification)
+      : this.getAllAcrossCertifications();
+    const map = new Map(source.map((q) => [q.id, q]));
     return ids
       .map((id) => map.get(id))
       .filter((q): q is Question => q !== undefined);
@@ -329,9 +482,10 @@ export class QuestionRepository {
       recentQuestionIds?: string[];
       weakQuestionIds?: string[];
       masteredQuestionIds?: string[];
+      certification?: CertificationType;
     },
   ): Question[] {
-    const all = this.getAll();
+    const all = this.getAll(options?.certification ?? 'JUNGCHEOGI');
     const selectedMap = new Map<string, Question>();
 
     // 1. 최근 출현 문제(쿨다운) 배제 풀 구성
@@ -348,13 +502,18 @@ export class QuestionRepository {
     const weakCatSet = new Set(weakCategories);
     const masteredSet = new Set(options?.masteredQuestionIds || []);
 
-    const takeFromPool = (pool: Question[], limit: number) => {
+    let sqlSelected = false;
+    const takeFromPool = (pool: Question[], limit: number, allowExtraSql = false) => {
       if (limit <= 0) return;
       const candidates = pool.filter((q) => !selectedMap.has(q.id));
       const shuffled = this.shuffle(candidates);
-      const pickCount = Math.min(limit, shuffled.length);
-      for (let i = 0; i < pickCount; i++) {
-        selectedMap.set(shuffled[i].id, shuffled[i]);
+      let added = 0;
+      for (const question of shuffled) {
+        const sql = isSqlQuestion(question);
+        if (count === 5 && sql && sqlSelected && !allowExtraSql) continue;
+        selectedMap.set(question.id, question);
+        sqlSelected ||= sql;
+        if (++added === limit) break;
       }
     };
 
@@ -443,7 +602,7 @@ export class QuestionRepository {
       takeFromPool(availablePool, count - selectedMap.size);
     }
     if (selectedMap.size < count) {
-      takeFromPool(all, count - selectedMap.size);
+      takeFromPool(all, count - selectedMap.size, true);
     }
 
     return this.shuffle(Array.from(selectedMap.values()));
@@ -458,6 +617,7 @@ export class QuestionRepository {
     attemptedQuestionIds: Set<string> | string[],
     options?: {
       recentQuestionIds?: string[];
+      certification?: CertificationType;
     },
   ): Question[] {
     const attemptedSet =
@@ -465,7 +625,13 @@ export class QuestionRepository {
         ? attemptedQuestionIds
         : new Set(attemptedQuestionIds);
 
-    const allUnsolved = this.getUnsolvedQuestions(attemptedSet);
+    const allUnsolved = this.getUnsolvedQuestions(
+      attemptedSet,
+      undefined,
+      null,
+      null,
+      options?.certification ?? 'JUNGCHEOGI',
+    );
     if (allUnsolved.length === 0) {
       return [];
     }
@@ -530,8 +696,14 @@ export class QuestionRepository {
     subject?: Subject,
     year?: number | null,
     round?: number | null,
+    certification?: CertificationType,
   ): Question[] {
-    let questions = this.getAll().filter((q) => !attemptedIds.has(q.id));
+    const targetCert: CertificationType =
+      certification ??
+      (subject && isSecuritySubject(subject) ? 'SECURITY' : 'JUNGCHEOGI');
+    let questions = this.getAll(targetCert).filter(
+      (q) => !attemptedIds.has(q.id),
+    );
     if (subject) {
       questions = questions.filter((q) => q.subject === subject);
     }
@@ -546,8 +718,9 @@ export class QuestionRepository {
     keywords: string[],
     limit = 10,
     prioritizeIds: string[] = [],
+    certification?: CertificationType,
   ): Question[] {
-    const allSubjectQuestions = this.getBySubject(subject);
+    const allSubjectQuestions = this.getBySubject(subject, certification);
     if (keywords.length === 0) {
       return this.shuffle(allSubjectQuestions).slice(0, limit);
     }

@@ -1,5 +1,29 @@
 import { LocalStorage, STORAGE_KEYS } from '../storage/localStorage';
 import { isUnknownAttempt, MissType, QuizAttempt } from '../types/attempt';
+import { CertificationType } from '../types/question';
+import {
+  QuestionRepository,
+  getQuestionCertification,
+} from './questionRepository';
+
+export function resolveAttemptCertification(
+  attempt: Pick<QuizAttempt, 'questionId' | 'certification'>,
+): CertificationType {
+  if (
+    attempt.certification === 'SECURITY' ||
+    attempt.certification === 'JUNGCHEOGI'
+  ) {
+    return attempt.certification;
+  }
+  const q = QuestionRepository.getById(attempt.questionId);
+  if (q) {
+    return getQuestionCertification(q);
+  }
+  if (attempt.questionId.startsWith('SEC_EXAM_')) {
+    return 'SECURITY';
+  }
+  return 'JUNGCHEOGI';
+}
 
 export interface WrongQuestionSummary {
   questionId: string;
@@ -21,9 +45,13 @@ export class AttemptRepository {
    * 새로운 풀이 이력을 저장합니다.
    */
   static async saveAttempt(attempt: QuizAttempt): Promise<void> {
+    const normalizedAttempt: QuizAttempt = {
+      ...attempt,
+      certification: resolveAttemptCertification(attempt),
+    };
     const run = this.writeQueue.then(async () => {
       const attempts = await this.getAllAttempts();
-      attempts.unshift(attempt);
+      attempts.unshift(normalizedAttempt);
       await LocalStorage.setItem(STORAGE_KEYS.QUIZ_ATTEMPTS, attempts);
     });
     this.writeQueue = run.then(
@@ -60,18 +88,31 @@ export class AttemptRepository {
   }
 
   /**
-   * 모든 풀이 이력을 불러옵니다.
+   * 풀이 이력을 불러옵니다.
+   * certification이 지정되면 해당 자격증 기록만 필터링하고, 구버전(certification 미지정) 기록은
+   * 정보처리기사('JUNGCHEOGI') 기록으로 자동 보존합니다.
    */
-  static async getAllAttempts(): Promise<QuizAttempt[]> {
-    const attempts = await LocalStorage.getItem<QuizAttempt[]>(STORAGE_KEYS.QUIZ_ATTEMPTS);
-    return attempts || [];
+  static async getAllAttempts(
+    certification?: CertificationType,
+  ): Promise<QuizAttempt[]> {
+    const attempts =
+      (await LocalStorage.getItem<QuizAttempt[]>(STORAGE_KEYS.QUIZ_ATTEMPTS)) ||
+      [];
+    if (!certification) {
+      return attempts;
+    }
+    return attempts.filter(
+      (att) => resolveAttemptCertification(att) === certification,
+    );
   }
 
   /**
    * 한 번이라도 시도(풀이)한 문제 ID 집합을 반환합니다.
    */
-  static async getAttemptedQuestionIds(): Promise<Set<string>> {
-    const attempts = await this.getAllAttempts();
+  static async getAttemptedQuestionIds(
+    certification?: CertificationType,
+  ): Promise<Set<string>> {
+    const attempts = await this.getAllAttempts(certification);
     return new Set(attempts.map((a) => a.questionId));
   }
 
@@ -86,16 +127,21 @@ export class AttemptRepository {
   /**
    * 최근 풀이 이력을 지정한 개수만큼 조회합니다.
    */
-  static async getRecentAttempts(limit = 10): Promise<QuizAttempt[]> {
-    const attempts = await this.getAllAttempts();
+  static async getRecentAttempts(
+    limit = 10,
+    certification?: CertificationType,
+  ): Promise<QuizAttempt[]> {
+    const attempts = await this.getAllAttempts(certification);
     return attempts.slice(0, limit);
   }
 
   /**
    * 문제별 오답 통계 집계 정보를 반환합니다.
    */
-  static async getWrongQuestionSummaries(): Promise<WrongQuestionSummary[]> {
-    const attempts = await this.getAllAttempts();
+  static async getWrongQuestionSummaries(
+    certification?: CertificationType,
+  ): Promise<WrongQuestionSummary[]> {
+    const attempts = await this.getAllAttempts(certification);
     const map = new Map<string, WrongQuestionSummary>();
 
     // attempts는 최신순(unshift)으로 정렬되어 있으므로 첫 번째 만나는 것이 최근 결과임
@@ -142,8 +188,11 @@ export class AttemptRepository {
   /**
    * 오답 필터(최근 오답, 많이 틀린 순, 전체 오답)에 따라 문제 ID 목록을 반환합니다.
    */
-  static async getWrongQuestionIds(filter: 'all' | 'recent' | 'most_wrong' = 'all'): Promise<string[]> {
-    const summaries = await this.getWrongQuestionSummaries();
+  static async getWrongQuestionIds(
+    filter: 'all' | 'recent' | 'most_wrong' = 'all',
+    certification?: CertificationType,
+  ): Promise<string[]> {
+    const summaries = await this.getWrongQuestionSummaries(certification);
 
     if (filter === 'recent') {
       // 최근에 푼 결과가 오답인 것 우선, 최근 푼 날짜순 정렬
@@ -166,12 +215,34 @@ export class AttemptRepository {
       .map((s) => s.questionId);
   }
 
-  static async getUnknownQuestionIds(): Promise<string[]> {
-    const summaries = await this.getWrongQuestionSummaries();
+  static async getUnknownQuestionIds(
+    certification?: CertificationType,
+  ): Promise<string[]> {
+    const summaries = await this.getWrongQuestionSummaries(certification);
     return summaries
       .filter((s) => s.lastMissType === "UNKNOWN")
       .sort((a, b) => new Date(b.lastAnsweredAt).getTime() - new Date(a.lastAnsweredAt).getTime())
       .map((s) => s.questionId);
+  }
+
+  /**
+   * 특정 자격증의 풀이 이력만 초기화합니다.
+   */
+  static async clearByCertification(
+    certification: CertificationType,
+  ): Promise<void> {
+    const run = this.writeQueue.then(async () => {
+      const all = await this.getAllAttempts();
+      const remaining = all.filter(
+        (att) => resolveAttemptCertification(att) !== certification,
+      );
+      await LocalStorage.setItem(STORAGE_KEYS.QUIZ_ATTEMPTS, remaining);
+    });
+    this.writeQueue = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    return run;
   }
 
   /**

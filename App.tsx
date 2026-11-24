@@ -21,6 +21,7 @@ import { COLORS } from "./src/utils/theme";
 
 // 컴포넌트 및 화면 임포트
 import { BottomTabBar, TabType } from "./src/components/common/BottomTabBar";
+import { CertificationSelectScreen } from "./src/screens/CertificationSelectScreen";
 import { HomeScreen } from "./src/screens/HomeScreen";
 import { QuizScreen } from "./src/screens/QuizScreen";
 import { ResultScreen } from "./src/screens/ResultScreen";
@@ -41,12 +42,21 @@ export default function App() {
 
 function AppShell() {
   const insets = useSafeAreaInsets();
-  const { isDarkMode, loadSettings } = useSettingsStore();
+  const {
+    isDarkMode,
+    selectedCertification,
+    isSettingsLoaded,
+    setSelectedCertification,
+    loadSettings,
+  } = useSettingsStore();
   const { loadUserSettings } = useUserStore();
   const { startQuiz, resetQuiz, questions, sessionTitle } = useQuizStore();
 
   const [mode, setMode] = useState<AppMode>("TABS");
   const [currentTab, setCurrentTab] = useState<TabType>("home");
+  const [theoryInitialMode, setTheoryInitialMode] = useState<
+    "mnemonic" | "theory"
+  >("mnemonic");
   const lastBackPressRef = useRef<number>(0);
 
   useEffect(() => {
@@ -167,40 +177,75 @@ function AppShell() {
     >
       <StatusBar style={isDarkMode ? "light" : "dark"} />
       <View style={[styles.container, { backgroundColor: theme.background }]}>
-        {mode === "QUIZ" && (
-          <QuizScreen onFinish={handleFinishQuiz} onExit={handleExitQuiz} />
-        )}
-
-        {mode === "RESULT" && (
-          <ResultScreen
-            onGoHome={handleGoHomeFromResult}
-            onGoWrongNote={handleGoWrongNoteFromResult}
-            onRetry={handleRetryQuiz}
+        {!isSettingsLoaded ? null : selectedCertification === null ? (
+          <CertificationSelectScreen
+            onSelect={(cert) => {
+              setTheoryInitialMode(cert === "SECURITY" ? "theory" : "mnemonic");
+              void setSelectedCertification(cert);
+            }}
           />
-        )}
+        ) : (
+          <>
+            {mode === "QUIZ" && (
+              <QuizScreen onFinish={handleFinishQuiz} onExit={handleExitQuiz} />
+            )}
 
-        {mode === "TABS" && (
-          <View style={styles.tabContent}>
-            {currentTab === "home" && (
-              <HomeScreen
-                onStartQuiz={handleStartQuiz}
-                onGoWrongNote={() => setCurrentTab("wrong_note")}
-                onGoStats={() => setCurrentTab("statistics")}
-                onGoTheory={() => setCurrentTab("theory")}
+            {mode === "RESULT" && (
+              <ResultScreen
+                onGoHome={handleGoHomeFromResult}
+                onGoWrongNote={handleGoWrongNoteFromResult}
+                onRetry={handleRetryQuiz}
               />
             )}
-            {currentTab === "theory" && (
-              <TheoryStudyScreen onStartQuiz={handleStartQuiz} />
-            )}
-            {currentTab === "wrong_note" && (
-              <WrongNoteScreen onStartQuiz={handleStartQuiz} />
-            )}
-            {currentTab === "statistics" && <StatisticsScreen />}
-            {currentTab === "settings" && <SettingsScreen />}
 
-            {/* 하단 공통 탭 바 */}
-            <BottomTabBar currentTab={currentTab} onTabChange={setCurrentTab} />
-          </View>
+            {mode === "TABS" && (
+              <View style={styles.tabContent}>
+                {currentTab === "home" && (
+                  <HomeScreen
+                    key={selectedCertification}
+                    onStartQuiz={handleStartQuiz}
+                    onGoWrongNote={() => setCurrentTab("wrong_note")}
+                    onGoStats={() => setCurrentTab("statistics")}
+                    onGoTheory={(targetMode) => {
+                      setTheoryInitialMode(
+                        targetMode ??
+                          (selectedCertification === "SECURITY"
+                            ? "theory"
+                            : "mnemonic"),
+                      );
+                      setCurrentTab("theory");
+                    }}
+                  />
+                )}
+                {currentTab === "theory" && (
+                  <TheoryStudyScreen
+                    onStartQuiz={handleStartQuiz}
+                    initialMode={theoryInitialMode}
+                  />
+                )}
+                {currentTab === "wrong_note" && (
+                  <WrongNoteScreen onStartQuiz={handleStartQuiz} />
+                )}
+                {currentTab === "statistics" && <StatisticsScreen />}
+                {currentTab === "settings" && <SettingsScreen />}
+
+                {/* 하단 공통 탭 바 */}
+                <BottomTabBar
+                  currentTab={currentTab}
+                  onTabChange={(tab) => {
+                    if (tab === "theory" && currentTab !== "theory") {
+                      setTheoryInitialMode(
+                        selectedCertification === "SECURITY"
+                          ? "theory"
+                          : "mnemonic",
+                      );
+                    }
+                    setCurrentTab(tab);
+                  }}
+                />
+              </View>
+            )}
+          </>
         )}
       </View>
     </View>

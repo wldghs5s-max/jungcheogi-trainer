@@ -12,17 +12,43 @@ permissions:
   contents: write
 
 jobs:
-  build-apk:
-    name: Build Release APK
+  verify:
+    name: Verify Typecheck & Test Suites
     runs-on: ubuntu-latest
     steps:
       - name: 1. Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 2. Setup Node.js 20
+      - name: 2. Setup Node.js 22 (Expo SDK 57 LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '22'
+          cache: 'npm'
+
+      - name: 3. Install NPM Dependencies
+        run: npm ci
+
+      - name: 4. Run Typecheck & All Test Suites
+        run: |
+          npm run typecheck
+          npm run test
+          npm run test:programming
+          npm run test:gemini
+          npm run test:learning
+
+  build-apk:
+    name: Build & Verify Signed Release APK
+    needs: verify
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 2. Setup Node.js 22 (Expo SDK 57 LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
           cache: 'npm'
 
       - name: 3. Setup Java 17
@@ -41,90 +67,177 @@ jobs:
       - name: 6. Install NPM Dependencies
         run: npm ci
 
-      - name: 7. Run Typecheck & Test Suites
+      - name: 7. Validate Version Metadata, Release Policy & Required Signing Secrets
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          npm run typecheck
-          npm run test
-          npm run test:programming
-          npm run test:gemini
+          set -euo pipefail
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          LOCK_VERSION=$(node -p "require('./package-lock.json').version")
+          LOCK_ROOT_VERSION=$(node -p "require('./package-lock.json').packages[''].version")
+          APP_VERSION=$(node -p "require('./app.json').expo.version")
+          VERSION_CODE=$(node -p "require('./app.json').expo.android.versionCode")
+          APP_PACKAGE=$(node -p "require('./app.json').expo.android.package")
+
+          if [ "$PKG_VERSION" != "$APP_VERSION" ] || [ "$PKG_VERSION" != "$LOCK_VERSION" ] || [ "$PKG_VERSION" != "$LOCK_ROOT_VERSION" ]; then
+            echo "::error::Version mismatch across package.json ($PKG_VERSION), package-lock.json ($LOCK_VERSION/$LOCK_ROOT_VERSION), and app.json ($APP_VERSION)"
+            exit 1
+          fi
+
+          if [[ "${GITHUB_REF:-}" == refs/tags/v* ]]; then
+            EXPECTED_TAG="v${PKG_VERSION}"
+            if [ "${GITHUB_REF_NAME}" != "$EXPECTED_TAG" ]; then
+              echo "::error::Git tag (${GITHUB_REF_NAME}) does not match package version ($EXPECTED_TAG)"
+              exit 1
+            fi
+          fi
+
+          # Block public tag releases using the legacy applicationId until the distribution strategy
+          # (new applicationId selection and existing v1.8.0 Android Debug user-data migration) is finalized.
+          if [ "${GITHUB_EVENT_NAME}" = "push" ] && [[ "${GITHUB_REF:-}" == refs/tags/v* ]] && [ "$APP_PACKAGE" = "com.jungcheogi.trainer" ]; then
+            echo "::error::Public GitHub Release is blocked while android.package is legacy 'com.jungcheogi.trainer' (v1.8.0 used Android Debug cert). Finalize distribution applicationId and migration plan first."
+            exit 1
+          fi
+
+          MISSING=()
+          [ -z "${ANDROID_KEYSTORE_BASE64:-}" ] && MISSING+=("ANDROID_KEYSTORE_BASE64")
+          [ -z "${ANDROID_KEYSTORE_PASSWORD:-}" ] && MISSING+=("ANDROID_KEYSTORE_PASSWORD")
+          [ -z "${ANDROID_KEY_ALIAS:-}" ] && MISSING+=("ANDROID_KEY_ALIAS")
+          [ -z "${ANDROID_KEY_PASSWORD:-}" ] && MISSING+=("ANDROID_KEY_PASSWORD")
+
+          if [ ${#MISSING[@]} -gt 0 ]; then
+            echo "::error::Missing required persistent release signing secret(s): ${MISSING[*]}"
+            exit 1
+          fi
+
+          APK_FILENAME="jungcheogi-security-trainer-v${PKG_VERSION}.apk"
+          echo "VERSION=$PKG_VERSION" >> "$GITHUB_ENV"
+          echo "VERSION_CODE=$VERSION_CODE" >> "$GITHUB_ENV"
+          echo "APP_PACKAGE=$APP_PACKAGE" >> "$GITHUB_ENV"
+          echo "APK_FILENAME=$APK_FILENAME" >> "$GITHUB_ENV"
 
       - name: 8. Expo Prebuild (Generate Android Native Project)
         run: npx expo prebuild --platform android --clean --no-install
 
-      - name: 9. Generate Release Signing Keystore
+      - name: 9. Restore Persistent Release Keystore & Verify Gradle Signing Config
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
         run: |
-          keytool -genkeypair -v \
-            -keystore android/app/release.keystore \
-            -alias jungcheogi-alias \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -storepass android \
-            -keypass android \
-            -dname "CN=Jungcheogi,OU=Mobile,O=App,C=KR"
+          set -euo pipefail
+          if ! grep -q "MYAPP_UPLOAD_STORE_FILE" android/app/build.gradle || ! grep -q "signingConfigs.release" android/app/build.gradle; then
+            echo "::error::android/app/build.gradle is missing persistent release signingConfig wiring"
+            exit 1
+          fi
 
-      - name: 10. Assemble Release APK
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | tr -d ' \t\r\n' | base64 --decode > android/app/release.keystore
+          chmod 600 android/app/release.keystore
+
+          KEY_CERT_SHA256=$(keytool -list -v \
+            -keystore android/app/release.keystore \
+            -alias "$ANDROID_KEY_ALIAS" \
+            -storepass "$ANDROID_KEYSTORE_PASSWORD" \
+            | awk '/SHA256:/ { print toupper($2); exit }')
+
+          if [ -z "$KEY_CERT_SHA256" ]; then
+            echo "::error::Failed to read SHA-256 certificate fingerprint for alias '$ANDROID_KEY_ALIAS' from release.keystore"
+            exit 1
+          fi
+
+          if [ "$KEY_CERT_SHA256" = "FA:C6:17:45:DC:09:03:78:6F:B9:ED:E6:2A:96:2B:39:9F:73:48:F0:BB:6F:89:9B:83:32:66:75:91:03:3B:9C" ]; then
+            echo "::error::Do not register the Android/Expo debug keystore as the persistent release signing key"
+            exit 1
+          fi
+
+          echo "Expected Release Keystore Certificate SHA-256: $KEY_CERT_SHA256"
+          echo "EXPECTED_CERT_SHA256=$KEY_CERT_SHA256" >> "$GITHUB_ENV"
+
+      - name: 10. Assemble Signed Release APK
         working-directory: android
+        env:
+          ANDROID_KEYSTORE_FILE: release.keystore
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
+          set -euo pipefail
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon \
             -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g" \
-            -PMYAPP_UPLOAD_STORE_FILE=release.keystore \
-            -PMYAPP_UPLOAD_KEY_ALIAS=jungcheogi-alias \
-            -PMYAPP_UPLOAD_STORE_PASSWORD=android \
-            -PMYAPP_UPLOAD_KEY_PASSWORD=android
+            -PMYAPP_UPLOAD_STORE_FILE=release.keystore
 
-      - name: 11. Verify & Sign APK with apksigner
+      - name: 11. Verify APK Signature & Certificate with apksigner
         run: |
+          set -euo pipefail
           APK_DIR="android/app/build/outputs/apk/release"
-          echo "=== Generated Build Artifacts ==="
-          ls -lh "$APK_DIR"
-          
-          # If output is app-release-unsigned.apk and not app-release.apk, sign it explicitly
-          if [ -f "$APK_DIR/app-release-unsigned.apk" ] && [ ! -f "$APK_DIR/app-release.apk" ]; then
-            echo "Signing app-release-unsigned.apk with apksigner..."
-            BUILD_TOOLS=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -n 1)
-            $BUILD_TOOLS/apksigner sign \
-              --ks android/app/release.keystore \
-              --ks-pass pass:android \
-              --key-pass pass:android \
-              --out "$APK_DIR/app-release.apk" \
-              "$APK_DIR/app-release-unsigned.apk"
+          RELEASE_APK="$APK_DIR/app-release.apk"
+
+          if [ ! -f "$RELEASE_APK" ]; then
+            echo "::error::Expected signed release APK not found at $RELEASE_APK"
+            ls -la "$APK_DIR" || true
+            exit 1
           fi
-          
-          # Extract version from package.json
-          VERSION=$(node -p "require('./package.json').version")
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-          # Rename and copy to root directory
-          cp "$APK_DIR/app-release.apk" "jungcheogi-trainer-v${VERSION}.apk"
-          echo "=== Final APK File Info ==="
-          ls -lh "jungcheogi-trainer-v${VERSION}.apk"
+          BUILD_TOOLS=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -n 1)
+          CERT_OUTPUT=$("$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$RELEASE_APK")
+          echo "$CERT_OUTPUT"
 
-      - name: 12. Upload APK to GitHub Artifacts
+          if echo "$CERT_OUTPUT" | grep -qi "CN=Android Debug"; then
+            echo "::error::Release APK was signed with the Android Debug certificate instead of the persistent release certificate"
+            exit 1
+          fi
+
+          APK_CERT_SHA256=$(echo "$CERT_OUTPUT" \
+            | awk '/Signer #1 certificate SHA-256 digest:/ { print toupper($NF); exit }' \
+            | sed 's/\(..\)/\1:/g; s/:$//')
+
+          if [ "$APK_CERT_SHA256" != "${EXPECTED_CERT_SHA256}" ]; then
+            echo "::error::APK certificate SHA-256 ($APK_CERT_SHA256) does not match release.keystore SHA-256 (${EXPECTED_CERT_SHA256})"
+            exit 1
+          fi
+
+          cp "$RELEASE_APK" "${APK_FILENAME}"
+          rm -f android/app/release.keystore
+          ls -lh "${APK_FILENAME}"
+
+      - name: 12. Upload Signed APK to GitHub Actions Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: jungcheogi-trainer-v${{ env.VERSION }}-apk
-          path: jungcheogi-trainer-v${{ env.VERSION }}.apk
+          name: jungcheogi-security-trainer-v${{ env.VERSION }}-apk
+          path: ${{ env.APK_FILENAME }}
           retention-days: 30
 
-      - name: 13. Create or Update GitHub Release
+      - name: 13. Publish GitHub Release (Explicit Version Tag Push Only)
+        if: >-
+          github.event_name == 'push' &&
+          startsWith(github.ref, 'refs/tags/v') &&
+          env.APP_PACKAGE != 'com.jungcheogi.trainer'
         uses: softprops/action-gh-release@v2
-        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
         with:
-          tag_name: v${{ env.VERSION }}
-          name: "정처기 실기 트레이너 v${{ env.VERSION }} APK"
+          tag_name: ${{ github.ref_name }}
+          name: "정처기·보안기사 트레이너 v${{ env.VERSION }} APK"
           body: |
-            ## 정처기 실기 트레이너 v${{ env.VERSION }} APK
+            ## 정처기·보안기사 트레이너 v${{ env.VERSION }} APK
 
-            Assets에서 `jungcheogi-trainer-v${{ env.VERSION }}.apk`를 받으면 됩니다.
+            Assets에서 `${{ env.APK_FILENAME }}`를 내려받아 설치할 수 있습니다.
+            - **패키지 ID (`applicationId`)**: `${{ env.APP_PACKAGE }}`
+            - **버전 (`versionName` / `versionCode`)**: `v${{ env.VERSION }}` (`versionCode ${{ env.VERSION_CODE }}`)
+
+            ### 설치 및 학습 기록 안내
+            - 이 통합 앱은 새 패키지 ID(`${{ env.APP_PACKAGE }}`, 런처 이름 `정처기·보안기사 트레이너`)를 사용하므로 기존 정처기 앱(`com.jungcheogi.trainer`, v1.8.0 이하)과 **별도 앱으로 설치**됩니다.
+            - 기존 정처기 앱의 학습 기록·오답노트는 자동 이관되지 않으며, 통합 앱에서는 **학습 기록이 새로 시작**됩니다(기존 앱을 삭제하지 않아도 함께 유지됩니다).
 
             ### 이번 버전 (v${{ env.VERSION }}) 주요 변경사항
-            - 🧮 **암산형 프로그래밍 계산 문제 63문항 신규 탑재** (C, Java, Python 필기구 없이 풀 수 있는 코드 결과 문제)
-            - 🗄️ **표 데이터 기반 SQL 실무 문제 39문항 신규 탑재** (총 1,002문항 문제은행 완비)
-            - 🎯 **안 푼 문제 10선 퀴즈 밸런스 출제 엔진**: 암기 피로 방지를 위해 계산 문제 1~3개, SQL 문제 1개 균형 배치
-            - ⚡ **지하철 5분 퀵 퀴즈 믹스인**: 계산 문제 1개, SQL 문제 0~1개 자연스럽게 출제
-            - 🛡️ **출제 쿨다운 및 5-Tier 알고리즘 무결성 보존** (최근 10문항 중복 0%, 미풀이 문제 우선)
-          files: jungcheogi-trainer-v${{ env.VERSION }}.apk
+            - 🛡️ **정보보안기사 필기 학습 트랙 추가 및 자격증 전환**: 최초 실행 시 `정보처리기사`와 `정보보안기사` 중 선택·전환하며, 자격증별 학습 기록·오답노트·북마크·통계를 독립 보존
+            - 🗂️ **정보보안기사 `과목 → 챕터 → 세부 섹션(26개)` 선택 출제 및 기준 필터**: 읽은 범위만 골라 풀기와 `전체 문제` / `실제 기출` / `2027 개정 대비` 필터 지원
+            - 📚 **정보보안기사 창작 문제은행 400문항·이론 20주제·필수 암기 40장 탑재**: 2023~2026 공통 범위 300문항 + 2027~2029 개정 대비 100문항 전수 보기 편향·법령 기준일·일반 텍스트 수식 정비
+            - 💡 **답안 제출 직후 기본 해설 표시 및 선택형 AI 튜터**: API 키 없이도 제출 즉시 정답과 기본 해설을 확인하고, 필요 시에만 AI 튜터 추가 설명 호출
+            - 📱 **모바일 UI·피드백 개선**: `QuizScreen` 긴 섹션 제목 줄바꿈 레이아웃 개선 및 `ResultScreen` 실제 세션 정답률·복습 대상 중심 피드백 적용
+            - 💻 **기존 정보처리기사 실기 완벽 호환**: 주관식·C/Java/Python 코드 추적·SQL 실무 1,002문항 및 1초 두음 암기장 유지
+          files: ${{ env.APK_FILENAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

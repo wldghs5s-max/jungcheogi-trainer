@@ -13,6 +13,7 @@ import { isUnknownAttempt } from "../types/attempt";
 import { useQuizStore } from "../store/quizStore";
 import { useSettingsStore } from "../store/settingsStore";
 import { QuestionRepository } from "../repositories/questionRepository";
+import { getSessionResultFeedbackMessage } from "../utils/quiz";
 import { COLORS } from "../utils/theme";
 import { Header } from "../components/common/Header";
 import { Card } from "../components/common/Card";
@@ -42,13 +43,14 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
   const missCount = confusedCount + unknownCount;
   const scoreRate = total > 0 ? Math.round((correctCount / total) * 100) : 0;
 
-  const getScoreMessage = () => {
-    if (scoreRate === 100) return "완벽합니다! 실기 합격 안정권입니다! 🎉";
-    if (scoreRate >= 80) return "훌륭한 성적입니다! 조금만 더 다듬어봐요 👍";
-    if (scoreRate >= 60)
-      return "합격 커트라인(60점)을 넘겼습니다! 오답을 꼭 점검하세요 📈";
-    return "실망하지 마세요! 오답노트에서 반복 회독하면 반드시 합격합니다 💪";
-  };
+  const getScoreMessage = () =>
+    getSessionResultFeedbackMessage({
+      total,
+      correctCount,
+      confusedCount,
+      unknownCount,
+      scoreRate,
+    });
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>

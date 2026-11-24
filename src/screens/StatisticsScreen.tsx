@@ -12,16 +12,20 @@ import { ProgressBar } from '../components/common/ProgressBar';
 
 export const StatisticsScreen: React.FC = () => {
   const isDarkMode = useSettingsStore((state) => state.isDarkMode);
+  const selectedCertification =
+    useSettingsStore((state) => state.selectedCertification) ?? 'JUNGCHEOGI';
   const theme = isDarkMode ? COLORS.dark : COLORS.light;
 
   const [stats, setStats] = useState<UserStats | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const loadData = useCallback(async () => {
-    const attempts = await AttemptRepository.getAllAttempts();
-    const calculated = calculateUserStats(attempts);
+    const attempts = await AttemptRepository.getAllAttempts(
+      selectedCertification,
+    );
+    const calculated = calculateUserStats(attempts, selectedCertification);
     setStats(calculated);
-  }, []);
+  }, [selectedCertification]);
 
   useEffect(() => {
     loadData();
@@ -45,7 +49,13 @@ export const StatisticsScreen: React.FC = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <Header title="학습 통계 및 분석" />
+      <Header
+        title={
+          selectedCertification === 'SECURITY'
+            ? '정보보안기사 학습 통계'
+            : '학습 통계 및 분석'
+        }
+      />
 
       <ScrollView
         contentContainerStyle={styles.content}

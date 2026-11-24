@@ -1,9 +1,23 @@
-﻿import { QuestionRepository } from '../repositories/questionRepository';
+﻿import {
+  QuestionRepository,
+  getQuestionCertification,
+} from '../repositories/questionRepository';
+import { resolveAttemptCertification } from '../repositories/attemptRepository';
 import { QuizAttempt } from '../types/attempt';
+import { CertificationType } from '../types/question';
 import { CategoryStat, DayStat, SubjectStat, UserStats } from '../types/statistics';
 
-export function calculateUserStats(attempts: QuizAttempt[]): UserStats {
-  if (!attempts || attempts.length === 0) {
+export function calculateUserStats(
+  attempts: QuizAttempt[],
+  certification?: CertificationType,
+): UserStats {
+  const targetAttempts = certification
+    ? (attempts || []).filter(
+        (a) => resolveAttemptCertification(a) === certification,
+      )
+    : attempts || [];
+
+  if (!targetAttempts || targetAttempts.length === 0) {
     return {
       totalAttempts: 0,
       correctAttempts: 0,
@@ -17,8 +31,8 @@ export function calculateUserStats(attempts: QuizAttempt[]): UserStats {
     };
   }
 
-  const totalAttempts = attempts.length;
-  const correctAttempts = attempts.filter((a) => a.isCorrect).length;
+  const totalAttempts = targetAttempts.length;
+  const correctAttempts = targetAttempts.filter((a) => a.isCorrect).length;
   const accuracyRate = Math.round((correctAttempts / totalAttempts) * 100);
 
   // 날짜별 통계 및 스트릭 계산
@@ -26,7 +40,7 @@ export function calculateUserStats(attempts: QuizAttempt[]): UserStats {
   let todaySolvedCount = 0;
   const dateMap = new Map<string, { count: number; correct: number }>();
 
-  for (const a of attempts) {
+  for (const a of targetAttempts) {
     const d = getLocalDateString(new Date(a.answeredAt));
     if (d === todayStr) {
       todaySolvedCount++;
@@ -58,9 +72,12 @@ export function calculateUserStats(attempts: QuizAttempt[]): UserStats {
   const subjectStats: Record<string, SubjectStat> = {};
   const categoryStats: Record<string, CategoryStat> = {};
 
-  for (const a of attempts) {
+  for (const a of targetAttempts) {
     const question = QuestionRepository.getById(a.questionId);
     if (!question) continue;
+    if (certification && getQuestionCertification(question) !== certification) {
+      continue;
+    }
 
     // 과목 통계
     const subj = question.subject;

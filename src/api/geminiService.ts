@@ -13,44 +13,76 @@ export const MAX_RETRIES_PER_MODEL = 3;
 
 export const DISCONTINUED_MODEL_REGEX = /gemini-(?:1\.5|2\.0|2\.5)/i;
 
+export const FAST_ANSWER_MODEL = "gemini-3.5-flash-lite";
+export const GEMINI_HYDROGEN_MODEL = "gemini-4-hydrogen";
+export const GEMINI_38_MODEL = "gemini-3.8-flash";
+
 /**
- * AI 튜터용 모델 우선순위: 빠른 실시간 응답(1~2초대)을 최우선으로 하여 gemini-3.5-flash-lite 배치
+ * AI 튜터 빠른 답변용 모델 우선순위: 빠른 실시간 응답(1~2초대)을 최우선으로 하여 gemini-3.5-flash-lite 배치
  */
 export const TUTOR_MODELS = [
-  "gemini-3.5-flash-lite",
+  FAST_ANSWER_MODEL,
   "gemini-3.1-flash-lite",
   "gemini-3.5-flash",
   "gemini-3.6-flash",
   "gemini-3.7-flash",
-  "gemini-3.8-flash",
+  GEMINI_38_MODEL,
 ];
 
 /**
- * 실기 암기 문제 생성용 모델 우선순위: 정답/유사정답/약어 채점 범위와 지문 완성도를 최우선으로 하여 gemini-3.8-flash 배치
+ * 추론 요청용 모델 우선순위:
+ * 하이드로젠 High(gemini-4-hydrogen, thinkingLevel: "high")를 먼저 사용하고,
+ * 사용량 한도에 따른 HTTP 429가 오면 같은 요청을 기존 3.8 High(gemini-3.8-flash, thinkingLevel: "high")로 한 번만 전환합니다.
+ * 다음 새 추론 요청은 다시 하이드로젠 High부터 시작합니다.
+ */
+export const REASONING_MODELS = [
+  GEMINI_HYDROGEN_MODEL,
+  GEMINI_38_MODEL,
+] as const;
+
+/**
+ * 실기 암기 및 추론 문제 생성용 모델 우선순위: 하이드로젠 High 우선, HTTP 429 시 3.8 High로 1회 전환
  */
 export const GENERATOR_MODELS = [
-  "gemini-3.8-flash",
-  "gemini-3.5-flash",
+  GEMINI_HYDROGEN_MODEL,
+  GEMINI_38_MODEL,
 ];
 
 /**
- * 장시간 암기 대량 생성은 3.8을 먼저 쓰고, 모델 부재·잘림·혼잡이 끝나면 3.5로 이어
- * 0개에서 멈추지 않게 한다.
+ * 장시간 암기 대량 생성용 추론 모델 우선순위: 하이드로젠 High 우선, HTTP 429 시 3.8 High로 1회 전환
  */
 export const BULK_GENERATOR_MODELS = [
-  "gemini-3.8-flash",
-  "gemini-3.5-flash",
+  GEMINI_HYDROGEN_MODEL,
+  GEMINI_38_MODEL,
 ];
 
-/** 3.8 Flash는 minimal을 거절하고 low/medium/high만 받는다. 다른 3.x는 minimal이 가장 가볍다. */
+/** 빠른 답변(3.5 Flash-Lite 등)은 minimal, 추론 모델(하이드로젠 High / 3.8 High)은 high를 사용한다. */
 export const GEMINI_THINKING_LEVEL = "minimal";
-export const GEMINI_38_THINKING_LEVEL = "low";
+export const GEMINI_HYDROGEN_THINKING_LEVEL = "high";
+export const GEMINI_38_THINKING_LEVEL = "high";
+export const GEMINI_REASONING_THINKING_LEVEL = "high";
 export const GEMINI_REQUEST_TIMEOUT_MS = 100000;
 
+export function isHydrogenModel(model: string): boolean {
+  return /gemini-4-hydrogen|hydrogen/i.test(model);
+}
+
+export function isGemini38Model(model: string): boolean {
+  return /gemini-3\.8/i.test(model);
+}
+
+export function isReasoningModel(model: string): boolean {
+  return isHydrogenModel(model) || isGemini38Model(model);
+}
+
 export function thinkingLevelForModel(model: string): string {
-  return /gemini-3\.8/i.test(model)
-    ? GEMINI_38_THINKING_LEVEL
-    : GEMINI_THINKING_LEVEL;
+  if (isHydrogenModel(model)) {
+    return GEMINI_HYDROGEN_THINKING_LEVEL;
+  }
+  if (isGemini38Model(model)) {
+    return GEMINI_38_THINKING_LEVEL;
+  }
+  return GEMINI_THINKING_LEVEL;
 }
 
 /**
@@ -177,6 +209,27 @@ export function buildTutorPrompt(context: TutorContext): string {
     .filter(Boolean)
     .join(" > ");
   const isUnknown = missType === "UNKNOWN";
+  const isSecurity = (question.certification ?? "JUNGCHEOGI") === "SECURITY";
+
+  const formattedAnswer = Array.isArray(question.answer)
+    ? question.answer.join(" 또는 ")
+    : question.answer;
+  const formattedUserAnswer =
+    userAnswer !== undefined &&
+    userAnswer !== null &&
+    String(Array.isArray(userAnswer) ? userAnswer.join(", ") : userAnswer).trim()
+      .length > 0
+      ? Array.isArray(userAnswer)
+        ? userAnswer.join(", ")
+        : String(userAnswer).trim()
+      : isUnknown
+        ? "(모름)"
+        : "(미작성)";
+
+  const optionsBlock =
+    question.options && question.options.length > 0
+      ? `\n- 보기:\n${question.options.map((opt, idx) => `  ${idx + 1}. ${opt}`).join("\n")}`
+      : "";
 
   let historySection = "";
   if (history && history.length > 0) {
@@ -195,6 +248,27 @@ export function buildTutorPrompt(context: TutorContext): string {
 - 목록 표시는 별표(*) 대신 번호(1., 2.)나 하이픈(-), 또는 가운뎃점(•)을 사용하세요.
 - 일반 문장 속 단어마다 무분별하게 볼드(**)를 씌우지 말고, 제목이나 꼭 필요한 핵심 용어에만 절제하여 사용하세요.`;
 
+  if (isSecurity) {
+    const questionHeader =
+      history && history.length > 0 ? "[수험생의 추가 질문]" : "[수험생의 질문]";
+    return `당신은 대한민국 최고 수준의 정보보안기사 필기 전담 1:1 스타 강사이자 AI 수험 튜터입니다.
+수험생이 제시한 문항, 보기, 선택 답, 정답, 기본 해설을 바탕으로 핵심 원리와 정답 근거, 헷갈리기 쉬운 오답 보기가 틀린 이유, 시험장 판별 포인트를 명쾌하고 친절하게 설명해 주세요.
+인사말이나 군더더기 서론은 일절 생략하고 곧바로 본론으로 들어가 작성하세요.
+${formattingRules}
+
+[문제 정보]
+- 과목/단원: ${chapterPath}
+- 문제 유형: ${question.type} (난이도: ${question.difficulty})
+- 문제 지문: ${question.question}${optionsBlock}${question.code ? `\n- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
+- 선택 답: ${formattedUserAnswer}
+- 정답: ${formattedAnswer}
+- 기본 해설: ${question.explanation}
+${historySection}
+${questionHeader}
+${userPrompt}
+`;
+  }
+
   if (isUnknown) {
     if (history && history.length > 0) {
       return `당신은 대한민국 최고 수준의 정보처리기사 실기 전담 1:1 스타 강사이자 AI 수험 튜터입니다.
@@ -207,9 +281,9 @@ ${formattingRules}
 - 키워드: ${(question.keywords || []).join(", ") || "(없음)"}
 
 [문제 정보]
-- 문제 지문: ${question.question}
+- 문제 지문: ${question.question}${optionsBlock}
 ${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
-- 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
+- 정답: ${formattedAnswer}
 - 기본 해설: ${question.explanation}
 ${historySection}
 [수험생의 추가 질문]
@@ -229,9 +303,9 @@ ${formattingRules}
 
 [문제 정보]
 - 문제 유형: ${question.type} (난이도: ${question.difficulty})
-- 문제 지문: ${question.question}
+- 문제 지문: ${question.question}${optionsBlock}
 ${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
-- 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
+- 정답: ${formattedAnswer}
 - 기본 해설: ${question.explanation}
 
 [반드시 아래 구성으로 답하세요]
@@ -265,11 +339,11 @@ ${verificationRules}
 [문제 정보]
 - 과목/단원: ${chapterPath}
 - 문제 유형: ${question.type} (난이도: ${question.difficulty})
-- 문제 지문: ${question.question}
+- 문제 지문: ${question.question}${optionsBlock}
 ${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
-- 저장된 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
+- 저장된 정답: ${formattedAnswer}
 - 기본 해설(참고용): ${question.explanation}
-- 수험생이 작성한 답: ${userAnswer ? (Array.isArray(userAnswer) ? userAnswer.join(", ") : userAnswer) : "(미작성)"}
+- 수험생이 작성한 답: ${formattedUserAnswer}
 ${historySection}
 [수험생의 추가 질문]
 ${userPrompt}
@@ -285,11 +359,11 @@ ${verificationRules}
 [문제 정보]
 - 과목/단원: ${chapterPath}
 - 문제 유형: ${question.type} (난이도: ${question.difficulty})
-- 문제 지문: ${question.question}
+- 문제 지문: ${question.question}${optionsBlock}
 ${question.code ? `- 코드:\n\`\`\`${question.language || "text"}\n${question.code}\n\`\`\`` : ""}
-- 저장된 정답: ${Array.isArray(question.answer) ? question.answer.join(" 또는 ") : question.answer}
+- 저장된 정답: ${formattedAnswer}
 - 기본 해설(참고용): ${question.explanation}
-- 수험생이 작성한 답: ${userAnswer ? (Array.isArray(userAnswer) ? userAnswer.join(", ") : userAnswer) : "(미작성)"}
+- 수험생이 작성한 답: ${formattedUserAnswer}
 
 [수험생의 질문]
 ${userPrompt}
@@ -342,6 +416,7 @@ export function streamWithXHR(
 
     const xhr = new XMLHttpRequest();
     xhr.open("POST", url, true);
+    xhr.timeout = GEMINI_REQUEST_TIMEOUT_MS;
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.setRequestHeader("x-goog-api-key", cleanApiKey(apiKey));
 
@@ -407,8 +482,9 @@ export function streamWithXHR(
     xhr.onload = () => {
       if (settled) return;
       try {
-        if (lineBuffer.trim()) {
-          const textChunk = extractTextFromSSELine(lineBuffer);
+        lineBuffer += (xhr.responseText ?? "").slice(lastProcessedIndex);
+        for (const line of lineBuffer.split("\n")) {
+          const textChunk = extractTextFromSSELine(line);
           if (textChunk) {
             accumulatedText += textChunk;
             onChunk(accumulatedText);
@@ -596,7 +672,7 @@ function attachTimeout(
   };
 }
 
-function generationConfigForModel(
+export function generationConfigForModel(
   model: string,
   maxOutputTokens: number,
   extraConfig: Record<string, unknown> = {},
@@ -611,13 +687,13 @@ function generationConfigForModel(
   const thinkingConfig = {
     ...(requestedThinking ?? {}),
     thinkingLevel:
-      /gemini-3\.8/i.test(model) && requestedThinking?.thinkingLevel === "minimal"
+      isReasoningModel(model) && requestedThinking?.thinkingLevel === "minimal"
         ? thinkingLevel
         : requestedThinking?.thinkingLevel || thinkingLevel,
   };
 
-  // 3.8 Flash는 temperature/topP/topK를 거절하는 경우가 있어 빼 둔다.
-  if (/gemini-3\.8/i.test(model)) {
+  // 하이드로젠(Gemini 4 Hydrogen) 및 3.8 Flash는 temperature/topP/topK를 무시하거나 거절하므로 제거한다.
+  if (isReasoningModel(model)) {
     delete extra.temperature;
     delete extra.topP;
     delete extra.topK;
@@ -739,6 +815,7 @@ export interface RetryExecutionOptions {
   fetchFn?: typeof fetch;
   sleepFn?: (ms: number) => Promise<void>;
   models?: string[];
+  reasoning?: boolean;
   maxRetries?: number;
   retryDelayMs?: number;
   signal?: AbortSignal;
@@ -781,6 +858,24 @@ export class GeminiService {
   }
 
   /**
+   * 추론 요청 전용 실행기:
+   * 항상 하이드로젠 High(gemini-4-hydrogen, thinkingLevel: "high")부터 시도하고,
+   * 사용량 한도에 따른 HTTP 429가 발생할 때만 동일 요청을 기존 3.8 High(gemini-3.8-flash, thinkingLevel: "high")로 1회 전환합니다.
+   * 다음 새 추론 요청은 다시 하이드로젠 High부터 시작하며, 429 외 오류는 기존 오류 처리 경로를 유지합니다.
+   */
+  static async executeReasoning(
+    apiKey: string,
+    prompt: string,
+    options?: Omit<RetryExecutionOptions, "models" | "reasoning">,
+  ): Promise<ExecutionResult> {
+    return this.executeWithRetry(apiKey, prompt, {
+      ...options,
+      models: [...REASONING_MODELS],
+      reasoning: true,
+    });
+  }
+
+  /**
    * testConnection, askTutor, generateText가 공통으로 사용하는 단일 재시도 및 모델 폴백 실행기입니다.
    */
   static async executeWithRetry(
@@ -810,7 +905,11 @@ export class GeminiService {
       options?.sleepFn ??
       ((ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)));
 
-    let modelsToTry: string[] = options?.models ? [...options.models] : [];
+    let modelsToTry: string[] = options?.models
+      ? [...options.models]
+      : options?.reasoning
+        ? [...REASONING_MODELS]
+        : [];
 
     if (modelsToTry.length === 0) {
       try {
@@ -839,6 +938,15 @@ export class GeminiService {
       );
     }
 
+    const isReasoningFlow =
+      Boolean(options?.reasoning) ||
+      (modelsToTry.length > 0 && isHydrogenModel(modelsToTry[0]));
+
+    if (isReasoningFlow && modelsToTry.length > 1) {
+      // 추론 요청은 하이드로젠 High -> (HTTP 429 시 1회만) -> 3.8 High 순서로 제한한다.
+      modelsToTry = [GEMINI_HYDROGEN_MODEL, GEMINI_38_MODEL];
+    }
+
     let lastError: { status: number; message: string; model?: string } | null =
       null;
     const maxRetries = options?.maxRetries ?? MAX_RETRIES_PER_MODEL; // 3회 재시도
@@ -857,8 +965,9 @@ export class GeminiService {
         continue;
       }
 
+      const isHydrogen = isReasoningFlow && isHydrogenModel(model);
       // 2. 일시적 오류 발생 시 동일 모델을 최대 3회 재시도한다 (초회 1 + 재시도 3 = 총 4회 시도)
-      const totalAttempts = 1 + maxRetries;
+      const totalAttempts = isReasoningFlow && isGemini38Model(model) ? 1 : 1 + maxRetries;
 
       for (let attempt = 1; attempt <= totalAttempts; attempt++) {
         if (signal?.aborted) {
@@ -908,6 +1017,19 @@ export class GeminiService {
           // 13. API 키를 콘솔이나 오류문에 절대 출력하지 않는다.
           logGeminiError(err.status, model, attempt, err.message, cleanKey);
 
+          // 추론 요청에서 하이드로젠 High가 사용량 한도에 따른 HTTP 429를 반환한 경우:
+          // 동일 모델을 반복 재시도하지 않고 같은 요청을 기존 3.8 High로 딱 한 번만 즉시 전환한다.
+          if (isHydrogen && err.status === 429) {
+            options?.onAttempt?.({ model, attempt, status: 429 });
+            if (modelsToTry.length > 1) {
+              break; // 루프를 빠져나가 다음 모델(gemini-3.8-flash)로 1회 전환
+            }
+            return {
+              ok: false,
+              error: lastError,
+            };
+          }
+
           // 5. 400, 401, 403은 재시도하지 않고 즉시 오류를 반환한다.
           if (isTerminalAuthStatus(err.status, err.message)) {
             options?.onAttempt?.({ model, attempt, status: err.status });
@@ -921,7 +1043,17 @@ export class GeminiService {
             };
           }
 
-          // 6. 404는 재시도하지 않고 다음 모델로 이동한다.
+          // 추론 요청의 하이드로젠 High에서 429 외의 비일시적 오류(예: 404, 스키마 400 등)가 발생한 경우:
+          // 3.8 High로 전환하지 않고 기존 오류 처리 경로로 즉시 오류를 반환한다.
+          if (isHydrogen && !isTransientStatus(err.status) && err.status !== 0) {
+            options?.onAttempt?.({ model, attempt, status: err.status });
+            return {
+              ok: false,
+              error: lastError,
+            };
+          }
+
+          // 6. 일반(비추론) 경로에서 404는 재시도하지 않고 다음 모델로 이동한다.
           if (err.status === 404) {
             options?.onAttempt?.({ model, attempt, status: 404 });
             break; // 현재 모델의 재시도 루프 중단 -> 다음 모델로 이동
@@ -955,14 +1087,28 @@ export class GeminiService {
               }
               continue; // 동일 모델 재시도
             } else {
-              // 4. 동일 모델 재시도가 모두 실패하면 다음 사용 가능 모델을 시도한다.
               options?.onAttempt?.({ model, attempt, status: err.status });
+              // 추론 요청의 하이드로젠 High에서 429가 아닌 오류(500, 503 등)로 재시도가 소진된 경우:
+              // 3.8 High로 전환하지 않고 기존 오류 처리 경로대로 결과를 반환한다.
+              if (isHydrogen) {
+                return {
+                  ok: false,
+                  error: lastError,
+                };
+              }
+              // 4. 일반 경로에서는 동일 모델 재시도가 모두 실패하면 다음 사용 가능 모델을 시도한다.
               break;
             }
           }
 
-          // 기타 상태코드도 다음 모델로 이동
+          // 기타 상태코드 처리
           options?.onAttempt?.({ model, attempt, status: err.status });
+          if (isHydrogen) {
+            return {
+              ok: false,
+              error: lastError,
+            };
+          }
           break;
         } catch (networkErr: unknown) {
           if (
@@ -1004,6 +1150,12 @@ export class GeminiService {
             continue;
           } else {
             options?.onAttempt?.({ model, attempt, status: 0 });
+            if (isHydrogen) {
+              return {
+                ok: false,
+                error: lastError,
+              };
+            }
             break;
           }
         }
@@ -1025,6 +1177,7 @@ export class GeminiService {
       fetchFn?: typeof fetch;
       sleepFn?: (ms: number) => Promise<void>;
       models?: string[];
+      reasoning?: boolean;
       signal?: AbortSignal;
     },
   ): Promise<string> {
@@ -1041,7 +1194,10 @@ export class GeminiService {
       maxOutputTokens: TUTOR_MAX_OUTPUT_TOKENS,
       fetchFn: options?.fetchFn,
       sleepFn: options?.sleepFn,
-      models: options?.models ?? TUTOR_MODELS,
+      models:
+        options?.models ??
+        (options?.reasoning ? [...REASONING_MODELS] : TUTOR_MODELS),
+      reasoning: options?.reasoning,
       signal: options?.signal,
     });
 
@@ -1068,6 +1224,7 @@ export class GeminiService {
       fetchFn?: typeof fetch;
       sleepFn?: (ms: number) => Promise<void>;
       models?: string[];
+      reasoning?: boolean;
       signal?: AbortSignal;
     },
   ): Promise<string> {
@@ -1095,15 +1252,12 @@ export class GeminiService {
     const cleanKey = cleanApiKey(apiKey);
     const isLegacyKey = cleanKey.startsWith("AIza");
     const systemPrompt = buildTutorPrompt(context);
-    const modelsToTry = options?.models ?? TUTOR_MODELS;
-
-    const body = JSON.stringify({
-      contents: [{ parts: [{ text: systemPrompt }] }],
-      generationConfig: {
-        temperature: 0.4,
-        maxOutputTokens: TUTOR_MAX_OUTPUT_TOKENS,
-      },
-    });
+    const modelsToTry =
+      options?.models ??
+      (options?.reasoning ? [...REASONING_MODELS] : TUTOR_MODELS);
+    const isReasoningFlow =
+      Boolean(options?.reasoning) ||
+      (modelsToTry.length > 0 && isHydrogenModel(modelsToTry[0]));
 
     for (const model of modelsToTry) {
       if (options?.signal?.aborted) {
@@ -1113,6 +1267,14 @@ export class GeminiService {
       if (DISCONTINUED_MODEL_REGEX.test(model)) {
         continue;
       }
+
+      const body = JSON.stringify({
+        contents: [{ parts: [{ text: systemPrompt }] }],
+        generationConfig: generationConfigForModel(
+          model,
+          TUTOR_MAX_OUTPUT_TOKENS,
+        ),
+      });
 
       const url = isLegacyKey
         ? `${GEMINI_BASE}/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse&key=${encodeURIComponent(cleanKey)}`
@@ -1135,6 +1297,25 @@ export class GeminiService {
         return streamRes.text;
       }
 
+      if (isReasoningFlow) {
+        const primary = isHydrogenModel(model);
+        if (primary && streamRes.status === 429 && modelsToTry.includes(GEMINI_38_MODEL)) {
+          continue;
+        }
+        // 전송 실패나 비어 있는 SSE 응답은 일반 요청으로 복구한다.
+        if (primary && streamRes.status !== 429 &&
+            (!streamRes.error || streamRes.status === 0 || isTransientStatus(streamRes.status))) {
+          break;
+        }
+        const message = formatGeminiErrorMessage({
+          status: streamRes.status,
+          model,
+          message: sanitizeLogMessage(streamRes.error || "응답이 비어 있습니다.", cleanKey),
+        });
+        onChunk(message);
+        return message;
+      }
+
       if (streamRes.error) {
         logGeminiError(streamRes.status, model, 1, streamRes.error, cleanKey);
 
@@ -1148,6 +1329,8 @@ export class GeminiService {
           onChunk(formatted);
           return formatted;
         }
+
+
       }
     }
 
@@ -1168,6 +1351,7 @@ export class GeminiService {
       fetchFn?: typeof fetch;
       sleepFn?: (ms: number) => Promise<void>;
       models?: string[];
+      reasoning?: boolean;
       maxRetries?: number;
       retryDelayMs?: number;
       signal?: AbortSignal;
@@ -1175,7 +1359,7 @@ export class GeminiService {
       extraConfig?: Record<string, unknown>;
     },
   ): Promise<
-    | { ok: true; text: string }
+    | { ok: true; text: string; model?: string }
     | { ok: false; message: string; aborted?: boolean }
   > {
     const apiKey = await this.getApiKey();
@@ -1198,12 +1382,14 @@ export class GeminiService {
       extraConfig.responseMimeType = "application/json";
     }
 
+    const targetModels = options?.models ?? [...REASONING_MODELS];
     const result = await this.executeWithRetry(cleanKey, prompt, {
       maxOutputTokens: options?.maxOutputTokens ?? 2048,
       extraConfig,
       fetchFn: options?.fetchFn,
       sleepFn: options?.sleepFn,
-      models: options?.models ?? GENERATOR_MODELS,
+      models: targetModels,
+      reasoning: options?.reasoning ?? isHydrogenModel(targetModels[0] ?? ""),
       maxRetries: options?.maxRetries,
       retryDelayMs: options?.retryDelayMs,
       signal: options?.signal,
@@ -1211,7 +1397,7 @@ export class GeminiService {
     });
 
     if (result.ok) {
-      return { ok: true, text: result.text };
+      return { ok: true, text: result.text, model: result.model };
     }
 
     return {

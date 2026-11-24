@@ -17,11 +17,21 @@ import { Button } from '../components/common/Button';
 import { ProgressBar } from '../components/common/ProgressBar';
 import { ProgrammingAdminModal } from '../components/programming/ProgrammingAdminModal';
 import { NightModeOverlay } from '../components/common/NightModeOverlay';
+import appConfig from '../../app.json';
 
 const GEMINI_KEY_GUIDE_URL = 'https://aistudio.google.com/apikey';
+const APP_VERSION = appConfig.expo.version;
+const ANDROID_VERSION_CODE = appConfig.expo.android?.versionCode;
 
 export const SettingsScreen: React.FC = () => {
-  const { isDarkMode, isHapticEnabled, toggleDarkMode, toggleHaptic } = useSettingsStore();
+  const {
+    isDarkMode,
+    isHapticEnabled,
+    selectedCertification,
+    toggleDarkMode,
+    toggleHaptic,
+    setSelectedCertification,
+  } = useSettingsStore();
   const { dailyTarget, setDailyTarget } = useUserStore();
   const theme = isDarkMode ? COLORS.dark : COLORS.light;
 
@@ -246,6 +256,54 @@ export const SettingsScreen: React.FC = () => {
       <Header title="설정" />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        {/* 학습 자격증 전환 카드 */}
+        <Card style={styles.card}>
+          <View style={styles.targetHeader}>
+            <ShieldCheck size={20} color={theme.primary} />
+            <Text style={[styles.sectionTitle, { color: theme.text, marginLeft: 8, marginBottom: 0 }]}>
+              학습 자격증 전환
+            </Text>
+          </View>
+          <Text style={[styles.targetSub, { color: theme.subText, marginTop: 6 }]}>
+            자격증을 전환해도 각 자격증의 풀이 기록과 오답노트는 별도로 보존됩니다.
+          </Text>
+          <View style={styles.targetButtons}>
+            {(
+              [
+                { key: 'JUNGCHEOGI', label: '정보처리기사 (실기)' },
+                { key: 'SECURITY', label: '정보보안기사 (필기)' },
+              ] as const
+            ).map((cert) => {
+              const isSelected = (selectedCertification ?? 'JUNGCHEOGI') === cert.key;
+              return (
+                <TouchableOpacity
+                  key={cert.key}
+                  onPress={() => {
+                    triggerHaptic.selection();
+                    void setSelectedCertification(cert.key);
+                  }}
+                  style={[
+                    styles.targetBtn,
+                    {
+                      backgroundColor: isSelected ? theme.primary : theme.surfaceSecondary,
+                      borderColor: isSelected ? theme.primary : theme.border,
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.targetBtnText,
+                      { color: isSelected ? '#FFFFFF' : theme.text, fontSize: 13 },
+                    ]}
+                  >
+                    {cert.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </Card>
+
         {/* Gemini AI 튜터 설정 카드 */}
         <Card style={styles.card}>
           <View style={styles.targetHeader}>
@@ -558,7 +616,9 @@ export const SettingsScreen: React.FC = () => {
               <ShieldCheck size={18} color={theme.subText} />
               <Text style={[styles.infoLabel, { color: theme.subText }]}>앱 버전</Text>
             </View>
-            <Text style={[styles.infoValue, { color: theme.text }]}>1.6.0 (282제 기본내장·야간번인방지 3시간 하드리밋)</Text>
+            <Text style={[styles.infoValue, { color: theme.text }]}>
+              {`v${APP_VERSION}${ANDROID_VERSION_CODE ? ` (build ${ANDROID_VERSION_CODE})` : ''} · 정처기·보안기사 통합`}
+            </Text>
           </View>
         </Card>
 
@@ -768,8 +828,11 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   infoValue: {
+    flexShrink: 1,
     fontSize: 14,
     fontWeight: '600',
+    textAlign: 'right',
+    marginLeft: 12,
   },
   dangerButton: {
     flexDirection: 'row',

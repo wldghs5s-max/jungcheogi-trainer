@@ -18,6 +18,8 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
   onTabChange,
 }) => {
   const isDarkMode = useSettingsStore((state) => state.isDarkMode);
+  const selectedCertification =
+    useSettingsStore((state) => state.selectedCertification) ?? "JUNGCHEOGI";
   const theme = isDarkMode ? COLORS.dark : COLORS.light;
   const insets = useSafeAreaInsets();
 
@@ -30,7 +32,11 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
 
   const tabs: { key: TabType; label: string; icon: any }[] = [
     { key: "home", label: "홈", icon: Home },
-    { key: "theory", label: "이론·두음", icon: GraduationCap },
+    {
+      key: "theory",
+      label: selectedCertification === "SECURITY" ? "이론·암기" : "이론·두음",
+      icon: GraduationCap,
+    },
     { key: "wrong_note", label: "오답노트", icon: BookX },
     { key: "statistics", label: "통계", icon: BarChart3 },
     { key: "settings", label: "설정", icon: Settings },

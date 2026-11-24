@@ -246,6 +246,7 @@ export function checkAnswer(
     type?: string;
     subject?: string;
     code?: string;
+    options?: string[];
   } | null,
 ): boolean {
   // 코드 실행 결과 판정인 경우: 토큰 경계 및 대소문자 보존 우선 적용
@@ -260,6 +261,61 @@ export function checkAnswer(
       );
     }
     return codeOutputMatches(userAnswer, correctAnswer);
+  }
+
+  // 객관식(MULTIPLE_CHOICE) 문제 판정: 보기 문자열 정확 일치 및 번호(1~4 / ①~④) 매핑 지원, 오탈자 유사 판정 배제
+  if (
+    question?.type === "MULTIPLE_CHOICE" ||
+    (question?.options && question.options.length > 0)
+  ) {
+    if (Array.isArray(userAnswer)) return false;
+    const rawUser = String(userAnswer || "").trim();
+    if (!rawUser) return false;
+
+    const options = question?.options || [];
+    const correctList = (
+      Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer]
+    ).map((c) => String(c || "").trim());
+
+    // 화면에서 실제 보기를 선택했다면 번호·기호·대소문자를 그대로 구분한다.
+    if (options.includes(rawUser) && correctList.every((answer) => options.includes(answer))) {
+      return correctList.includes(rawUser);
+    }
+
+    const resolveChoiceCandidates = (val: string): string[] => {
+      const candidates = new Set<string>();
+      const norm = val.replace(/\s+/g, "").toUpperCase();
+      if (norm) candidates.add(norm);
+      const normAns = normalizeAnswer(val);
+      if (normAns) candidates.add(normAns);
+
+      // 번호("1"~"10" 또는 원문자 "①"~"⑩")가 들어온 경우 해당 인덱스의 보기 텍스트도 후보로 추가
+      if (/^[1-9][0-9]*$/.test(normAns)) {
+        const idx = parseInt(normAns, 10) - 1;
+        if (idx >= 0 && idx < options.length) {
+          const optText = options[idx];
+          candidates.add(optText.replace(/\s+/g, "").toUpperCase());
+          const optNorm = normalizeAnswer(optText);
+          if (optNorm) candidates.add(optNorm);
+        }
+      }
+      // 보기 텍스트와 일치하는 경우 그 보기의 번호(1-based)도 후보로 추가
+      const matchIdx = options.findIndex(
+        (opt) =>
+          opt.replace(/\s+/g, "").toUpperCase() === norm ||
+          (normalizeAnswer(opt) && normalizeAnswer(opt) === normAns),
+      );
+      if (matchIdx >= 0) {
+        candidates.add(String(matchIdx + 1));
+      }
+      return Array.from(candidates);
+    };
+
+    const userCandidates = resolveChoiceCandidates(rawUser);
+    return correctList.some((c) => {
+      const correctCandidates = resolveChoiceCandidates(c);
+      return userCandidates.some((u) => correctCandidates.includes(u));
+    });
   }
 
   // 1. 비-코드 질문: 순수 공백제거 및 기호 매핑 기반의 즉시 일치 검사
@@ -296,6 +352,67 @@ export function formatAnswerDisplay(answer: string | string[]): string {
   return answer;
 }
 
+export const SECURITY_TUTOR_REQUEST_BUTTON_LABEL =
+  "AI 튜터에게 추가 설명 요청";
+
+export function isSecurityCertificationQuestion(question?: {
+  certification?: string;
+} | null): boolean {
+  return (question?.certification ?? "JUNGCHEOGI") === "SECURITY";
+}
+
+export function shouldAutoOpenTutorOnUnknown(question?: {
+  certification?: string;
+} | null): boolean {
+  // 정보보안기사는 '모른다' 제출 시에도 자동으로 AI 튜터를 호출하지 않고 기본 정답과 해설만 먼저 표시한다.
+  return !isSecurityCertificationQuestion(question);
+}
+
+export function getTutorButtonLabel(
+  question?: { certification?: string } | null,
+  isUnknown = false,
+): string {
+  if (isSecurityCertificationQuestion(question)) {
+    return SECURITY_TUTOR_REQUEST_BUTTON_LABEL;
+  }
+  return isUnknown
+    ? "📘 이 단원(챕터) 개념부터 과외받기"
+    : "✨ Gemini AI 튜터에게 이 문제 과외받기";
+}
+
+export function getPostSubmitExplanationView(
+  question: {
+    answer: string | string[];
+    explanation: string;
+    certification?: string;
+  },
+  isSubmitted: boolean,
+  isUnknown = false,
+): {
+  visible: boolean;
+  correctAnswerText: string;
+  explanationText: string;
+  requiresApiKey: boolean;
+  tutorButtonLabel: string;
+} {
+  if (!isSubmitted) {
+    return {
+      visible: false,
+      correctAnswerText: "",
+      explanationText: "",
+      requiresApiKey: false,
+      tutorButtonLabel: getTutorButtonLabel(question, isUnknown),
+    };
+  }
+  return {
+    visible: true,
+    correctAnswerText: formatAnswerDisplay(question.answer),
+    explanationText: question.explanation,
+    requiresApiKey: false,
+    tutorButtonLabel: getTutorButtonLabel(question, isUnknown),
+  };
+}
+
 export function shuffleArray<T>(items: T[]): T[] {
   const arr = [...items];
   for (let i = arr.length - 1; i > 0; i--) {
@@ -303,4 +420,85 @@ export function shuffleArray<T>(items: T[]): T[] {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+}
+
+export interface SessionResultSummary {
+  total: number;
+  correctCount: number;
+  confusedCount: number;
+  unknownCount: number;
+  missCount: number;
+  scoreRate: number;
+  feedbackMessage: string;
+}
+
+export function getSessionResultFeedbackMessage(params: {
+  total: number;
+  correctCount: number;
+  confusedCount: number;
+  unknownCount: number;
+  scoreRate?: number;
+}): string {
+  const { total, correctCount, confusedCount, unknownCount } = params;
+  if (total <= 0) {
+    return "이번 세션의 풀이 기록이 없습니다.";
+  }
+  const scoreRate =
+    params.scoreRate ?? Math.round((correctCount / total) * 100);
+  const missCount = confusedCount + unknownCount;
+
+  if (missCount === 0) {
+    return `이번 세션 정답률 100% (${total}문제 모두 정답)입니다. 복습이 필요한 오답·모름 문항이 없습니다.`;
+  }
+
+  let reviewTarget = "";
+  if (confusedCount > 0 && unknownCount > 0) {
+    reviewTarget = `헷갈린 문항 ${confusedCount}개와 모름 문항 ${unknownCount}개(총 ${missCount}개)`;
+  } else if (confusedCount > 0) {
+    reviewTarget = `헷갈린 오답 문항 ${confusedCount}개`;
+  } else {
+    reviewTarget = `모름으로 표시한 문항 ${unknownCount}개`;
+  }
+
+  if (scoreRate >= 80) {
+    return `이번 세션 정답률은 ${scoreRate}%입니다. ${reviewTarget}의 핵심 개념과 해설을 오답노트에서 다시 확인해 보세요.`;
+  }
+  if (scoreRate >= 60) {
+    return `이번 세션 정답률은 ${scoreRate}%입니다. ${reviewTarget}를 오답노트에서 복습하고 다시 풀기로 점검해 보세요.`;
+  }
+  return `이번 세션 정답률은 ${scoreRate}%입니다. ${reviewTarget}의 기본 개념과 해설부터 오답노트에서 차근차근 복습해 보세요.`;
+}
+
+export function summarizeSessionAttempts(
+  attempts: ReadonlyArray<{
+    isCorrect: boolean;
+    missType?: "WRONG" | "UNKNOWN";
+    userAnswer?: string;
+  }>,
+): SessionResultSummary {
+  const total = attempts.length;
+  const correctCount = attempts.filter((a) => a.isCorrect).length;
+  const unknownCount = attempts.filter(
+    (a) => !a.isCorrect && (a.missType === "UNKNOWN" || a.userAnswer === "(모름)"),
+  ).length;
+  const confusedCount = total - correctCount - unknownCount;
+  const missCount = confusedCount + unknownCount;
+  const scoreRate = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+  const feedbackMessage = getSessionResultFeedbackMessage({
+    total,
+    correctCount,
+    confusedCount,
+    unknownCount,
+    scoreRate,
+  });
+
+  return {
+    total,
+    correctCount,
+    confusedCount,
+    unknownCount,
+    missCount,
+    scoreRate,
+    feedbackMessage,
+  };
 }

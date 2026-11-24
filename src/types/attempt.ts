@@ -1,9 +1,13 @@
+import { CertificationType } from "./question";
+
 /** 틀린 이유: 답을 썼지만 틀림(헷갈림) vs 몰라서 포기 */
 export type MissType = "WRONG" | "UNKNOWN";
 
 export interface QuizAttempt {
   id: string;
   questionId: string;
+  /** 소속 자격증 (미지정 구버전 기록은 문제 ID 또는 기본값 'JUNGCHEOGI'로 판별) */
+  certification?: CertificationType;
   selectedAnswer: string | string[];
   correctAnswer: string | string[];
   isCorrect: boolean;

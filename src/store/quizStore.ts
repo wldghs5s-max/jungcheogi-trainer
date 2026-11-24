@@ -57,8 +57,16 @@ export const useQuizStore = create<QuizState>((set, get) => ({
 
   startQuiz: (questions, title = '문제 풀이', options) => {
     const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+    const sessionQuestions = options?.preserveOrder
+      ? [...questions]
+      : shuffleArray(questions).map((question) => {
+          if (question.certification === 'SECURITY' && question.sourceKind === 'CREATED' && question.options) {
+            return { ...question, options: shuffleArray(question.options) };
+          }
+          return question;
+        });
     set({
-      questions: options?.preserveOrder ? [...questions] : shuffleArray(questions),
+      questions: sessionQuestions,
       currentIndex: 0,
       selectedAnswer: '',
       isSubmitted: false,
@@ -110,6 +118,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
     const newAttempt: QuizAttempt = {
       id: `${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
       questionId: currentQuestion.id,
+      certification: currentQuestion.certification ?? 'JUNGCHEOGI',
       selectedAnswer,
       correctAnswer: currentQuestion.answer,
       isCorrect: isAnswerCorrect,
@@ -159,6 +168,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
     const newAttempt: QuizAttempt = {
       id: `${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
       questionId: currentQuestion.id,
+      certification: currentQuestion.certification ?? 'JUNGCHEOGI',
       selectedAnswer: '(모름)',
       correctAnswer: currentQuestion.answer,
       isCorrect: false,

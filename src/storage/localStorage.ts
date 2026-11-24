@@ -68,6 +68,17 @@ export class LocalStorage {
     ? new MemoryStorageAdapter()
     : new AsyncStorageAdapter();
 
+  private static settingsWrites = Promise.resolve();
+
+  static updateSettings(patch: Record<string, unknown>): Promise<void> {
+    const write = this.settingsWrites.then(async () => {
+      const saved = await this.getItem<Record<string, unknown>>(STORAGE_KEYS.SETTINGS);
+      await this.setItem(STORAGE_KEYS.SETTINGS, { ...saved, ...patch });
+    });
+    this.settingsWrites = write.catch(() => undefined);
+    return write;
+  }
+
   /**
    * 저장소 어댑터를 교체합니다 (테스트용 인메모리 주입 등).
    */

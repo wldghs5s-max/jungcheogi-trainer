@@ -34,7 +34,11 @@ import { COLORS } from "../../utils/theme";
 import { parseTutorMarkdownLine } from "../../utils/textFormatter";
 import { AttemptRepository } from "../../repositories/attemptRepository";
 import { VERIFICATION_LOGS } from "../../services/aiVerifierService";
-import { formatAnswerDisplay } from "../../utils/quiz";
+import {
+  formatAnswerDisplay,
+  isSecurityCertificationQuestion,
+  SECURITY_TUTOR_REQUEST_BUTTON_LABEL,
+} from "../../utils/quiz";
 
 interface AITutorModalProps {
   visible: boolean;
@@ -42,11 +46,14 @@ interface AITutorModalProps {
   userAnswer?: string | string[];
   missType?: "WRONG" | "UNKNOWN" | null;
   autoAskChapter?: boolean;
+  autoAskSecurityExplanation?: boolean;
   attemptId?: string;
   onClose: () => void;
 }
 
 const CHAPTER_LESSON_PROMPT = `이 문제를 「모른다」고 표시했습니다. 오답 분석은 하지 말고, 교재에서 이 내용이 나오는 단원(챕터)을 펼쳐 보여 주듯이 핵심 개념과 바로 옆 연관 내용까지 설명해 주세요.`;
+
+export const SECURITY_ADDITIONAL_EXPLANATION_PROMPT = `제시된 문항, 보기, 내가 선택한 답, 정답, 기본 해설을 바탕으로 정답 근거와 각 오답 보기가 틀린 이유, 시험에서 헷갈리기 쉬운 핵심 판별 포인트를 추가로 설명해 주세요.`;
 
 /**
  * 마크다운 텍스트에서 불필요한 별표(*, **) 기호를 정리하고,
@@ -103,6 +110,7 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
   userAnswer,
   missType,
   autoAskChapter = false,
+  autoAskSecurityExplanation = false,
   attemptId,
   onClose,
 }) => {
@@ -123,6 +131,7 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
   const activeAttemptIdRef = useRef<string | undefined>(attemptId);
   activeAttemptIdRef.current = attemptId;
   const isUnknown = missType === "UNKNOWN";
+  const isSecurityQuestion = isSecurityCertificationQuestion(question);
 
   const [promptInput, setPromptInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -299,7 +308,11 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
       const result = await GeminiService.askTutorStream(
         {
           question,
-          userAnswer: isUnknown ? undefined : userAnswer,
+          userAnswer: isSecurityQuestion
+            ? userAnswer || (isUnknown ? "(모름)" : "(미선택)")
+            : isUnknown
+              ? undefined
+              : userAnswer,
           userPrompt: promptText,
           missType: missType ?? undefined,
           history: chatHistory,
@@ -425,13 +438,24 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
   };
 
   useEffect(() => {
-    if (
-      !visible ||
-      !historyReady ||
-      !autoAskChapter ||
-      !isUnknown ||
-      didAutoAskRef.current
-    ) {
+    if (!visible || !historyReady || didAutoAskRef.current) {
+      return;
+    }
+    if (isSecurityQuestion) {
+      if (!autoAskSecurityExplanation) {
+        return;
+      }
+      didAutoAskRef.current = true;
+      const timer = setTimeout(() => {
+        void handleAsk(
+          SECURITY_ADDITIONAL_EXPLANATION_PROMPT,
+          SECURITY_TUTOR_REQUEST_BUTTON_LABEL,
+        );
+      }, 120);
+      return () => clearTimeout(timer);
+    }
+
+    if (!autoAskChapter || !isUnknown) {
       return;
     }
     didAutoAskRef.current = true;
@@ -442,7 +466,15 @@ const AITutorModalBody: React.FC<AITutorModalProps> = ({
       );
     }, 120);
     return () => clearTimeout(timer);
-  }, [visible, question.id, autoAskChapter, isUnknown, historyReady]);
+  }, [
+    visible,
+    question.id,
+    autoAskChapter,
+    autoAskSecurityExplanation,
+    isSecurityQuestion,
+    isUnknown,
+    historyReady,
+  ]);
 
   const quickQuestions = isUnknown
     ? [

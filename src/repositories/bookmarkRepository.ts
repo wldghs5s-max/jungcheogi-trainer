@@ -1,13 +1,21 @@
 ﻿import { LocalStorage, STORAGE_KEYS } from '../storage/localStorage';
 import { Bookmark } from '../types/bookmark';
+import { CertificationType } from '../types/question';
+import { resolveAttemptCertification } from './attemptRepository';
 
 export class BookmarkRepository {
   /**
-   * 모든 북마크 목록을 가져옵니다.
+   * 북마크 목록을 가져옵니다. certification이 지정되면 해당 자격증 북마크만 반환합니다.
    */
-  static async getAll(): Promise<Bookmark[]> {
-    const bookmarks = await LocalStorage.getItem<Bookmark[]>(STORAGE_KEYS.BOOKMARKS);
-    return bookmarks || [];
+  static async getAll(certification?: CertificationType): Promise<Bookmark[]> {
+    const bookmarks =
+      (await LocalStorage.getItem<Bookmark[]>(STORAGE_KEYS.BOOKMARKS)) || [];
+    if (!certification) {
+      return bookmarks;
+    }
+    return bookmarks.filter(
+      (b) => resolveAttemptCertification(b) === certification,
+    );
   }
 
   /**
@@ -34,6 +42,7 @@ export class BookmarkRepository {
       // 추가
       bookmarks.unshift({
         questionId,
+        certification: resolveAttemptCertification({ questionId }),
         createdAt: new Date().toISOString(),
       });
       await LocalStorage.setItem(STORAGE_KEYS.BOOKMARKS, bookmarks);
@@ -44,9 +53,21 @@ export class BookmarkRepository {
   /**
    * 북마크된 문제 ID 목록만 반환합니다.
    */
-  static async getBookmarkedQuestionIds(): Promise<string[]> {
-    const bookmarks = await this.getAll();
+  static async getBookmarkedQuestionIds(
+    certification?: CertificationType,
+  ): Promise<string[]> {
+    const bookmarks = await this.getAll(certification);
     return bookmarks.map((b) => b.questionId);
+  }
+
+  static async clearByCertification(
+    certification: CertificationType,
+  ): Promise<void> {
+    const all = await this.getAll();
+    const remaining = all.filter(
+      (b) => resolveAttemptCertification(b) !== certification,
+    );
+    await LocalStorage.setItem(STORAGE_KEYS.BOOKMARKS, remaining);
   }
 
   static async clearAll(): Promise<void> {

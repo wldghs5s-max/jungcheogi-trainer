@@ -5,6 +5,7 @@ import {
   calculateBackoffDelay,
   PREFERRED_MODELS,
   TUTOR_MODELS,
+  REASONING_MODELS,
   GENERATOR_MODELS,
   TRANSIENT_STATUSES,
   DISCONTINUED_MODEL_REGEX,
@@ -14,6 +15,9 @@ import {
   extractTextFromSSELine,
   buildTutorPrompt,
   thinkingLevelForModel,
+  GEMINI_HYDROGEN_MODEL,
+  GEMINI_38_MODEL,
+  GEMINI_HYDROGEN_THINKING_LEVEL,
   GEMINI_38_THINKING_LEVEL,
   GEMINI_THINKING_LEVEL,
 } from "../src/api/geminiService";
@@ -383,8 +387,20 @@ async function runGeminiServiceTests() {
   }
 
   assert(
-    thinkingLevelForModel("gemini-3.8-flash") === GEMINI_38_THINKING_LEVEL,
-    "3.8 Flash thinking은 low",
+    thinkingLevelForModel("gemini-4-hydrogen") ===
+      GEMINI_HYDROGEN_THINKING_LEVEL &&
+      GEMINI_HYDROGEN_THINKING_LEVEL === "high",
+    "하이드로젠(gemini-4-hydrogen) 추론 thinkingLevel은 high",
+  );
+  assert(
+    thinkingLevelForModel("gemini-3.8-flash") === GEMINI_38_THINKING_LEVEL &&
+      GEMINI_38_THINKING_LEVEL === "high",
+    "3.8 Flash 추론 thinkingLevel은 high",
+  );
+  assert(
+    thinkingLevelForModel("gemini-3.5-flash-lite") === GEMINI_THINKING_LEVEL &&
+      GEMINI_THINKING_LEVEL === "minimal",
+    "3.5 Flash-Lite 빠른 답변 thinkingLevel은 minimal",
   );
   assert(
     thinkingLevelForModel("gemini-3.5-flash") === GEMINI_THINKING_LEVEL,
@@ -414,10 +430,10 @@ async function runGeminiServiceTests() {
       },
     });
 
-    assert(result.ok, "3.8은 minimal을 low로 바꿔 성공");
+    assert(result.ok, "3.8은 minimal을 high로 바꿔 성공");
     assert(
-      captured?.generationConfig?.thinkingConfig?.thinkingLevel === "low",
-      "3.8 요청 thinkingLevel은 low",
+      captured?.generationConfig?.thinkingConfig?.thinkingLevel === "high",
+      "3.8 요청 thinkingLevel은 high",
     );
     assert(
       captured?.generationConfig?.temperature === undefined,
@@ -453,15 +469,20 @@ async function runGeminiServiceTests() {
   }
   assert(
     TUTOR_MODELS[0] === "gemini-3.5-flash-lite",
-    "TUTOR_MODELS 1순위는 초고속 gemini-3.5-flash-lite",
+    "TUTOR_MODELS 1순위는 초고속 gemini-3.5-flash-lite 유지",
   );
   assert(
-    GENERATOR_MODELS[0] === "gemini-3.8-flash",
-    "GENERATOR_MODELS 1순위는 고정밀 gemini-3.8-flash",
+    REASONING_MODELS[0] === GEMINI_HYDROGEN_MODEL &&
+      REASONING_MODELS[1] === GEMINI_38_MODEL,
+    "REASONING_MODELS는 하이드로젠 High(gemini-4-hydrogen) -> 3.8 High(gemini-3.8-flash)",
   );
   assert(
-    GENERATOR_MODELS[1] === "gemini-3.5-flash",
-    "GENERATOR_MODELS 폴백은 gemini-3.5-flash",
+    GENERATOR_MODELS[0] === "gemini-4-hydrogen",
+    "GENERATOR_MODELS 1순위는 하이드로젠 High(gemini-4-hydrogen)",
+  );
+  assert(
+    GENERATOR_MODELS[1] === "gemini-3.8-flash",
+    "GENERATOR_MODELS 429 폴백은 기존 3.8 High(gemini-3.8-flash)",
   );
   assert(
     GENERATOR_MODELS.every((m) => !m.includes("lite")),
@@ -716,6 +737,293 @@ async function runGeminiServiceTests() {
       prompt.includes("불필요한 별표(*, **) 기호를 남발하지 마세요"),
       "프롬프트에 별표 남발 금지 지침 포함",
     );
+  }
+
+  // 11. 추론 요청 모델 선택 검증 (하이드로젠 High 성공, HTTP 429 후 3.8 High 1회 전환 및 다음 요청 하이드로젠 재시작, 429 외 오류 기존 경로 유지)
+  {
+    await GeminiService.saveApiKey("AQ.dummy_reasoning_key");
+
+    // 11-1. 하이드로젠 High 성공
+    {
+      const calls: Array<{ model: string; thinkingLevel?: string; temperature?: unknown }> = [];
+      const mockFetch = async (url: string | URL | Request, init?: RequestInit) => {
+        const urlStr = String(url);
+        const body = init?.body ? JSON.parse(String(init.body)) : {};
+        const model = urlStr.includes("gemini-4-hydrogen")
+          ? "gemini-4-hydrogen"
+          : urlStr.includes("gemini-3.8-flash")
+            ? "gemini-3.8-flash"
+            : "other";
+        calls.push({
+          model,
+          thinkingLevel: body?.generationConfig?.thinkingConfig?.thinkingLevel,
+          temperature: body?.generationConfig?.temperature,
+        });
+        return new Response(
+          JSON.stringify({
+            candidates: [{ content: { parts: [{ text: "하이드로젠 High 추론 결과" }] } }],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      };
+
+      const res = await GeminiService.generateText("복합 추론 요청", {
+        fetchFn: mockFetch as any,
+        sleepFn: noopSleep,
+      });
+
+      assert(res.ok, "11-1: 하이드로젠 High 추론 요청 성공");
+      if (res.ok) {
+        assert(
+          res.text === "하이드로젠 High 추론 결과" &&
+            res.model === "gemini-4-hydrogen",
+          "11-1: gemini-4-hydrogen 모델 응답 반환",
+        );
+      }
+      assert(
+        calls.length === 1 &&
+          calls[0].model === "gemini-4-hydrogen" &&
+          calls[0].thinkingLevel === "high" &&
+          calls[0].temperature === undefined,
+        "11-1: 하이드로젠 High(gemini-4-hydrogen, thinkingLevel=high)만 1회 호출되고 3.8은 호출되지 않음",
+      );
+    }
+
+    // 11-2. 하이드로젠 High HTTP 429 -> 동일 요청을 기존 3.8 High로 1회만 전환, 다음 새 요청은 다시 하이드로젠 High부터 시작
+    {
+      const calls: Array<{ model: string; thinkingLevel?: string }> = [];
+      let shouldHydrogen429 = true;
+
+      const mockFetch = async (url: string | URL | Request, init?: RequestInit) => {
+        const urlStr = String(url);
+        const body = init?.body ? JSON.parse(String(init.body)) : {};
+        const model = urlStr.includes("gemini-4-hydrogen")
+          ? "gemini-4-hydrogen"
+          : urlStr.includes("gemini-3.8-flash")
+            ? "gemini-3.8-flash"
+            : "other";
+        calls.push({
+          model,
+          thinkingLevel: body?.generationConfig?.thinkingConfig?.thinkingLevel,
+        });
+
+        if (model === "gemini-4-hydrogen" && shouldHydrogen429) {
+          return new Response(
+            JSON.stringify({
+              error: { message: "Resource has been exhausted (e.g. check quota)." },
+            }),
+            { status: 429, headers: { "Content-Type": "application/json" } },
+          );
+        }
+
+        return new Response(
+          JSON.stringify({
+            candidates: [
+              {
+                content: {
+                  parts: [{ text: `${model} 응답 완료` }],
+                },
+              },
+            ],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      };
+
+      const firstRes = await GeminiService.generateText("첫 번째 추론 요청 (429 발생)", {
+        fetchFn: mockFetch as any,
+        sleepFn: noopSleep,
+      });
+
+      assert(firstRes.ok, "11-2: 하이드로젠 429 발생 시 3.8 High로 전환하여 성공");
+      if (firstRes.ok) {
+        assert(
+          firstRes.model === "gemini-3.8-flash" &&
+            firstRes.text === "gemini-3.8-flash 응답 완료",
+          "11-2: 전환된 모델은 gemini-3.8-flash",
+        );
+      }
+      assert(
+        calls.length === 2 &&
+          calls[0].model === "gemini-4-hydrogen" &&
+          calls[0].thinkingLevel === "high" &&
+          calls[1].model === "gemini-3.8-flash" &&
+          calls[1].thinkingLevel === "high",
+        "11-2: 하이드로젠 High 429 직후 재시도 없이 3.8 High로 정확히 1회만 전환됨",
+      );
+
+      // 다음 새 추론 요청은 다시 하이드로젠 High부터 시작하는지 확인
+      shouldHydrogen429 = false;
+      const secondRes = await GeminiService.generateText("두 번째 새 추론 요청", {
+        fetchFn: mockFetch as any,
+        sleepFn: noopSleep,
+      });
+
+      assert(secondRes.ok, "11-2b: 다음 새 추론 요청 정상 성공");
+      if (secondRes.ok) {
+        assert(
+          secondRes.model === "gemini-4-hydrogen",
+          "11-2b: 다음 새 추론 요청은 다시 gemini-4-hydrogen부터 시작하여 성공",
+        );
+      }
+      assert(
+        calls.length === 3 &&
+          calls[2].model === "gemini-4-hydrogen" &&
+          calls[2].thinkingLevel === "high",
+        "11-2b: 세 번째 호출은 다시 하이드로젠 High(gemini-4-hydrogen, high)로 시작",
+      );
+    }
+
+    // 11-3. 429 외 오류(503, 404, 403 등)는 3.8 High로 전환하지 않고 기존 오류 처리 경로 유지
+    {
+      const calls503: string[] = [];
+      const mockFetch503 = async (url: string | URL | Request) => {
+        const urlStr = String(url);
+        calls503.push(
+          urlStr.includes("gemini-4-hydrogen")
+            ? "gemini-4-hydrogen"
+            : "gemini-3.8-flash",
+        );
+        return new Response(
+          JSON.stringify({ error: { message: "Service Unavailable" } }),
+          { status: 503, headers: { "Content-Type": "application/json" } },
+        );
+      };
+
+      const res503 = await GeminiService.generateText("추론 503 오류 요청", {
+        fetchFn: mockFetch503 as any,
+        sleepFn: noopSleep,
+        maxRetries: 2,
+      });
+
+      assert(!res503.ok, "11-3a: 503 오류 시 실패 반환");
+      if (!res503.ok) {
+        assert(
+          res503.message ===
+            "Gemini 서버가 일시적으로 혼잡합니다. 잠시 후 다시 시도해 주세요.",
+          "11-3a: 503은 기존 일시 혼잡 안내문 경로 유지",
+        );
+      }
+      assert(
+        calls503.length === 3 &&
+          calls503.every((m) => m === "gemini-4-hydrogen"),
+        "11-3a: 429가 아닌 503 오류에서는 3.8로 전환하지 않고 하이드로젠에서만 재시도 후 기존 오류 반환",
+      );
+
+      const calls404: string[] = [];
+      const mockFetch404 = async (url: string | URL | Request) => {
+        const urlStr = String(url);
+        calls404.push(
+          urlStr.includes("gemini-4-hydrogen")
+            ? "gemini-4-hydrogen"
+            : "gemini-3.8-flash",
+        );
+        return new Response(
+          JSON.stringify({ error: { message: "Model not found" } }),
+          { status: 404, headers: { "Content-Type": "application/json" } },
+        );
+      };
+
+      const res404 = await GeminiService.generateText("추론 404 오류 요청", {
+        fetchFn: mockFetch404 as any,
+        sleepFn: noopSleep,
+      });
+
+      assert(!res404.ok, "11-3b: 404 오류 시 실패 반환");
+      assert(
+        calls404.length === 1 && calls404[0] === "gemini-4-hydrogen",
+        "11-3b: 추론 요청에서 404(429 외 오류)는 3.8로 전환하지 않고 즉시 기존 404 오류 반환",
+      );
+    }
+  }
+
+  // 12. 정보보안기사 튜터 프롬프트 맥락(문항·보기·선택 답·정답·기본 해설) 전달 검증
+  {
+    const securityQuestion: any = {
+      id: "SEC_EXAM_SYS_001",
+      certification: "SECURITY",
+      subject: "시스템 보안",
+      category: "운영체제 보안",
+      type: "MULTIPLE_CHOICE",
+      difficulty: "MEDIUM",
+      question: "리눅스 파일시스템에서 Sticky Bit가 설정된 디렉터리의 특징은?",
+      options: [
+        "누구나 파일을 생성할 수 있으나 삭제는 파일 소유자, 디렉터리 소유자, root만 가능하다.",
+        "실행 시 파일 소유자의 권한으로 프로세스가 실행된다.",
+        "실행 시 파일 소유 그룹의 권한으로 프로세스가 실행된다.",
+        "디렉터리 내 모든 파일에 자동으로 암호화가 적용된다.",
+      ],
+      answer:
+        "누구나 파일을 생성할 수 있으나 삭제는 파일 소유자, 디렉터리 소유자, root만 가능하다.",
+      explanation:
+        "/tmp 같은 공용 디렉터리에서 타인의 파일 삭제를 방지하기 위해 Sticky Bit(1000)를 설정합니다.",
+    };
+
+    const securityPrompt = buildTutorPrompt({
+      question: securityQuestion,
+      userAnswer: "실행 시 파일 소유자의 권한으로 프로세스가 실행된다.",
+      userPrompt: "AI 튜터에게 추가 설명 요청",
+      missType: "WRONG",
+    });
+
+    assert(
+      securityPrompt.includes(securityQuestion.question),
+      "12-1: 정보보안기사 튜터 프롬프트에 문항(question) 포함",
+    );
+    assert(
+      securityQuestion.options.every((opt: string) =>
+        securityPrompt.includes(opt),
+      ),
+      "12-2: 정보보안기사 튜터 프롬프트에 4개 보기(options) 모두 포함",
+    );
+    assert(
+      securityPrompt.includes(
+        "- 선택 답: 실행 시 파일 소유자의 권한으로 프로세스가 실행된다.",
+      ),
+      "12-3: 정보보안기사 튜터 프롬프트에 사용자가 선택한 답(selectedAnswer) 포함",
+    );
+    assert(
+      securityPrompt.includes(`- 정답: ${securityQuestion.answer}`),
+      "12-4: 정보보안기사 튜터 프롬프트에 정답(answer) 포함",
+    );
+    assert(
+      securityPrompt.includes(`- 기본 해설: ${securityQuestion.explanation}`),
+      "12-5: 정보보안기사 튜터 프롬프트에 기본 해설(explanation) 포함",
+    );
+
+    // 모바일 SSE는 fetch 대역을 주입하면 우회되므로 XHR 경로 자체를 검증한다.
+    {
+      const originalXHR = globalThis.XMLHttpRequest;
+      const models: string[] = [];
+      const statuses = [429, 429, 200];
+      const frame = 'data: {"candidates":[{"content":{"parts":[{"text":"완료"}]}}]}';
+      class TutorXHR {
+        status = 0;
+        responseText = "";
+        onload?: () => void;
+        open(_method: string, url: string) {
+          models.push(url.match(/models\/([^:]+)/)![1]);
+        }
+        setRequestHeader() {}
+        send() {
+          this.status = statuses.shift() ?? 500;
+          this.responseText = this.status === 200 ? frame : '{"error":{"message":"quota"}}';
+          this.onload?.();
+        }
+      }
+      globalThis.XMLHttpRequest = TutorXHR as unknown as typeof XMLHttpRequest;
+      try {
+        await GeminiService.saveApiKey("AQ.test_sse");
+        const context = { question: securityQuestion, userPrompt: "추가 설명" };
+        await GeminiService.askTutorStream(context, () => {}, { reasoning: true });
+        const reply = await GeminiService.askTutorStream(context, () => {}, { reasoning: true });
+        assert(models.join(",") === [GEMINI_HYDROGEN_MODEL, GEMINI_38_MODEL, GEMINI_HYDROGEN_MODEL].join(",") &&
+          reply === "완료", "SSE 양쪽 한도 소진 후 종료, 다음 요청 재시작 및 마지막 프레임 수신");
+      } finally {
+        globalThis.XMLHttpRequest = originalXHR;
+      }
+    }
+
   }
 
   if (failed > 0) {

@@ -29,7 +29,8 @@ export const TheoryCard: React.FC<TheoryCardProps> = ({ article, onStartQuiz }) 
 
   const handleLaunchQuiz = async () => {
     triggerHaptic.impact();
-    const attempts = await AttemptRepository.getAllAttempts();
+    const cert = article.certification ?? "JUNGCHEOGI";
+    const attempts = await AttemptRepository.getAllAttempts(cert);
     const weakIds = [
       ...new Set(
         attempts.filter((item) => !item.isCorrect).map((item) => item.questionId),
@@ -40,6 +41,7 @@ export const TheoryCard: React.FC<TheoryCardProps> = ({ article, onStartQuiz }) 
       article.relatedKeywords,
       10,
       weakIds,
+      cert,
     );
     onStartQuiz(relatedQuestions, `${article.title} 개념 확인`);
   };

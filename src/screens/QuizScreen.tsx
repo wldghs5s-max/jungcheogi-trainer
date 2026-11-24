@@ -29,11 +29,21 @@ import { Button } from "../components/common/Button";
 import { AITutorModal } from "../components/quiz/AITutorModal";
 import { ProgressBar } from "../components/common/ProgressBar";
 import { triggerHaptic } from "../utils/haptics";
-import { formatAnswerDisplay } from "../utils/quiz";
+import {
+  checkAnswer,
+  formatAnswerDisplay,
+  getTutorButtonLabel,
+  isSecurityCertificationQuestion,
+  shouldAutoOpenTutorOnUnknown,
+} from "../utils/quiz";
 import {
   getQuestionHint,
   getQuestionOriginLabel,
 } from "../utils/questionOrigin";
+import {
+  getSecurityQuestionSourceBadgeLabel,
+  getSecurityQuestionStandardBadgeLabel,
+} from "../data/security";
 import { COLORS } from "../utils/theme";
 
 interface QuizScreenProps {
@@ -67,10 +77,13 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isTutorOpen, setIsTutorOpen] = useState(false);
   const [autoAskChapter, setAutoAskChapter] = useState(false);
+  const [autoAskSecurityExplanation, setAutoAskSecurityExplanation] =
+    useState(false);
   const [unknownUnlockIn, setUnknownUnlockIn] = useState(20);
 
   const currentQuestion = questions[currentIndex];
   const isUnknown = missType === "UNKNOWN";
+  const isSecurityQuestion = isSecurityCertificationQuestion(currentQuestion);
   const UNKNOWN_LOCK_SECONDS = 20;
 
   useEffect(() => {
@@ -155,13 +168,22 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
       return;
     }
     triggerHaptic.selection();
-    setAutoAskChapter(true);
-    setIsTutorOpen(true);
+    if (shouldAutoOpenTutorOnUnknown(currentQuestion)) {
+      setAutoAskChapter(true);
+      setAutoAskSecurityExplanation(false);
+      setIsTutorOpen(true);
+    }
   };
 
   const openTutor = (chapterLesson = false) => {
     triggerHaptic.selection();
-    setAutoAskChapter(chapterLesson);
+    if (isSecurityQuestion) {
+      setAutoAskSecurityExplanation(true);
+      setAutoAskChapter(false);
+    } else {
+      setAutoAskSecurityExplanation(false);
+      setAutoAskChapter(chapterLesson);
+    }
     setIsTutorOpen(true);
   };
 
@@ -169,6 +191,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
     triggerHaptic.selection();
     setIsTutorOpen(false);
     setAutoAskChapter(false);
+    setAutoAskSecurityExplanation(false);
     const hasNext = nextQuestion();
     if (!hasNext) {
       onFinish();
@@ -201,23 +224,35 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
           <View style={styles.headerRow}>
             <TouchableOpacity
               onPress={handleExitPress}
+              style={styles.exitButton}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <Text style={[styles.exitText, { color: theme.subText }]}>
                 나가기
               </Text>
             </TouchableOpacity>
-            <Text style={[styles.headerTitle, { color: theme.text }]}>
-              {sessionTitle} ({currentIndex + 1}/{questions.length})
-            </Text>
-            <View style={styles.headerRightActions}>
-              <TouchableOpacity
-                onPress={() => openTutor(isUnknown)}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                style={{ marginRight: 12 }}
+            <View style={styles.headerTitleContainer}>
+              <Text
+                style={[styles.headerTitle, { color: theme.text }]}
+                numberOfLines={2}
+                ellipsizeMode="tail"
               >
-                <Sparkles size={22} color={theme.accent} />
-              </TouchableOpacity>
+                {sessionTitle}
+              </Text>
+              <Text style={[styles.headerCount, { color: theme.subText }]}>
+                ({currentIndex + 1}/{questions.length})
+              </Text>
+            </View>
+            <View style={styles.headerRightActions}>
+              {!isSecurityQuestion && (
+                <TouchableOpacity
+                  onPress={() => openTutor(isUnknown)}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  style={{ marginRight: 12 }}
+                >
+                  <Sparkles size={22} color={theme.accent} />
+                </TouchableOpacity>
+              )}
               <TouchableOpacity
                 onPress={handleToggleBookmark}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
@@ -234,6 +269,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
         </View>
 
         <ScrollView
+          key={currentQuestion.id}
           style={styles.scrollArea}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
@@ -274,14 +310,37 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
               variant="default"
             />
             <View style={{ width: 6 }} />
-            <Badge
-              label={getQuestionOriginLabel(currentQuestion)}
-              variant={
-                getQuestionOriginLabel(currentQuestion) === "AI 생성"
-                  ? "accent"
-                  : "default"
-              }
-            />
+            {isSecurityQuestion ? (
+              <>
+                <Badge
+                  label={getSecurityQuestionSourceBadgeLabel(currentQuestion)}
+                  variant={
+                    currentQuestion.sourceKind === "PAST_EXAM"
+                      ? "primary"
+                      : "default"
+                  }
+                />
+                <View style={{ width: 6 }} />
+                <Badge
+                  label={getSecurityQuestionStandardBadgeLabel(currentQuestion)}
+                  variant={
+                    currentQuestion.syllabusStandard === "2027_2029" ||
+                    currentQuestion.is2027RevisionPrep
+                      ? "accent"
+                      : "success"
+                  }
+                />
+              </>
+            ) : (
+              <Badge
+                label={getQuestionOriginLabel(currentQuestion)}
+                variant={
+                  getQuestionOriginLabel(currentQuestion) === "AI 생성"
+                    ? "accent"
+                    : "default"
+                }
+              />
+            )}
           </View>
 
           {/* 문제 지문 */}
@@ -303,6 +362,34 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
             <View style={styles.optionsContainer}>
               {currentQuestion.options.map((opt, idx) => {
                 const isSelected = selectedAnswer === opt;
+                const isOptionCorrect =
+                  isSubmitted &&
+                  checkAnswer(opt, currentQuestion.answer, currentQuestion);
+                const isWrongSelection =
+                  isSubmitted && isSelected && !isOptionCorrect;
+
+                const cardBg = isOptionCorrect
+                  ? theme.correctLight
+                  : isWrongSelection
+                    ? theme.wrongLight
+                    : isSelected
+                      ? theme.primaryLight
+                      : theme.surface;
+                const cardBorder = isOptionCorrect
+                  ? theme.correct
+                  : isWrongSelection
+                    ? theme.wrong
+                    : isSelected
+                      ? theme.primary
+                      : theme.border;
+                const accentColor = isOptionCorrect
+                  ? theme.correct
+                  : isWrongSelection
+                    ? theme.wrong
+                    : isSelected
+                      ? theme.primary
+                      : theme.mutedText;
+
                 return (
                   <TouchableOpacity
                     key={idx}
@@ -315,10 +402,8 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                     style={[
                       styles.optionCard,
                       {
-                        backgroundColor: isSelected
-                          ? theme.primaryLight
-                          : theme.surface,
-                        borderColor: isSelected ? theme.primary : theme.border,
+                        backgroundColor: cardBg,
+                        borderColor: cardBorder,
                       },
                     ]}
                   >
@@ -326,19 +411,23 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                       style={[
                         styles.optionRadio,
                         {
-                          borderColor: isSelected
-                            ? theme.primary
-                            : theme.mutedText,
-                          backgroundColor: isSelected
-                            ? theme.primary
-                            : "transparent",
+                          borderColor: accentColor,
+                          backgroundColor:
+                            isSelected || isOptionCorrect || isWrongSelection
+                              ? accentColor
+                              : "transparent",
                         },
                       ]}
                     >
                       <Text
                         style={[
                           styles.optionRadioNumber,
-                          { color: isSelected ? "#FFFFFF" : theme.subText },
+                          {
+                            color:
+                              isSelected || isOptionCorrect || isWrongSelection
+                                ? "#FFFFFF"
+                                : theme.subText,
+                          },
                         ]}
                       >
                         {idx + 1}
@@ -348,8 +437,15 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                       style={[
                         styles.optionText,
                         {
-                          color: isSelected ? theme.primary : theme.text,
-                          fontWeight: isSelected ? "700" : "400",
+                          color: isOptionCorrect
+                            ? theme.correct
+                            : isWrongSelection
+                              ? theme.wrong
+                              : isSelected
+                                ? theme.primary
+                                : theme.text,
+                          fontWeight:
+                            isSelected || isOptionCorrect ? "700" : "400",
                         },
                       ]}
                     >
@@ -514,9 +610,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
                 <Text
                   style={[styles.aiTutorButtonText, { color: theme.accent }]}
                 >
-                  {isUnknown
-                    ? "📘 이 단원(챕터) 개념부터 과외받기"
-                    : "✨ Gemini AI 튜터에게 이 문제 과외받기"}
+                  {getTutorButtonLabel(currentQuestion, isUnknown)}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -596,10 +690,17 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
           visible={isTutorOpen}
           question={currentQuestion}
           userAnswer={
-            isSubmitted ? (isUnknown ? undefined : selectedAnswer) : undefined
+            isSubmitted
+              ? isSecurityQuestion
+                ? selectedAnswer || "(모름)"
+                : isUnknown
+                  ? undefined
+                  : selectedAnswer
+              : undefined
           }
           missType={isSubmitted ? missType : null}
           autoAskChapter={autoAskChapter}
+          autoAskSecurityExplanation={autoAskSecurityExplanation}
           attemptId={
             sessionId
               ? `${sessionId}_${currentIndex}_${currentQuestion.id}`
@@ -608,6 +709,7 @@ export const QuizScreen: React.FC<QuizScreenProps> = ({ onFinish, onExit }) => {
           onClose={() => {
             setIsTutorOpen(false);
             setAutoAskChapter(false);
+            setAutoAskSecurityExplanation(false);
           }}
         />
       )}
@@ -631,15 +733,37 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    minHeight: 40,
     marginBottom: 8,
+  },
+  exitButton: {
+    flexShrink: 0,
+    marginRight: 10,
+    paddingVertical: 4,
   },
   exitText: {
     fontSize: 14,
     fontWeight: "600",
   },
+  headerTitleContainer: {
+    flex: 1,
+    minWidth: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   headerTitle: {
-    fontSize: 15,
+    flexShrink: 1,
+    fontSize: 14,
     fontWeight: "700",
+    lineHeight: 19,
+    textAlign: "center",
+  },
+  headerCount: {
+    flexShrink: 0,
+    fontSize: 13,
+    fontWeight: "700",
+    marginLeft: 4,
   },
   scrollArea: {
     flex: 1,
@@ -794,8 +918,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   headerRightActions: {
+    flexShrink: 0,
     flexDirection: "row",
     alignItems: "center",
+    marginLeft: 10,
   },
   aiTutorButton: {
     flexDirection: "row",

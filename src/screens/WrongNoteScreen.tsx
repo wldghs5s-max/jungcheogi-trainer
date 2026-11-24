@@ -30,6 +30,8 @@ interface WrongNoteScreenProps {
 
 export const WrongNoteScreen: React.FC<WrongNoteScreenProps> = ({ onStartQuiz }) => {
   const isDarkMode = useSettingsStore((state) => state.isDarkMode);
+  const selectedCertification =
+    useSettingsStore((state) => state.selectedCertification) ?? 'JUNGCHEOGI';
   const theme = isDarkMode ? COLORS.dark : COLORS.light;
 
   const [activeFilter, setActiveFilter] = useState<FilterType>('ALL');
@@ -41,8 +43,12 @@ export const WrongNoteScreen: React.FC<WrongNoteScreenProps> = ({ onStartQuiz })
   const [tutorQuestion, setTutorQuestion] = useState<Question | null>(null);
 
   const loadData = useCallback(async () => {
-    const rawSummaries = await AttemptRepository.getWrongQuestionSummaries();
-    const bIds = await BookmarkRepository.getBookmarkedQuestionIds();
+    const rawSummaries = await AttemptRepository.getWrongQuestionSummaries(
+      selectedCertification,
+    );
+    const bIds = await BookmarkRepository.getBookmarkedQuestionIds(
+      selectedCertification,
+    );
     const historyIds = await TutorRepository.getQuestionIdsWithHistory();
     setSummaries(rawSummaries);
     setBookmarkedIds(bIds);
@@ -72,9 +78,12 @@ export const WrongNoteScreen: React.FC<WrongNoteScreenProps> = ({ onStartQuiz })
       targetIds = rawSummaries.map((s) => s.questionId);
     }
 
-    const questions = QuestionRepository.getByIds(targetIds);
+    const questions = QuestionRepository.getByIds(
+      targetIds,
+      selectedCertification,
+    );
     setDisplayQuestions(questions);
-  }, [activeFilter]);
+  }, [activeFilter, selectedCertification]);
 
   useEffect(() => {
     loadData();
@@ -123,7 +132,13 @@ export const WrongNoteScreen: React.FC<WrongNoteScreenProps> = ({ onStartQuiz })
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <Header title="오답노트 & 북마크" />
+      <Header
+        title={
+          selectedCertification === 'SECURITY'
+            ? '정보보안기사 오답노트 & 북마크'
+            : '오답노트 & 북마크'
+        }
+      />
 
       {/* 필터 탭 바 */}
       <View style={[styles.filterBar, { backgroundColor: theme.surface, borderBottomColor: theme.border }]}>

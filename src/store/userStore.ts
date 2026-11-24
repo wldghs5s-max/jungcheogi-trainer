@@ -14,9 +14,7 @@ export const useUserStore = create<UserState>((set) => ({
 
   setDailyTarget: async (target: number) => {
     set({ dailyTarget: target });
-    const settings = (await LocalStorage.getItem<any>(STORAGE_KEYS.SETTINGS)) || {};
-    settings.dailyTarget = target;
-    await LocalStorage.setItem(STORAGE_KEYS.SETTINGS, settings);
+    await LocalStorage.updateSettings({ dailyTarget: target });
   },
 
   loadUserSettings: async () => {

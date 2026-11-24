@@ -1,7 +1,8 @@
-import { Subject } from "./question";
+import { CertificationType, SecuritySubject, Subject } from "./question";
 
 export interface TheoryArticle {
   id: string;
+  certification?: CertificationType;
   subject: Subject;
   category: string;
   title: string;
@@ -20,6 +21,7 @@ export interface MnemonicSubItem {
 
 export interface MnemonicItem {
   id: string;
+  certification?: CertificationType;
   subject: Subject;
   title: string; // 예: "GoF 디자인 패턴 - 생성 패턴 5가지"
   acronym: string; // 예: "추 · 빌 · 팩 · 프 · 싱"
@@ -28,4 +30,24 @@ export interface MnemonicItem {
   importance: 1 | 2 | 3;
   frequency: string; // 출제 빈도 (예: "실기 기출 단골 1위 · 객관식/단답형 최빈출")
   trapPoint: string; // 시험 함정 방지 팁
+}
+
+/**
+ * 정보보안기사 출퇴근 필수 암기 카드 (카드 한 장에 개념 하나)
+ */
+export interface SecurityMemoCard {
+  id: string;
+  certification?: CertificationType;
+  subject: SecuritySubject;
+  category: string;
+  /** 카드 한 장에 보여줄 단일 핵심 개념명 */
+  concept: string;
+  /** 출퇴근 중 한눈에 읽는 한 줄 핵심 정의 */
+  oneLiner: string;
+  /** 시험에 바로 나오는 핵심 암기 포인트 */
+  keyPoints: string[];
+  /** 헷갈리기 쉬운 비교 포인트 또는 1초 암기 팁 */
+  memoryTip: string;
+  importance: 1 | 2 | 3;
+  tags: string[];
 }

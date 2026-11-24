@@ -1,7 +1,17 @@
 import { ALL_QUESTIONS, SUBJECTS } from "../src/data/questions";
 import { MEMORIZATION_BANK } from "../src/data/questions/memorizationBank";
 import { generateProgrammingPracticeBundle } from "../src/api/programmingGenerator";
-import { checkAnswer, shuffleArray } from "../src/utils/quiz";
+import {
+  checkAnswer,
+  getPostSubmitExplanationView,
+  getSessionResultFeedbackMessage,
+  getTutorButtonLabel,
+  SECURITY_TUTOR_REQUEST_BUTTON_LABEL,
+  shouldAutoOpenTutorOnUnknown,
+  shuffleArray,
+  summarizeSessionAttempts,
+} from "../src/utils/quiz";
+import { GeminiService, buildTutorPrompt } from "../src/api/geminiService";
 import { getDueReviewQuestionIds } from "../src/utils/reviewQueue";
 import { getQuestionOriginLabel } from "../src/utils/questionOrigin";
 import { measureKeyboardOverlap } from "../src/utils/keyboardOverlap";
@@ -14,9 +24,28 @@ import {
 import {
   LocalStorage,
   MemoryStorageAdapter,
+  STORAGE_KEYS,
 } from "../src/storage/localStorage";
 import { AttemptRepository } from "../src/repositories/attemptRepository";
+import { BookmarkRepository } from "../src/repositories/bookmarkRepository";
 import { useQuizStore } from "../src/store/quizStore";
+import { useUserStore } from "../src/store/userStore";
+import { useSettingsStore } from "../src/store/settingsStore";
+import { calculateUserStats } from "../src/utils/statistics";
+import {
+  SECURITY_QUESTIONS,
+  SECURITY_SUBJECTS,
+  SECURITY_THEORY_DATA,
+  SECURITY_MEMO_CARDS,
+  SECURITY_OFFICIAL_CHAPTERS,
+  SECURITY_OFFICIAL_SECTIONS,
+  registerSecurityTextbook,
+  clearSecurityTextbook,
+  getSecurityTaxonomyBasisLabel,
+  getSecurityQuestionSourceBadgeLabel,
+  getSecurityQuestionStandardBadgeLabel,
+  filterSecurityQuestionsByScope,
+} from "../src/data/security";
 
 const MEMO_SUBJECTS = [
   "소프트웨어설계",
@@ -592,6 +621,919 @@ async function runAsyncSelfTests() {
       useQuizStore.getState().isSubmitted === false,
     "저장 중 세션 변경 시 이전 완료가 새 세션을 덮어쓰지 않음",
   );
+
+  // -----------------------------------------------------------------
+  // 정보보안기사 확장 검증: 신규 실행, 앱 재실행, 기존 기록 유지, 객관식 채점, 자격증별 기록 구분
+  // -----------------------------------------------------------------
+  console.log("\n=== 정보보안기사 확장 및 자격증 분리 검증 ===\n");
+
+  // 0. 정보보안기사 샘플 데이터(이론, 객관식, 필수 암기 카드) 검증
+  assert(
+    SECURITY_SUBJECTS.length === 5,
+    `정보보안기사 5과목 정의됨 (${SECURITY_SUBJECTS.join(", ")})`,
+  );
+  assert(
+    SECURITY_QUESTIONS.length >= 5,
+    `정보보안기사 객관식 샘플 문제 존재 (실제 ${SECURITY_QUESTIONS.length}개)`,
+  );
+  for (const sq of SECURITY_QUESTIONS) {
+    assertQuestion(sq, sq.id);
+    assert(sq.certification === "SECURITY", `${sq.id} certification=SECURITY`);
+    assert(sq.type === "MULTIPLE_CHOICE", `${sq.id} type=MULTIPLE_CHOICE`);
+    assert(
+      Array.isArray(sq.options) && sq.options.length === 4,
+      `${sq.id} 4지선다 보기 4개`,
+    );
+    assert(
+      sq.options!.includes(String(sq.answer)),
+      `${sq.id} 정답이 보기 목록에 포함됨`,
+    );
+  }
+  assert(
+    SECURITY_THEORY_DATA.length >= 5,
+    `정보보안기사 이론 샘플 존재 (실제 ${SECURITY_THEORY_DATA.length}개)`,
+  );
+  for (const st of SECURITY_THEORY_DATA) {
+    assert(
+      st.certification === "SECURITY" &&
+        !!st.id &&
+        !!st.title &&
+        st.coreConcepts.length >= 2,
+      `정보보안기사 이론 메타 유효: ${st.id}`,
+    );
+  }
+  assert(
+    SECURITY_MEMO_CARDS.length >= 5,
+    `정보보안기사 필수 암기 카드(1장 1개념) 샘플 존재 (실제 ${SECURITY_MEMO_CARDS.length}개)`,
+  );
+  for (const mc of SECURITY_MEMO_CARDS) {
+    assert(
+      !!mc.id &&
+        !!mc.concept.trim() &&
+        !!mc.oneLiner.trim() &&
+        mc.keyPoints.length >= 2 &&
+        !!mc.memoryTip.trim(),
+      `필수 암기 카드(1장 1개념) 유효: ${mc.id} (${mc.concept})`,
+    );
+  }
+
+  // 1. 신규 실행: 자격증 선택값이 없는 상태에서 loadSettings() 실행 시 selectedCertification === null
+  const certStorage = new MemoryStorageAdapter();
+  LocalStorage.setAdapter(certStorage);
+  useSettingsStore.setState({
+    selectedCertification: null,
+    isSettingsLoaded: false,
+  });
+  await useSettingsStore.getState().loadSettings();
+  assert(
+    useSettingsStore.getState().isSettingsLoaded === true &&
+      useSettingsStore.getState().selectedCertification === null,
+    "신규 실행: 자격증 선택값이 없으면 selectedCertification이 null로 로드됨 (선택 화면 표시 조건)",
+  );
+
+  // 2. 자격증 선택 및 앱 재실행: 선택한 자격증이 저장되고 재실행 시 그대로 복원됨
+  await Promise.all([
+    useSettingsStore.getState().setSelectedCertification("SECURITY"),
+    useUserStore.getState().setDailyTarget(12),
+  ]);
+  const savedSettings = await LocalStorage.getItem<{dailyTarget: number; selectedCertification: string}>(STORAGE_KEYS.SETTINGS);
+  assert(savedSettings?.dailyTarget === 12 && savedSettings.selectedCertification === "SECURITY",
+    "일일 목표와 자격증을 동시에 변경해도 재실행용 설정에 모두 저장됨");
+  assert(
+    useSettingsStore.getState().selectedCertification === "SECURITY",
+    "자격증 선택 즉시 상태 반영 (SECURITY)",
+  );
+  // 앱 재실행 시뮬레이션 (메모리 상태 초기화 후 스토리지에서 재로드)
+  useSettingsStore.setState({
+    selectedCertification: null,
+    isSettingsLoaded: false,
+  });
+  await useSettingsStore.getState().loadSettings();
+  assert(
+    useSettingsStore.getState().isSettingsLoaded === true &&
+      useSettingsStore.getState().selectedCertification === "SECURITY",
+    "앱 재실행: 저장된 자격증(SECURITY)으로 바로 복원됨",
+  );
+
+  await useSettingsStore.getState().setSelectedCertification("JUNGCHEOGI");
+  useSettingsStore.setState({
+    selectedCertification: null,
+    isSettingsLoaded: false,
+  });
+  await useSettingsStore.getState().loadSettings();
+  assert(
+    useSettingsStore.getState().selectedCertification === "JUNGCHEOGI",
+    "앱 재실행: 저장된 자격증(JUNGCHEOGI)으로 바로 복원됨",
+  );
+
+  // 3. 기존 설치에서 선택 화면이 처음 표시돼도 정보처리기사 학습 기록 보존 검증
+  const legacyStorage = new MemoryStorageAdapter();
+  LocalStorage.setAdapter(legacyStorage);
+  // 구버전 설치 상태 시뮬레이션: @settings에 selectedCertification이 없고, @quiz_attempts와 @bookmarks에 certification 필드가 없는 기존 정처기 기록이 존재
+  const legacyAttempt: QuizAttempt = {
+    id: "legacy-att-1",
+    questionId: "PROG_001",
+    selectedAnswer: "오답",
+    correctAnswer: "정답",
+    isCorrect: false,
+    missType: "WRONG",
+    answeredAt: new Date().toISOString(),
+  };
+  await LocalStorage.setItem(STORAGE_KEYS.QUIZ_ATTEMPTS, [legacyAttempt]);
+  await LocalStorage.setItem(STORAGE_KEYS.BOOKMARKS, [
+    { questionId: "DB_001", createdAt: new Date().toISOString() },
+  ]);
+  await LocalStorage.setItem(STORAGE_KEYS.SETTINGS, {
+    isDarkMode: true,
+    dailyTarget: 10,
+  });
+
+  useSettingsStore.setState({
+    selectedCertification: null,
+    isSettingsLoaded: false,
+  });
+  await useSettingsStore.getState().loadSettings();
+  assert(
+    useSettingsStore.getState().selectedCertification === null,
+    "기존 설치 업그레이드 직후: 선택값이 없으므로 자격증 선택 화면이 표시됨",
+  );
+
+  // 선택 화면에서 정보처리기사를 선택했을 때 기존 학습 기록과 북마크가 그대로 유지되는지 확인
+  await useSettingsStore.getState().setSelectedCertification("JUNGCHEOGI");
+  const preservedAttempts =
+    await AttemptRepository.getAllAttempts("JUNGCHEOGI");
+  const preservedWrongIds = await AttemptRepository.getWrongQuestionIds(
+    "all",
+    "JUNGCHEOGI",
+  );
+  const preservedBookmarks =
+    await BookmarkRepository.getBookmarkedQuestionIds("JUNGCHEOGI");
+  assert(
+    preservedAttempts.length === 1 &&
+      preservedAttempts[0].id === "legacy-att-1",
+    "기존 정보처리기사 풀이 기록이 유실 없이 보존됨",
+  );
+  assert(
+    preservedWrongIds.includes("PROG_001"),
+    "기존 정보처리기사 오답노트 기록이 그대로 유지됨",
+  );
+  assert(
+    preservedBookmarks.includes("DB_001"),
+    "기존 정보처리기사 북마크 기록이 그대로 유지됨",
+  );
+
+  // 4. 정보보안기사 객관식 문제 채점(보기 선택, 정답/오답 판정) 및 자격증별 기록 분리 검증
+  const secQ1 = SECURITY_QUESTIONS[0];
+  const secQ2 = SECURITY_QUESTIONS[1];
+  const secQ1WrongOption = secQ1.options!.find((opt) => opt !== secQ1.answer)!;
+
+  assert(
+    checkAnswer(String(secQ1.answer), secQ1.answer, secQ1) === true,
+    "정보보안기사 객관식 채점: 정답 보기 선택 시 정답 판정",
+  );
+  assert(
+    checkAnswer(secQ1WrongOption, secQ1.answer, secQ1) === false,
+    "정보보안기사 객관식 채점: 오답 보기 선택 시 오답 판정",
+  );
+
+  // 퀴즈 스토어를 통한 실제 정보보안기사 객관식 풀이 (1문제 정답, 1문제 오답)
+  useQuizStore
+    .getState()
+    .startQuiz([secQ1, secQ2], "정보보안기사 객관식 테스트", {
+      preserveOrder: true,
+    });
+  useQuizStore.getState().selectAnswer(String(secQ1.answer));
+  const secSubmit1 = await useQuizStore.getState().submitAnswer();
+  assert(
+    secSubmit1.ok && secSubmit1.correct === true,
+    "정보보안기사 객관식 1번 제출: 정답 처리 완료",
+  );
+  assert(
+    useQuizStore.getState().nextQuestion() === true,
+    "정보보안기사 객관식 다음 문제 이동",
+  );
+  const secQ2WrongOption = secQ2.options!.find((opt) => opt !== secQ2.answer)!;
+  useQuizStore.getState().selectAnswer(secQ2WrongOption);
+  const secSubmit2 = await useQuizStore.getState().submitAnswer();
+  assert(
+    secSubmit2.ok && secSubmit2.correct === false,
+    "정보보안기사 객관식 2번 제출: 오답 처리 완료",
+  );
+  await BookmarkRepository.toggle(secQ2.id);
+
+  // 5. 자격증별 문제 목록, 진도, 오답 기록, 북마크, 통계 구분 검증
+  const jcPool = QuestionRepository.getAll("JUNGCHEOGI");
+  const secPool = QuestionRepository.getAll("SECURITY");
+  assert(
+    jcPool.length >= 750 &&
+      jcPool.every((q) => (q.certification ?? "JUNGCHEOGI") === "JUNGCHEOGI"),
+    "문제 목록 구분: 정보처리기사 문제 풀에 보안기사 문제가 섞이지 않음",
+  );
+  assert(
+    secPool.length === SECURITY_QUESTIONS.length &&
+      secPool.every((q) => q.certification === "SECURITY"),
+    "문제 목록 구분: 정보보안기사 문제 풀에 정처기 문제가 섞이지 않음",
+  );
+
+  const jcAttempts = await AttemptRepository.getAllAttempts("JUNGCHEOGI");
+  const secAttempts = await AttemptRepository.getAllAttempts("SECURITY");
+  assert(
+    jcAttempts.length === 1 && jcAttempts[0].questionId === "PROG_001",
+    `자격증별 풀이 기록 구분: 정보처리기사 기록 1건 유지 (실제 ${jcAttempts.length})`,
+  );
+  assert(
+    secAttempts.length === 2 &&
+      secAttempts.every((a) => a.certification === "SECURITY"),
+    `자격증별 풀이 기록 구분: 정보보안기사 기록 2건 분리 (실제 ${secAttempts.length})`,
+  );
+
+  const jcWrong = await AttemptRepository.getWrongQuestionIds(
+    "all",
+    "JUNGCHEOGI",
+  );
+  const secWrong = await AttemptRepository.getWrongQuestionIds(
+    "all",
+    "SECURITY",
+  );
+  assert(
+    jcWrong.length === 1 && jcWrong[0] === "PROG_001",
+    "자격증별 오답노트 구분: 정보처리기사 오답노트에 보안기사 오답 미포함",
+  );
+  assert(
+    secWrong.length === 1 && secWrong[0] === secQ2.id,
+    "자격증별 오답노트 구분: 정보보안기사 오답노트에 정처기 오답 미포함",
+  );
+
+  const jcBookmarks =
+    await BookmarkRepository.getBookmarkedQuestionIds("JUNGCHEOGI");
+  const secBookmarks =
+    await BookmarkRepository.getBookmarkedQuestionIds("SECURITY");
+  assert(
+    jcBookmarks.length === 1 && jcBookmarks[0] === "DB_001",
+    "자격증별 북마크 구분: 정보처리기사 북마크 분리",
+  );
+  assert(
+    secBookmarks.length === 1 && secBookmarks[0] === secQ2.id,
+    "자격증별 북마크 구분: 정보보안기사 북마크 분리",
+  );
+
+  const allRawAttempts = await AttemptRepository.getAllAttempts();
+  const jcStats = calculateUserStats(allRawAttempts, "JUNGCHEOGI");
+  const secStats = calculateUserStats(allRawAttempts, "SECURITY");
+  assert(
+    jcStats.totalAttempts === 1 && jcStats.accuracyRate === 0,
+    "자격증별 진도·통계 구분: 정보처리기사 통계 정확",
+  );
+  assert(
+    secStats.totalAttempts === 2 && secStats.accuracyRate === 50,
+    "자격증별 진도·통계 구분: 정보보안기사 통계 정확 (2문제 중 1정답 = 50%)",
+  );
+
+  // 6. 키 없는 상태의 정보보안기사 해설 표시, 명시적 튜터 호출, 기존 정보처리기사 풀이·튜터 흐름 유지 검증
+  await GeminiService.saveApiKey("");
+  assert(
+    (await GeminiService.getApiKey()) === null,
+    "API 키 미등록 상태 확인 (getApiKey === null)",
+  );
+
+  let tutorApiCallCount = 0;
+  let capturedPrompts: string[] = [];
+  const trackingFetch = async (_url: string | URL | Request, init?: RequestInit) => {
+    tutorApiCallCount += 1;
+    const body = init?.body ? JSON.parse(String(init.body)) : {};
+    const promptText = body?.contents?.[0]?.parts?.[0]?.text || "";
+    capturedPrompts.push(promptText);
+    return new Response(
+      JSON.stringify({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: "정보보안기사 AI 튜터 추가 설명 응답" }],
+            },
+          },
+        ],
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    );
+  };
+
+  // 6-1. API 키가 없는 상태에서 정보보안기사 답안 제출 직후 정답과 explanation 즉시 표시 & API 미호출 확인
+  useQuizStore
+    .getState()
+    .startQuiz([secQ1, secQ2], "보안기사 해설·튜터 흐름 검증", {
+      preserveOrder: true,
+    });
+  const beforeSubmitView = getPostSubmitExplanationView(
+    secQ1,
+    useQuizStore.getState().isSubmitted,
+  );
+  assert(
+    beforeSubmitView.visible === false,
+    "제출 전에는 보안기사 정답/해설 카드가 표시되지 않음",
+  );
+
+  useQuizStore.getState().selectAnswer(secQ1WrongOption);
+  const secWrongSubmit = await useQuizStore.getState().submitAnswer();
+  assert(
+    secWrongSubmit.ok && useQuizStore.getState().isSubmitted === true,
+    "API 키가 없어도 보안기사 답안 제출 즉시 완료",
+  );
+
+  const afterSubmitView = getPostSubmitExplanationView(
+    secQ1,
+    useQuizStore.getState().isSubmitted,
+    useQuizStore.getState().missType === "UNKNOWN",
+  );
+  assert(
+    afterSubmitView.visible === true &&
+      afterSubmitView.requiresApiKey === false &&
+      afterSubmitView.correctAnswerText === String(secQ1.answer) &&
+      afterSubmitView.explanationText === secQ1.explanation &&
+      afterSubmitView.explanationText.length > 10,
+    "API 키 없는 상태에서 보안기사 답안 제출 직후 문항의 정답과 explanation이 즉시 표시됨",
+  );
+  assert(
+    afterSubmitView.tutorButtonLabel === SECURITY_TUTOR_REQUEST_BUTTON_LABEL &&
+      afterSubmitView.tutorButtonLabel === "AI 튜터에게 추가 설명 요청",
+    "보안기사 해설 하단 버튼 문구는 'AI 튜터에게 추가 설명 요청'",
+  );
+
+  // 보안기사에서 '모른다'를 눌러도 튜터가 자동 호출되지 않고 기본 정답·해설만 표시되는지 확인
+  useQuizStore.getState().nextQuestion();
+  const secUnknownSubmit = await useQuizStore.getState().submitUnknown();
+  assert(
+    secUnknownSubmit.ok &&
+      shouldAutoOpenTutorOnUnknown(secQ2) === false &&
+      tutorApiCallCount === 0,
+    "보안기사 답안 제출 및 '모른다' 제출 시 AI 튜터 API가 자동 호출되지 않음 (호출 0회)",
+  );
+  const afterUnknownView = getPostSubmitExplanationView(
+    secQ2,
+    useQuizStore.getState().isSubmitted,
+    true,
+  );
+  assert(
+    afterUnknownView.visible === true &&
+      afterUnknownView.correctAnswerText === String(secQ2.answer) &&
+      afterUnknownView.explanationText === secQ2.explanation,
+    "보안기사 '모른다' 제출 직후에도 API 키 없이 정답과 explanation이 즉시 표시됨",
+  );
+
+  // 6-2. 사용자가 명시적으로 'AI 튜터에게 추가 설명 요청'을 눌렀을 때만 API 호출 및 문항·보기·선택 답·정답·기본 해설 맥락 전달 검증
+  await GeminiService.saveApiKey("AQ.dummy_security_tutor_key");
+  assert(
+    tutorApiCallCount === 0,
+    "사용자가 'AI 튜터에게 추가 설명 요청'을 누르기 전까지 API 호출 0회 유지",
+  );
+
+  const tutorResponse = await GeminiService.askTutorStream(
+    {
+      question: secQ1,
+      userAnswer: secQ1WrongOption,
+      userPrompt: SECURITY_TUTOR_REQUEST_BUTTON_LABEL,
+      missType: "WRONG",
+    },
+    () => {},
+    {
+      fetchFn: trackingFetch as any,
+      sleepFn: async () => {},
+    },
+  );
+  assert(
+    tutorApiCallCount === 1 &&
+      tutorResponse === "정보보안기사 AI 튜터 추가 설명 응답",
+    "사용자가 명시적으로 'AI 튜터에게 추가 설명 요청'을 눌렀을 때만 API가 1회 호출됨",
+  );
+  const sentPrompt = capturedPrompts[0] || "";
+  assert(
+    sentPrompt.includes(secQ1.question) &&
+      secQ1.options!.every((opt) => sentPrompt.includes(opt)) &&
+      sentPrompt.includes(`- 선택 답: ${secQ1WrongOption}`) &&
+      sentPrompt.includes(`- 정답: ${secQ1.answer}`) &&
+      sentPrompt.includes(`- 기본 해설: ${secQ1.explanation}`),
+    "보안기사 튜터 호출 시 문항·보기·선택 답·정답·기본 해설 5가지가 모두 질문 맥락으로 전달됨",
+  );
+
+  // 6-3. 기존 정보처리기사(JUNGCHEOGI) 해설 화면과 튜터 사용 흐름 유지 검증
+  const jcSampleQuestion = jcPool[0];
+  useQuizStore
+    .getState()
+    .startQuiz([jcSampleQuestion], "정보처리기사 흐름 유지 검증", {
+      preserveOrder: true,
+    });
+  useQuizStore.getState().selectAnswer("임의오답");
+  const jcSubmitRes = await useQuizStore.getState().submitAnswer();
+  assert(
+    jcSubmitRes.ok && useQuizStore.getState().isSubmitted === true,
+    "기존 정보처리기사 주관식 풀이 및 채점 흐름 정상 동작",
+  );
+  assert(
+    shouldAutoOpenTutorOnUnknown(jcSampleQuestion) === true &&
+      getTutorButtonLabel(jcSampleQuestion, false) ===
+        "✨ Gemini AI 튜터에게 이 문제 과외받기" &&
+      getTutorButtonLabel(jcSampleQuestion, true) ===
+        "📘 이 단원(챕터) 개념부터 과외받기",
+    "기존 정보처리기사 해설 화면의 튜터 버튼 문구 및 '모른다' 단원 과외 자동 오픈 흐름 유지",
+  );
+  const jcPrompt = buildTutorPrompt({
+    question: jcSampleQuestion,
+    userAnswer: "임의오답",
+    userPrompt: "이 문제 설명해줘",
+    missType: "WRONG",
+  });
+  assert(
+    jcPrompt.includes("정보처리기사 실기 전담 1:1 스타 강사") &&
+      jcPrompt.includes("[독립 정답 검증 및 채점 안전 절대 원칙 - 필수 준수]"),
+    "기존 정보처리기사 AI 튜터 프롬프트 및 독립 정답 검증 규칙 유지",
+  );
+
+  // 7. 정보보안기사 `과목 → 챕터 → 세부 섹션` 선택 흐름, 출처·출제기준 분리 필터, 교재 목차 매핑 및 기록 보존 검증
+  {
+    const validChapterIds = new Set(
+      SECURITY_OFFICIAL_CHAPTERS.map((ch) => ch.chapterId),
+    );
+    const validSectionIds = new Set(
+      SECURITY_OFFICIAL_SECTIONS.map((sec) => sec.sectionId),
+    );
+
+    const secIdSet = new Set<string>(ALL_QUESTIONS.map((q) => q.id));
+    const secStemSet = new Set<string>();
+    let secDupIds = 0;
+    let secDupStems = 0;
+    let secUniqueCheckFails = 0;
+    let secLawMissingDate = 0;
+    let secPracticalLeaks = 0;
+
+    for (const q of SECURITY_QUESTIONS) {
+      if (secIdSet.has(q.id)) secDupIds++;
+      secIdSet.add(q.id);
+
+      const normStem = q.question.replace(/\s+/g, "").toLowerCase();
+      if (secStemSet.has(normStem)) secDupStems++;
+      secStemSet.add(normStem);
+
+      const ans = Array.isArray(q.answer) ? q.answer[0] : q.answer;
+      const opts = q.options ?? [];
+      const uniqOpts = new Set(opts);
+      const matched = opts.filter((opt) => checkAnswer(opt, q.answer, q));
+      if (
+        opts.length !== 4 ||
+        uniqOpts.size !== 4 ||
+        !opts.includes(ans) ||
+        matched.length !== 1 ||
+        matched[0] !== ans
+      ) {
+        secUniqueCheckFails++;
+      }
+
+      if (q.chapterId === "SEC_CH_LAW_02" || q.sectionId === "SEC_SEC_LAW_01_03") {
+        if (!q.explanation.includes("기준일")) secLawMissingDate++;
+      }
+
+      if (q.syllabusStandard === "2027_2029" || q.is2027RevisionPrep) {
+        const blob = `${q.question} ${opts.join(" ")} ${q.explanation}`;
+        if (
+          blob.includes("OWASP API Security Top 10") ||
+          blob.includes("동형암호") ||
+          blob.includes("경량암호")
+        ) {
+          secPracticalLeaks++;
+        }
+      }
+    }
+
+    const secCommonQuestions = SECURITY_QUESTIONS.filter(
+      (q) =>
+        q.sourceKind === "CREATED" &&
+        q.syllabusStandard === "2023_2026" &&
+        !q.is2027RevisionPrep,
+    );
+    const sec2027Questions = SECURITY_QUESTIONS.filter(
+      (q) =>
+        q.sourceKind === "CREATED" &&
+        q.syllabusStandard === "2027_2029" &&
+        q.is2027RevisionPrep === true,
+    );
+    const rawOptions = secCommonQuestions.map(q => [...q.options!]);
+    useQuizStore.getState().startQuiz(secCommonQuestions);
+    const session = useQuizStore.getState().questions;
+    assert(new Set(session.map(q => q.options!.indexOf(String(q.answer)))).size === 4 &&
+      session.every(q => q.options!.filter(opt => checkAnswer(opt, q.answer, q)).length === 1),
+      "새 보안기사 퀴즈는 정답 위치가 분산되고 보기마다 정확히 채점됨");
+    useQuizStore.getState().startQuiz(session, "재도전", { preserveOrder: true });
+    assert(useQuizStore.getState().questions.every((q, i) => q === session[i]) &&
+      secCommonQuestions.every((q, i) => q.options!.every((opt, j) => opt === rawOptions[i][j])),
+      "재도전 시 보기 순서 유지 및 원본 문제은행 보존");
+    assert(!checkAnswer("s", "S", {type: "MULTIPLE_CHOICE", options: ["s", "S"]}),
+      "대소문자로 구별하는 보기 채점");
+    const secPastQuestions = SECURITY_QUESTIONS.filter(
+      (q) => q.sourceKind === "PAST_EXAM",
+    );
+
+    assert(
+      SECURITY_QUESTIONS.length === secCommonQuestions.length + sec2027Questions.length + secPastQuestions.length &&
+        secCommonQuestions.length >= 300 &&
+        sec2027Questions.length >= 100 &&
+        secPastQuestions.every(q => q.examYear && q.examRound && q.source) &&
+        SECURITY_QUESTIONS.every(
+          (q) =>
+            !!q.chapterId &&
+            validChapterIds.has(q.chapterId) &&
+            !!q.chapter &&
+            !!q.sectionId &&
+            validSectionIds.has(q.sectionId) &&
+            !!q.section &&
+            !!q.explanation &&
+            q.explanation.trim().length >= 30 &&
+            (q.sourceKind === "CREATED" || q.sourceKind === "PAST_EXAM") &&
+            (q.syllabusStandard === "2023_2026" ||
+              q.syllabusStandard === "2027_2029"),
+        ),
+      `정보보안기사 확장 문제은행 ${SECURITY_QUESTIONS.length}문항(공통 ${secCommonQuestions.length} + 개정 대비 ${sec2027Questions.length} + 기출 ${secPastQuestions.length}) 모두 유효한 메타·해설에 연결됨`,
+    );
+    assert(
+      secDupIds === 0 &&
+        secDupStems === 0 &&
+        secUniqueCheckFails === 0 &&
+        secLawMissingDate === 0 &&
+        secPracticalLeaks === 0,
+      `보안기사 400문항 무결성 검증 통과 (ID 중복 ${secDupIds}, 문항 중복 ${secDupStems}, 4지선다 유일 정답 오류 ${secUniqueCheckFails}, 법규 기준일 누락 ${secLawMissingDate}, 실기전용 혼입 ${secPracticalLeaks})`,
+    );
+
+    // 7-1. 선택 전 문항 수 계산 및 챕터 전체 vs 특정 세부 섹션 선택 출제 검증
+    const sysCh1Counts = QuestionRepository.getSecurityScopeCounts({
+      subject: "시스템 보안",
+      chapterId: "SEC_CH_SYS_01",
+    });
+    const sysSec1Counts = QuestionRepository.getSecurityScopeCounts({
+      subject: "시스템 보안",
+      chapterId: "SEC_CH_SYS_01",
+      sectionId: "SEC_SEC_SYS_01_01",
+    });
+    const sysSec2Counts = QuestionRepository.getSecurityScopeCounts({
+      subject: "시스템 보안",
+      chapterId: "SEC_CH_SYS_01",
+      sectionId: "SEC_SEC_SYS_01_02",
+    });
+    const sysSec3Counts = QuestionRepository.getSecurityScopeCounts({
+      subject: "시스템 보안",
+      chapterId: "SEC_CH_SYS_01",
+      sectionId: "SEC_SEC_SYS_01_03",
+    });
+
+    const chapterBank = SECURITY_QUESTIONS.filter(q => q.chapterId === "SEC_CH_SYS_01");
+    const sectionBank = (id: string) => chapterBank.filter(q => q.sectionId === id);
+    assert(
+      sysCh1Counts.availableCount === chapterBank.length &&
+        sysSec1Counts.availableCount === sectionBank("SEC_SEC_SYS_01_01").length &&
+        sysSec2Counts.availableCount === sectionBank("SEC_SEC_SYS_01_02").length &&
+        sysSec3Counts.availableCount === sectionBank("SEC_SEC_SYS_01_03").length,
+      "챕터·세부 섹션 표시 건수가 실제 등록 문항과 일치",
+    );
+
+    const ch1Questions = QuestionRepository.getSecurityQuestionsByScope({
+      subject: "시스템 보안",
+      chapterId: "SEC_CH_SYS_01",
+    });
+    const sec1OnlyQuestions = QuestionRepository.getSecurityQuestionsByScope({
+      subject: "시스템 보안",
+      chapterId: "SEC_CH_SYS_01",
+      sectionId: "SEC_SEC_SYS_01_01",
+    });
+
+    assert(
+      ch1Questions.length === chapterBank.length &&
+        ch1Questions.every((q) => q.chapterId === "SEC_CH_SYS_01"),
+      "챕터 전체 선택 시 해당 챕터(SEC_CH_SYS_01)의 문항이 모두 출제됨",
+    );
+    assert(
+      sec1OnlyQuestions.length === sysSec1Counts.availableCount &&
+        sec1OnlyQuestions.every(
+          (q) => q.sectionId === "SEC_SEC_SYS_01_01",
+        ) &&
+        ["SEC_EXAM_SYS_001", "SEC_EXAM_SYS_002", "SEC_EXAM_SYS_003"].every(
+          (id) => sec1OnlyQuestions.some((q) => q.id === id),
+        ),
+      "특정 세부 섹션(SEC_SEC_SYS_01_01) 선택 시 기존 3문항 포함 해당 섹션 문항만 정확히 출제됨",
+    );
+
+    // 7-2. 같은 섹션 내 전체 문제 / 실제 기출 / 2027 개정 대비 필터 및 연도·회차 vs 적용 기준 구분 검증
+    const samplePastExamQuestion: Question = {
+      id: "SEC_PAST_2022_R2_LAW_01",
+      certification: "SECURITY",
+      subject: "정보보안 관리 및 법규",
+      category: "개인정보 보호법",
+      chapterId: "SEC_CH_LAW_02",
+      chapter: "2장. 개인정보 보호법 및 정보보안 관련 법규",
+      sectionId: "SEC_SEC_LAW_02_01",
+      section:
+        "2-1. 개인정보 보호법 고유식별정보·민감정보 및 유출 통지·신고 (72시간 통지·신고, 2026~2027 개정)",
+      sourceKind: "PAST_EXAM",
+      examYear: 2022,
+      examRound: 2,
+      syllabusStandard: "2023_2026",
+      syllabusItemCode: "5-2-1",
+      type: "MULTIPLE_CHOICE",
+      question: "다음 중 개인정보 보호법상 고유식별정보에 해당하지 않는 것은?",
+      options: ["주민등록번호", "여권번호", "운전면허번호", "사원번호"],
+      answer: "사원번호",
+      explanation: "고유식별정보는 주민등록번호, 여권번호, 운전면허번호, 외국인등록번호 4종입니다.",
+      difficulty: "EASY",
+      keywords: ["고유식별정보"],
+      source: "정보보안기사 필기 기출",
+    };
+
+    const mixedPool = [
+      ...QuestionRepository.getAll("SECURITY"),
+      samplePastExamQuestion,
+    ];
+    const lawSecAll = filterSecurityQuestionsByScope(mixedPool, {
+      subject: "정보보안 관리 및 법규",
+      chapterId: "SEC_CH_LAW_02",
+      sectionId: "SEC_SEC_LAW_02_01",
+      filterMode: "ALL",
+    });
+    const lawSecPastOnly = filterSecurityQuestionsByScope(mixedPool, {
+      subject: "정보보안 관리 및 법규",
+      chapterId: "SEC_CH_LAW_02",
+      sectionId: "SEC_SEC_LAW_02_01",
+      filterMode: "PAST_EXAM",
+    });
+    const lawSecRevised2027Only = filterSecurityQuestionsByScope(mixedPool, {
+      subject: "정보보안 관리 및 법규",
+      chapterId: "SEC_CH_LAW_02",
+      sectionId: "SEC_SEC_LAW_02_01",
+      filterMode: "REVISED_2027",
+    });
+
+    assert(
+      lawSecAll.length === mixedPool.filter(q => q.sectionId === "SEC_SEC_LAW_02_01").length &&
+        lawSecPastOnly.every(q => q.sourceKind === "PAST_EXAM") &&
+        lawSecPastOnly.includes(samplePastExamQuestion) &&
+        lawSecRevised2027Only.every(q => q.syllabusStandard === "2027_2029" || q.is2027RevisionPrep) &&
+        lawSecRevised2027Only.some((q) => q.id === "SEC_2027_LAW_020"),
+      "같은 섹션(SEC_SEC_LAW_02_01)에서 전체 문제, 실제 기출, 2027 개정 대비를 각각 정확히 골라 풀 수 있음",
+    );
+
+    const createdCurrentQ = SECURITY_QUESTIONS.find(
+      (q) => q.id === "SEC_EXAM_LAW_006",
+    )!;
+    const created2027Q = SECURITY_QUESTIONS.find(
+      (q) => q.id === "SEC_2027_LAW_020",
+    )!;
+    assert(
+      getSecurityQuestionSourceBadgeLabel(samplePastExamQuestion) ===
+        "실제 기출 · 2022년 2회" &&
+        getSecurityQuestionSourceBadgeLabel(createdCurrentQ) === "창작 문항" &&
+        createdCurrentQ.examYear === undefined &&
+        createdCurrentQ.examRound === undefined &&
+        getSecurityQuestionStandardBadgeLabel(createdCurrentQ) ===
+          "2023~2026 출제기준" &&
+        getSecurityQuestionStandardBadgeLabel(created2027Q) ===
+          "2027~2029 개정 기준",
+      "실제 기출의 연도·회차(실제 기출 · 2022년 2회)와 창작 문항의 적용 기준(2023~2026 vs 2027~2029)이 명확히 구분됨",
+    );
+
+    // 7-3. 추후 교재명·판본·목차 매핑 시에도 문항 ID와 학습 기록이 유지되는지 검증
+    const attemptedBeforeBook =
+      await AttemptRepository.getAttemptedQuestionIds("SECURITY");
+    const bookmarksBeforeBook =
+      await BookmarkRepository.getBookmarkedQuestionIds("SECURITY");
+    assert(
+      attemptedBeforeBook.has("SEC_EXAM_SYS_001"),
+      "교재 매핑 전 SEC_EXAM_SYS_001 풀이 기록 존재 확인",
+    );
+
+    registerSecurityTextbook({
+      bookId: "BOOK_SEC_2026_V1",
+      bookTitle: "정보보안기사 필기 표준 기본서",
+      edition: "2026~2027 대비판",
+      chapters: [
+        {
+          bookChapterId: "BOOK_CH_SYS_A",
+          subject: "시스템 보안",
+          title: "Part 1. 유닉스/리눅스 시스템 보안 실무",
+          sections: [
+            {
+              bookSectionId: "BOOK_SEC_SYS_A_01",
+              bookChapterId: "BOOK_CH_SYS_A",
+              subject: "시스템 보안",
+              title: "Section 01. 파일 권한과 특수 비트 완벽 정리",
+              syllabusSectionIds: ["SEC_SEC_SYS_01_01"],
+            },
+          ],
+        },
+      ],
+    });
+
+    assert(
+      getSecurityTaxonomyBasisLabel().includes(
+        "정보보안기사 필기 표준 기본서 (2026~2027 대비판)",
+      ),
+      "교재 목차 등록 시 분류 기준 라벨이 교재명·판본으로 전환됨",
+    );
+
+    const bookChapters = QuestionRepository.getSecurityChapters("시스템 보안");
+    const bookSectionQuestions = QuestionRepository.getSecurityQuestionsByScope(
+      {
+        subject: "시스템 보안",
+        chapterId: "BOOK_CH_SYS_A",
+        sectionId: "BOOK_SEC_SYS_A_01",
+      },
+    );
+    const attemptedAfterBook =
+      await AttemptRepository.getAttemptedQuestionIds("SECURITY");
+    const bookmarksAfterBook =
+      await BookmarkRepository.getBookmarkedQuestionIds("SECURITY");
+
+    assert(
+      bookChapters.length === 1 &&
+        bookChapters[0].chapterId === "BOOK_CH_SYS_A" &&
+        bookSectionQuestions.length === sec1OnlyQuestions.length &&
+        ["SEC_EXAM_SYS_001", "SEC_EXAM_SYS_002", "SEC_EXAM_SYS_003"].every(
+          (id) => bookSectionQuestions.some((q) => q.id === id),
+        ),
+      "교재 목차(BOOK_SEC_SYS_A_01) 선택 시에도 기존 문항 ID(SEC_EXAM_SYS_001~003) 포함 섹션 문항이 변경 없이 그대로 연결됨",
+    );
+    assert(
+      attemptedAfterBook.size === attemptedBeforeBook.size &&
+        attemptedAfterBook.has("SEC_EXAM_SYS_001") &&
+        bookmarksAfterBook.join(",") === bookmarksBeforeBook.join(","),
+      "교재 매핑 추가 후에도 기존 풀이 기록과 북마크가 100% 보존됨",
+    );
+
+    clearSecurityTextbook();
+
+    // 7-4. 정보처리기사의 과목 선택과 기록에는 영향이 없는지 확인
+    for (const jcSub of SUBJECTS) {
+      const jcSubQuestions = QuestionRepository.getBySubject(
+        jcSub,
+        "JUNGCHEOGI",
+      );
+      assert(
+        jcSubQuestions.length > 0 &&
+          jcSubQuestions.every(
+            (q) => (q.certification ?? "JUNGCHEOGI") === "JUNGCHEOGI",
+          ),
+        `정보처리기사 '${jcSub}' 과목 선택 및 문항 목록(${jcSubQuestions.length}문항) 영향 없음 확인`,
+      );
+    }
+    const jcAttemptsAfter =
+      await AttemptRepository.getAllAttempts("JUNGCHEOGI");
+    assert(
+      jcAttemptsAfter.length >= 1 &&
+        jcAttemptsAfter.some((a) => a.questionId === "PROG_001"),
+      "정보처리기사 학습 기록이 보안기사 분류·필터 변경 후에도 그대로 유지됨",
+    );
+
+    // 8. ResultScreen 학습 피드백 문구 및 세션 집계 검증 (100%, 60% 전후, 오답·모름이 있는 짧은 세션)
+    {
+      const forbiddenPassPhrases = [
+        "실기 합격 안정권",
+        "합격 커트라인",
+        "반드시 합격",
+      ];
+
+      // 8-1. 100% 세션 (보안기사 3문항 모두 정답)
+      const secPerfectQuestions = SECURITY_QUESTIONS.slice(0, 3);
+      useQuizStore
+        .getState()
+        .startQuiz(secPerfectQuestions, "보안기사 100% 세션 검증", {
+          preserveOrder: true,
+        });
+      for (let i = 0; i < secPerfectQuestions.length; i++) {
+        useQuizStore
+          .getState()
+          .selectAnswer(String(secPerfectQuestions[i].answer));
+        await useQuizStore.getState().submitAnswer();
+        if (i < secPerfectQuestions.length - 1) {
+          useQuizStore.getState().nextQuestion();
+        }
+      }
+      const perfectSummary = summarizeSessionAttempts(
+        useQuizStore.getState().sessionAttempts,
+      );
+      assert(
+        perfectSummary.total === 3 &&
+          perfectSummary.correctCount === 3 &&
+          perfectSummary.confusedCount === 0 &&
+          perfectSummary.unknownCount === 0 &&
+          perfectSummary.missCount === 0 &&
+          perfectSummary.scoreRate === 100 &&
+          perfectSummary.feedbackMessage.includes("이번 세션 정답률 100%") &&
+          perfectSummary.feedbackMessage.includes(
+            "복습이 필요한 오답·모름 문항이 없습니다",
+          ) &&
+          forbiddenPassPhrases.every(
+            (p) => !perfectSummary.feedbackMessage.includes(p),
+          ),
+        "100% 세션: 합격 판정 없이 실제 정답률(100%)과 복습 불필요 안내 표시",
+      );
+
+      // 8-2. 60% 전후 세션 (5문항: 정답 3, 헷갈림 1, 모름 1 -> 60%)
+      const sec60Questions = SECURITY_QUESTIONS.slice(3, 8);
+      useQuizStore
+        .getState()
+        .startQuiz(sec60Questions, "보안기사 60% 세션 검증", {
+          preserveOrder: true,
+        });
+      for (let i = 0; i < 3; i++) {
+        useQuizStore.getState().selectAnswer(String(sec60Questions[i].answer));
+        await useQuizStore.getState().submitAnswer();
+        useQuizStore.getState().nextQuestion();
+      }
+      const wrongOpt3 = sec60Questions[3].options!.find(
+        (o) => o !== String(sec60Questions[3].answer),
+      )!;
+      useQuizStore.getState().selectAnswer(wrongOpt3);
+      await useQuizStore.getState().submitAnswer();
+      useQuizStore.getState().nextQuestion();
+      await useQuizStore.getState().submitUnknown();
+
+      const sixtySummary = summarizeSessionAttempts(
+        useQuizStore.getState().sessionAttempts,
+      );
+      assert(
+        sixtySummary.total === 5 &&
+          sixtySummary.correctCount === 3 &&
+          sixtySummary.confusedCount === 1 &&
+          sixtySummary.unknownCount === 1 &&
+          sixtySummary.missCount === 2 &&
+          sixtySummary.scoreRate === 60 &&
+          sixtySummary.feedbackMessage.includes("이번 세션 정답률은 60%입니다.") &&
+          sixtySummary.feedbackMessage.includes(
+            "헷갈린 문항 1개와 모름 문항 1개(총 2개)",
+          ) &&
+          forbiddenPassPhrases.every(
+            (p) => !sixtySummary.feedbackMessage.includes(p),
+          ),
+        "60% 전후 세션: 합격 커트라인 문구 없이 정답률(60%)과 복습 대상(헷갈림 1·모름 1) 안내",
+      );
+
+      // 8-3. 오답·모름이 있는 짧은 세션 (정보처리기사 3문항: 정답 1, 헷갈림 1, 모름 1 -> 33%)
+      const jcShortQuestions = jcPool.slice(0, 3);
+      useQuizStore
+        .getState()
+        .startQuiz(jcShortQuestions, "정처기 짧은 세션 검증", {
+          preserveOrder: true,
+        });
+      const jcAns0 = Array.isArray(jcShortQuestions[0].answer)
+        ? jcShortQuestions[0].answer[0]
+        : jcShortQuestions[0].answer;
+      useQuizStore.getState().selectAnswer(String(jcAns0));
+      await useQuizStore.getState().submitAnswer();
+      useQuizStore.getState().nextQuestion();
+      useQuizStore.getState().selectAnswer("의도적오답_세션검증");
+      await useQuizStore.getState().submitAnswer();
+      useQuizStore.getState().nextQuestion();
+      await useQuizStore.getState().submitUnknown();
+
+      const shortSummary = summarizeSessionAttempts(
+        useQuizStore.getState().sessionAttempts,
+      );
+      assert(
+        shortSummary.total === 3 &&
+          shortSummary.correctCount === 1 &&
+          shortSummary.confusedCount === 1 &&
+          shortSummary.unknownCount === 1 &&
+          shortSummary.missCount === 2 &&
+          shortSummary.scoreRate === 33 &&
+          shortSummary.feedbackMessage.includes("이번 세션 정답률은 33%입니다.") &&
+          shortSummary.feedbackMessage.includes(
+            "헷갈린 문항 1개와 모름 문항 1개(총 2개)",
+          ) &&
+          forbiddenPassPhrases.every(
+            (p) => !shortSummary.feedbackMessage.includes(p),
+          ),
+        "오답·모름이 있는 짧은 세션(정처기 33%): 합격 보장 문구 없이 정답률과 복습 내용 안내",
+      );
+
+      // 8-4. 80% 이상 오답만 있는 경우 & 모름만 있는 경우 문구 검증
+      const msg80ConfusedOnly = getSessionResultFeedbackMessage({
+        total: 5,
+        correctCount: 4,
+        confusedCount: 1,
+        unknownCount: 0,
+      });
+      const msgUnknownOnly = getSessionResultFeedbackMessage({
+        total: 4,
+        correctCount: 2,
+        confusedCount: 0,
+        unknownCount: 2,
+      });
+      assert(
+        msg80ConfusedOnly.includes("80%") &&
+          msg80ConfusedOnly.includes("헷갈린 오답 문항 1개") &&
+          msgUnknownOnly.includes("50%") &&
+          msgUnknownOnly.includes("모름으로 표시한 문항 2개") &&
+          forbiddenPassPhrases.every(
+            (p) =>
+              !msg80ConfusedOnly.includes(p) && !msgUnknownOnly.includes(p),
+          ),
+        "단독 헷갈림(80%)·단독 모름(50%) 세션 피드백 문구 정확성 확인",
+      );
+    }
+  }
 
   LocalStorage.setAdapter(new MemoryStorageAdapter());
   useQuizStore.getState().resetQuiz();

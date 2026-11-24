@@ -261,22 +261,22 @@ async function run() {
     assert(
       calls.every(
         (call) =>
-          call.models?.[0] === "gemini-3.8-flash" &&
-          call.models?.[1] === "gemini-3.5-flash" &&
+          call.models?.[0] === "gemini-4-hydrogen" &&
+          call.models?.[1] === "gemini-3.8-flash" &&
           call.models?.every((model) => !model.includes("lite")),
       ),
-      "호출은 3.8 → 3.5-flash, lite 없음",
+      "호출은 하이드로젠 High → 3.8 High, lite 없음",
     );
     assert(
       calls.every(
         (call) =>
           call.maxRetries === 1 && call.retryDelayMs === MEMO_RETRY_DELAY_MS,
       ),
-      "3.8은 0.3초 1회만 재시도",
+      "생성 요청은 0.3초 1회 재시도 설정 전달",
     );
     assert(
-      GENERATOR_MODELS.join(",") === "gemini-3.8-flash,gemini-3.5-flash",
-      "생성 모델 목록은 3.8과 3.5-flash만",
+      GENERATOR_MODELS.join(",") === "gemini-4-hydrogen,gemini-3.8-flash",
+      "생성 모델 목록은 하이드로젠 High와 3.8 High",
     );
 
     let firstFailed = false;
@@ -798,8 +798,8 @@ async function run() {
   );
 
   assert(
-    BULK_GENERATOR_MODELS.join(",") === "gemini-3.8-flash,gemini-3.5-flash",
-    "대량 생성은 3.8 우선, 실패 시 3.5 폴백",
+    BULK_GENERATOR_MODELS.join(",") === "gemini-4-hydrogen,gemini-3.8-flash",
+    "대량 생성은 하이드로젠 High 우선, HTTP 429 시 3.8 High 폴백",
   );
 
   const originalGenerate = GeminiService.generateText.bind(GeminiService);
@@ -821,9 +821,9 @@ async function run() {
       maxRetries: 3,
     });
     assert(
-      bulkCall?.models?.join(",") === "gemini-3.8-flash,gemini-3.5-flash" &&
+      bulkCall?.models?.join(",") === "gemini-4-hydrogen,gemini-3.8-flash" &&
         bulkCall?.maxRetries === 3,
-      "대량 생성 묶음은 3.8 우선 후 3.5 폴백, 같은 모델에서 더 재시도",
+      "대량 생성 묶음은 하이드로젠 High 우선 후 3.8 High 폴백, 같은 모델에서 더 재시도",
     );
   } finally {
     GeminiService.generateText = originalGenerate;
