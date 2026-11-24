@@ -192,10 +192,10 @@ jobs:
           fi
 
           APK_CERT_SHA256=$(echo "$CERT_OUTPUT" \
-            | awk '/Signer #1 certificate SHA-256 digest:/ { print toupper($NF); exit }' \
+            | awk '/certificate SHA-256 digest:/ { print toupper($NF); exit }' \
             | sed 's/\(..\)/\1:/g; s/:$//')
 
-          if [ "$APK_CERT_SHA256" != "${EXPECTED_CERT_SHA256}" ]; then
+          if [ -z "$APK_CERT_SHA256" ] || [ "$APK_CERT_SHA256" != "${EXPECTED_CERT_SHA256}" ]; then
             echo "::error::APK certificate SHA-256 ($APK_CERT_SHA256) does not match release.keystore SHA-256 (${EXPECTED_CERT_SHA256})"
             exit 1
           fi
